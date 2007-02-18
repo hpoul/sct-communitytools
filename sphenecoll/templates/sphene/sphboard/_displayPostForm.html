@@ -1,0 +1,36 @@
+<style>
+  .sphboard { width: 100%; }
+  textarea { width: 100%; }
+  .sphboard input { width: 100%; }
+</style>
+
+<form method="POST" action="." name="postform">
+  <input type="hidden" name="category" value="{{ category.id }}" />
+  {% if thread %}
+    <input type="hidden" name="thread" value="{{ thread.id }}" />
+  {% endif %}
+  <table class="sphboard form">
+    {{ form }}
+  </table>
+
+  {% if not thread %}
+  <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">Add a poll to this thread</label><br/><br/>
+
+  <div id="poll" style="display: none">
+    <table class="sphboard form">
+      <tr>
+        <th colspan="2">Poll</th>
+      </tr>
+      {{ pollform }}
+    </table>
+  </div>
+  <script language="JavaScript">
+  <!--
+    document.getElementById( 'poll' ).style.display = (document.postform.createpoll.checked ? 'block' : 'none');
+  //-->
+  </script>
+  {% endif %}
+
+  <input type="submit" value="Post" />
+
+</form>

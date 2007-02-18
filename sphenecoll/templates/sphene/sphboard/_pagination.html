@@ -1,0 +1,14 @@
+Page:
+{% if has_prev %}
+  <a href="?page={{ prev }}">Previous</a>
+{% endif %}
+{% for p in page_range %}
+  {% ifequal p page %}
+    {{ p }}
+  {% else %}
+    <a href="?page={{ p }}">{{ p }}</a>
+  {% endifequal %}
+{% endfor %}
+{% if has_next %}
+  <a href="?page={{ next }}">Next</a>
+{% endif %}

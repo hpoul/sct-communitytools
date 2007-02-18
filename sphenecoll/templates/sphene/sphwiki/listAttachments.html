@@ -1,0 +1,22 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+
+{% block content %}
+
+  <a href="../../show/{{ snipName }}/">Back to Snip</a> - <a href="create/">Create New</a>
+  <br/><br/>
+  <ul>
+    {% for attachment in object_list %}
+      <li>{{ attachment.id }} - <a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_basename }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if is_paginated %}
+    {{ hits }} Attachments. {% sphboard_pagination pages page %}
+  {% else %}
+    {{ object_list.count }} Attachments.
+  {% endif %}
+
+{% endblock %}

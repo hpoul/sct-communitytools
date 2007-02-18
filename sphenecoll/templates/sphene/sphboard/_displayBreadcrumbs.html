@@ -1,0 +1,19 @@
+<a href="../../show/0/">Board</a>
+{% if categories %}
+  {% for category in categories %}
+    &gt;&gt; 
+    {% ifnotequal category current %}
+      <a href="../../show/{{ category.id }}/">{{ category.name }}</a>
+    {% else %}
+      {{ category.name }}
+    {% endifnotequal %}
+  {% endfor %}
+{% endif %}
+{% if thread %}
+  &gt;&gt;
+  {% if linkall %}
+    <a href="../../thread/{{ thread.id }}/">{{ thread.subject }}</a>
+  {% else %}
+    {{ thread.subject }}
+  {% endif %}
+{% endif %}

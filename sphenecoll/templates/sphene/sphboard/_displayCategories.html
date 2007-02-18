@@ -1,0 +1,15 @@
+{% load sphboard_extras %}
+
+{% for category in categories %}
+  <tr>
+    {% for test in level|sphrange %}
+      <td width='5px'>&nbsp;</td>
+    {% endfor %}
+    <td width="20px"><img src="/static/sphene/sphboard/icons/{% if category.hasNewPosts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
+    <td class="sphboard_categoryname" colspan='{{ maxDepth|sphminus:level }}'><a href="../{{ category.id }}/">{{ category.name }}</a><br/><small>{{ category.description }}</small></td>
+    <td class="sphboard_threadcount">{{ category.threadCount }}</td>
+    <td class="sphboard_postcount">{{ category.postCount }}</td>
+    <td class="sphboard_latestpost">{% sphboard_latestPost category.latestPost %}</td>
+  </tr>
+  {% sphboard_displayCategories category.get_childs maxDepth level %}
+{% endfor %}

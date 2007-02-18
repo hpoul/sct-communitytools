@@ -1,0 +1,92 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+
+{% block content %}
+  {% sphboard_displayBreadcrumbsForThread thread %}
+  <br/>
+  {% if perms.post.change_post %}
+    Thread Options: 
+      {% if thread.is_sticky %}
+        <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a>
+      {% else %}
+        <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a>
+      {% endif %}
+      <br/>
+  {% endif %}
+  <br/>
+  <table class="sphboard_post_list">
+    {% for post in post_list %}
+      <tr>
+        <td rowspan="2" class="sphboard_post_authorinfo">
+          Posted by<br/>
+          {% sphboard_displayUserName post.author %}<br/>
+        </td>
+        <td>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></td>
+      </tr>
+      <tr>
+        <td class="sphboard_post_body">{{ post.body_escaped }}</td>
+      </tr>
+      {% ifequal post thread %}
+        {% if post.poll %}
+          <tr>
+            <td colspan='2'>
+              <b>Poll: {{ post.poll.question }}</b><br/><br/>
+              {% if post.poll.has_voted %}
+                You already voted. Here are the results ({{ post.poll.total_voters }} votes total - {% widthratio post.poll.null_votes post.poll.total_votes 100 %}% did not answer):
+                <table class="sphboard polls_results">
+                  {% for choice in post.poll.choices %}
+                    <tr>
+                      <td align="right" style="white-space:nowrap;">{% widthratio choice.count post.poll.total_votes 100 %}%</td>
+                      <td width="100%"><span style="background-color:#cccccc;font-size:5px;height:10px;padding-right:{% widthratio choice.count post.poll.total_votes 500 %}px;">&nbsp;</span><br/>{{ choice.choice }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              {% else %}
+                <form method="POST" action="../../vote/{{ thread.id }}/">
+                {% if request.attributes.voteerror %}
+                  <strong class="sphboard error">Error: {{ request.attributes.voteerror }}</strong><br/>
+                {% endif %}
+                {% if post.poll.multiplechoice %}
+                  You may select up to {{ post.poll.choices_per_user }} answers:
+                  <ul style="list-style: none">
+                    {% for choice in post.poll.choices %}
+                      <li><input type="checkbox" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
+                    {% endfor %}
+                    <li><input type="checkbox" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">Show Results (You won't be able to vote.)</label></li>
+                  </ul>
+                {% else %}
+                  <ul style="list-style: none">
+                    {% for choice in post.poll.choices %}
+                      <li><input type="radio" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
+                    {% endfor %}
+                    <li><input type="radio" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">Show Results (You won't be able to vote.)</label></li>
+                  </ul>
+                {% endif %}
+                {% if user.is_authenticated %}
+                  <input type="submit" value="Vote" />
+                {% else %}
+                  You need to be logged in to vote.
+                {% endif %}
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      {% endifequal %}
+    {% endfor %}
+  </table>
+  <br/><br/>
+  
+  {% if allowPosting %}
+    <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}">Post Reply</a>
+    {# sphboard_displayPostForm thread #}
+  {% else %}
+    {% if user.is_authenticated %}
+      You have no permission to post a reply.
+    {% else %}
+      Please login to post a reply.
+    {% endif %}
+  {% endif %}
+  <br/><br/>
+{% endblock %}

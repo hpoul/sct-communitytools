@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <style type="text/css">
+    .sphboard_categories {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .sphboard_categories td,
+    .sphboard_categories th {
+      border: 1px solid gray;
+      padding: 5px;
+    }
+
+    .sphboard_categories th {
+      white-space: nowrap;
+    }
+
+    .sphboard_threadcount, .sphboard_postcount {
+      width: 5%;
+      text-align: right;
+    }
+
+    .sphboard_latestpost {
+      white-space: nowrap;
+      width: 30%;
+    }
+
+    .sphboard_postform {
+      width: 80%;
+      border-collapse: collapse;
+      border: 1px solid black;
+    }
+
+    .sphboard_postform td,
+    .sphboard_postform th {
+      padding: 3px;
+    }
+
+    .sphboard_postform input[type='text'],
+    .sphboard_postform textarea {
+      width: 80%;
+    }
+
+    .sphboard_post_list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sphboard_post_list td,
+    .sphboard_post_list th {
+      border: 1px solid gray;
+      padding: 5px;
+    }
+
+    .sphboard_post_list td.sphboard_post_body {
+      height: 100px;
+      vertical-align: top;
+    }
+
+    .sphboard_post_list td.sphboard_post_authorinfo {
+      width: 150px;
+    }
+
+    .sphboard_thread_list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sphboard_mainhead {
+      background-color: #eee;
+    }
+
+    .sphboard_thread_list td,
+    .sphboard_thread_list th {
+      border: 1px solid gray;
+      padding: 5px;
+    }
+  </style>
+{% endblock %}

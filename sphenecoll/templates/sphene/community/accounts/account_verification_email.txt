@@ -1,0 +1,16 @@
+You have requested to register with the email address:
+      {{ email }} 
+on the {{ group.get_name }} website.
+
+To continue registration visit the following link:
+{{ baseurl }}/accounts/register/{{ validationcode }}/
+
+
+
+Thanks for your interest,
+  Your {{ group.get_name }} Team.
+
+
+
+
+If you did not make this request you can safely ignore this email.

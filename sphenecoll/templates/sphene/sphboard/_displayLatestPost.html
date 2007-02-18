@@ -1,0 +1,14 @@
+{% load sphboard_extras %}
+{% if latestPost %}
+  {% ifequal showSubject 1 %}
+    <a href="../../thread/{{ latestPost.get_thread.id }}/">{{ latestPost.subject }}</a>
+    at {{ latestPost.postdate|date:"Y-m-d H:i:s" }}<br/>
+  {% else %}
+    At <a href="../../thread/{{ latestPost.get_thread.id }}/">{{ latestPost.postdate|date:"Y-m-d H:i:s" }}</a><br/>
+  {% endifequal %}
+  By {% sphboard_displayUserName latestPost.author %}
+{% else %}
+  No Posts Yet.
+{% endif %}
+
+

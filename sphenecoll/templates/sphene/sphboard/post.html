@@ -1,0 +1,21 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+
+{% block content %}
+
+  {% if thread %}
+    {% sphboard_displayBreadcrumbsForThread thread 1 %}
+  {% else %}
+    {% sphboard_displayBreadcrumbsForCategory category 1 %}
+  {% endif %}<br/><br/>
+
+  {% if thread %}
+    <b>Posting reply to thread {{ thread.subject }}.</b>
+  {% else %}
+    <b>Posting new thread.</b>
+  {% endif %}<br/><br/>
+
+  {% include "sphene/sphboard/_displayPostForm.html" %}
+
+{% endblock %}

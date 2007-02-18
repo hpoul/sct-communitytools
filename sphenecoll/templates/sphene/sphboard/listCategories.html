@@ -1,0 +1,60 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+{% load humanize %}
+
+{% block content %}
+
+  <a href="../../latest/{{ category_id }}/">Latest</a> | {% sphboard_displayBreadcrumbsForCategory category %}<br/><br/>
+
+  {% if rootCategories %}
+  <table class="sphboard_categories">
+    <tr>
+      <th colspan='6'>Title</th>
+      <th>Threads</th>
+      <th>Posts</th>
+      <th>Last Post</th>
+    </tr>
+    {% sphboard_displayCategories rootCategories 5 %}
+  </table>
+  <br/><br/>
+  {% endif %}
+
+  {% if isShowLatest or category.canContainPosts %}
+    <table class="sphboard_thread_list">
+      <tr>
+        <th class="sphboard_mainhead" colspan="4">Threads</th>
+      </tr>
+      <tr>
+        <th colspan="2">Subject / Author</th>
+        <th>Posts</th>
+        <th>Last Post</th>
+      </tr>
+      {% for thread in thread_list %}
+        <tr>
+          <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.hasNewPosts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
+          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}<a href="../../thread/{{ thread.id }}/">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          <td class="sphboard_postcount">{{ thread.postCount }}</td>
+          <td class="sphboard_latestpost">{% sphboard_latestPost thread.latestPost 0 %}
+        </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="4"><span style="float:left;">{{ hits }} Threads in this category yet.</span><span style="display:block;float:right;">{% sphboard_pagination pages page %}</span></td>
+      </tr>
+    </table>
+    <br/><br/>
+    {% if allowPostThread %}
+      <a href="../../post/{{ category.id }}/">Post New Thread</a>
+      {# sphboard_displayPostForm #}
+    {% else %}
+      {% if user.is_authenticated %}
+        You have no permission to create a new thread.
+      {% else %}
+        Please login to create a new thread.
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  <br/><br/>
+
+{% endblock %}

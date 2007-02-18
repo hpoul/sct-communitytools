@@ -1,0 +1,14 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% block content %}
+
+  Please Enter your email address. You will then receive a URL to continue registration.
+
+  <form method="POST" action=".">
+    <table>
+      {{ form }}
+    </table>
+    <input type="submit" value="Send Email Validation Code" />
+  </form>
+
+{% endblock %}

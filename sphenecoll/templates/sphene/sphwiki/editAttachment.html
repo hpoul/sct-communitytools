@@ -1,0 +1,15 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+{% block content %}
+
+  <form action="." method="post" enctype="multipart/form-data">
+    <table class="form">
+      {{ form }}
+    </table>
+    <input type="submit" value="Save" />
+  </form>
+
+{% endblock %}
