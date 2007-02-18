@@ -23,6 +23,19 @@ class ImageMacro (object):
             return el
         return doc.createTextNode("Error, no 'id' given for img macro.")
 
+import urllib2
+
+class IncludeMacro (object):
+    def handleMacroCall(self, doc, params):
+        if params.has_key( 'url' ):
+            f = urllib2.urlopen( params['url'] )
+            try:
+                text = f.read()
+                return HTML( sph_markdown( text ) )
+            finally:
+                f.close()
+        return doc.createTextNode("Error, no 'url' given for include macro.")
+
 class HTML:
     type = "text"
     attrRegExp = re.compile(r'\{@([^\}]*)=([^\}]*)}') # {@id=123}
@@ -78,7 +91,8 @@ def sph_markdown(value, arg=''):
                                                      'macros': [ ( 'macros',
                                                                    { 'helloWorld': SimpleHelloWorldMacro(),
                                                                      'img': ImageMacro(),
-                                                                     'news': NewsMacro(), } )]},
+                                                                     'news': NewsMacro(),
+                                                                     'include': IncludeMacro(), } )]},
                                  )
         return md.toString()
 

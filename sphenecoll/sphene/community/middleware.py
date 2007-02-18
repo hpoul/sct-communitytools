@@ -18,6 +18,8 @@ class MultiHostMiddleware:
             if host[-3:] == ':80':
                 host = host[:-3] # ignore default port number, if present
             urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[host]
+            while 'alias' in urlconf:
+                urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[urlconf['alias']]
             set_current_urlconf_params( urlconf['params'] )
             request.urlconf = urlconf['urlconf']
             

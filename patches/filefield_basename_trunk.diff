@@ -1,0 +1,28 @@
+Index: django/db/models/base.py
+===================================================================
+--- django/db/models/base.py	(revision 4458)
++++ django/db/models/base.py	(working copy)
+@@ -313,6 +313,11 @@
+             return os.path.join(settings.MEDIA_ROOT, getattr(self, field.attname))
+         return ''
+ 
++    def _get_FIELD_basename(self, field):
++        if getattr(self, field.attname): # value is not blank
++	    return os.path.basename( self._get_FIELD_filename(field) )
++	return ''
++
+     def _get_FIELD_url(self, field):
+         if getattr(self, field.attname): # value is not blank
+             import urlparse
+Index: django/db/models/fields/__init__.py
+===================================================================
+--- django/db/models/fields/__init__.py	(revision 4458)
++++ django/db/models/fields/__init__.py	(working copy)
+@@ -625,6 +625,7 @@
+         setattr(cls, 'get_%s_filename' % self.name, curry(cls._get_FIELD_filename, field=self))
+         setattr(cls, 'get_%s_url' % self.name, curry(cls._get_FIELD_url, field=self))
+         setattr(cls, 'get_%s_size' % self.name, curry(cls._get_FIELD_size, field=self))
++	setattr(cls, 'get_%s_basename' % self.name, curry(cls._get_FIELD_basename, field=self))
+         setattr(cls, 'save_%s_file' % self.name, lambda instance, filename, raw_contents: instance._save_FIELD_file(self, filename, raw_contents))
+         dispatcher.connect(self.delete_file, signal=signals.post_delete, sender=cls)
+ 

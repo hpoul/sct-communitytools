@@ -1,0 +1,71 @@
+Index: django/newforms/models.py
+===================================================================
+--- django/newforms/models.py	(Revision 4451)
++++ django/newforms/models.py	(Arbeitskopie)
+@@ -31,7 +31,7 @@
+         raise ValueError("The %s could not be changed because the data didn't validate." % opts.object_name)
+     clean_data = form.clean_data
+     for f in opts.fields:
+-        if isinstance(f, models.AutoField):
++        if not f.editable or isinstance(f, models.AutoField):
+             continue
+         setattr(instance, f.attname, clean_data[f.name])
+     if commit:
+@@ -63,9 +63,10 @@
+     opts = model._meta
+     field_list = []
+     for f in opts.fields + opts.many_to_many:
+-        formfield = formfield_callback(f)
+-        if formfield:
+-            field_list.append((f.name, formfield))
++        if f.editable:
++            formfield = formfield_callback(f)
++            if formfield:
++                field_list.append((f.name, formfield))
+     fields = SortedDictFromList(field_list)
+     return type(opts.object_name + 'Form', (form,), {'base_fields': fields, '_model': model, 'save': model_save})
+ 
+@@ -84,15 +85,16 @@
+     opts = model._meta
+     field_list = []
+     for f in opts.fields + opts.many_to_many:
+-        current_value = f.value_from_object(instance)
+-        formfield = formfield_callback(f, initial=current_value)
+-        if formfield:
+-            field_list.append((f.name, formfield))
++        if f.editable:
++            current_value = f.value_from_object(instance)
++            formfield = formfield_callback(f, initial=current_value)
++            if formfield:
++                field_list.append((f.name, formfield))
+     fields = SortedDictFromList(field_list)
+     return type(opts.object_name + 'InstanceForm', (form,),
+         {'base_fields': fields, '_model': model, 'save': make_instance_save(instance)})
+ 
+ def form_for_fields(field_list):
+     "Returns a Form class for the given list of Django database field instances."
+-    fields = SortedDictFromList([(f.name, f.formfield()) for f in field_list])
++    fields = SortedDictFromList([(f.name, f.formfield()) for f in field_list if f.editable])
+     return type('FormForFields', (BaseForm,), {'base_fields': fields})
+Index: tests/modeltests/model_forms/models.py
+===================================================================
+--- tests/modeltests/model_forms/models.py	(Revision 4451)
++++ tests/modeltests/model_forms/models.py	(Arbeitskopie)
+@@ -40,10 +40,17 @@
+ class Article(models.Model):
+     headline = models.CharField(maxlength=50)
+     pub_date = models.DateField()
++    created = models.DateField(editable=False)
+     writer = models.ForeignKey(Writer)
+     article = models.TextField()
+     categories = models.ManyToManyField(Category, blank=True)
+ 
++    def save(self):
++        import datetime
++        if not self.id:
++            self.created = datetime.date.today()
++        return super(Article, self).save()
++
+     def __str__(self):
+         return self.headline
+ 
