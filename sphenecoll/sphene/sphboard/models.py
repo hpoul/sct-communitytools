@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 from sphene.community.models import Group
 
 from django.utils import html
+from django.conf import settings
 from text import bbcode
+bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 import re
