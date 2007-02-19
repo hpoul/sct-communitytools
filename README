@@ -6,14 +6,34 @@ Sphene Community Tools are django applications designed to be easily
 pluggable into any django project.
 
 
-# DIRECTORIES
+## DIRECTORIES
 
 - libs/		Contains small python libraries which are used by SCT.
 - patches/	Django patches which need to be applied.
 - sphenecoll/	Collection of django application (the base source for SCT).
 - static/	Static media files which contain images and css.
 
-# INSTALLATION
+## Requirements
 
-TODO .. i have to finish this !
+- [Django](http://www.djangoproject.com) - I'm using the latest version from 
+  the subversion trunk.
+- Python >= 2.4
+
+## INSTALLATION
+
+### Apply Patches
+
+See the patches/ directory which contains django patches which are 
+needed for SCT.
+
+### Python library path
+
+You need to add libs/ and sphenecoll/ to your python include path and
+static/ needs to be served from your django installation.
+(static/sphene/ is enough)
+
+
+## EXAMPLES
+
+TODO: Create/Document examples ......
 
