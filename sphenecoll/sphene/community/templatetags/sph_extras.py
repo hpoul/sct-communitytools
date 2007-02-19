@@ -24,16 +24,40 @@ class ImageMacro (object):
         return doc.createTextNode("Error, no 'id' given for img macro.")
 
 import urllib2
+from django.core.cache import cache
 
 class IncludeMacro (object):
     def handleMacroCall(self, doc, params):
         if params.has_key( 'url' ):
-            f = urllib2.urlopen( params['url'] )
-            try:
-                text = f.read()
-                return HTML( sph_markdown( text ) )
-            finally:
-                f.close()
+            cache_key = 'sph_community_includemacro_' + params['url'] + '_' + params.get( 'start', '' ) + '_' + params.get( 'end', '' );
+            cached_text = cache.get( cache_key )
+            if cached_text:
+                text = cached_text
+            else:
+                f = urllib2.urlopen( params['url'] )
+                try:
+                    start = params.get( 'start', None )
+                    end = params.get( 'end', None )
+                    if start or end:
+                        text = ''
+                        line = ''
+                        if start:
+                            for line in f:
+                                if line.find( start ) == -1: pass
+                                else: break
+                        if end:
+                            for line in f:
+                                if line.find( end ) == -1:
+                                    text += line
+                                else: break
+                                        
+                    if not end:
+                        text = f.read()
+
+                    cache.set( cache_key, text, 3600 )
+                finally:
+                    f.close()
+            return HTML( sph_markdown( text ) )
         return doc.createTextNode("Error, no 'url' given for include macro.")
 
 class HTML:
