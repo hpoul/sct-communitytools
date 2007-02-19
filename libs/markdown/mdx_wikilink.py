@@ -76,7 +76,7 @@ class WikiLinkExtension (markdown.Extension) :
         #md.registerExtension(self) #???
     
         # append to end of inline patterns
-        WIKILINK_RE = r'''(?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b'''
+        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_]+)(\|(?P<sniplabel>[\w ]+?))?\])'''
         md.inlinePatterns.append(WikiLinks(WIKILINK_RE, self.config))  
 
 class WikiLinks (markdown.BasePattern) :
@@ -85,11 +85,14 @@ class WikiLinks (markdown.BasePattern) :
         self.config = config
   
     def handleMatch(self, m, doc) :
-        if  m.group('escape') == '\\':
-            a = doc.createTextNode(m.group('camelcase'))
+        groups = m.groupdict( )
+        print "%s - %s" % (m.group(), str(groups))
+        if  groups.get('escape') == '\\':
+            a = doc.createTextNode(groups.get('camelcase'))
         else :
-            url = '%s%s%s'% (self.config['base_url'][0], m.group('camelcase'), self.config['end_url'][0])
-            label = m.group('camelcase').replace('_', ' ')
+            snipname = groups.get('camelcase') or groups.get('snipname')
+            url = '%s%s%s'% (self.config['base_url'][0], snipname, self.config['end_url'][0])
+            label = groups.get('sniplabel') or snipname.replace('_', ' ')
             a = doc.createElement('a')
             a.appendChild(doc.createTextNode(label))
             a.setAttribute('href', url)
