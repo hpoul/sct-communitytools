@@ -5,6 +5,21 @@ from django.shortcuts import get_object_or_404
 from sphene.community.models import Group
 from django.core import urlresolvers
 
+
+from django.contrib.sites.models import SiteManager, Site
+
+def my_get_current(self):
+    group = get_current_group()
+    if not group:
+        from django.conf import settings
+        return self.get(pk=settings.SITE_ID)
+    else:
+        return Site( domain = group.baseurl, name = group.name )
+
+SiteManager.get_current = my_get_current
+                    
+
+
 # If all are used the following order has to remain:
 # 1.) ThreadLocals
 # 2.) MultiHostMiddleware
