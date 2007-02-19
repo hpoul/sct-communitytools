@@ -1,10 +1,25 @@
 from django.db import models
 
 from django.contrib.auth.models import User
+#from django.db.models import permalink
 
 from sphene.community.models import Group
 
 from datetime import datetime
+
+from sphene.community.middleware import get_current_request
+
+
+def permalink(func):
+    from django.core.urlresolvers import reverse
+    from django.conf import settings
+    def inner(*args, **kwargs):
+        bits = func(*args, **kwargs)
+        viewname = bits[0]
+        req = get_current_request()
+        urlconf = getattr(req, 'urlconf', settings.ROOT_URLCONF)
+        return reverse(bits[0], urlconf, *bits[1:3])
+    return inner
 
 
 class WikiSnip(models.Model):
@@ -27,6 +42,10 @@ class WikiSnip(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
+    get_absolute_url = permalink(get_absolute_url)
+
     class Admin:
         pass
 
@@ -46,7 +65,6 @@ class WikiAttachment(models.Model):
 
     class Admin:
         pass
-
 
 
 
