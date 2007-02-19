@@ -63,7 +63,8 @@ class Category(models.Model):
             return False;
         if level == 0:
             return True;
-        return False;
+        
+        return user.has_perm( 'sphboard.add_post' );
 
     """
       Touches the category object by updating 'lastVisit'
