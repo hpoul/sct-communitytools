@@ -1,0 +1,30 @@
+<html>
+<head>
+  <title>Example Project</title>
+  <style>
+    body { margin-top: 30px; }
+    #navigation { float: left; padding: 20px; }
+    #content { margin-left: 150px; }
+  </style>
+</head>
+<body>
+<div id='navigation'>
+  <ul>
+    <li><a href="/wiki/">Home</a></li>
+    <li><a href="/board/">Board</a></li>
+  </ul>
+</div>
+<div id='content'>
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+       <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% block content %}
+{% endblock %}
+</div>
+</body>
+</html>
+
