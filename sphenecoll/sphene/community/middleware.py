@@ -52,7 +52,7 @@ class GroupMiddleware(object):
             del view_kwargs['urlPrefix']
         group = None
         groupName = None
-        if 'groupName' in get_current_urlconf_params():
+        if get_current_urlconf_params() and 'groupName' in get_current_urlconf_params():
             groupName = get_current_urlconf_params()['groupName']
             group = get_object_or_404(Group, name = groupName)
         if 'groupName' in view_kwargs:
