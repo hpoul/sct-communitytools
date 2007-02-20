@@ -1,0 +1,29 @@
+This is a very simple example project..
+
+
+See http://sct.sphene.net/wiki/show/Tutorial/ on how to start your own 
+from scratch ..
+
+## USAGE
+
+If you want to try out this application, create a file called settings_local.py 
+beside settings.py and configure the DATABASE_ settings:
+
+DATABASE_ENGINE = ''           # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
+DATABASE_NAME = ''             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
+DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+
+
+Once you've done that, run:
+    ./manage.py syncdb
+
+and
+    ./manage.py runserver
+
+You still need to create a new Community Group called 'example' 
+(see http://sct.sphene.net/wiki/show/Tutorial/) for more details.
+
+
