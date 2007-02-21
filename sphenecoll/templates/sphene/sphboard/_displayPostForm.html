@@ -4,7 +4,7 @@
   .sphboard input { width: 100%; }
 </style>
 
-<form method="POST" action="." name="postform">
+<form method="post" action="." name="postform">
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}
     <input type="hidden" name="thread" value="{{ thread.id }}" />

@@ -43,7 +43,7 @@
                   {% endfor %}
                 </table>
               {% else %}
-                <form method="POST" action="../../vote/{{ thread.id }}/">
+                <form method="post" action="../../vote/{{ thread.id }}/">
                 {% if request.attributes.voteerror %}
                   <strong class="sphboard error">Error: {{ request.attributes.voteerror }}</strong><br/>
                 {% endif %}
