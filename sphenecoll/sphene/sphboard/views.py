@@ -26,6 +26,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
         args['parent__isnull'] = False
         args['parent'] = category_id
         categoryObject = Category.objects.get( pk = category_id )
+        categoryObject.touch(request.session, request.user)
     if group != None:
         args['group__isnull'] = False
         args['group'] = group
@@ -33,7 +34,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
     if showType == 'threads':
         categories = []
     else:
-        categories = Category.objects.filter( **args ).add_initializer( SpheneModelInitializer(request) )
+        categories = Category.objects.filter( **args )
     
     context = { 'rootCategories': categories,
                 'category': categoryObject,
@@ -52,7 +53,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
     else:
         thread_list = categoryObject.thread_list()
 
-    thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } ).add_initializer( SpheneModelInitializer(request) )
+    thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
     if showType != 'threads':
         thread_list = thread_list.order_by( '-is_sticky', '-latest_postdate' )
     else:
@@ -68,12 +69,12 @@ def showCategory(request, group = None, category_id = None, showType = None):
                         )
 
 def showThread(request, thread_id, group = None):
-    thread = Post.objects.filter( pk = thread_id ).add_initializer( SpheneModelInitializer( request ) ).get()
+    thread = Post.objects.filter( pk = thread_id ).get()
     thread.touch( request.session, request.user )
     #thread = get_object_or_404(Post, pk = thread_id )
     return object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
-                        queryset = thread.allPosts().order_by('postdate').add_initializer( SpheneModelInitializer( request ) ),
+                        queryset = thread.allPosts().order_by('postdate'),
                         allow_empty = True,
                         template_name = 'sphene/sphboard/showThread.html',
                         extra_context = { 'thread': thread,

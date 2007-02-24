@@ -78,7 +78,7 @@ class Category(models.Model):
         # Check if we were already "touched" ;)
         if getattr(self, '_touched', False): return self._lastVisit
         self._touched = True
-        self.hasNewPosts = self._hasNewPosts(session, user)
+        self.__hasNewPosts = self._hasNewPosts(session, user)
         if not user.is_authenticated(): return None
         try:
             lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
@@ -96,7 +96,12 @@ class Category(models.Model):
         lastVisit.save()
         return self._lastVisit
 
+    def hasNewPosts(self):
+        req = get_current_request()
+        return self._hasNewPosts(req.session, req.user)
+
     def _hasNewPosts(self, session, user):
+        if hasattr(self, '__hasNewPosts'): return self.__hasNewPosts
         if not user.is_authenticated(): return False
         try:
             latestPost = Post.objects.filter( category = self ).latest( 'postdate' )
@@ -130,7 +135,7 @@ class Category(models.Model):
             if not lasthits.has_key( threadid ) or lasthits[threadid] < post.postdate:
                 return True
 
-        # All posts are read .. cool.. we can remove 'thread_lasthits' and adept 'originalLastVisit'
+        # All posts are read .. cool.. we can remove 'thread_lasthits' and adapt 'originalLastVisit'
         del val['thread_lasthits']
         del val['originalLastVisit']
         session[sKey] = val # Store the value back into the session so it gets stored.
