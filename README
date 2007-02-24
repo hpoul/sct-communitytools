@@ -6,7 +6,7 @@ Sphene Community Tools are django applications designed to be easily
 pluggable into any django project.
 
 
-## DIRECTORIES
+## Directories
 
 - libs/		Contains small python libraries which are used by SCT.
 - patches/	Django patches which need to be applied.
@@ -19,7 +19,7 @@ pluggable into any django project.
   the subversion trunk.
 - Python >= 2.4
 
-## INSTALLATION
+## Installation
 
 ### Apply Patches
 
@@ -36,7 +36,7 @@ static/ needs to be served from your django installation.
 (static/sphene/ is enough)
 
 
-## EXAMPLES
+## Examples
 
 TODO: Create/Document examples ......
 
