@@ -27,6 +27,7 @@ See the patches/ directory which contains django patches which are
 needed for SCT. It currently contains the following files:
 
 - filefield_basename_trunk.diff - see http://code.djangoproject.com/ticket/3538
+- permalink_with_additional_function_arg.diff - see http://code.djangoproject.com/ticket/3530
 
 
 ### Python library path
