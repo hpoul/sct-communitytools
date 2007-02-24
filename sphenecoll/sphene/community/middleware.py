@@ -169,6 +169,23 @@ class StatsMiddleware(object):
 
         return response
 
+from django.core.handlers.modpython import ModPythonRequest
+
+class ModPythonSetLoggedinUser(object):
+    def process_request(self, request):
+        if not isinstance(request, ModPythonRequest):
+            return None
+
+        if not hasattr(request, '_req'):
+            return None
+
+        if not hasattr(request, 'user') or not request.user.is_authenticated():
+            return None
+
+        request._req.user = request.user.username
+
+        return None
+
 
 class PsycoMiddleware(object):
     def process_request(self, request):
