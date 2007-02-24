@@ -98,6 +98,8 @@ class NewsMacro (object):
        
        return HTML( t.render(c) )
 
+from sphene.community.middleware import get_current_sphdata
+
 @register.filter
 def sph_markdown(value, arg=''):
     try:
@@ -109,16 +111,23 @@ def sph_markdown(value, arg=''):
     else:
         save_mode = arg == 'safe'
         md = markdown.Markdown(value,
-                               extensions = [ 'footnotes', 'wikilink', 'macros' ],
+                               extensions = [ 'footnotes', 'wikilink', 'macros', 'toc' ],
                                extension_configs = { 'wikilink': [ ( 'base_url', '../' ),
                                                                    ],
                                                      'macros': [ ( 'macros',
                                                                    { 'helloWorld': SimpleHelloWorldMacro(),
                                                                      'img': ImageMacro(),
                                                                      'news': NewsMacro(),
-                                                                     'include': IncludeMacro(), } )]},
+                                                                     'include': IncludeMacro(), } )],
+                                                     'toc': { 'include_header_one_in_toc': True, },
+                                                     },
                                  )
-        return md.toString()
+        md.header_numbering = True
+        ret = md.toString()
+        if hasattr(md, 'tocDiv'):
+            sphdata = get_current_sphdata()
+            sphdata['toc'] = md.tocDiv.toxml()
+        return ret
 
 @register.filter
 def sph_date(value):

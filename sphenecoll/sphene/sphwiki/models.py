@@ -1,7 +1,7 @@
 from django.db import models
 
 from django.contrib.auth.models import User
-#from django.db.models import permalink
+from django.db.models import permalink
 
 from sphene.community.models import Group
 
@@ -9,7 +9,7 @@ from datetime import datetime
 
 from sphene.community.middleware import get_current_request
 
-
+"""
 def permalink(func):
     from django.core.urlresolvers import reverse
     from django.conf import settings
@@ -20,7 +20,7 @@ def permalink(func):
         urlconf = getattr(req, 'urlconf', settings.ROOT_URLCONF)
         return reverse(bits[0], urlconf, *bits[1:3])
     return inner
-
+"""
 
 class WikiSnip(models.Model):
     name = models.CharField(maxlength = 250, editable = False)
@@ -44,7 +44,7 @@ class WikiSnip(models.Model):
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_url = permalink(get_absolute_url)
+    get_absolute_url = permalink(get_absolute_url, get_current_request)
 
     class Admin:
         pass

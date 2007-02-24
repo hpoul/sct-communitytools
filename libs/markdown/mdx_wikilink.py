@@ -86,7 +86,6 @@ class WikiLinks (markdown.BasePattern) :
   
     def handleMatch(self, m, doc) :
         groups = m.groupdict( )
-        print "%s - %s" % (m.group(), str(groups))
         if  groups.get('escape') == '\\':
             a = doc.createTextNode(groups.get('camelcase'))
         else :

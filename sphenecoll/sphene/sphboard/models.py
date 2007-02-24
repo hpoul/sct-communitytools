@@ -10,6 +10,10 @@ from text import bbcode
 bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
+from django.db.models import permalink
+from sphene.community.middleware import get_current_request
+
+
 import re
 
 POSTS_ALLOWED_CHOICES = (
@@ -305,6 +309,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.subject
+
+    def get_absolute_url(self):
+        return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.thread and self.thread.id or self.id })
+    get_absolute_url = permalink(get_absolute_url, get_current_request)
 
     class Admin:
         pass

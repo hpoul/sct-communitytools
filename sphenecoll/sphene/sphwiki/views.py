@@ -10,20 +10,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 
 from sphene.sphwiki.models import WikiSnip, WikiAttachment
-
+from sphene.community.templatetags.sph_extras import sph_markdown
 
 # Create your views here.
 
 
 def showSnip(request, group, snipName):
+    snip_rendered_body = None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
+        snip_rendered_body = sph_markdown(snip.body)
     except WikiSnip.DoesNotExist:
         snip = None
     return render_to_response( 'sphene/sphwiki/showSnip.html',
                                { 'snip': snip,
                                  'snipName' : snipName,
+                                 'snip_rendered_body': snip_rendered_body,
                                  },
                                context_instance = RequestContext(request) )
 

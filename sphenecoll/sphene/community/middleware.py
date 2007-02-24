@@ -92,6 +92,9 @@ def set_current_urlconf_params(urlconf_params):
 
 def set_current_group(group):
     _thread_locals.group = group
+
+def get_current_sphdata():
+    return getattr(_thread_locals, 'sphdata', None)
     
 class ThreadLocals(object):
     """Middleware that gets various objects from the
@@ -99,6 +102,7 @@ class ThreadLocals(object):
     def process_request(self, request):
         _thread_locals.request = request
         _thread_locals.user = getattr(request, 'user', None)
+        _thread_locals.sphdata = { }
         try:
             delattr(_thread_locals, 'urlconf_params')
         except AttributeError:

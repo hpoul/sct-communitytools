@@ -14,8 +14,13 @@
       <h1 class="wiki_title">{{ snip.name }}</h1>
     {% endif %}
     <small>{{ snip.name }} - Last Change: {{ snip.changed|sph_date }} by {% sphboard_displayUserName snip.editor %}{% if perms.sphwiki.add_wikisnip %} - [ <a href="../../edit/{{ snip.name }}/" >Edit</a> ] [ <a href="../../attachments/{{ snip.name }}/">Attachments</a> ]{% endif %}</small><br/>
+    {% if False and sph.toc %}
+      <div id="sphwiki_toc">{{ sph.toc }}</div>
+    {% endif %}
 
-    {{ snip.body|sph_markdown }}
+    <div class="sphwiki_body">
+      {{ snip_rendered_body }}
+    </div>
   {% else %}
     Snip <strong>{{ snipName }}</strong> does not yet exist. {% if perms.sphwiki.add_wikisnip %}<a href="../../edit/{{ snipName }}/">Create It.</a>{% endif %}
   {% endif %}

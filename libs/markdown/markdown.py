@@ -925,6 +925,7 @@ class Markdown:
         self.registeredExtensions = []
         self.stripTopLevelTags = 1
         self.docType = ""
+        self.header_numbering = False
 
         self.preprocessors = [ HEADER_PREPROCESSOR,
                                LINE_PREPROCESSOR,
@@ -1144,7 +1145,17 @@ class Markdown:
                     level = len(m.group(1))
                     h = self.doc.createElement("h%d" % level)
                     parent_elem.appendChild(h)
-                    for item in self._handleInlineWrapper2(m.group(2).strip()) :
+                    header_str = ''
+                    if self.header_numbering:
+                        header_numbers = getattr(self, 'header_numbers', None)
+                        if header_numbers == None: header_numbers = self.header_numbers = { }
+                        if not level in header_numbers: header_numbers[level] = 0
+                        header_numbers[level+1] = 0
+                        header_numbers[level] += 1
+                        for lvl in range(1, level+1):
+                            header_str += '%d.' % header_numbers[level]
+                        header_str += ' '
+                    for item in self._handleInlineWrapper2(header_str + m.group(2).strip()) :
                         h.appendChild(item)
                 else :
                     message(CRITICAL, "We've got a problem header!")
