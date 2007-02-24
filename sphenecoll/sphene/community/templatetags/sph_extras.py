@@ -5,7 +5,10 @@ import re
 from sphene.sphwiki.models import WikiAttachment
 from sphene.sphboard.models import Category, Post
 
+import mdx_macros
+
 register = template.Library()
+
 
 class SimpleHelloWorldMacro (object):
     def handleMacroCall(self, doc, params):
@@ -26,8 +29,8 @@ class ImageMacro (object):
 import urllib2
 from django.core.cache import cache
 
-class IncludeMacro (object):
-    def handleMacroCall(self, doc, params):
+class IncludeMacro (mdx_macros.PreprocessorMacro):
+    def handlePreprocessorMacroCall(self, params):
         if params.has_key( 'url' ):
             cache_key = 'sph_community_includemacro_' + params['url'] + '_' + params.get( 'start', '' ) + '_' + params.get( 'end', '' );
             cached_text = cache.get( cache_key )
@@ -57,8 +60,16 @@ class IncludeMacro (object):
                     cache.set( cache_key, text, 3600 )
                 finally:
                     f.close()
-            md = params['__md']
-            return HTML( sph_markdown( text, '', md ) )
+            return text
+        #md = params['__md']
+            #return sph_markdown( text, '', md )
+        """
+            ret = HTML( sph_markdown( text, '', md ) )
+            sphdata = get_current_sphdata()
+            if 'toc' in sphdata:
+                ret.toc = sphdata['toc']
+            return ret
+        """
         return doc.createTextNode("Error, no 'url' given for include macro.")
 
 class HTML:

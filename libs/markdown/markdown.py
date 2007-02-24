@@ -1148,7 +1148,9 @@ class Markdown:
                     header_str = ''
                     if self.header_numbering:
                         header_numbers = getattr(self, 'header_numbers', None)
-                        if header_numbers == None: header_numbers = self.header_numbers = { }
+                        if header_numbers == None:
+                            self.header_numbers = { }
+                            header_numbers = self.header_numbers
                         if not level in header_numbers: header_numbers[level] = 0
                         header_numbers[level+1] = 0
                         header_numbers[level] += 1
