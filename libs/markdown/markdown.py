@@ -1153,7 +1153,8 @@ class Markdown:
                         header_numbers[level+1] = 0
                         header_numbers[level] += 1
                         for lvl in range(1, level+1):
-                            header_str += '%d.' % header_numbers[level]
+                            if lvl not in header_numbers: header_numbers[lvl] = 1
+                            header_str += '%d.' % header_numbers[lvl]
                         header_str += ' '
                     for item in self._handleInlineWrapper2(header_str + m.group(2).strip()) :
                         h.appendChild(item)

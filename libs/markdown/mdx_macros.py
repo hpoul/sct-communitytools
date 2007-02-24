@@ -17,14 +17,15 @@ class MacrosExtension (markdown.Extension):
         self.md = md
 
         MACROS_RE = r'''{(?P<macroName>\w+?)(?P<macroParams> .*)?}''';
-        md.inlinePatterns.append(Macros(MACROS_RE, self.config))
+        md.inlinePatterns.append(Macros(MACROS_RE, self.config, md))
 
 
 class Macros (markdown.BasePattern):
-    def __init__(self, pattern, config):
+    def __init__(self, pattern, config, md):
         markdown.BasePattern.__init__(self, pattern)
         self.config = config
         self.macros = self.config['macros'][0]
+        self.md = md
 
     def handleMatch(self, m, doc) :
         macroName = m.group('macroName')
@@ -39,6 +40,7 @@ class Macros (markdown.BasePattern):
                     else:
                         value = param.group('escapedValue')
                     allParams[param.group('name')] = value
+            allParams['__md'] = self.md
             return self.macros[macroName].handleMacroCall(doc, allParams)
         a = doc.createTextNode(m.group())
         return a

@@ -57,7 +57,8 @@ class IncludeMacro (object):
                     cache.set( cache_key, text, 3600 )
                 finally:
                     f.close()
-            return HTML( sph_markdown( text ) )
+            md = params['__md']
+            return HTML( sph_markdown( text, '', md ) )
         return doc.createTextNode("Error, no 'url' given for include macro.")
 
 class HTML:
@@ -101,7 +102,7 @@ class NewsMacro (object):
 from sphene.community.middleware import get_current_sphdata
 
 @register.filter
-def sph_markdown(value, arg=''):
+def sph_markdown(value, arg='', oldmd=None):
     try:
         import markdown
     except ImportError:
@@ -123,6 +124,7 @@ def sph_markdown(value, arg=''):
                                                      },
                                  )
         md.header_numbering = True
+        if oldmd and hasattr(oldmd,'header_numbers'): md.header_numbers = oldmd.header_numbers
         ret = md.toString()
         if hasattr(md, 'tocDiv'):
             sphdata = get_current_sphdata()
