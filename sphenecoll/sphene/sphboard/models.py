@@ -118,9 +118,8 @@ class Category(models.Model):
         return user.has_perm( 'sphboard.add_post' );
 
     def has_new_posts(self):
-        if hasattr(self, 'hasNewPosts'): return self.hasNewPosts
-        self.hasNewPosts = self._hasNewPosts(get_current_session(), get_current_user())
-        return self.hasNewPosts
+        ret = self.hasNewPosts()
+        return ret
 
     def catchup(self, session, user):
         """Marks all posts in the current thread as read."""
@@ -155,8 +154,7 @@ class Category(models.Model):
         return self._lastVisit
 
     def hasNewPosts(self):
-        req = get_current_request()
-        return self._hasNewPosts(req.session, req.user)
+        return self._hasNewPosts(get_current_session(), get_current_user())
 
     def _hasNewPosts(self, session, user):
         if hasattr(self, '__hasNewPosts'): return self.__hasNewPosts
@@ -389,6 +387,11 @@ class Post(models.Model):
         if not val.has_key( 'thread_lasthits' ): val['thread_lasthits'] = { }
         val['thread_lasthits'][self.id] = datetime.today()
         session[sKey] = val
+
+    def has_new_posts(self):
+        if hasattr(self, '__has_new_posts'): return self.__has_new_posts
+        self.__has_new_posts = self._hasNewPosts(get_current_session(), get_current_user())
+        return self.__has_new_posts
 
     def _hasNewPosts(self, session, user):
         if not user.is_authenticated(): return False

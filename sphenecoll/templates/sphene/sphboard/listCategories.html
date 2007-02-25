@@ -53,7 +53,7 @@
       </tr>
       {% for thread in thread_list %}
         <tr>
-          <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.hasNewPosts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
+          <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
           <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}<a href="../../thread/{{ thread.id }}/">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
           <td class="sphboard_postcount">{{ thread.postCount }}</td>
           <td class="sphboard_latestpost">{% sphboard_latestPost thread.latestPost 0 %}
