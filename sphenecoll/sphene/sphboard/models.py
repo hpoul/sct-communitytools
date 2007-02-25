@@ -469,6 +469,7 @@ class Post(models.Model):
             # group monitors
             myQ = myQ | Q( group = self.category.group )
             monitors = Monitor.objects.filter(myQ)
+
             subject = 'New Forum Post: %s' % self.subject
             group = get_current_group() or self.category.group
             t = loader.get_template('sphene/sphboard/new_post_email.txt')
@@ -481,7 +482,7 @@ class Post(models.Model):
             #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
             #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
             datatuple = ()
-            sent_email_addresses = ()
+            sent_email_addresses = (self.author.email,) # Exclude the author of the post
             for monitor in monitors:
                 if monitor.user.email in sent_email_addresses: continue
                 datatuple += (subject, body, None, (monitor.user.email,)),
