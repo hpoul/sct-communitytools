@@ -39,5 +39,7 @@ static/ needs to be served from your django installation.
 
 ## Examples
 
-TODO: Create/Document examples ......
+The examples/ directory (currently) contains one example project.
+Please see the README file in it's directory (examples/simpleproject)
+for more information.
 

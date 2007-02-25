@@ -23,7 +23,5 @@ Once you've done that, run:
 and
     ./manage.py runserver
 
-You still need to create a new Community Group called 'example' 
-(see http://sct.sphene.net/wiki/show/Tutorial/) for more details.
-
+You can now point your browser to http://localhost:8000/ and log in.
 
