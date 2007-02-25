@@ -1,19 +1,33 @@
+{% load sphboard_extras %}
 <html>
 <head>
   <title>Example Project</title>
   <style>
     body { margin-top: 30px; }
-    #navigation { float: left; padding: 20px; }
-    #content { margin-left: 150px; }
+    #leftblock { float: left; padding: 20px; border: 1px solid gray; }
+    #content { margin-left: 250px; border: 1px solid black; padding: 10px; min-height: 300px; }
   </style>
 </head>
 <body>
-<div id='navigation'>
-  <ul>
-    <li><a href="/wiki/">Home</a></li>
-    <li><a href="/board/">Board</a></li>
-  </ul>
+<div id="leftblock">
+  <div id='navigation'>
+    <ul>
+      <li><a href="/wiki/">Home</a></li>
+      <li><a href="/board/">Board</a></li>
+    </ul>
+  </div>
+  <div id="userblock">
+    {% if user.is_authenticated %}
+      You are logged in as {% sphboard_displayUserName user %}<br/>
+      <a href="/accounts/logout/">Logout</a>
+    {% else %}
+      You are not logged in.<br/>
+      <a href="/accounts/login/?next={{ request.path|urlencode }}">Login</a><br/>
+      <a href="/accounts/register/">Register</a><br/>
+    {% endif %}
+  </div>
 </div>
+
 <div id='content'>
   {% if messages %}
   <ul class="messages">
