@@ -139,9 +139,16 @@ def post(request, group = None, category_id = None):
                             )
             newpost.save()
 
+
+            # Creating monitor
+            if request.POST.get( 'addmonitor', False ):
+                newpost.toggle_monitor()
+
+
             if 'createpoll' in request.POST and request.POST['createpoll'] == '1':
                 newpost.set_poll( True );
                 newpost.save()
+
                 # Creating poll...
                 polldata = pollForm.clean_data
                 newpoll = Poll( post = newpost,

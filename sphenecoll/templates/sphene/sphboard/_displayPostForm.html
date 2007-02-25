@@ -12,6 +12,14 @@
   <table class="sphboard form">
     {{ form }}
   </table>
+    {% if user.is_authenticated %}
+          {% if thread.has_monitor or category.has_monitor %}
+            <small>You are already receiving email notifications for this thread or category.</small>
+          {% else %}
+            <input type="checkbox" name="addmonitor" value="1" id="addmonitor_id" checked="checked" /> <label for="addmonitor_id">Notify me by email on new posts in this thread.</label>
+          {% endif %}
+          <br/><br/>
+    {% endif %}
 
   {% if not thread %}
   <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">Add a poll to this thread</label><br/><br/>

@@ -1,3 +1,4 @@
+{% if category %}
     {% if allowPostThread %}
       <a href="../../post/{{ category.id }}/">Post New Thread</a>
       {# sphboard_displayPostForm #}
@@ -8,3 +9,4 @@
         Please login to create a new thread.
       {% endif %}
     {% endif %}
+{% endif %}
