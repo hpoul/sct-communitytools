@@ -492,7 +492,6 @@ class Post(models.Model):
                 sent_email_addresses += monitor.user.email,
 
             send_mass_mail(datatuple, )
-            print "Sent emails ... %s" % str(datatuple)
         
         return ret
 
