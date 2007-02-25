@@ -70,7 +70,6 @@ class MacrosPreProcessor (markdown.Preprocessor, MacrosBase):
                 newlines.append( line )
                 continue
             ret = self.handleMatch(m, None)
-            print "ret .... %s" % ret
             if ret != None:
                 newline = ret#line[0:m.start()] + ret + line[m.end():-1]
                 for l in newline.splitlines():

@@ -3,7 +3,7 @@ You have requested to register with the email address:
 on the {{ group.get_name }} website.
 
 To continue registration visit the following link:
-{{ baseurl }}/accounts/register/{{ validationcode }}/
+http://{{ baseurl }}/accounts/register/{{ validationcode }}/
 
 
 

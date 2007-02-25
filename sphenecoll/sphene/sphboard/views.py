@@ -98,7 +98,8 @@ def options(request, thread_id, group = None):
 
 class PostForm(forms.Form):
     subject = forms.CharField()
-    body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ) )
+    body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
+                            help_text = 'You can use <a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a> in your posts.', )
 
 class PostPollForm(forms.Form):
     question = forms.CharField()
@@ -217,3 +218,29 @@ def vote(request, group = None, thread_id = None):
     
 
     return HttpResponseRedirect( '../../thread/%s/' % thread.id )
+
+def toggle_monitor(request, group, monitortype, object_id):
+    redirectview = 'show'
+    obj = None
+    if monitortype == 'group':
+        obj = group
+        object_id = 0
+    elif monitortype == 'category':
+        obj = Category.objects.get( pk = object_id )
+    elif monitortype == 'thread':
+        obj = Post.objects.get( pk = object_id )
+        redirectview = 'thread'
+
+    if obj.toggle_monitor():
+        request.user.message_set.create( message = "Successfully created email notification monitor." )
+    else:
+        request.user.message_set.create( message = "Removed email notification monitor." )
+
+    return HttpResponseRedirect( '../../%s/%s/' % (redirectview, object_id) )
+
+
+def catchup(request, group, category_id):
+    category = get_object_or_404(Category, pk = category_id )
+    category.catchup(request.session, request.user)
+    return HttpResponseRedirect( '../../show/%s/' % category_id )
+

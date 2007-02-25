@@ -15,6 +15,18 @@
       <br/>
   {% endif %}
   <br/>
+  {% if user.is_authenticated %}
+    {% if thread.has_monitor %}
+      {% if thread.has_direct_monitor %}
+        You are currently receiving email notifications on new posts. - <a href="../../togglemonitor_thread/{{ thread.id }}/">Stop notifications</a>
+      {% else %}
+        You are currently receiving email notifications on new posts because you subscribed to a parent category.
+      {% endif %}
+    {% else %}
+      <a href="../../togglemonitor_thread/{{ thread.id }}/">Notify me by email on new posts.</a>
+    {% endif %}
+    <br/><br/>
+  {% endif %}
   <table class="sphboard_post_list">
     {% for post in post_list %}
       <tr>

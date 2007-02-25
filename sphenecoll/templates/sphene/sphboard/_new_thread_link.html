@@ -1,0 +1,10 @@
+    {% if allowPostThread %}
+      <a href="../../post/{{ category.id }}/">Post New Thread</a>
+      {# sphboard_displayPostForm #}
+    {% else %}
+      {% if user.is_authenticated %}
+        You have no permission to create a new thread.
+      {% else %}
+        Please login to create a new thread.
+      {% endif %}
+    {% endif %}

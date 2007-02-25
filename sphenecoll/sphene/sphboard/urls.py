@@ -13,5 +13,7 @@ urlpatterns += patterns('sphene.sphboard.views',
                         (r'^options/(?P<thread_id>\d+)/$', 'options'),
                         (r'^post/(?P<category_id>\d+)/$', 'post'),
                         (r'^vote/(?P<thread_id>\d+)/$', 'vote'),
+                        (r'^togglemonitor_(?P<monitortype>\w+)/(?P<object_id>\d+)/$', 'toggle_monitor'),
+                        (r'^catchup/(?P<category_id>\d+)/$', 'catchup'),
                        )
 

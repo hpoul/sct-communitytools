@@ -6,6 +6,27 @@
 
   <a href="../../latest/{{ category_id }}/">Latest</a> | {% sphboard_displayBreadcrumbsForCategory category %}<br/><br/>
 
+  {% if user.is_authenticated %}
+    {% if category %}
+      {% if category.has_monitor %}
+        {% if category.has_direct_monitor %}
+          You are currently receiving email notifications on new posts. - <a href="../../togglemonitor_category/{{ category_id }}/">Stop notifications</a>
+        {% else %}
+          You are currently receiving email notifications on new posts because you subscribed to a parent category.
+        {% endif %}
+      {% else %}
+        <a href="../../togglemonitor_category/{{ category_id }}/">Notify me by email on new posts.</a>
+      {% endif %}
+    {% else %}
+      {% if group.has_monitor %}
+        You are currently receiving email notifications on new posts. - <a href="../../togglemonitor_group/{{ group.id }}/">Stop notifications</a>
+      {% else %}
+        <a href="../../togglemonitor_group/{{ group.id }}/">Notify me by email on new posts.</a>
+      {% endif %}
+    {% endif %}
+    <br/><br/>
+  {% endif %}
+
   {% if rootCategories %}
   <table class="sphboard_categories">
     <tr>
@@ -20,6 +41,7 @@
   {% endif %}
 
   {% if isShowLatest or category.canContainPosts %}
+    {% include "sphene/sphboard/_new_thread_link.html" %}
     <table class="sphboard_thread_list">
       <tr>
         <th class="sphboard_mainhead" colspan="4">Threads</th>
@@ -42,15 +64,9 @@
       </tr>
     </table>
     <br/><br/>
-    {% if allowPostThread %}
-      <a href="../../post/{{ category.id }}/">Post New Thread</a>
-      {# sphboard_displayPostForm #}
-    {% else %}
-      {% if user.is_authenticated %}
-        You have no permission to create a new thread.
-      {% else %}
-        Please login to create a new thread.
-      {% endif %}
+    {% include "sphene/sphboard/_new_thread_link.html" %}
+    {% if user.is_authenticated and category.has_new_posts %}
+      - <a href="../../catchup/{{ category.id }}/" title="Mark all Posts in this Category as read.">Catch Up</a>
     {% endif %}
   {% endif %}
 

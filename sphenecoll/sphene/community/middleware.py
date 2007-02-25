@@ -78,8 +78,17 @@ _thread_locals = local()
 def get_current_request():
     return getattr(_thread_locals, 'request', None)
 
+def get_current_session():
+    req = get_current_request()
+    if req == None: return None
+    return req.session
+
 def get_current_user():
-    return getattr(_thread_locals, 'user', None)
+    user = getattr(_thread_locals, 'user', None)
+    if user != None: return user
+    req = get_current_request()
+    if req == None: return None
+    return req.user
 
 def get_current_group():
     return getattr(_thread_locals, 'group', None)

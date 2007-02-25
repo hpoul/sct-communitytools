@@ -11,10 +11,57 @@ bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 from django.db.models import permalink
-from sphene.community.middleware import get_current_request
+from django.core.mail import send_mass_mail
+from django.template.context import RequestContext
+from django.template import loader, Context
+from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 
 
 import re
+
+"""
+Extended Group methods ........
+"""
+
+def has_monitor(self):
+    return self.__get_monitor(get_current_user())
+
+def has_direct_monitor(self):
+    return self.__get_monitor(get_current_user())
+
+def toggle_monitor(self):
+    """Toggles monitor and returns the newly created monitor, or None if an
+    existing monitor was deleted."""
+    if self.has_direct_monitor():
+        self.has_direct_monitor().delete()
+        if hasattr(self, '__monitor'): delattr(self,'__monitor')
+    else:
+        monitor = Monitor(user = get_current_user(),
+                          group = self, )
+        monitor.save()
+        self.__monitor = monitor
+        return monitor
+
+def __get_monitor(self, user):
+    if hasattr(self, '__monitor'): return self.__monitor
+
+    try:
+        monitor = Monitor.objects.get( user = user,
+                                       group = self,
+                                       category__isnull = True,
+                                       thread__isnull = True, )
+    except Monitor.DoesNotExist:
+        monitor = None
+    return monitor
+
+Group.has_monitor = has_monitor
+Group.has_direct_monitor = has_direct_monitor
+Group.toggle_monitor = toggle_monitor
+Group.__get_monitor = __get_monitor
+
+"""
+END of extended Group methods ...
+"""
 
 POSTS_ALLOWED_CHOICES = (
     (-1, 'All Users'),
@@ -69,6 +116,17 @@ class Category(models.Model):
             return True;
         
         return user.has_perm( 'sphboard.add_post' );
+
+    def has_new_posts(self):
+        if hasattr(self, 'hasNewPosts'): return self.hasNewPosts
+        self.hasNewPosts = self._hasNewPosts(get_current_session(), get_current_user())
+        return self.hasNewPosts
+
+    def catchup(self, session, user):
+        """Marks all posts in the current thread as read."""
+        sKey = self._getSessionKey()
+        if sKey in session: del session[sKey]
+        return True
 
     """
       Touches the category object by updating 'lastVisit'
@@ -140,6 +198,48 @@ class Category(models.Model):
         del val['originalLastVisit']
         session[sKey] = val # Store the value back into the session so it gets stored.
         return False
+
+    def toggle_monitor(self):
+        """Either creates a monitor if there is none currently, or deletes an
+        existing monitor."""
+        
+        if self.has_direct_monitor():
+            self.__get_monitor(get_current_user()).delete()
+            if hasattr(self, '__monitor'): delattr(self,'__monitor')
+        else:
+            monitor = Monitor(group = self.group,
+                              user = get_current_user(),
+                              category = self)
+            monitor.save()
+            self.__monitor = monitor
+            return monitor
+
+    def has_monitor(self):
+        """Returns True if there is a monitor for
+        the current user in the current category or any parent category."""
+        monitor = self.__get_monitor(get_current_user())
+        return monitor
+
+    def has_direct_monitor(self):
+        """Only return True if there is a direct monitor for the current
+        category."""
+        monitor = self.__get_monitor(get_current_user())
+        return monitor and monitor.category == self
+
+    def __get_monitor(self, user):
+        if hasattr(self, '__monitor'): return self.__monitor
+        try:
+            monitor = Monitor.objects.get( category = self,
+                                           user = user,
+                                           thread__isnull = True, )
+        except Monitor.DoesNotExist:
+            if self.parent:
+                monitor = self.parent.has_monitor()
+            else:
+                monitor = self.group.has_monitor()
+
+        self.__monitor = monitor
+        return self.__monitor
 
     def _getSessionKey(self):
         return 'sphene_sphboard_category_%d' % self.id;
@@ -312,6 +412,86 @@ class Post(models.Model):
         except Poll.DoesNotExist:
             return None
 
+    def has_monitor(self):
+        """Returns True if there is a monitor for the current user in this
+        thread. (Will also return True if there is a monitor in a category !)
+        To check this, call has_direct_monitor !
+        """
+        monitor = self.__get_monitor(get_current_user())
+        if monitor: return True
+        return False
+
+    def has_direct_monitor(self):
+        """Return only True if there is a direct monitor for THIS thread."""
+        monitor = self.__get_monitor(get_current_user())
+        thread = self.thread or self
+        return monitor and monitor.thread == thread
+
+    def __get_monitor(self, user):
+        if hasattr(self, '__monitor'): return self.__monitor
+        thread = self.thread or self
+        try:
+            monitor = Monitor.objects.get( thread = thread,
+                                           user = user, )
+        except Monitor.DoesNotExist:
+            monitor = thread.category.has_monitor()
+        self.__monitor = monitor
+        return self.__monitor
+
+    def toggle_monitor(self):
+        if self.has_direct_monitor():
+            self.__get_monitor(get_current_user()).delete()
+            if hasattr(self, '__monitor'): delattr(self,'__monitor')
+        else:
+            thread = self.thread or self
+            monitor = Monitor( thread = thread,
+                               category = thread.category,
+                               group = thread.category.group,
+                               user = get_current_user(), )
+            monitor.save()
+            self.__monitor = monitor
+            return monitor
+
+    def save(self):
+        isnew = not self.id
+        ret = super(Post, self).save()
+
+        if isnew:
+            # Email Notifications ....
+            thread = self.thread or self
+            # thread monitors ..
+            myQ = Q( thread = thread )
+            # any category monitors
+            category = self.category
+            while category:
+                myQ = myQ | Q( category = category )
+                category = category.parent
+            # group monitors
+            myQ = myQ | Q( group = self.category.group )
+            monitors = Monitor.objects.filter(myQ)
+            subject = 'New Forum Post: %s' % self.subject
+            group = get_current_group() or self.category.group
+            t = loader.get_template('sphene/sphboard/new_post_email.txt')
+            c = {
+                'baseurl': group.baseurl,
+                'group': group,
+                'post': self,
+                }
+            body = t.render(RequestContext(get_current_request(), c))
+            #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
+            #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
+            datatuple = ()
+            sent_email_addresses = ()
+            for monitor in monitors:
+                if monitor.user.email in sent_email_addresses: continue
+                datatuple += (subject, body, None, (monitor.user.email,)),
+                sent_email_addresses += monitor.user.email,
+
+            send_mass_mail(datatuple, )
+            print "Sent emails ... %s" % str(datatuple)
+        
+        return ret
+
     def __str__(self):
         return self.subject
 
@@ -322,6 +502,19 @@ class Post(models.Model):
     class Admin:
         pass
 
+
+class Monitor(models.Model):
+    """Monitors allow user to get notified by email on new posts in a
+    particular thread, category or a whole board of a group."""
+    
+    thread = models.ForeignKey(Post, null = True, blank = True)
+    category = models.ForeignKey(Category, null = True, blank = True)
+    group = models.ForeignKey(Group)
+    user = models.ForeignKey(User)
+
+    class Admin:
+        list_display = ('user', 'group', 'category', 'thread')
+        list_filter = ('user', 'group')
 
 
 class Poll(models.Model):
