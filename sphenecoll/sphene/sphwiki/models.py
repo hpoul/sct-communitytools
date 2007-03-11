@@ -7,7 +7,7 @@ from sphene.community.models import Group
 
 from datetime import datetime
 
-from sphene.community.middleware import get_current_request
+from sphene.community.middleware import get_current_request, get_current_user
 
 """
 def permalink(func):
@@ -21,6 +21,15 @@ def permalink(func):
         return reverse(bits[0], urlconf, *bits[1:3])
     return inner
 """
+
+WIKI_PERMISSIONS_ALLOWED_CHOICES = (
+    (-1, 'All Users'),
+    (0, 'Loggedin Users'),
+    (1, 'Members of the Group'),
+    (2, 'Administrators'),
+    (3, 'Nobody'),
+    )
+
 
 class WikiSnip(models.Model):
     name = models.CharField(maxlength = 250, editable = False)
@@ -46,11 +55,82 @@ class WikiSnip(models.Model):
         return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
 
+    def get_absolute_editurl(self):
+        return ('sphene.sphwiki.views.editSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
+    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+
+    def get_absolute_attachmenturl(self):
+        return ('sphene.sphwiki.views.attachment', (), { 'groupName': self.group.name, 'snipName': self.name })
+    get_absolute_attachmenturl = permalink(get_absolute_attachmenturl, get_current_request)
+
+    def get_parent(self):
+        lastslash = len(self.name)
+        while lastslash != -1:
+            lastslash = self.name.rfind( '/', 0, lastslash )
+            if lastslash == -1:
+                if self.name == 'ROOT': return None
+                name = 'ROOT'
+            else:
+                name = self.name[:lastslash]
+
+            try:
+                return WikiSnip.objects.get( group = self.group,
+                                             name__exact = name,)
+            except WikiSnip.DoesNotExist:
+                pass
+        
+        return None
+
+    def is_secured(self):
+        pref = self.get_wiki_preference()
+        return pref != None and pref.view > -1
+
+    def get_wiki_preference(self):
+        if hasattr(self, '_wiki_preference'): return self._wiki_preference
+        self._wiki_preference = self.__get_wiki_preference()
+        return self._wiki_preference
+    
+    def __get_wiki_preference(self):
+        try:
+            return WikiPreference.objects.get( snip = self )
+        except WikiPreference.DoesNotExist:
+            parent = self.get_parent()
+            if parent == None:
+                return None
+            return parent.get_wiki_preference()
+
+    def has_view_permission(self):
+        user = get_current_user()
+        pref = self.get_wiki_preference()
+        if pref == None or pref.view <= -1:
+            return True
+        
+        if user == None or not user.is_authenticated():
+            return False
+
+        #if user.is_superuser: return True
+        
+        if pref.view == 0:
+            return True
+
+        if pref.view == 1:
+            if pref.snip.group.get_member(user) != None: return True
+
+        return False
+
     class Admin:
         pass
 
+class WikiPreference(models.Model):
+    snip = models.ForeignKey(WikiSnip)
+    view = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
+    edit = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
+
+    class Admin:
+        list_display = ( 'snip', 'view', 'edit' )
+
 class WikiAttachment(models.Model):
-    snip = models.ForeignKey(Group, editable = False)
+    snip = models.ForeignKey(WikiSnip, editable = False)
     uploader = models.ForeignKey(User, editable = False)
     uploaded = models.DateTimeField(editable = False)
     fileupload = models.FileField( upload_to = 'var/sphene/sphwiki/attachment/%Y/%m/%d' )

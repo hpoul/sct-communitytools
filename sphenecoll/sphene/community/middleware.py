@@ -202,3 +202,16 @@ class PsycoMiddleware(object):
 	psyco.profile()
 	return None
 
+from sphene.community import PermissionDenied
+from django.template.context import RequestContext
+from django.shortcuts import render_to_response
+from django.template import loader
+from django.http import HttpResponseForbidden
+class PermissionDeniedMiddleware(object):
+    def process_exception(self, request, exception):
+        if isinstance(exception, PermissionDenied):
+            return HttpResponseForbidden(loader.render_to_string( 'sphene/community/permissiondenied.html',
+                                                                  { 'exception': exception,
+                                                                    },
+                                                                  context_instance = RequestContext(request) ) )
+        return None

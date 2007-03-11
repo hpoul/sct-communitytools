@@ -6,7 +6,7 @@
 
 {% block content %}
 
-  <a href="../../show/{{ snipName }}/">Back to Snip</a> - <a href="create/">Create New</a>
+  <a href="{{ snip.get_absolute_url }}">Back to Snip</a> - <a href="create/">Create New</a>
   <br/><br/>
   <ul>
     {% for attachment in object_list %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -18,12 +19,25 @@ class Group(models.Model):
                         recname = self.parent.recursiveName() + ' / '
                 return recname + self.name
 
+        def get_member(self, user):
+                try:
+                        return GroupMember.objects.get( group = self,
+                                                         user = user, )
+                except GroupMember.DoesNotExist:
+                        return None
+
 	def __str__(self):
 		return self.name;
 
 	class Admin:
 		pass
-	
+
+class GroupMember(models.Model):
+        group = models.ForeignKey( Group )
+        user = models.ForeignKey( User )
+
+        class Admin:
+                pass
 
 class Theme(models.Model):
 	name = models.CharField(maxlength = 250)

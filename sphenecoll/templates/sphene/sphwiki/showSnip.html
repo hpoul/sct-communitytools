@@ -7,13 +7,16 @@
   <style>
     .wiki_title { border-bottom: 1px solid black; }
   </style>
-  {% if snip %}
+  {% if snip.is_secured %}
+    <strong style="font-size:x-small;">This snip is secured - View only allowed by: {{ snip.get_wiki_preference.get_view_display }}</strong><br/>
+  {% endif %}
+  {% if snip.id %}
     {% if snip.title %}
       <h1 class="wiki_title">{{ snip.title }}</h1>
     {% else %}
       <h1 class="wiki_title">{{ snip.name }}</h1>
     {% endif %}
-    <small>{{ snip.name }} - Last Change: {{ snip.changed|sph_date }} by {% sphboard_displayUserName snip.editor %}{% if perms.sphwiki.add_wikisnip %} - [ <a href="../../edit/{{ snip.name }}/" >Edit</a> ] [ <a href="../../attachments/{{ snip.name }}/">Attachments</a> ]{% endif %}</small><br/>
+    <small>{{ snip.name }} - Last Change: {{ snip.changed|sph_date }} by {% sphboard_displayUserName snip.editor %}{% if perms.sphwiki.add_wikisnip %} - [ <a href="{{ snip.get_absolute_editurl }}/" >Edit</a> ] [ <a href="{{ snip.get_absolute_attachmenturl }}">Attachments</a> ]{% endif %}</small><br/>
     {% if False and sph.toc %}
       <div id="sphwiki_toc">{{ sph.toc }}</div>
     {% endif %}
@@ -22,7 +25,7 @@
       {{ snip_rendered_body }}
     </div>
   {% else %}
-    Snip <strong>{{ snipName }}</strong> does not yet exist. {% if perms.sphwiki.add_wikisnip %}<a href="../../edit/{{ snipName }}/">Create It.</a>{% endif %}
+    Snip <strong>{{ snipName }}</strong> does not yet exist. {% if perms.sphwiki.add_wikisnip %}<a href="{{ snip.get_absolute_editurl }}">Create It.</a>{% endif %}
   {% endif %}
 
 {% endblock %}

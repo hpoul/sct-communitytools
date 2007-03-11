@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from sphene.sphwiki.models import WikiSnip, WikiAttachment
 from sphene.community.templatetags.sph_extras import sph_markdown
+from sphene.community import PermissionDenied
 
 # Create your views here.
 
@@ -22,7 +23,12 @@ def showSnip(request, group, snipName):
                                      name__exact = snipName )
         snip_rendered_body = sph_markdown(snip.body)
     except WikiSnip.DoesNotExist:
-        snip = None
+        snip = WikiSnip( name = snipName, group = group )
+
+        
+    if not snip.has_view_permission():
+        raise PermissionDenied()
+    
     return render_to_response( 'sphene/sphwiki/showSnip.html',
                                { 'snip': snip,
                                  'snipName' : snipName,
@@ -36,7 +42,8 @@ def attachment(request, group, snipName):
     return object_list( request = request,
                         queryset = WikiAttachment.objects.filter( snip = snip ),
                         template_name = 'sphene/sphwiki/listAttachments.html',
-                        extra_context = { 'snipName': snipName
+                        extra_context = { 'snipName': snipName,
+                                          'snip': snip,
                                           },
                         allow_empty = True )
 
@@ -90,7 +97,7 @@ def editSnip(request, group, snipName):
             snip.name = snipName
             snip.editor = request.user
             snip.save()
-            return HttpResponseRedirect( '../../show/%s/' % snip.name )
+            return HttpResponseRedirect( snip.get_absolute_url() )
 
     else:
         form = SnipForm()
