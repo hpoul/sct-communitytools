@@ -63,7 +63,8 @@ class WikiLinkExtension (markdown.Extension) :
         self.config = {
                         'base_url' : ['/', 'String to append to beginning or URL.'],
                         'end_url' : ['/', 'String to append to end of URL.'],
-                        'html_class' : ['wikilink', 'CSS hook. Leave blank for none.']
+                        'html_class' : ['wikilink', 'CSS hook. Leave blank for none.'],
+                        'callback' : [None, 'Callback method which is called when creating a link.'],
         }
         
         # Override defaults with user settings
@@ -76,7 +77,7 @@ class WikiLinkExtension (markdown.Extension) :
         #md.registerExtension(self) #???
     
         # append to end of inline patterns
-        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_]+)(\|(?P<sniplabel>[\w ]+?))?\])'''
+        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w ]+?))?\])'''
         md.inlinePatterns.append(WikiLinks(WIKILINK_RE, self.config))  
 
 class WikiLinks (markdown.BasePattern) :
@@ -90,13 +91,19 @@ class WikiLinks (markdown.BasePattern) :
             a = doc.createTextNode(groups.get('camelcase'))
         else :
             snipname = groups.get('camelcase') or groups.get('snipname')
-            url = '%s%s%s'% (self.config['base_url'][0], snipname, self.config['end_url'][0])
             label = groups.get('sniplabel') or snipname.replace('_', ' ')
-            a = doc.createElement('a')
-            a.appendChild(doc.createTextNode(label))
-            a.setAttribute('href', url)
-            if self.config['html_class'][0] :
-                a.setAttribute('class', self.config['html_class'][0])
+            if 'callback' in self.config and self.config['callback'] != None:
+                callback = self.config['callback'][0]
+                a = callback( doc = doc,
+                              snipname = snipname,
+                              label = label, )
+            else:
+                url = '%s%s%s'% (self.config['base_url'][0], snipname, self.config['end_url'][0])
+                a = doc.createElement('a')
+                a.appendChild(doc.createTextNode(label))
+                a.setAttribute('href', url)
+                if self.config['html_class'][0] :
+                    a.setAttribute('class', self.config['html_class'][0])
         return a
     
 def makeExtension(configs=None) :
