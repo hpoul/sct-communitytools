@@ -77,7 +77,7 @@ class WikiLinkExtension (markdown.Extension) :
         #md.registerExtension(self) #???
     
         # append to end of inline patterns
-        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w ]+?))?\])'''
+        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?\])'''
         md.inlinePatterns.append(WikiLinks(WIKILINK_RE, self.config))  
 
 class WikiLinks (markdown.BasePattern) :
