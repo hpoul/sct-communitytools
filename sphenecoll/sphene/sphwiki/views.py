@@ -90,6 +90,8 @@ def editSnip(request, group, snipName):
     SnipForm.base_fields['body'].widget.attrs['rows'] = 30
 
     if request.method == 'POST':
+        if 'type' in request.POST and request.POST['type'] == 'preview':
+            return HttpResponse( sph_markdown(request.POST['body']) )
         form = SnipForm(request.POST)
         if form.is_valid():
             snip = form.save(commit=False)

@@ -1,12 +1,52 @@
 {% extends "sphene/sphboard/base.html" %}
 
-
 {% block content %}
-  <form action="." method="post">
+  <script language="JavaScript" type="text/javascript">
+  <!--
+    function getHttpObject() {
+      // TODO - move this method into an external .js file !!
+      var xmlhttp;
+      /*@cc_on
+        @if (@_jscript_version >= 5)
+          try { xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+          } catch(e) {
+            try { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (E) { xmlhttp = false; }
+          }
+        @else
+          xmlhttp = false;
+        @end
+      @*/
+      if (!xmlhttp && typeof XMLHttpRequest != 'undefined') { try { xmlhttp = new XMLHttpRequest(); } catch (e) { xmlhttp = false; } }
+      return xmlhttp;
+   }
+   function doPreview() {
+     var previewarea = document.getElementById("previewarea");
+     previewarea.style.display = "block";
+     previewarea.style.visibility = "visible";
+     previewarea.innerHTML = "Loading Preview ....";
+
+     var http = getHttpObject();
+     http.onreadystatechange = function() {
+       if(http.readyState == 4) {
+         if(http.status == 200) {
+           previewarea.innerHTML = http.responseText;
+         }
+       }
+     };
+     http.open("POST",".");
+     http.send( "type=preview&body=" + escape( document.snipedit.body.value ) );
+   }
+  //-->
+  </script>
+
+  <div id="previewarea" style="display:none; visibility:hidden; border: 2px solid gray; overflow:scroll; max-height: 500px; padding: 5px;"></div>
+
+  <form action="." method="post" name="snipedit">
     <table class="form">
       {{ form }}
    </table>
-   <input type="submit" value="Save" />
+   <input type="submit" value="Save" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />
   </form>
   <br/>
   See <a href="http://sct.sphene.net/wiki/show/WikiDocumentation/" target="_blank">WikiDocumentation</a> on how to format your input.
