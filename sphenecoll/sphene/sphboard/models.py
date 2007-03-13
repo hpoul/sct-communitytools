@@ -94,6 +94,7 @@ class Category(models.Model):
     allowthreads = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
 
+    objects = models.Manager()
     sph_objects = AccessCategoryManager()
 
     def do_init(self, initializer, session, user):
