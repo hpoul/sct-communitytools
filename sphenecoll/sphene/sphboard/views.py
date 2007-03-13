@@ -34,7 +34,14 @@ def showCategory(request, group = None, category_id = None, showType = None):
     if showType == 'threads':
         categories = []
     else:
-        categories = Category.objects.filter( **args )
+        if 'group' in args:
+            categories = Category.sph_objects.filter_for_group( args['group'] )
+            if 'parent' in args:
+                categories = categories.filter( parent = category_id )
+            else:
+                categories = categories.filter( parent__isnull = True )
+        else:
+            categories = Category.objects.filter( **args )
     
     context = { 'rootCategories': categories,
                 'category': categoryObject,

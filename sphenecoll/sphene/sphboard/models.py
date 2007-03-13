@@ -71,14 +71,30 @@ POSTS_ALLOWED_CHOICES = (
     (3, 'Nobody'),
     )
 
+class AccessCategoryManager(models.Manager):
+    def filter_for_group(self, group):
+        user = get_current_user()
+        level = -1
+        if user.is_authenticated():
+            level = 0
+            if user.is_superuser:
+                level = 2
+            elif group and group.get_member(user) != None:
+                level = 3
+        return self.filter(group = group,
+                           allowview__lte = level)
+
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(maxlength = 250)
     group = models.ForeignKey(Group, null = True, blank = True)
     parent = models.ForeignKey('self', related_name = '_childs', null = True, blank = True)
     description = models.TextField(blank = True)
+    allowview = models.IntegerField( default = -1, choices = POSTS_ALLOWED_CHOICES )
     allowthreads = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
+
+    sph_objects = AccessCategoryManager()
 
     def do_init(self, initializer, session, user):
         self._initializer = initializer
@@ -106,6 +122,9 @@ class Category(models.Model):
 
     def allowPostThread(self, user):
         return self.testAllowance(user, self.allowthreads)
+
+    def has_view_permission(self):
+        return self.testAllowance(get_current_user(), self.allowview)
 
     def testAllowance(self, user, level):
         if level == -1:

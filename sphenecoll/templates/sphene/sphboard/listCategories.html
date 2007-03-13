@@ -38,6 +38,10 @@
     {% sphboard_displayCategories rootCategories 5 %}
   </table>
   <br/><br/>
+  {% else %}
+    {% if not category %}
+      There are currently no categories. (Or you have no permission to see them.)
+    {% endif %}
   {% endif %}
 
   {% if isShowLatest or category.canContainPosts %}
