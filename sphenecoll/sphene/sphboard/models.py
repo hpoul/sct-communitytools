@@ -265,6 +265,8 @@ class Category(models.Model):
         return self.name;
     
     class Admin:
+        list_display = ('name', 'group', 'parent', 'allowview', )
+        list_filter = ('group', 'parent', )
         search_fields = ('name')
 
 class CategoryLastVisit(models.Model):
