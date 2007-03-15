@@ -380,6 +380,9 @@ class Post(models.Model):
     def postCount(self):
         return self.allPosts().count()
 
+    def replyCount(self):
+        return self.replies().count()
+
     def allowPosting(self, user):
         return self.category.testAllowance( user, self.category.allowreplies )
 
