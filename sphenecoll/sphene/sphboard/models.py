@@ -374,6 +374,9 @@ class Post(models.Model):
     def allPosts(self):
         return Post.objects.filter( Q( pk = self.id ) | Q( thread = self ) )
 
+    def replies(self):
+        return Post.objects.filter( thread = self )
+
     def postCount(self):
         return self.allPosts().count()
 
