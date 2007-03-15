@@ -96,10 +96,11 @@ class NewsMacro (object):
        if not params.has_key( 'category' ):
            return doc.createTextNode("Error, no 'category' or 'template' given for news macro.")
 
+       limit = 'limit' in params and params['limit'] or 5
        templateName = 'wiki/news.html'
        if params.has_key( 'template' ): templateName = params['template']
 
-       threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )
+       threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )[:limit]
 
        t = template.loader.get_template( templateName )
        baseURL = ''
