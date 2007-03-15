@@ -240,7 +240,9 @@ class UrlTag(BBTag):
         if len(url) == 0:
             return ''
         else:
-            return '<a rel="nofollow" href="' + escape(url) + '">' + linktext + '</a>'
+            # removed 'nowfollow' for now
+            #return '<a rel="nofollow" href="' + escape(url) + '">' + linktext + '</a>'
+            return '<a href="' + escape(url) + '">' + linktext + '</a>'
 
 class QuoteTag(BBTag):
     def render_node_xhtml(self, node):
