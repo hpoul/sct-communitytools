@@ -35,6 +35,8 @@
 ####
 # 2007-02-06, herbert.poul@gmail.com:
 #        Small modification to allow nested tags in [url]'s
+# 2007-03-15, herbert.poul@gmail.com:
+#        in _prepare replace URLs with [url]xxxx[/url]
 
 ##########################################################################
 ## Module to convert BBCode to XHTML, featuring:
@@ -598,6 +600,10 @@ class BBCodeParser:
         for emoticon in _EMOTICON_LIST:
             bbcode = bbcode.replace(emoticon, 
                 '[emoticon]' + emoticon + '[/emoticon]')
+
+        # Replace URLs with [url=...]
+        bbcode = re.sub( r'(?<!url=|url\])(?:<?)((http|ftp|shttp)://[^\s\]>]+)(>?)', r'[url]\1[/url]', bbcode )
+        
         return bbcode
 
     def parse(self, bbcode):
