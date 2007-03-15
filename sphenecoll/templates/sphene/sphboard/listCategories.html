@@ -21,7 +21,9 @@
       {% if group.has_monitor %}
         You are currently receiving email notifications on new posts. - <a href="../../togglemonitor_group/{{ group.id }}/">Stop notifications</a>
       {% else %}
-        <a href="../../togglemonitor_group/{{ group.id }}/">Notify me by email on new posts.</a>
+        {% if rootCategories %}
+          <a href="../../togglemonitor_group/{{ group.id }}/">Notify me by email on new posts.</a>
+        {% endif %}
       {% endif %}
     {% endif %}
     <br/><br/>

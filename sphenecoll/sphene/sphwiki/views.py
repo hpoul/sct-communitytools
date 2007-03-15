@@ -8,8 +8,10 @@ from django import newforms as forms
 from django.newforms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
 
+from datetime import datetime
+from difflib import ndiff, HtmlDiff
 
-from sphene.sphwiki.models import WikiSnip, WikiAttachment
+from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.community import PermissionDenied
 
@@ -36,6 +38,41 @@ def showSnip(request, group, snipName):
                                  },
                                context_instance = RequestContext(request) )
 
+def history(request, group, snipName):
+    snip = get_object_or_404( WikiSnip,
+                              group = group,
+                              name = snipName )
+    return object_list( request = request,
+                        queryset = snip.wikisnipchange_set.order_by('-edited'),
+                        template_name = 'sphene/sphwiki/history.html',
+                        extra_context = { 'snipName': snipName,
+                                          'snip': snip,
+                                          },
+                        )
+
+def diff(request, group, snipName, changeId = None):
+    snip = get_object_or_404( WikiSnip,
+                              group = group,
+                              name = snipName )
+    changeEnd = get_object_or_404( WikiSnipChange,
+                                   snip = snip,
+                                   pk = changeId, )
+    changeStart = snip.wikisnipchange_set.filter( edited__lt = changeEnd.edited, ).order_by('-edited')[0]
+    htmlDiff = HtmlDiff(wrapcolumn = 50,)
+    from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
+    diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
+                                     changeEnd.body.splitlines(1),
+                                     fromdesc = sph_date( changeStart.edited ) + ' by ' + sph_fullusername( changeStart.editor ),
+                                     todesc = sph_date( changeEnd.edited ) + ' by ' + sph_fullusername( changeEnd.editor ),
+                                     context = True, )
+    return render_to_response( 'sphene/sphwiki/diff.html',
+                               { 'snip': snip,
+                                 'snipName': snipName,
+                                 'diffTable': diffTable,
+                                 },
+                               context_instance = RequestContext(request) )
+
+    
 def attachment(request, group, snipName):
     snip = WikiSnip.objects.get( name__exact = snipName, group = group )
     res = WikiAttachment.objects.filter( snip = snip )
@@ -78,10 +115,13 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
                                  },
                                context_instance = RequestContext(request) )
 
+
 def editSnip(request, group, snipName):
+    original_body = None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
+        original_body = snip.body
         SnipForm = forms.models.form_for_instance(snip)
     except WikiSnip.DoesNotExist:
         SnipForm = forms.models.form_for_model(WikiSnip)
@@ -99,6 +139,15 @@ def editSnip(request, group, snipName):
             snip.name = snipName
             snip.editor = request.user
             snip.save()
+
+            change = WikiSnipChange( snip = snip,
+                                     editor = request.user,
+                                     edited = datetime.today(),
+                                     message = request.POST['message'],
+                                     body = snip.body,
+                                     )
+            change.save()
+            
             return HttpResponseRedirect( snip.get_absolute_url() )
 
     else:

@@ -1,0 +1,35 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+
+{% block content %}
+
+  {% include "sphene/sphwiki/_snip_header.html" %}
+  <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
+
+  <table class="sph_object_list">
+    <tr>
+      <th>Date</th>
+      <th>Editor</th>
+      <th width="80%">Change Message</th>
+    </tr>
+
+    {% for change in object_list %}
+       <tr>
+         <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+         <td>{% sphboard_displayUserName change.editor %}</td>
+         <td>{{ change.message }}</td>
+       </tr>
+    {% endfor %}
+  </table>
+
+  {% if is_paginated %}
+    {{ hits }} Changes. {% sphboard_pagination pages page %}
+  {% else %}
+    {{ object_list.count }} Changes.
+  {% endif %}
+
+
+{% endblock %}

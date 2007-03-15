@@ -1,0 +1,23 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+
+{% block content %}
+  {% include "sphene/sphwiki/_snip_header.html" %}
+<style>
+        table.diff {font-family:Courier; border:medium;width:100%;}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {text-align:right}
+        .diff_next {background-color:#c0c0c0}
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+</style>
+
+  <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
+
+  {{ diffTable }}
+
+{% endblock %}

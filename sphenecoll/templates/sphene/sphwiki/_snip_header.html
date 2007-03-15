@@ -1,0 +1,14 @@
+  <style>
+    .wiki_title { border-bottom: 1px solid black; }
+  </style>
+  {% if snip.is_secured %}
+    <strong style="font-size:x-small;">This snip is secured - View only allowed by: {{ snip.get_wiki_preference.get_view_display }}</strong><br/>
+  {% endif %}
+  {% if snip.id %}
+    {% if snip.title %}
+      <h1 class="wiki_title">{{ snip.title }}</h1>
+    {% else %}
+      <h1 class="wiki_title">{{ snip.name }}</h1>
+    {% endif %}
+  {% endif %}
+

@@ -42,9 +42,12 @@
 
   <div id="previewarea" style="display:none; visibility:hidden; border: 2px solid gray; overflow:scroll; max-height: 500px; padding: 5px;"></div>
 
-  <form action="." method="post" name="snipedit">
+  <form action="." method="post" name="snipedit" class="sphform">
     <table class="form">
       {{ form }}
+      <tr>
+        <td><label for="message_id">Change Message:</label></td><td><input type="text" name="message" id="message_id" /></td>
+      </tr>
    </table>
    <input type="submit" value="Save" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />
   </form>
