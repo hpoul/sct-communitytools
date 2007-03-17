@@ -6,7 +6,6 @@
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
   {% if snip.id %}
-    <small>{{ snip.name }} - Last Change: {{ snip.changed|sph_date }} by {% sphboard_displayUserName snip.editor %} - [ <a href="{{ snip.get_absolute_historyurl }}">Snip Changes</a> ]{% if perms.sphwiki.add_wikisnip %} - [ <a href="{{ snip.get_absolute_editurl }}" >Edit</a> ] [ <a href="{{ snip.get_absolute_attachmenturl }}">Attachments</a> ]{% endif %}</small><br/>
     {% if False and sph.toc %}
       <div id="sphwiki_toc">{{ sph.toc }}</div>
     {% endif %}

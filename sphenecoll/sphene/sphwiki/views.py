@@ -57,19 +57,33 @@ def diff(request, group, snipName, changeId = None):
     changeEnd = get_object_or_404( WikiSnipChange,
                                    snip = snip,
                                    pk = changeId, )
-    changeStart = snip.wikisnipchange_set.filter( edited__lt = changeEnd.edited, ).order_by('-edited')[0]
-    htmlDiff = HtmlDiff(wrapcolumn = 50,)
-    from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
-    diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
-                                     changeEnd.body.splitlines(1),
-                                     fromdesc = sph_date( changeStart.edited ) + ' by ' + sph_fullusername( changeStart.editor ),
-                                     todesc = sph_date( changeEnd.edited ) + ' by ' + sph_fullusername( changeEnd.editor ),
-                                     context = True, )
+    args = { 'snip': snip,
+             'snipName': snipName,}
+    try:
+        changeStart = snip.wikisnipchange_set.filter( edited__lt = changeEnd.edited, ).order_by('-edited')[0]
+        args['prev_change'] = changeStart
+    except IndexError:
+        changeStart = None
+        diffTable = "This is the first change."
+
+    try:
+        next_change = snip.wikisnipchange_set.filter( edited__gt = changeEnd.edited, ).order_by('edited')[0]
+        args['next_change'] = next_change
+    except IndexError:
+        pass
+
+    if changeStart:
+        htmlDiff = HtmlDiff(wrapcolumn = 50,)
+        from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
+        diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
+                                         changeEnd.body.splitlines(1),
+                                         fromdesc = sph_date( changeStart.edited ) + ' by ' + sph_fullusername( changeStart.editor ),
+                                         todesc = sph_date( changeEnd.edited ) + ' by ' + sph_fullusername( changeEnd.editor ),
+                                         context = True, )
+
+    args['diffTable'] = diffTable
     return render_to_response( 'sphene/sphwiki/diff.html',
-                               { 'snip': snip,
-                                 'snipName': snipName,
-                                 'diffTable': diffTable,
-                                 },
+                               args,
                                context_instance = RequestContext(request) )
 
     
@@ -154,4 +168,4 @@ def editSnip(request, group, snipName):
         form = SnipForm()
 
     t = loader.get_template( 'sphene/sphwiki/editSnip.html' )
-    return HttpResponse( t.render( RequestContext( request, { 'form': form } ) ) )
+    return HttpResponse( t.render( RequestContext( request, { 'form': form, 'snip': snip } ) ) )

@@ -1,3 +1,5 @@
+{% load sphboard_extras %}
+{% load sph_extras %}
   <style>
     .wiki_title { border-bottom: 1px solid black; }
   </style>
@@ -10,5 +12,6 @@
     {% else %}
       <h1 class="wiki_title">{{ snip.name }}</h1>
     {% endif %}
+    <small>{{ snip.name }} - Last Change: {{ snip.changed|sph_date }} by {% sphboard_displayUserName snip.editor %} - [ <a href="{{ snip.get_absolute_historyurl }}">Snip Changes</a> ]{% if perms.sphwiki.add_wikisnip %} [ <a href="{{ snip.get_absolute_editurl }}" >Edit</a> ] [ <a href="{{ snip.get_absolute_attachmenturl }}">Attachments</a> ]{% endif %}</small><br/>
   {% endif %}
 
