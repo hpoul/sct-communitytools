@@ -172,3 +172,10 @@ def sph_fullusername(value):
         return value.username
     return "%s %s" % (value.first_name, value.last_name)
 
+import os
+
+@register.filter
+def sph_basename(value):
+    basename = os.path.basename( value )
+    print "value: %s - %s" % (value, basename)
+    return basename

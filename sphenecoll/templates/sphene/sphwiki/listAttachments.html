@@ -10,7 +10,7 @@
   <br/><br/>
   <ul>
     {% for attachment in object_list %}
-      <li>{{ attachment.id }} - <a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_basename }}</a></li>
+      <li>{{ attachment.id }} - <a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></li>
     {% endfor %}
   </ul>
   {% if is_paginated %}
