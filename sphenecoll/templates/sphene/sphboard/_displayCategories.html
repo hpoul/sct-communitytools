@@ -11,5 +11,5 @@
     <td class="sphboard_postcount">{{ category.postCount }}</td>
     <td class="sphboard_latestpost">{% sphboard_latestPost category.latestPost %}</td>
   </tr>
-  {% sphboard_displayCategories category.get_childs maxDepth level %}
+  {% sphboard_displayCategories category.get_children maxDepth level %}
 {% endfor %}

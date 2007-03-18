@@ -16,6 +16,10 @@ from django.template.context import RequestContext
 from django.template import loader, Context
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 
+import logging
+
+logger = logging.getLogger('sphene.sphwiki.models')
+
 
 import re
 
@@ -103,8 +107,8 @@ class Category(models.Model):
         self._user = user
         self.touch( session, user )
 
-    def get_childs(self):
-        return self._childs.all().add_initializer(getattr(self, '_initializer', None))
+    def get_children(self):
+        return self._childs.all()
 
     def canContainPosts(self):
         return self.allowthreads != 3
@@ -124,8 +128,8 @@ class Category(models.Model):
     def allowPostThread(self, user):
         return self.testAllowance(user, self.allowthreads)
 
-    def has_view_permission(self):
-        return self.testAllowance(get_current_user(), self.allowview)
+    def has_view_permission(self, user = None):
+        return self.testAllowance(user or get_current_user(), self.allowview)
 
     def testAllowance(self, user, level):
         if level == -1:
@@ -439,7 +443,7 @@ class Post(models.Model):
 
     def poll(self):
         try:
-            return self.poll_set.all().add_initializer( getattr(self, '_initializer', None) ).get()
+            return self.poll_set.get()
         except Poll.DoesNotExist:
             return None
 
@@ -514,11 +518,23 @@ class Post(models.Model):
             #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
             datatuple = ()
             sent_email_addresses = (self.author.email,) # Exclude the author of the post
+            logger.debug('Finding email notification monitors ..')
             for monitor in monitors:
                 if monitor.user.email in sent_email_addresses: continue
+
+                # Check Permissions ...
+                if not self.category.has_view_permission( monitor.user ):
+                    logger.info( "User {%s} has monitor but no view permission for category {%s}" % (str(monitor.user),
+                                                                                                     str(self.category),))
+                    continue
+
+                logger.info( "Adding user {%s} email address to notification email." % str(monitor.user) )
+                
+                # Add email address to address tuple ...
                 datatuple += (subject, body, None, (monitor.user.email,)),
                 sent_email_addresses += monitor.user.email,
 
+            logger.info( "Sending email notifications - {%s}" % str(datatuple) )
             send_mass_mail(datatuple, )
         
         return ret
@@ -563,15 +579,11 @@ class Poll(models.Model):
     def choices(self):
         return self.pollchoice_set.all()
 
+
     def has_voted(self, user = None):
-        if not user: user = self._user
+        if not user: user = get_current_user()
         if not user.is_authenticated(): return False
         return self.pollvoters_set.filter( user = user ).count() > 0
-        """try:
-            return True
-        except PollVoters.DoesNotExist:
-            return False
-        """
 
     def total_voters(self):
         from django.db import connection
