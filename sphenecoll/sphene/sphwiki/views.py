@@ -14,6 +14,7 @@ from difflib import ndiff, HtmlDiff
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.community import PermissionDenied
+from sphene.community.middleware import get_current_sphdata
 
 # Create your views here.
 
@@ -30,6 +31,9 @@ def showSnip(request, group, snipName):
         
     if not snip.has_view_permission():
         raise PermissionDenied()
+
+    sphdata = get_current_sphdata()
+    if sphdata: sphdata['subtitle'] = snip.title or snip.name
     
     return render_to_response( 'sphene/sphwiki/showSnip.html',
                                { 'snip': snip,
