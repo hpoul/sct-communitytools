@@ -3,6 +3,12 @@
 {% load sphboard_extras %}
 {% load sph_extras %}
 
+{% block head %}
+  {% if sph_settings.wiki_rss_url %}
+    <link rel="alternate" title="Latest Wiki Changes" href="{{ sph_settings.wiki_rss_url }}" type="application/rss+xml">
+  {% endif %}
+{% endblock %}
+
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
   {% if snip.id %}

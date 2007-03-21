@@ -1,3 +1,4 @@
+from django.conf import settings
 from sphene.community.models import Navigation
 from sphene.community.middleware import get_current_group, get_current_sphdata
 
@@ -12,5 +13,9 @@ def navigation(request):
                                                                navigationType = 0 ),
                  'urlPrefix': request.attributes.get('urlPrefix', ''),
 		 'group': group,
-                 'sph': sphdata, }
-    return { 'sph': sphdata, }
+                 'sph': sphdata,
+                 'sph_settings': settings.SPH_SETTINGS,
+                 }
+    return { 'sph': sphdata,
+             'sph_settings': settings.SPH_SETTINGS,
+             }

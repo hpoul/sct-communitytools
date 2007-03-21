@@ -49,9 +49,17 @@ def history(request, group, snipName):
     return object_list( request = request,
                         queryset = snip.wikisnipchange_set.order_by('-edited'),
                         template_name = 'sphene/sphwiki/history.html',
+                        allow_empty = True,
                         extra_context = { 'snipName': snipName,
                                           'snip': snip,
                                           },
+                        )
+
+def recentChanges(request, group):
+    return object_list( request = request,
+                        queryset = WikiSnipChange.objects.filter( snip__group = group ).order_by('-edited'),
+                        template_name = 'sphene/sphwiki/recentChanges.html',
+                        allow_empty = True,
                         )
 
 def diff(request, group, snipName, changeId = None):

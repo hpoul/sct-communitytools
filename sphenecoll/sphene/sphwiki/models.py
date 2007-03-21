@@ -67,6 +67,10 @@ class WikiSnip(models.Model):
         return ('sphene.sphwiki.views.history', (), { 'groupName': self.group.name, 'snipName': self.name})
     get_absolute_historyurl = permalink(get_absolute_historyurl, get_current_request)
 
+    def get_absolute_recentchangesurl(self):
+        return ('sphene.sphwiki.views.recentChanges', (), { 'groupName': self.group.name })
+    get_absolute_recentchangesurl = permalink(get_absolute_recentchangesurl, get_current_request)
+
     def get_parent(self):
         lastslash = len(self.name)
         while lastslash != -1:

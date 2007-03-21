@@ -1,0 +1,41 @@
+{% extends "sphene/sphwiki/base.html" %}
+
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+{% block head %}
+  {{ block.super }}
+  {% if sph_settings.wiki_rss_url %}
+    <link rel="alternate" title="Latest Wiki Changes" href="{{ sph_settings.wiki_rss_url }}" type="application/rss+xml" />
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <h1 class="wiki_title">Latest changes for this Wiki</h1><br/>
+
+  <table class="sph_object_list">
+    <tr>
+      <th>Snip</th>
+      <th>Date</th>
+      <th>Editor</th>
+      <th width="80%">Change Message</th>
+    </tr>
+
+    {% for change in object_list %}
+      <tr>
+        <td><a href="{{ change.snip.get_absolute_url }}">{{ change.snip.name }}</a></td>
+        <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+        <td style="white-space: nowrap">{% sphboard_displayUserName change.editor %}</td>
+        <td>{{ change.message }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  {% if is_paginated %}
+    {{ hits }} Changes. {% sphboard_pagination pages page %}
+  {% else %}
+    {{ object_list.count }} Changes.
+  {% endif %}
+
+{% endblock %}
