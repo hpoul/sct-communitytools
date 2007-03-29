@@ -8,14 +8,16 @@ def navigation(request):
     else:
         group = get_current_group()
     sphdata = get_current_sphdata()
+
+    sph_settings = getattr( settings, 'SPH_SETTINGS', None )
     if group:
         return { 'navigation_left': Navigation.objects.filter( group = group,
                                                                navigationType = 0 ),
                  'urlPrefix': request.attributes.get('urlPrefix', ''),
 		 'group': group,
                  'sph': sphdata,
-                 'sph_settings': settings.SPH_SETTINGS,
+                 'sph_settings': sph_settings,
                  }
     return { 'sph': sphdata,
-             'sph_settings': settings.SPH_SETTINGS,
+             'sph_settings': sph_settings,
              }
