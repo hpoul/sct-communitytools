@@ -3,7 +3,16 @@
   textarea { width: 100%; }
   .sphboard input { width: 100%; }
 </style>
+  <script language="JavaScript" type="text/javascript" src="/static/sphene/community/xmlhttp.js"></script>
+  <script language="JavaScript" type="text/javascript">
+  <!--
+   function doPreview() {
+     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview&body=" + escape( document.postform.body.value ) );
+   }
+  //-->
+  </script>
 
+<div id="previewarea" style="display:none; visibility:hidden; border: 2px solid gray; overflow:scroll; max-height: 500px; padding: 5px;"></div>
 <form method="post" action="." name="postform">
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}
@@ -21,7 +30,7 @@
           <br/><br/>
     {% endif %}
 
-  {% if not thread %}
+  {% if not thread and not post %}
   <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">Add a poll to this thread</label><br/><br/>
 
   <div id="poll" style="display: none">
@@ -39,6 +48,6 @@
   </script>
   {% endif %}
 
-  <input type="submit" value="Post" />
+  <input type="submit" value="Post" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />
 
 </form>

@@ -28,7 +28,6 @@ def showSnip(request, group, snipName):
     except WikiSnip.DoesNotExist:
         snip = WikiSnip( name = snipName, group = group )
 
-        
     if not snip.has_view_permission():
         raise PermissionDenied()
 

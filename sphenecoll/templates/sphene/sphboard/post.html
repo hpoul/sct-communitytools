@@ -10,10 +10,14 @@
     {% sphboard_displayBreadcrumbsForCategory category 1 %}
   {% endif %}<br/><br/>
 
-  {% if thread %}
-    <b>Posting reply to thread {{ thread.subject }}.</b>
+  {% if post %}
+    <b>Editing post</b>
   {% else %}
-    <b>Posting new thread.</b>
+    {% if thread %}
+      <b>Posting reply to thread {{ thread.subject }}.</b>
+    {% else %}
+      <b>Posting new thread.</b>
+    {% endif %}
   {% endif %}<br/><br/>
 
   {% include "sphene/sphboard/_displayPostForm.html" %}

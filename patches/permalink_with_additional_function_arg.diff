@@ -22,7 +22,7 @@ Index: django/db/models/__init__.py
 +            if type(urlconf) != list:
 +                # If type is no list, we assume it is a request object and
 +                # look for a 'urlconf' attribute
-+                urlconf = getattr(urlconf, 'urlconf')
++                urlconf = getattr(urlconf, 'urlconf', None)
 +        
          bits = func(*args, **kwargs)
          viewname = bits[0]

@@ -34,7 +34,17 @@
           Posted by<br/>
           {% sphboard_displayUserName post.author %}<br/>
         </td>
-        <td>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></td>
+        <td>
+          <div style="float:left"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
+          <div style="float:right">
+            {% if post.allowEditing %}
+              [ <a href="{{ post.get_absolute_editurl }}">Edit</a> ]
+            {% endif %}
+            {% if allowPosting %}
+              [ <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}&amp;quote={{ post.id }}">Quote</a> ]
+            {% endif %}
+          </div>
+        </td>
       </tr>
       <tr>
         <td class="sphboard_post_body">{{ post.body_escaped }}</td>

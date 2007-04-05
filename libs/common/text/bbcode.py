@@ -66,6 +66,7 @@ import re
 #### CCIW specific imports #####
 #from zilbo.common.text.utils import get_member_link, obfuscate_email
 #from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
+from sphene.community.utils import get_user_link_for_username, format_date
 from django.conf import settings 
 EMOTICONS_ROOT = settings.MEDIA_URL + 'emoticons/'
 
@@ -244,6 +245,8 @@ class UrlTag(BBTag):
             #return '<a rel="nofollow" href="' + escape(url) + '">' + linktext + '</a>'
             return '<a href="' + escape(url) + '">' + linktext + '</a>'
 
+from sphene import sphboard
+
 class QuoteTag(BBTag):
     def render_node_xhtml(self, node):
         if node.parameter is None:
@@ -253,11 +256,23 @@ class QuoteTag(BBTag):
 
         match = _MEMBER_REGEXP.search(node.parameter)
         if not match is None:
-            membername= match.groups()[0]
-            return '<div class="memberquote">' + \
-                get_member_link(membername) + ' said:</div>' + \
-                    '<blockquote>' + node.render_children_xhtml() + \
-                    '</blockquote>'
+            membername= match.group('username')
+            ret = '<blockquote><div class="memberquote"><strong>' + \
+                get_user_link_for_username(membername)
+            ret += '</strong>'
+            if match.group('post_id'):
+                try:
+                    post = sphboard.models.Post.objects.get( pk = match.group('post_id') )
+                    # TODO check if we are currently on this page ...
+                    url = post.get_absolute_url() + "#" + match.group('post_id')
+                    ret += ' <a href="%s">said @ %s</a>:' % (url, format_date(post.postdate))
+                except sphboard.models.Post.DoesNotExist:
+                    ret += ' said: '
+            else:
+                ret += ' said: '
+            ret += '</div>'
+            ret += node.render_children_xhtml() + '</blockquote>'
+            return ret
         else:
             return '<blockquote>' + node.render_children_xhtml() + \
                 '</blockquote>'
@@ -268,7 +283,7 @@ class QuoteTag(BBTag):
 _COLORS = ('aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 
     'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow')
 _COLOR_REGEXP = re.compile(r'#[0-9A-F]{6}')
-_MEMBER_REGEXP = re.compile(r'^[\'"]([0-9A-Za-z_]{1,30})[\'"]$')
+_MEMBER_REGEXP = re.compile(r'^[\'"]?(?P<username>[0-9A-Za-z_]{1,30})[\'"]?(?:;(?P<post_id>[0-9]+))?$')
 _BBTAG_REGEXP = re.compile(r'\[\[?\/?([A-Za-z\*]+)(:[a-f0-9]+)?(=[^\]]+)?\]?\]')
 
 # 'text' is a dummy entry for text nodes

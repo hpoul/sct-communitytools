@@ -1,11 +1,15 @@
 # Create your views here.
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.db.models import Q
 from django.template.context import RequestContext
 from django import newforms as forms
 
+from datetime import datetime
+
+from sphene.community import PermissionDenied
+from sphene.community.utils import get_fullusername, format_date
 from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters
 
 class SpheneModelInitializer:
@@ -119,7 +123,19 @@ class PostPollForm(forms.Form):
                                          initial = 1, )
 
 
-def post(request, group = None, category_id = None):
+def post(request, group = None, category_id = None, post_id = None):
+    if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
+        previewpost = Post( body = request.REQUEST['body'] )
+        return HttpResponse( previewpost.body_escaped() )
+
+    
+    post = None
+
+    if post_id:
+        post = get_object_or_404(Post, pk = post_id)
+        if not post.allowEditing():
+            raise PermissionDenied()
+    
     thread = None
     category = None
     context = { }
@@ -137,13 +153,19 @@ def post(request, group = None, category_id = None):
         pollForm = PostPollForm(request.POST)
         if postForm.is_valid() and 'createpoll' not in request.POST or pollForm.is_valid():
             data = postForm.clean_data
-    
-            newpost = Post( category = category,
-                            subject = data['subject'],
-                            body = data['body'],
-                            author = request.user,
-                            thread = thread,
-                            )
+
+            if post:
+                newpost = post
+                newpost.subject = data['subject']
+                newpost.body = data['body']
+                newpost.body += "\n\n--- Last Edited by %s at %s ---" % ( get_fullusername( request.user ), format_date( datetime.today()) )
+            else:
+                newpost = Post( category = category,
+                                subject = data['subject'],
+                                body = data['body'],
+                                author = request.user,
+                                thread = thread,
+                                )
             newpost.save()
 
 
@@ -171,17 +193,26 @@ def post(request, group = None, category_id = None):
                     pollchoice.save()
                 request.user.message_set.create( message = "Vote created successfully." )
                 
-            
-            request.user.message_set.create( message = "Post created successfully." )
+            if post:
+                request.user.message_set.create( message = "Post edited successfully." )
+            else:
+                request.user.message_set.create( message = "Post created successfully." )
             if thread == None: thread = newpost
-            return HttpResponseRedirect( '../../thread/%s/' % thread.id )
+            return HttpResponseRedirect( thread.get_absolute_url() )
 
     else:
         postForm = PostForm()
         pollForm = PostPollForm()
 
-    if thread:
-        postForm.fields['subject'] = forms.CharField()
+    if post:
+        postForm.fields['subject'].initial = post.subject
+        postForm.fields['body'].initial = post.body
+        context['post'] = post
+    elif 'quote' in request.REQUEST:
+        quotepost = Post.objects.get( pk = request.REQUEST['quote'] )
+        postForm.fields['subject'].initial = 'Re: %s' % thread.subject
+        postForm.fields['body'].initial = '[quote=%s;%s]\n%s\n[/quote]\n' % (quotepost.author.username, quotepost.id, quotepost.body)
+    elif thread:
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
     context['form'] = postForm
     context['pollform'] = pollForm

@@ -390,6 +390,10 @@ class Post(models.Model):
     def allowPosting(self, user):
         return self.category.testAllowance( user, self.category.allowreplies )
 
+    def allowEditing(self, user = None):
+        if user == None: user = get_current_user()
+        return user == self.author or user.is_superuser
+
 
     def body_escaped(self):
         body = self.body
@@ -520,7 +524,8 @@ class Post(models.Model):
             sent_email_addresses = (self.author.email,) # Exclude the author of the post
             logger.debug('Finding email notification monitors ..')
             for monitor in monitors:
-                if monitor.user.email in sent_email_addresses: continue
+                if monitor.user.email in sent_email_addresses : continue
+                if monitor.user.email == '': continue
 
                 # Check Permissions ...
                 if not self.category.has_view_permission( monitor.user ):
@@ -545,6 +550,10 @@ class Post(models.Model):
     def get_absolute_url(self):
         return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.thread and self.thread.id or self.id })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
+    
+    def get_absolute_editurl(self):
+        return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
+    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
 
     class Admin:
         pass

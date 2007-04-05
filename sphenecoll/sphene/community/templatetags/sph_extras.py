@@ -159,18 +159,18 @@ def sph_markdown(value, arg='', oldmd=None):
             sphdata['toc'] = md.tocDiv.toxml()
         return ret
 
+from sphene.community.utils import get_fullusername, format_date
+
 @register.filter
 def sph_date(value):
-    return value.strftime( "%Y-%m-%d %H:%M:%S" )
+    return format_date(value)
+
 
 @register.filter
 def sph_fullusername(value):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
-    if not value: return "(Error)"
-    if not value.first_name or not value.last_name:
-        return value.username
-    return "%s %s" % (value.first_name, value.last_name)
+    get_fullusername(value)
 
 import os
 
