@@ -170,7 +170,7 @@ def sph_date(value):
 def sph_fullusername(value):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
-    get_fullusername(value)
+    return get_fullusername(value)
 
 import os
 
