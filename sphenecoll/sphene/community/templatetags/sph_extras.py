@@ -125,6 +125,7 @@ def sph_markdown_callback( doc, snipname, label ):
                          name = snipname, )
         a.setAttribute('href', snip.get_absolute_editurl() )
         label = "create:"+label
+    a.setAttribute('class', 'sph_wikilink')
     a.appendChild(doc.createTextNode(label))
     return a
 
