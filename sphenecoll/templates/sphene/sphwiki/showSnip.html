@@ -20,7 +20,7 @@
       {{ snip_rendered_body }}
     </div>
   {% else %}
-    Snip <strong>{{ snipName }}</strong> does not yet exist. {% if perms.sphwiki.add_wikisnip %}<a href="{{ snip.get_absolute_editurl }}">Create It.</a>{% endif %}
+    Snip <strong>{{ snipName }}</strong> does not yet exist. {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">Create It.</a>{% endif %}
   {% endif %}
 
 {% endblock %}

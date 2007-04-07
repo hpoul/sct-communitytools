@@ -107,24 +107,38 @@ class WikiSnip(models.Model):
                 return None
             return parent.get_wiki_preference()
 
-    def has_view_permission(self):
-        user = get_current_user()
-        pref = self.get_wiki_preference()
-        if pref == None or pref.view <= -1:
+    def __has_permission(self, user, pref, permission):
+        if permission == None or permission <= -1:
             return True
-        
+
         if user == None or not user.is_authenticated():
             return False
 
-        #if user.is_superuser: return True
-        
-        if pref.view == 0:
-            return True
+        if user.is_superuser: return True
 
-        if pref.view == 1:
+        if permission == 0: return True
+
+        if permission == 1:
             if pref.snip.group.get_member(user) != None: return True
 
         return False
+
+    def has_edit_permission(self):
+        user = get_current_user()
+        pref = self.get_wiki_preference()
+        if pref == None:
+            # By default only members of the group are allowed to edit posts
+            # TODO don't hardcode this, but make it configurable ..
+            # (it actually is.. by creating a 'ROOT' wiki snip)
+            permission = 1 
+        else:
+            permission = pref.edit
+        return pref == None or self.__has_permission(user, pref, pref.edit)
+
+    def has_view_permission(self):
+        user = get_current_user()
+        pref = self.get_wiki_preference()
+        return pref == None or self.__has_permission(user, pref, pref.view)
 
     class Admin:
         pass

@@ -623,3 +623,11 @@ class PollVoters(models.Model):
     choice = models.ForeignKey(PollChoice, null = True, blank = True, editable = False)
     user = models.ForeignKey(User, editable = False)
 
+
+
+
+
+
+def get_changelog():
+    return ( ( '2007-04-07 00', 'ALTER TABLE gulasch blahblah', 'hehe', ),
+             )

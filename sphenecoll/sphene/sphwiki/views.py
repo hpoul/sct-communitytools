@@ -24,13 +24,13 @@ def showSnip(request, group, snipName):
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
-        snip_rendered_body = sph_markdown(snip.body)
     except WikiSnip.DoesNotExist:
         snip = WikiSnip( name = snipName, group = group )
 
     if not snip.has_view_permission():
         raise PermissionDenied()
 
+    snip_rendered_body = sph_markdown(snip.body) # TODO do this in the model ? like the board post body ?
     sphdata = get_current_sphdata()
     if sphdata: sphdata['subtitle'] = snip.title or snip.name
     
@@ -150,7 +150,12 @@ def editSnip(request, group, snipName):
         SnipForm = forms.models.form_for_instance(snip)
     except WikiSnip.DoesNotExist:
         SnipForm = forms.models.form_for_model(WikiSnip)
-        snip = None
+        snip = WikiSnip( name = snipName, group = group )
+        #snip = None
+
+    if not snip.has_edit_permission():
+        raise PermissionDenied()
+    
     SnipForm.base_fields['body'].widget.attrs['cols'] = 80
     SnipForm.base_fields['body'].widget.attrs['rows'] = 30
 
