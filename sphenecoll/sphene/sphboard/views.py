@@ -9,7 +9,9 @@ from django import newforms as forms
 from datetime import datetime
 
 from sphene.community import PermissionDenied
-from sphene.community.utils import get_fullusername, format_date
+from sphene.community import sphutils
+from sphene.community.middleware import get_current_user
+from sphene.community.sphutils import get_fullusername, format_date
 from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters
 
 class SpheneModelInitializer:
@@ -111,6 +113,14 @@ class PostForm(forms.Form):
     subject = forms.CharField()
     body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
                             help_text = 'You can use <a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a> in your posts.', )
+    captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
+                                    help_text = 'Please enter the result of the above calculation.',
+                                    )
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        if get_current_user().is_authenticated():
+            del self.fields['captcha']
 
 class PostPollForm(forms.Form):
     question = forms.CharField()
@@ -203,7 +213,7 @@ def post(request, group = None, category_id = None, post_id = None):
             return HttpResponseRedirect( thread.get_absolute_url() )
 
     else:
-        postForm = PostForm()
+        postForm = PostForm( )
         pollForm = PostPollForm()
 
     if post:

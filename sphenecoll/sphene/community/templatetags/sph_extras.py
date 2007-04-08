@@ -160,7 +160,7 @@ def sph_markdown(value, arg='', oldmd=None):
             sphdata['toc'] = md.tocDiv.toxml()
         return ret
 
-from sphene.community.utils import get_fullusername, format_date
+from sphene.community.sphutils import get_fullusername, format_date
 
 @register.filter
 def sph_date(value):

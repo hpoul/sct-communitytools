@@ -66,7 +66,7 @@ import re
 #### CCIW specific imports #####
 #from zilbo.common.text.utils import get_member_link, obfuscate_email
 #from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
-from sphene.community.utils import get_user_link_for_username, format_date
+from sphene.community.sphutils import get_user_link_for_username, format_date
 from django.conf import settings 
 EMOTICONS_ROOT = settings.MEDIA_URL + 'emoticons/'
 

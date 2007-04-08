@@ -85,3 +85,46 @@ def register_hash(request, emailHash, group = None):
                                { 'form': form },
                                context_instance = RequestContext(request) )
 
+
+
+
+
+##############################################################
+####
+#### The following code was copied from the django captchas project.
+#### and slightly modified.
+
+
+from django.http import HttpResponse
+from djaptcha.models import CaptchaRequest
+from cStringIO import StringIO
+import random
+import Image,ImageDraw,ImageFont
+
+# You need to get the font from somewhere and have it accessible by Django
+# I have it set in the djaptcha's settings dir
+#from django.conf.settings import FONT_PATH,FONT_SIZE
+
+def captcha_image(request,token_id):
+    """
+    Generate a new captcha image.
+    """
+    captcha = CaptchaRequest.objects.get(id=token_id)
+    text = captcha.text
+    #TODO: Calculate the image dimensions according to the given text.
+    #      The dimensions below are for a "X+Y" text
+    image = Image.new('RGB', (40, 23), (39, 36, 81))
+    # You need to specify the fonts dir and the font you are going to usue
+    font = ImageFont.truetype(settings.FONT_PATH,settings.FONT_SIZE)
+    draw = ImageDraw.Draw(image)
+    # Draw the text, starting from (2,2) so the text won't be edge
+    draw.text((2, 2), text, font = font, fill = (153, 204, 0))
+    # Saves the image in a StringIO object, so you can write the response
+    # in a HttpResponse object
+    out = StringIO()
+    image.save(out,"JPEG")
+    out.seek(0)
+    response = HttpResponse()
+    response['Content-Type'] = 'image/jpeg'
+    response.write(out.read())
+    return response

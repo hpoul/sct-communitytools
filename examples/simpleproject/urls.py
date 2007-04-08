@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 
     (r'^$', 'django.views.generic.simple.redirect_to', { 'url': '/wiki/show/Start/' }),
 
+    (r'^community/', include('sphene.community.urls'), defaultdict),
     (r'^board/', include('sphene.sphboard.urls'), defaultdict),
     (r'^wiki/', include('sphene.sphwiki.urls'), defaultdict),
 
