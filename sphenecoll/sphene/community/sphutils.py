@@ -39,6 +39,10 @@ except:
 
 from random import random
 
+def has_captcha_support():
+    """ Determines if captcha support is currently enabled. """
+    return usecaptcha
+
 def generate_captcha():
     """
     Generates a captcha. and returns an object which has a method
