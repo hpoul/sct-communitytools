@@ -59,7 +59,7 @@ def do_changelog(app, created_models, verbosity, **kwargs):
             if changetype == 'alter':
                 sqlstmt = 'ALTER TABLE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
-                print "SQL Statement: %s" % sqlstmt
+                print "%s: SQL Statement: %s" % (date, sqlstmt)
             else:
                 print "Unknown changetype: %s - %s" % (changetype, str(change))
 
