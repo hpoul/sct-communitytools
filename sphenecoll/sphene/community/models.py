@@ -79,3 +79,14 @@ class Navigation(models.Model):
                 list_filter = ( 'group', 'navigationType' )
                 ordering = ['group', 'navigationType', 'sortorder']
         
+
+class ApplicationChangelog(models.Model):
+        app_label = models.CharField(maxlength = 250)
+        model = models.CharField(maxlength = 250)
+        version = models.CharField(maxlength = 250)
+        applied = models.DateTimeField()
+
+        class Meta:
+                get_latest_by = 'applied'
+
+

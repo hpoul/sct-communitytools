@@ -191,12 +191,14 @@ def post(request, group = None, category_id = None, post_id = None):
                                              choice = choice,
                                              count = 0, )
                     pollchoice.save()
-                request.user.message_set.create( message = "Vote created successfully." )
-                
-            if post:
-                request.user.message_set.create( message = "Post edited successfully." )
-            else:
-                request.user.message_set.create( message = "Post created successfully." )
+                if request.user.is_authenticated():
+                    request.user.message_set.create( message = "Vote created successfully." )
+
+            if request.user.is_authenticated():
+                if post:
+                    request.user.message_set.create( message = "Post edited successfully." )
+                else:
+                    request.user.message_set.create( message = "Post created successfully." )
             if thread == None: thread = newpost
             return HttpResponseRedirect( thread.get_absolute_url() )
 
@@ -211,7 +213,11 @@ def post(request, group = None, category_id = None, post_id = None):
     elif 'quote' in request.REQUEST:
         quotepost = Post.objects.get( pk = request.REQUEST['quote'] )
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
-        postForm.fields['body'].initial = '[quote=%s;%s]\n%s\n[/quote]\n' % (quotepost.author.username, quotepost.id, quotepost.body)
+        if quotepost.author == None:
+            username = 'anonymous'
+        else:
+            username = quotepost.author.username
+        postForm.fields['body'].initial = '[quote=%s;%s]\n%s\n[/quote]\n' % (username, quotepost.id, quotepost.body)
     elif thread:
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
     context['form'] = postForm

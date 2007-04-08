@@ -335,6 +335,7 @@ POST_STATUSES = {
     'poll': 4,
     }
 
+from django.contrib.auth.models import AnonymousUser
 
 class Post(models.Model):
     status = models.IntegerField(default = 0, editable = False )
@@ -343,7 +344,10 @@ class Post(models.Model):
     body = models.TextField()
     thread = models.ForeignKey('self', null = True, editable = False )
     postdate = models.DateTimeField( auto_now_add = True, editable = False )
-    author = models.ForeignKey(User, editable = False )
+    author = models.ForeignKey(User, editable = False, null = True, blank = True )
+
+    changelog = ( ( '2007-04-07 00', 'alter', 'ALTER author_id DROP NOT NULL', ),
+                  )
 
     def do_init(self, initializer, session, user):
         self._initializer = initializer
@@ -521,7 +525,9 @@ class Post(models.Model):
             #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
             #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
             datatuple = ()
-            sent_email_addresses = (self.author.email,) # Exclude the author of the post
+            sent_email_addresses = ()
+            if self.author != None:
+                sent_email_addresses += (self.author.email,) # Exclude the author of the post
             logger.debug('Finding email notification monitors ..')
             for monitor in monitors:
                 if monitor.user.email in sent_email_addresses : continue
@@ -557,6 +563,8 @@ class Post(models.Model):
 
     class Admin:
         pass
+
+
 
 
 class Monitor(models.Model):
@@ -628,6 +636,3 @@ class PollVoters(models.Model):
 
 
 
-def get_changelog():
-    return ( ( '2007-04-07 00', 'ALTER TABLE gulasch blahblah', 'hehe', ),
-             )

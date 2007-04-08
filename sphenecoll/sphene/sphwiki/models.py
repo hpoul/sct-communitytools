@@ -36,10 +36,14 @@ class WikiSnip(models.Model):
     title = models.CharField(maxlength = 250, blank = True)
     group = models.ForeignKey(Group, editable = False)
     body = models.TextField()
-    creator = models.ForeignKey(User, related_name = 'wikisnip_created', editable = False)
+    creator = models.ForeignKey(User, related_name = 'wikisnip_created', editable = False, null = True, blank = True)
     created = models.DateTimeField(editable = False)
-    editor  = models.ForeignKey(User, related_name = 'wikisnip_edited', editable = False)
+    editor  = models.ForeignKey(User, related_name = 'wikisnip_edited', editable = False, null = True, blank = True)
     changed = models.DateTimeField(editable = False)
+
+    changelog = ( ( '2007-04-08 00', 'alter', 'ALTER creator_id DROP NOT NULL', ),
+                  ( '2007-04-08 01', 'alter', 'ALTER editor_id DROP NOT NULL', ),
+                  )
 
     def save(self):
         if not self.id:
@@ -145,10 +149,13 @@ class WikiSnip(models.Model):
 
 class WikiSnipChange(models.Model):
     snip = models.ForeignKey(WikiSnip)
-    editor = models.ForeignKey(User)
+    editor = models.ForeignKey(User, null = True, blank = True)
     edited = models.DateTimeField()
     body = models.TextField()
     message = models.TextField()
+
+    changelog = ( ( '2007-04-08 00', 'alter', 'ALTER editor_id DROP NOT NULL', ),
+                  )
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.diff', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'changeId': self.id})
