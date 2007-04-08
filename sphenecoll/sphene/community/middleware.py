@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from sphene.community.models import Group
 from django.core import urlresolvers
-
+import re
 
 from django.contrib.sites.models import SiteManager, Site
 
@@ -32,10 +32,30 @@ class MultiHostMiddleware:
             host = request.META['HTTP_HOST']
             if host[-3:] == ':80':
                 host = host[:-3] # ignore default port number, if present
-            urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[host]
+            urlconf = None
+            urlconf_params = None
+            if host in settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP:
+                urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[host]
+            else:
+                # TODO cache results ? - cache regular expressions .. ?
+                for key, value in settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP.iteritems():
+                    regex = re.compile(key)
+                    match = regex.match(host)
+                    if not match:
+                        continue
+                    # We got a match.
+                    urlconf = value
+                    urlconf_params = 'params' in urlconf and urlconf['params'].copy() or dict()
+                    namedgroups = match.groupdict()
+                    for key, value in namedgroups.iteritems():
+                        urlconf_params[key] = value
+                    break
+            if not urlconf:
+                print "Unable to find urlconf !!!"
+                return
             while 'alias' in urlconf:
                 urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[urlconf['alias']]
-            set_current_urlconf_params( urlconf['params'] )
+            set_current_urlconf_params( urlconf_params or urlconf['params'] )
             request.urlconf = urlconf['urlconf']
             
         except KeyError:
