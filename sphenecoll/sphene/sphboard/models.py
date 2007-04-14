@@ -98,9 +98,16 @@ class Category(models.Model):
     allowview = models.IntegerField( default = -1, choices = POSTS_ALLOWED_CHOICES )
     allowthreads = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
+    sortorder = models.IntegerField( default = 0, null = False )
 
     objects = models.Manager()
     sph_objects = AccessCategoryManager()
+
+
+    changelog = ( ( '2007-04-14 00', 'alter', 'ADD sortorder INTEGER' ),
+                  ( '2007-04-14 01', 'update', 'SET sortorder = 0' ),
+                  ( '2007-04-14 02', 'alter', 'ALTER sortorder SET NOT NULL' ),
+                  )
 
     def do_init(self, initializer, session, user):
         self._initializer = initializer
@@ -269,6 +276,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name;
+
+    class Meta:
+        ordering = ['sortorder']
     
     class Admin:
         list_display = ('name', 'group', 'parent', 'allowview', )

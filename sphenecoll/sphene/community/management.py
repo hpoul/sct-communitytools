@@ -60,6 +60,10 @@ def do_changelog(app, created_models, verbosity, **kwargs):
                 sqlstmt = 'ALTER TABLE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
+            elif changetype == 'update':
+                sqlstmt = 'UPDATE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
+                sql += (sqlstmt,)
+                print "%s: SQL Statement: %s" % (date, sqlstmt)
             else:
                 print "Unknown changetype: %s - %s" % (changetype, str(change))
 
