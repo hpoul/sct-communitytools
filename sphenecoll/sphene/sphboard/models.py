@@ -15,6 +15,7 @@ from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
+from sphene.sphwiki import wikilink_utils
 
 import logging
 
@@ -413,7 +414,7 @@ class Post(models.Model):
             regex = re.compile("\[(.*?)\](?:([^\[]+)\[/(.*?)\])?")
             bbcode = regex.sub( bbcode_replace, body )
             """
-            return bbcode.bb2xhtml(body)
+            return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
 
     def touch(self, session, user):
         return self._touch( session, user )
@@ -500,53 +501,55 @@ class Post(models.Model):
         ret = super(Post, self).save()
 
         if isnew:
-            # Email Notifications ....
-            thread = self.thread or self
-            # thread monitors ..
-            myQ = Q( thread = thread )
-            # any category monitors
-            category = self.category
-            while category:
-                myQ = myQ | Q( category = category )
-                category = category.parent
-            # group monitors
-            myQ = myQ | Q( group = self.category.group )
-            monitors = Monitor.objects.filter(myQ)
+            if not 'noemailnotifications' in settings.SPH_SETTINGS or \
+                   not settings.SPH_SETTINGS['noemailnotifications']:
+                # Email Notifications ....
+                thread = self.thread or self
+                # thread monitors ..
+                myQ = Q( thread = thread )
+                # any category monitors
+                category = self.category
+                while category:
+                    myQ = myQ | Q( category = category )
+                    category = category.parent
+                    # group monitors
+                    myQ = myQ | Q( group = self.category.group )
+                    monitors = Monitor.objects.filter(myQ)
+                    
+                subject = 'New Forum Post: %s' % self.subject
+                group = get_current_group() or self.category.group
+                t = loader.get_template('sphene/sphboard/new_post_email.txt')
+                c = {
+                    'baseurl': group.baseurl,
+                    'group': group,
+                    'post': self,
+                    }
+                body = t.render(RequestContext(get_current_request(), c))
+                #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
+                #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
+                datatuple = ()
+                sent_email_addresses = ()
+                if self.author != None:
+                    sent_email_addresses += (self.author.email,) # Exclude the author of the post
+                logger.debug('Finding email notification monitors ..')
+                for monitor in monitors:
+                    if monitor.user.email in sent_email_addresses : continue
+                    if monitor.user.email == '': continue
 
-            subject = 'New Forum Post: %s' % self.subject
-            group = get_current_group() or self.category.group
-            t = loader.get_template('sphene/sphboard/new_post_email.txt')
-            c = {
-                'baseurl': group.baseurl,
-                'group': group,
-                'post': self,
-                }
-            body = t.render(RequestContext(get_current_request(), c))
-            #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
-            #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
-            datatuple = ()
-            sent_email_addresses = ()
-            if self.author != None:
-                sent_email_addresses += (self.author.email,) # Exclude the author of the post
-            logger.debug('Finding email notification monitors ..')
-            for monitor in monitors:
-                if monitor.user.email in sent_email_addresses : continue
-                if monitor.user.email == '': continue
+                    # Check Permissions ...
+                    if not self.category.has_view_permission( monitor.user ):
+                        logger.info( "User {%s} has monitor but no view permission for category {%s}" % (str(monitor.user),
+                                                                                                         str(self.category),))
+                        continue
 
-                # Check Permissions ...
-                if not self.category.has_view_permission( monitor.user ):
-                    logger.info( "User {%s} has monitor but no view permission for category {%s}" % (str(monitor.user),
-                                                                                                     str(self.category),))
-                    continue
-
-                logger.info( "Adding user {%s} email address to notification email." % str(monitor.user) )
+                    logger.info( "Adding user {%s} email address to notification email." % str(monitor.user) )
                 
-                # Add email address to address tuple ...
-                datatuple += (subject, body, None, (monitor.user.email,)),
-                sent_email_addresses += monitor.user.email,
+                    # Add email address to address tuple ...
+                    datatuple += (subject, body, None, (monitor.user.email,)),
+                    sent_email_addresses += monitor.user.email,
 
-            logger.info( "Sending email notifications - {%s}" % str(datatuple) )
-            send_mass_mail(datatuple, )
+                logger.info( "Sending email notifications - {%s}" % str(datatuple) )
+                send_mass_mail(datatuple, )
         
         return ret
 

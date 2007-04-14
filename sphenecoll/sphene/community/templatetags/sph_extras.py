@@ -112,22 +112,7 @@ class NewsMacro (object):
        return HTML( t.render(c) )
 
 from sphene.community.middleware import get_current_sphdata, get_current_group
-from sphene.sphwiki.models import WikiSnip
 
-def sph_markdown_callback( doc, snipname, label ):
-    a = doc.createElement('a')
-    try:
-        snip = WikiSnip.objects.get( group = get_current_group(),
-                                     name = snipname, )
-        a.setAttribute('href', snip.get_absolute_url() )
-    except WikiSnip.DoesNotExist:
-        snip = WikiSnip( group = get_current_group(),
-                         name = snipname, )
-        a.setAttribute('href', snip.get_absolute_editurl() )
-        label = "create:"+label
-    a.setAttribute('class', 'sph_wikilink')
-    a.appendChild(doc.createTextNode(label))
-    return a
 
 @register.filter
 def sph_markdown(value, arg='', oldmd=None):
@@ -141,9 +126,7 @@ def sph_markdown(value, arg='', oldmd=None):
         save_mode = arg == 'safe'
         md = markdown.Markdown(value,
                                extensions = [ 'footnotes', 'wikilink', 'macros', 'toc' ],
-                               extension_configs = { 'wikilink': [ ( 'base_url', '../' ),
-                                                                   ( 'callback', sph_markdown_callback ),
-                                                                   ],
+                               extension_configs = { 'wikilink': [ ],
                                                      'macros': [ ( 'macros',
                                                                    { 'helloWorld': SimpleHelloWorldMacro(),
                                                                      'img': ImageMacro(),

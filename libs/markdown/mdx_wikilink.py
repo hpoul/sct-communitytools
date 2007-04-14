@@ -53,9 +53,15 @@ Dependencies:
 * [Markdown 1.6+](http://www.freewisdom.org/projects/python-markdown/)
 * For older dependencies use [WikiLink Version 0.3]
 (http://code.limberg.name/svn/projects/py-markdown-ext/wikilinks/tags/release-0.3/)
+
+
+2007-04-14 herbert.poul@gmail.com:
+Made quite some changes.. and externalized most part of creating wiki links to another class..
+so this is not longer an independent implementation but bound into SCT.
 '''
 
 import markdown
+from sphene.sphwiki import wikilink_utils
 
 class WikiLinkExtension (markdown.Extension) :
     def __init__(self, configs):
@@ -77,8 +83,8 @@ class WikiLinkExtension (markdown.Extension) :
         #md.registerExtension(self) #???
     
         # append to end of inline patterns
-        WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?\])'''
-        md.inlinePatterns.append(WikiLinks(WIKILINK_RE, self.config))  
+        #WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?\])'''
+        md.inlinePatterns.append(WikiLinks(wikilink_utils.get_wikilink_regex_pattern(), self.config))  
 
 class WikiLinks (markdown.BasePattern) :
     def __init__(self, pattern, config):
@@ -86,24 +92,14 @@ class WikiLinks (markdown.BasePattern) :
         self.config = config
   
     def handleMatch(self, m, doc) :
-        groups = m.groupdict( )
-        if  groups.get('escape') == '\\':
-            a = doc.createTextNode(groups.get('camelcase'))
-        else :
-            snipname = groups.get('camelcase') or groups.get('snipname')
-            label = groups.get('sniplabel') or snipname.replace('_', ' ')
-            if 'callback' in self.config and self.config['callback'] != None:
-                callback = self.config['callback'][0]
-                a = callback( doc = doc,
-                              snipname = snipname,
-                              label = label, )
-            else:
-                url = '%s%s%s'% (self.config['base_url'][0], snipname, self.config['end_url'][0])
-                a = doc.createElement('a')
-                a.appendChild(doc.createTextNode(label))
-                a.setAttribute('href', url)
-                if self.config['html_class'][0] :
-                    a.setAttribute('class', self.config['html_class'][0])
+        wikilink = wikilink_utils.handle_wikilinks_match(m.groupdict())
+        if not 'href' in wikilink: return doc.createTextNode(wikilink['label'])
+
+        a = doc.createElement('a')
+        a.appendChild(doc.createTextNode(wikilink['label']))
+        a.setAttribute('href', wikilink['href'])
+        a.setAttribute('class', wikilink['class'])
+
         return a
     
 def makeExtension(configs=None) :
