@@ -94,12 +94,16 @@ def register_hash(request, emailHash, group = None):
 #### The following code was copied from the django captchas project.
 #### and slightly modified.
 
-
 from django.http import HttpResponse
-from djaptcha.models import CaptchaRequest
-from cStringIO import StringIO
-import random
-import Image,ImageDraw,ImageFont
+try:
+
+    from djaptcha.models import CaptchaRequest
+    from cStringIO import StringIO
+    import random
+    import Image,ImageDraw,ImageFont
+    
+except:
+    pass
 
 # You need to get the font from somewhere and have it accessible by Django
 # I have it set in the djaptcha's settings dir
