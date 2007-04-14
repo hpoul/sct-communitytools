@@ -32,7 +32,7 @@ def showSnip(request, group, snipName):
 
     snip_rendered_body = sph_markdown(snip.body) # TODO do this in the model ? like the board post body ?
     sphdata = get_current_sphdata()
-    if sphdata: sphdata['subtitle'] = snip.title or snip.name
+    if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
     
     return render_to_response( 'sphene/sphwiki/showSnip.html',
                                { 'snip': snip,

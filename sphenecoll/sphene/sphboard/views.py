@@ -10,7 +10,7 @@ from datetime import datetime
 
 from sphene.community import PermissionDenied
 from sphene.community import sphutils
-from sphene.community.middleware import get_current_user
+from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
 from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters
 
@@ -28,11 +28,16 @@ def showCategory(request, group = None, category_id = None, showType = None):
         'parent__isnull': True,
         }
     categoryObject = None
+    
+    sphdata = get_current_sphdata()
+    
     if category_id != None and category_id != '0':
         args['parent__isnull'] = False
         args['parent'] = category_id
         categoryObject = Category.objects.get( pk = category_id )
         categoryObject.touch(request.session, request.user)
+        if sphdata != None: sphdata['subtitle'] = categoryObject.name
+        
     if group != None:
         args['group__isnull'] = False
         args['group'] = group
@@ -85,6 +90,10 @@ def showThread(request, thread_id, group = None):
     thread = Post.objects.filter( pk = thread_id ).get()
     thread.touch( request.session, request.user )
     #thread = get_object_or_404(Post, pk = thread_id )
+
+    sphdata = get_current_sphdata()
+    if sphdata != None: sphdata['subtitle'] = thread.subject
+    
     return object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
                         queryset = thread.allPosts().order_by('postdate'),
