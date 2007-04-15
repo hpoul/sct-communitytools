@@ -122,7 +122,7 @@ class WikiSnip(models.Model):
 
         if permission == 0: return True
 
-        if permission == 1 and pref and pref.snip:
+        if permission == 1 and pref != None and pref.snip != None:
             if pref.snip.group.get_member(user) != None: return True
 
         return False
