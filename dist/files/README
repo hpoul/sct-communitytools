@@ -1,0 +1,26 @@
+Sphene Community Tools (SCT) - http://sct.sphene.net
+Copyright (C) by Herbert Poul (herbert.poul@gmail.com)
+
+
+Sphene Community Tools are django applications designed to be easily
+pluggable into any django project. A ready to be used example website
+is also provided (communitydraft).
+
+# Feedback
+
+I would appreciate any kind of feedback (if you encountered any problems,
+feature requests, etc.) either in the forums at http://sct.sphene.net or 
+directly by email: herbert.poul@gmail.com
+
+
+# Directories
+
+- communitytools
+  The actual SCT applications. See communitytools/README for 
+  requirements and installation instructions
+- communitydraft
+  An example website which makes use of the SCT application.
+  This project is used by http://sct.sphene.net (with only slight 
+  customization). See communitydraft/README or 
+  http://sct.sphene.net/wiki/show/CommunityDraft/ for more information.
+
