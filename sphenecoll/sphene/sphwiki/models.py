@@ -137,7 +137,7 @@ class WikiSnip(models.Model):
             permission = 1 
         else:
             permission = pref.edit
-        return pref == None or self.__has_permission(user, pref, pref.edit)
+        return self.__has_permission(user, pref, permission)
 
     def has_view_permission(self):
         user = get_current_user()
