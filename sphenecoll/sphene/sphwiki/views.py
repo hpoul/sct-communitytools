@@ -30,6 +30,10 @@ def showSnip(request, group, snipName):
     if not snip.has_view_permission():
         raise PermissionDenied()
 
+    if 'type' in request.GET:
+        if request.GET['type'] == 'src':
+            return HttpResponse( snip.body, mimetype = 'text/plain', )
+
     snip_rendered_body = sph_markdown(snip.body) # TODO do this in the model ? like the board post body ?
     sphdata = get_current_sphdata()
     if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
