@@ -4,12 +4,31 @@ from django.db.models import signals, get_apps, get_models
 from sphene.community import models
 
 def init_data(app, created_models, verbosity, **kwargs):
-    from sphene.community.models import Group
+    from sphene.community.models import Group, Navigation
     if Group in created_models:
         group = Group( name = 'example',
                        longname = 'Example Group',
                        baseurl = 'www.example.com', )
         group.save()
+
+        if Navigation in created_models:
+            nav = Navigation( group = group,
+                              label = 'Home',
+                              href = '/wiki/show/Start/',
+                              urltype = 0,
+                              sortorder = 10,
+                              navigationType = 0,
+                              )
+            nav.save()
+
+            nav = Navigation( group = group,
+                              label = 'Board',
+                              href = '/board/show/0/',
+                              urltype = 0,
+                              sortorder = 20,
+                              navigationType = 0,
+                              )
+            nav.save()
 
 
 from django.db import backend, connection, transaction
