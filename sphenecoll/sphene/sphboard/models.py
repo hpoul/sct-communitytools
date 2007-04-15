@@ -559,7 +559,8 @@ class Post(models.Model):
                     sent_email_addresses += monitor.user.email,
 
                 logger.info( "Sending email notifications - {%s}" % str(datatuple) )
-                send_mass_mail(datatuple, )
+                if datatuple:
+                    send_mass_mail(datatuple, )
         
         return ret
 
