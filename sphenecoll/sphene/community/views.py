@@ -4,6 +4,7 @@
 from django import newforms as forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.template import loader, Context
@@ -14,6 +15,12 @@ from utils.misc import cryptString, decryptString
 
 class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField()
+    
+    def clean(self):
+        if User.objects.filter( email__exact = self.clean_data['email_address'] ).count() != 0:
+            raise forms.ValidationError("Another user is already registered with the email address %s."
+                                        % self.clean_data['email_address'] )
+        return self.clean_data
 
 
 def register(request, group = None):
@@ -59,6 +66,11 @@ class RegisterForm(forms.Form):
     def clean(self):
         if self.clean_data['password'] != self.clean_data['repassword']:
             raise forms.ValidationError("Passwords do not match.")
+        if User.objects.filter( username__exact = self.clean_data['username'] ).count() != 0:
+            raise forms.ValidationError("The username %s is already taken." % self.clean_data['username'])
+        if User.objects.filter( email__exact = self.clean_data['email_address'] ).count() != 0:
+            raise forms.ValidationError("Another user is already registered with the email address %s."
+                                        % self.clean_data['email_address'] )
         return self.clean_data
 
 
