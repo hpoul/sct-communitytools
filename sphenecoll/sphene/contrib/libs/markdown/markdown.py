@@ -983,7 +983,7 @@ class Markdown:
             extension_module_name = "mdx_" + ext
 
             try :
-                module = __import__(extension_module_name)
+                module = __import__(extension_module_name, globals(), locals(), [])
 
             except :
                 message(CRITICAL,

@@ -92,17 +92,15 @@ INSTALLED_APPS = (
 
 import os
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+LIB_PATH = os.path.join(ROOT_PATH,'..','..','sphenecoll')
 # import directory of settings.py
 import sys
 sys.path.append(ROOT_PATH)
-sys.path.append(ROOT_PATH + '/../../sphenecoll')
-sys.path.append(ROOT_PATH + '/../../libs/markdown')
-sys.path.append(ROOT_PATH + '/../../libs/custom')
-sys.path.append(ROOT_PATH + '/../../libs/common')
+sys.path.append(LIB_PATH)
 
 TEMPLATE_DIRS = (
-    ROOT_PATH + '/sitetemplates',
-    ROOT_PATH + '/../../sphenecoll/templates',
+    os.path.join(ROOT_PATH,'sitetemplates'),
+    os.path.join(LIB_PATH, 'templates'),
 )
 
 

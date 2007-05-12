@@ -11,7 +11,7 @@ from django.template import loader, Context
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login
 
-from sphene.contrib.libs.utils.misc import cryptString, decryptString
+from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField()
