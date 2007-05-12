@@ -8,7 +8,6 @@ pluggable into any django project.
 
 ## Directories
 
-- libs/		Contains small python libraries which are used by SCT.
 - patches/	Django patches which need to be applied.
 - sphenecoll/	Collection of django application (the base source for SCT).
 - static/	Static media files which contain images and css.
