@@ -3,7 +3,6 @@ from django import newforms as forms
 from django.newforms import widgets
 from sphene.sphboard.models import Post
 from sphene.sphboard.views import PostForm
-from custom_widgets import TinyMCE
 
 register = template.Library()
 

@@ -6,7 +6,7 @@ from sphene.community.models import Group
 
 from django.utils import html
 from django.conf import settings
-from text import bbcode
+from sphene.contrib.libs.common.text import bbcode
 bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
@@ -511,7 +511,8 @@ class Post(models.Model):
         ret = super(Post, self).save()
 
         if isnew:
-            if not 'noemailnotifications' in settings.SPH_SETTINGS or \
+            if not hasattr(settings, 'SPH_SETTINGS') or \
+                   not 'noemailnotifications' in settings.SPH_SETTINGS or \
                    not settings.SPH_SETTINGS['noemailnotifications']:
                 # Email Notifications ....
                 thread = self.thread or self

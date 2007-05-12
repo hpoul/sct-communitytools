@@ -5,7 +5,7 @@ import re
 from sphene.sphwiki.models import WikiAttachment
 from sphene.sphboard.models import Category, Post
 
-import mdx_macros
+from sphene.contrib.libs.markdown import mdx_macros
 
 register = template.Library()
 
@@ -117,7 +117,7 @@ from sphene.community.middleware import get_current_sphdata, get_current_group
 @register.filter
 def sph_markdown(value, arg='', oldmd=None):
     try:
-        import markdown
+        from sphene.contrib.libs.markdown import markdown
     except ImportError:
         if settings.DEBUG:
             raise template.TemplateSyntaxError, "Error in {% markdown %} filter: The Python markdown library isn't installed."
