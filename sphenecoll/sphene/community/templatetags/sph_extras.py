@@ -161,5 +161,4 @@ import os
 @register.filter
 def sph_basename(value):
     basename = os.path.basename( value )
-    print "value: %s - %s" % (value, basename)
     return basename

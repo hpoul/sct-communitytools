@@ -26,12 +26,12 @@ def get_user_link_for_username(username):
 usecaptcha = True
 try:
     from djaptcha.models import CaptchaRequest, CAPTCHA_ANSWER_OK
-    from django.db.models import permalink
+    #from django.db.models import permalink
     from sphene.community.middleware import get_current_request, get_current_group
 
     def captcha_request_get_absolute_url(self):
         return ('sphene.community.views.captcha_image', (), { 'token_id': self.id })
-    get_absolute_captcha_url = permalink(captcha_request_get_absolute_url, get_current_request)
+    get_absolute_captcha_url = sphpermalink(captcha_request_get_absolute_url, get_current_request)
     
     usecaptcha = True
 except:
@@ -100,3 +100,28 @@ class CaptchaField(forms.fields.MultiValueField):
     def compress(self, data_list):
         return None
 
+
+
+# Decorator. Takes a function that returns a tuple in this format:
+#     (viewname, viewargs, viewkwargs)
+#   Optionally takes a function which should either return an object with
+#     an attribute 'urlconf' or directly a python list which is used instead of
+#     settings.ROOT_URLCONF
+# Returns a function that calls urlresolvers.reverse() on that data, to return
+# the URL for those parameters.
+def sphpermalink(func, get_urlconf_func = None):
+    from django.core.urlresolvers import reverse
+    def inner(*args, **kwargs):
+        # Find urlconf ...
+        urlconf = None
+        if get_urlconf_func != None:
+            urlconf = get_urlconf_func()
+            if type(urlconf) != list:
+                # If type is no list, we assume it is a request object and
+                # look for a 'urlconf' attribute
+                urlconf = getattr(urlconf, 'urlconf', None)
+        
+        bits = func(*args, **kwargs)
+        viewname = bits[0]
+        return reverse(bits[0], urlconf, *bits[1:3])
+    return inner

@@ -1,7 +1,8 @@
 from django.db import models
 
 from django.contrib.auth.models import User
-from django.db.models import permalink
+#from django.db.models import permalink
+from sphene.community.sphutils import sphpermalink as permalink
 
 from sphene.community.models import Group
 

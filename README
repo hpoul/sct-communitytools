@@ -8,7 +8,6 @@ pluggable into any django project.
 
 ## Directories
 
-- patches/	Django patches which need to be applied.
 - sphenecoll/	Collection of django application (the base source for SCT).
 - static/	Static media files which contain images and css.
 
@@ -22,8 +21,8 @@ pluggable into any django project.
 
 ### Apply Patches
 
-See the patches/ directory which contains django patches which are 
-needed for SCT. It currently contains the following files:
+As of 2007-05-13 no patches are needed any more. The customization of
+the permalink function is now included in sphene.community.sphutils.
 
 - permalink_with_additional_function_arg.diff - see <http://code.djangoproject.com/ticket/3530>
 

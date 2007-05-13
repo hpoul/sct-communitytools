@@ -10,7 +10,8 @@ from sphene.contrib.libs.common.text import bbcode
 bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
-from django.db.models import permalink
+#from django.db.models import permalink
+from sphene.community.sphutils import sphpermalink as permalink
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
