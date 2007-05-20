@@ -61,6 +61,7 @@ so this is not longer an independent implementation but bound into SCT.
 '''
 
 import markdown
+import re
 from sphene.sphwiki import wikilink_utils
 
 class WikiLinkExtension (markdown.Extension) :
@@ -84,12 +85,13 @@ class WikiLinkExtension (markdown.Extension) :
     
         # append to end of inline patterns
         #WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?\])'''
-        md.inlinePatterns.append(WikiLinks(wikilink_utils.get_wikilink_regex_pattern(), self.config))  
+        md.inlinePatterns.append(WikiLinks(wikilink_utils.get_wikilink_regex_pattern(), self.config))
 
 class WikiLinks (markdown.BasePattern) :
     def __init__(self, pattern, config):
         markdown.BasePattern.__init__(self, pattern)
         self.config = config
+        self.compiled_re = re.compile("^(.*?)%s(.*?)$" % pattern, re.DOTALL)
   
     def handleMatch(self, m, doc) :
         wikilink = wikilink_utils.handle_wikilinks_match(m.groupdict())
