@@ -557,7 +557,7 @@ class Post(models.Model):
                     logger.info( "Adding user {%s} email address to notification email." % str(monitor.user) )
                 
                     # Add email address to address tuple ...
-                    datatuple += (subject, body, None, (monitor.user.email,)),
+                    datatuple += (subject, body, None, [monitor.user.email,]),
                     sent_email_addresses += monitor.user.email,
 
                 logger.info( "Sending email notifications - {%s}" % str(datatuple) )
