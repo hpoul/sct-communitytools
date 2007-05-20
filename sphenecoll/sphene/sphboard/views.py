@@ -171,7 +171,7 @@ def post(request, group = None, category_id = None, post_id = None):
         postForm = PostForm(request.POST)
         pollForm = PostPollForm(request.POST)
         if postForm.is_valid() and 'createpoll' not in request.POST or pollForm.is_valid():
-            data = postForm.clean_data
+            data = postForm.cleaned_data
 
             if post:
                 newpost = post
@@ -198,7 +198,7 @@ def post(request, group = None, category_id = None, post_id = None):
                 newpost.save()
 
                 # Creating poll...
-                polldata = pollForm.clean_data
+                polldata = pollForm.cleaned_data
                 newpoll = Poll( post = newpost,
                                 question = polldata['question'],
                                 choices_per_user = polldata['choicesPerUser'])

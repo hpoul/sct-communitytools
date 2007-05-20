@@ -17,10 +17,10 @@ class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField()
     
     def clean(self):
-        if User.objects.filter( email__exact = self.clean_data['email_address'] ).count() != 0:
+        if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
             raise forms.ValidationError("Another user is already registered with the email address %s."
-                                        % self.clean_data['email_address'] )
-        return self.clean_data
+                                        % self.cleaned_data['email_address'] )
+        return self.cleaned_data
 
 
 def register(request, group = None):
@@ -28,7 +28,7 @@ def register(request, group = None):
     if request.method == 'POST':
         form = RegisterEmailAddress(request.POST)
         if form.is_valid():
-            regdata = form.clean_data
+            regdata = form.cleaned_data
             email_address = regdata['email_address']
             if group:
                 subject = 'Email verification required'
@@ -64,14 +64,14 @@ class RegisterForm(forms.Form):
     repassword = forms.CharField( label = 'Verify Password', widget = forms.PasswordInput )
 
     def clean(self):
-        if self.clean_data['password'] != self.clean_data['repassword']:
+        if self.cleaned_data['password'] != self.cleaned_data['repassword']:
             raise forms.ValidationError("Passwords do not match.")
-        if User.objects.filter( username__exact = self.clean_data['username'] ).count() != 0:
-            raise forms.ValidationError("The username %s is already taken." % self.clean_data['username'])
-        if User.objects.filter( email__exact = self.clean_data['email_address'] ).count() != 0:
+        if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
+            raise forms.ValidationError("The username %s is already taken." % self.cleaned_data['username'])
+        if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
             raise forms.ValidationError("Another user is already registered with the email address %s."
-                                        % self.clean_data['email_address'] )
-        return self.clean_data
+                                        % self.cleaned_data['email_address'] )
+        return self.cleaned_data
 
 
 def register_hash(request, emailHash, group = None):
@@ -81,7 +81,7 @@ def register_hash(request, emailHash, group = None):
         post.update( { 'email_address': email_address } )
         form = RegisterForm( post )
         if form.is_valid():
-            formdata = form.clean_data
+            formdata = form.cleaned_data
             user = User.objects.create_user( formdata['username'],
                                              formdata['email_address'],
                                              formdata['password'], )
