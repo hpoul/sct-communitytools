@@ -33,6 +33,8 @@ def showSnip(request, group, snipName):
     if 'type' in request.GET:
         if request.GET['type'] == 'src':
             return HttpResponse( snip.body, mimetype = 'text/plain', )
+	if request.GET['type'] == 'full':
+	    return HttpResponse( sph_markdown(snip.body), mimetype = 'text/html', )
 
     snip_rendered_body = sph_markdown(snip.body) # TODO do this in the model ? like the board post body ?
     sphdata = get_current_sphdata()
