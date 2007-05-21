@@ -518,15 +518,16 @@ class Post(models.Model):
                 # Email Notifications ....
                 thread = self.thread or self
                 # thread monitors ..
-                myQ = Q( thread = thread )
+                allmonitors = Monitor.objects.all()
+                monitors = allmonitors.filter( thread = thread )
                 # any category monitors
                 category = self.category
                 while category:
-                    myQ = myQ | Q( category = category )
+                    monitors = monitors | allmonitors.filter( category = category, thread__isnull = True )
                     category = category.parent
                     # group monitors
-                    myQ = myQ | Q( group = self.category.group )
-                    monitors = Monitor.objects.filter(myQ)
+                    monitors = monitors | allmonitors.filter( group = self.category.group, category__isnull = True, thread__isnull = True )
+                    #monitors = Monitor.objects.filter(myQ)
                     
                 subject = 'New Forum Post: %s' % self.subject
                 group = get_current_group() or self.category.group
