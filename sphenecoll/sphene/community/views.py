@@ -121,7 +121,7 @@ except:
 # I have it set in the djaptcha's settings dir
 #from django.conf.settings import FONT_PATH,FONT_SIZE
 
-def captcha_image(request,token_id):
+def captcha_image(request,token_id,group = None):
     """
     Generate a new captcha image.
     """
