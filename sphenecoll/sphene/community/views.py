@@ -17,6 +17,9 @@ class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField()
     
     def clean(self):
+        if 'email_address' not in self.cleaned_data:
+            return self.cleaned_data
+
         if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
             raise forms.ValidationError("Another user is already registered with the email address %s."
                                         % self.cleaned_data['email_address'] )
