@@ -16,6 +16,7 @@ pluggable into any django project.
 - [Django](http://www.djangoproject.com) - I'm using the latest version from 
   the subversion trunk.
 - Python >= 2.4
+- [PyCrypto](http://sf.net/projects/pycrypto) - (e.g. debian package python-crypto)
 
 ## Installation
 
