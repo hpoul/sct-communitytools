@@ -62,7 +62,6 @@ try:
     usecaptcha = True
 except:
     usecaptcha = False
-    print "No"
 
 from random import random
 
