@@ -54,7 +54,8 @@ class WikiSnip(models.Model):
         super(WikiSnip, self).save()
 
     def __str__(self):
-        return self.name
+        if not self.group: return self.name;
+        return '%s (%s)' % (self.name, self.group.name)
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
@@ -146,7 +147,9 @@ class WikiSnip(models.Model):
         return pref == None or self.__has_permission(user, pref, pref.view)
 
     class Admin:
-        pass
+        list_display = ('name', 'group', 'title', 'changed', )
+        list_filter = ('group',)
+
 
 class WikiSnipChange(models.Model):
     snip = models.ForeignKey(WikiSnip)
@@ -164,9 +167,9 @@ class WikiSnipChange(models.Model):
 
 
 class WikiPreference(models.Model):
-    snip = models.ForeignKey(WikiSnip)
-    view = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
-    edit = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
+    snip = models.ForeignKey(WikiSnip, edit_inline = models.STACKED, max_num_in_admin = 1)
+    view = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
+    edit = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
 
     class Admin:
         list_display = ( 'snip', 'view', 'edit' )
