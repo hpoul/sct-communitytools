@@ -27,7 +27,7 @@ WIKI_PERMISSIONS_ALLOWED_CHOICES = (
     (-1, 'All Users'),
     (0, 'Loggedin Users'),
     (1, 'Members of the Group'),
-    (2, 'Administrators'),
+    (2, 'Staff Members'),
     (3, 'Nobody'),
     )
 
