@@ -168,8 +168,8 @@ class WikiSnipChange(models.Model):
 
 class WikiPreference(models.Model):
     snip = models.ForeignKey(WikiSnip, edit_inline = models.STACKED, max_num_in_admin = 1)
-    view = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
-    edit = models.IntegerField( default = 0, choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
+    view = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
+    edit = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
 
     class Admin:
         list_display = ( 'snip', 'view', 'edit' )
