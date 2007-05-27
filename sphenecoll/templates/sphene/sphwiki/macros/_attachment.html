@@ -1,0 +1,2 @@
+{% load sph_extras %}
+<a href="{{ attachment.get_fileupload_url }}">{% if params.label %}{{ params.label }}{% else %}{{ attachment.get_fileupload_filename|sph_basename }}{% endif %}</a>

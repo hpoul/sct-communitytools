@@ -1,5 +1,5 @@
 
-
+import re
 
 # Decorator. Takes a function that returns a tuple in this format:
 #     (viewname, viewargs, viewkwargs)
@@ -126,4 +126,25 @@ class CaptchaField(forms.fields.MultiValueField):
     def compress(self, data_list):
         return None
 
+
+
+
+class HTML:
+    """
+    Used as a dummy markdown entity which simply contains rendered HTML content.
+    """
+    type = "text"
+    attrRegExp = re.compile(r'\{@([^\}]*)=([^\}]*)}') # {@id=123}
+    
+    def __init__(self, value):
+        self.value = value
+
+    def attributeCallback(self, match) :
+        self.parent.setAttribute(match.group(1), match.group(2))
+        
+    def handleAttributes(self) :
+        self.value = self.attrRegExp.sub(self.attributeCallback, self.value)
+
+    def toxml(self):
+        return self.value
 

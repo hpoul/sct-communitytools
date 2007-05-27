@@ -2,8 +2,7 @@ from django import template
 from time import strftime
 import re
 
-from sphene.sphwiki.models import WikiAttachment
-from sphene.sphboard.models import Category, Post
+from sphene.community.sphutils import HTML
 
 from sphene.contrib.libs.markdown import mdx_macros
 
@@ -13,18 +12,6 @@ register = template.Library()
 class SimpleHelloWorldMacro (object):
     def handleMacroCall(self, doc, params):
         return doc.createTextNode("Hello World!")
-
-class ImageMacro (object):
-    def handleMacroCall(self, doc, params):
-        if params.has_key( 'id' ):
-            attachment = WikiAttachment.objects.get( id = params['id'] )
-            el = doc.createElement( 'img' )
-            el.setAttribute( 'src', attachment.get_fileupload_url() )
-            for paramName in [ 'width', 'height', 'alt', 'align' ]:
-                if params.has_key( paramName ):
-                    el.setAttribute( paramName, params[paramName] )
-            return el
-        return doc.createTextNode("Error, no 'id' given for img macro.")
 
 import urllib2
 from django.core.cache import cache
@@ -72,50 +59,39 @@ class IncludeMacro (mdx_macros.PreprocessorMacro):
         """
         return doc.createTextNode("Error, no 'url' given for include macro.")
 
-class HTML:
-    type = "text"
-    attrRegExp = re.compile(r'\{@([^\}]*)=([^\}]*)}') # {@id=123}
-    
-    def __init__(self, value):
-        self.value = value
-
-    def attributeCallback(self, match) :
-        self.parent.setAttribute(match.group(1), match.group(2))
-        
-    def handleAttributes(self) :
-        self.value = self.attrRegExp.sub(self.attributeCallback, self.value)
-
-    def toxml(self):
-        return self.value
-
-"""
-displays threads in the given board category
-"""
 class NewsMacro (object):
-   def handleMacroCall(self, doc, params):
-       if not params.has_key( 'category' ):
-           return doc.createTextNode("Error, no 'category' or 'template' given for news macro.")
+    """
+    displays threads in the given board category
+    """
+    def handleMacroCall(self, doc, params):
+        from sphene.sphboard.models import Post
 
-       limit = 'limit' in params and params['limit'] or 5
-       templateName = 'wiki/news.html'
-       if params.has_key( 'template' ): templateName = params['template']
+        if not params.has_key( 'category' ):
+            return doc.createTextNode("Error, no 'category' or 'template' given for news macro.")
 
-       threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )[:limit]
+        limit = 'limit' in params and params['limit'] or 5
+        templateName = 'wiki/news.html'
+        if params.has_key( 'template' ): templateName = params['template']
+        
+        threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )[:limit]
 
-       t = template.loader.get_template( templateName )
-       baseURL = ''
-       if params.has_key( 'baseURL' ): baseURL = params['baseURL']
-       c = template.Context({ 'threads': threads,
-                              'baseURL': baseURL,
-                              })
-       
-       return HTML( t.render(c) )
+        t = template.loader.get_template( templateName )
+        baseURL = ''
+        if params.has_key( 'baseURL' ): baseURL = params['baseURL']
+        c = template.Context({ 'threads': threads,
+                               'baseURL': baseURL,
+                               })
+        
+        return HTML( t.render(c) )
+
+
+        
 
 from sphene.community.middleware import get_current_sphdata, get_current_group
 
 
 @register.filter
-def sph_markdown(value, arg='', oldmd=None):
+def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
     try:
         from sphene.contrib.libs.markdown import markdown
     except ImportError:
@@ -124,14 +100,17 @@ def sph_markdown(value, arg='', oldmd=None):
         return value
     else:
         save_mode = arg == 'safe'
+        macros = { 'helloWorld': SimpleHelloWorldMacro(),
+                   'news': NewsMacro(),
+                   'include': IncludeMacro(),
+                   }
+        macros.update(extra_macros),
         md = markdown.Markdown(value,
                                extensions = [ 'footnotes', 'wikilink', 'macros', 'toc' ],
                                extension_configs = { 'wikilink': [ ],
-                                                     'macros': [ ( 'macros',
-                                                                   { 'helloWorld': SimpleHelloWorldMacro(),
-                                                                     'img': ImageMacro(),
-                                                                     'news': NewsMacro(),
-                                                                     'include': IncludeMacro(), } )],
+                                                     'macros': [ ( 'macros', macros
+                                                                 )
+                                                               ],
                                                      'toc': { 'include_header_one_in_toc': True, },
                                                      },
                                  )

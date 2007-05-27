@@ -11,8 +11,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from difflib import ndiff, HtmlDiff
 
+from sphene.sphwiki import wikimacros
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
-from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.community import PermissionDenied
 from sphene.community.middleware import get_current_sphdata
 
@@ -34,9 +34,10 @@ def showSnip(request, group, snipName):
         if request.GET['type'] == 'src':
             return HttpResponse( snip.body, mimetype = 'text/plain', )
 	if request.GET['type'] == 'full':
-	    return HttpResponse( sph_markdown(snip.body), mimetype = 'text/html', )
+	    return HttpResponse( snip.render(), mimetype = 'text/html', )
 
-    snip_rendered_body = sph_markdown(snip.body) # TODO do this in the model ? like the board post body ?
+    # TODO do this in the model ? like the board post body ?
+    snip_rendered_body = snip.render()
     sphdata = get_current_sphdata()
     if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
     
@@ -167,7 +168,7 @@ def editSnip(request, group, snipName):
 
     if request.method == 'POST':
         if 'type' in request.POST and request.POST['type'] == 'preview':
-            return HttpResponse( sph_markdown(request.POST['body']) )
+            return HttpResponse( WikiSnip(body = request.POST['body']).render() )
         form = SnipForm(request.POST)
         if form.is_valid():
             snip = form.save(commit=False)

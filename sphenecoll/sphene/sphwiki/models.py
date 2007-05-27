@@ -1,5 +1,6 @@
 from django.db import models
 
+from sphene.community.templatetags.sph_extras import sph_markdown
 from django.contrib.auth.models import User
 #from django.db.models import permalink
 from sphene.community.sphutils import sphpermalink as permalink
@@ -45,6 +46,14 @@ class WikiSnip(models.Model):
     changelog = ( ( '2007-04-08 00', 'alter', 'ALTER creator_id DROP NOT NULL', ),
                   ( '2007-04-08 01', 'alter', 'ALTER editor_id DROP NOT NULL', ),
                   )
+
+    def render(self):
+        from sphene.sphwiki import wikimacros
+        return sph_markdown(self.body,
+                            extra_macros = { 'attachmentlist': wikimacros.AttachmentListMacro( snip = self, ),
+                                             'attachment': wikimacros.AttachmentMacro( snip = self, ),
+                                             'img': wikimacros.ImageMacro( ),
+                                             })
 
     def save(self):
         if not self.id:

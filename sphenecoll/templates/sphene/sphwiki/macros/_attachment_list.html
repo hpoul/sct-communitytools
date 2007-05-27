@@ -1,0 +1,11 @@
+{% load sph_extras %}
+
+<ul class="sphwiki attachmentlist">
+  {% for attachment in attachment_list %}
+    <li><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a>
+      {% if attachment.description %}
+        - {{ attachment.description }}
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
