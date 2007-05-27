@@ -147,6 +147,9 @@ import re
 from operator import add
 from time import time
 from django.db import connection
+import logging
+
+logger = logging.getLogger('sphene.community.middleware')
 
 class StatsMiddleware(object):
 
@@ -195,6 +198,10 @@ class StatsMiddleware(object):
                 s = s[:match.start('cmt')] + \
                     match.group('fmt') % stats + \
                     s[match.end('cmt'):]
+                out = match.group('fmt') % stats
+                logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
+                #for query in connection.queries:
+                #    logger.debug( '  %5s : %s' % (query['time'], query['sql'], ) )
                 response.content = s
 
         return response
