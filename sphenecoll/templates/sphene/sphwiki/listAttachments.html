@@ -6,7 +6,7 @@
 
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
-  <a href="{{ snip.get_absolute_url }}">Back to Snip</a> - <a href="create/">Create New Attachment</a>
+  <a href="{{ snip.get_absolute_url }}">Back to Snip</a> - <a href="{{ snip.get_absolute_create_attachmenturl }}">Create New Attachment</a>
   <br/><br/>
   <ul>
     {% for attachment in object_list %}

@@ -136,7 +136,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             attachment.uploader = request.user
             attachment.save_fileupload_file( reqdata['fileupload']['filename'], reqdata['fileupload']['content'] )
             attachment.save()
-            return HttpResponseRedirect( '../../../attachments/%s/' % snipName )
+            return HttpResponseRedirect( snip.get_absolute_attachmenturl() )
     else:
         form = AttachmentForm()
 
