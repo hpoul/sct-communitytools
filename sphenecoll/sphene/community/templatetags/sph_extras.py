@@ -1,8 +1,9 @@
 from django import template
+from django.conf import settings
 from time import strftime
 import re
 
-from sphene.community.sphutils import HTML
+from sphene.community.sphutils import HTML, get_sph_setting
 
 from sphene.contrib.libs.markdown import mdx_macros
 
@@ -114,7 +115,8 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
                                                      'toc': { 'include_header_one_in_toc': True, },
                                                      },
                                  )
-        md.header_numbering = True
+        md.header_numbering = get_sph_setting('markdown_header_numbering', True)
+        md.header_numbering_start = get_sph_setting('markdown_header_numbering_start', 1)
         if oldmd and hasattr(oldmd,'header_numbers'): md.header_numbers = oldmd.header_numbers
         ret = md.toString()
         if hasattr(md, 'tocDiv'):

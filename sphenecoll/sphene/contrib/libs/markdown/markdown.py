@@ -926,6 +926,7 @@ class Markdown:
         self.stripTopLevelTags = 1
         self.docType = ""
         self.header_numbering = False
+        self.header_numbering_start = 1
 
         self.preprocessors = [ HEADER_PREPROCESSOR,
                                LINE_PREPROCESSOR,
@@ -1143,7 +1144,7 @@ class Markdown:
                 m = RE.regExp['header'].match(paragraph[0])
                 if m :
                     level = len(m.group(1))
-                    h = self.doc.createElement("h%d" % level)
+                    h = self.doc.createElement("h%d" % (level + self.header_numbering_start - 1))
                     parent_elem.appendChild(h)
                     header_str = ''
                     if self.header_numbering:

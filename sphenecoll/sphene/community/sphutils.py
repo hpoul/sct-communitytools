@@ -1,5 +1,6 @@
 
 import re
+from django.conf import settings
 
 # Decorator. Takes a function that returns a tuple in this format:
 #     (viewname, viewargs, viewkwargs)
@@ -148,3 +149,10 @@ class HTML:
     def toxml(self):
         return self.value
 
+
+
+def get_sph_setting(name, default_value = None):
+    if not hasattr(settings, 'SPH_SETTINGS'):
+        return default_value
+
+    return settings.SPH_SETTINGS.get(name, default_value)
