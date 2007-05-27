@@ -115,8 +115,8 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
                                                      'toc': { 'include_header_one_in_toc': True, },
                                                      },
                                  )
-        md.header_numbering = get_sph_setting('markdown_header_numbering', True)
-        md.header_numbering_start = get_sph_setting('markdown_header_numbering_start', 1)
+        md.number_headings = get_sph_setting('markdown_number_headings', True)
+        md.top_heading_level = get_sph_setting('markdown_top_heading_level', 1)
         if oldmd and hasattr(oldmd,'header_numbers'): md.header_numbers = oldmd.header_numbers
         ret = md.toString()
         if hasattr(md, 'tocDiv'):
