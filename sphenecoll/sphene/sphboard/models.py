@@ -147,6 +147,9 @@ class Category(models.Model):
             return False;
         if level == 0:
             return True;
+
+        if level == 1 and self.group.get_member(user) != None:
+            return True
         
         return user.has_perm( 'sphboard.add_post' );
 
