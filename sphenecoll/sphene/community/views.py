@@ -33,7 +33,7 @@ def register(request, group = None):
         if form.is_valid():
             regdata = form.cleaned_data
             email_address = regdata['email_address']
-            if group:
+            if not group:
                 subject = 'Email verification required'
             else:
                 subject = 'Email verification required for site %s' % group.get_name()
