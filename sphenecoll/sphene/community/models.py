@@ -33,11 +33,12 @@ class Group(models.Model):
 		pass
 
 class GroupMember(models.Model):
-        group = models.ForeignKey( Group )
+        group = models.ForeignKey( Group, edit_inline = models.TABULAR )
         user = models.ForeignKey( User )
 
         class Admin:
-                pass
+		list_display = ('group', 'user',)
+		list_filter = ('group',)
 
 class Theme(models.Model):
 	name = models.CharField(maxlength = 250)
