@@ -74,7 +74,9 @@ class NewsMacro (object):
         templateName = 'wiki/news.html'
         if params.has_key( 'template' ): templateName = params['template']
         
-        threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )[:limit]
+        category_ids = params['category'].split(',')
+        threads = Post.objects.filter( category__id__in = category_ids, thread__isnull = True ).order_by( '-postdate' )[:limit]
+        #threads = Post.objects.filter( category__id = params['category'], thread__isnull = True ).order_by( '-postdate' )[:limit]
 
         t = template.loader.get_template( templateName )
         baseURL = ''
