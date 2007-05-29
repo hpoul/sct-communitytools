@@ -39,7 +39,10 @@ class AttachmentMacro (object):
 
 
         templateName = params.get('template', 'sphene/sphwiki/macros/_attachment.html')
-        attachment = WikiAttachment.objects.get( pk = params['id'] )
+        try:
+            attachment = WikiAttachment.objects.get( pk = params['id'] )
+        except WikiAttachment.DoesNotExist:
+            return HTML( '<b>Attachment does not exist: %s</b>' % params['id'] )
 
         t = template.loader.get_template( templateName )
         c = template.Context( { 'attachment': attachment,
