@@ -67,14 +67,24 @@ class RegisterForm(forms.Form):
     repassword = forms.CharField( label = 'Verify Password', widget = forms.PasswordInput )
 
     def clean(self):
+        if not 'password' in self.cleaned_data or not 'repassword' in self.cleaned_data:
+            return self.cleaned_data
+        
         if self.cleaned_data['password'] != self.cleaned_data['repassword']:
             raise forms.ValidationError("Passwords do not match.")
+
+        return self.cleaned_data
+
+    def clean_username(self):
         if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
             raise forms.ValidationError("The username %s is already taken." % self.cleaned_data['username'])
+        return self.cleaned_data['username']
+
+    def clean_email_address(self):
         if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
             raise forms.ValidationError("Another user is already registered with the email address %s."
                                         % self.cleaned_data['email_address'] )
-        return self.cleaned_data
+        return self.cleaned_data['email_address']
 
 
 def register_hash(request, emailHash, group = None):
