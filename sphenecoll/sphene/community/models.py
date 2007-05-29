@@ -33,8 +33,8 @@ class Group(models.Model):
 		pass
 
 class GroupMember(models.Model):
-        group = models.ForeignKey( Group, edit_inline = models.TABULAR )
-        user = models.ForeignKey( User )
+        group = models.ForeignKey( Group, edit_inline = models.TABULAR, core = True )
+        user = models.ForeignKey( User, core = True, )
 
         class Admin:
 		list_display = ('group', 'user',)
