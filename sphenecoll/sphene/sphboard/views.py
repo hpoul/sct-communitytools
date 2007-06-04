@@ -34,7 +34,9 @@ def showCategory(request, group = None, category_id = None, showType = None):
     if category_id != None and category_id != '0':
         args['parent__isnull'] = False
         args['parent'] = category_id
-        categoryObject = Category.objects.get( pk = category_id )
+        categoryObject = get_object_or_404(Category, pk = category_id)
+        if not categoryObject.has_view_permission( request.user ):
+            raise PermissionDenied()
         categoryObject.touch(request.session, request.user)
         if sphdata != None: sphdata['subtitle'] = categoryObject.name
         
@@ -63,9 +65,18 @@ def showCategory(request, group = None, category_id = None, showType = None):
         if showType != 'threads':
             return render_to_response( templateName, context,
                                        context_instance = RequestContext(request) )
+        
+        ## Show the latest threads from all categories.
+        all_categories = Category.objects.filter( group = group )
+        allowed_categories = ()
+        for category in all_categories:
+            if category.has_view_permission( request.user ):
+                allowed_categories += (category.id,)
+        
         if group != None: thread_args = { 'category__group': group }
         else: thread_args = { 'category__group__isnull': True }
         thread_args[ 'thread__isnull'] = True
+        thread_args[ 'category__id__in'] = allowed_categories
         context['isShowLatest'] = True
         thread_list = Post.objects.filter( **thread_args )
     else:
@@ -88,6 +99,8 @@ def showCategory(request, group = None, category_id = None, showType = None):
 
 def showThread(request, thread_id, group = None):
     thread = Post.objects.filter( pk = thread_id ).get()
+    if not thread.category.has_view_permission(request.user):
+        raise PermissionDenied()
     thread.touch( request.session, request.user )
     #thread = get_object_or_404(Post, pk = thread_id )
 
