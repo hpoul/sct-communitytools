@@ -192,7 +192,11 @@ class WikiAttachment(models.Model):
     uploader = models.ForeignKey(User, editable = False)
     uploaded = models.DateTimeField(editable = False)
     fileupload = models.FileField( upload_to = 'var/sphene/sphwiki/attachment/%Y/%m/%d' )
-    description = models.TextField()
+    description = models.TextField(blank=True)
+
+    def get_absolute_editurl(self):
+        return ('sphene.sphwiki.views.attachmentEdit', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'attachmentId': self.id } )
+    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
 
     def save(self):
         self.uploaded = datetime.today()

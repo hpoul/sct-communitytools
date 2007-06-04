@@ -3,16 +3,38 @@
 {% load sphboard_extras %}
 {% load sph_extras %}
 
-
 {% block content %}
+<script language="JavaScript" type="text/javascript">
+<!--
+  function verifyDelete(filename) {
+    return confirm("Do you really want to delete the Attachment: " + filename + " ?");
+  }
+
+//-->
+</script>
+
+
   {% include "sphene/sphwiki/_snip_header.html" %}
   <a href="{{ snip.get_absolute_url }}">Back to Snip</a> - <a href="{{ snip.get_absolute_create_attachmenturl }}">Create New Attachment</a>
   <br/><br/>
-  <ul>
+  <table border="0" class="sphwiki attachments">
+    <tr>
+      <th>Id</th>
+      <th>Action</th>
+      <th>Attachment</th>
+      <th>Upload Date</th>
+      <th>Uploader</th>
+    </tr>
     {% for attachment in object_list %}
-      <li>{{ attachment.id }} - <a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></li>
+      <tr>
+        <td>{{ attachment.id }}</td>
+        <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.get_fileupload_filename|sph_basename }}')"><img src="/static/sphene/sphwiki/icons/edit-delete.png" alt="Delete" title="Delete" border="0" /></a></td>
+        <td><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></td>
+        <td>{{ attachment.uploaded|sph_date }}</td>
+        <td>{% sphboard_displayUserName attachment.uploader %}</td>
+      </tr>
     {% endfor %}
-  </ul>
+  </table>
   {% if is_paginated %}
     {{ hits }} Attachments. {% sphboard_pagination pages page %}
   {% else %}

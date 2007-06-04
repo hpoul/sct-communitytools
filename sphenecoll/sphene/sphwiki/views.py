@@ -14,6 +14,7 @@ from difflib import ndiff, HtmlDiff
 from sphene.sphwiki import wikimacros
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community import PermissionDenied
+from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_sphdata
 
 # Create your views here.
@@ -117,11 +118,20 @@ def attachment(request, group, snipName):
                         allow_empty = True )
 
 def attachmentEdit(request, group, snipName, attachmentId = None):
+    attachment = None
     if attachmentId is None:
         AttachmentForm = forms.models.form_for_model( WikiAttachment )
     else:
         attachment = WikiAttachment.objects.get(id=attachmentId)
         AttachmentForm = forms.models.form_for_instance(attachment)
+
+    if attachment:
+        if not attachment.snip.has_edit_permission():
+            raise PermissionDenied()
+    if 'delete' in request.GET and request.GET['delete'] == '1':
+        attachment.delete()
+        request.user.message_set.create( message = "Successfully deleted attachment." )
+        return HttpResponseRedirect( attachment.snip.get_absolute_attachmenturl() )
 
     AttachmentForm.base_fields['fileupload'].widget = widgets.FileInput()
 

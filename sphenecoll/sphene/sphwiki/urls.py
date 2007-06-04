@@ -6,7 +6,7 @@ urlpatterns = patterns('',
                        (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/Start'}),
                                               )
 
-snip = r'(?P<snipName>[\w/:\-]+?)'
+snip = r'(?P<snipName>[\w/:\-.]+?)'
 
 urlpatterns += patterns('sphene.sphwiki.views',
                         (r'^recentchanges/$', 'recentChanges'),
@@ -14,7 +14,7 @@ urlpatterns += patterns('sphene.sphwiki.views',
                         (r'^edit/'          + snip + r'/$', 'editSnip'),
                         (r'^history/'       + snip + r'/$', 'history'),
                         (r'^diff/'          + snip + r'/(?P<changeId>\d+)/$', 'diff'),
-                        (r'^attachments/create/'   + snip + r'/$', 'attachmentEdit'),
                         (r'^attachments/edit/'   + snip + r'/(?P<attachmentId>\d+)/$', 'attachmentEdit'),
+                        (r'^attachments/create/'   + snip + r'/$', 'attachmentEdit'),
                         (r'^attachments/list/'   + snip + r'/$', 'attachment'),
                         )
