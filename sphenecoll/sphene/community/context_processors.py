@@ -14,7 +14,7 @@ def navigation(request):
         return { 'navigation_left': Navigation.objects.filter( group = group,
                                                                navigationType = 0 ),
                  'urlPrefix': request.attributes.get('urlPrefix', ''),
-		 'group': group,
+                 'group': group,
                  'sph': sphdata,
                  'sph_settings': sph_settings,
                  }

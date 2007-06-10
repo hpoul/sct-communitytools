@@ -227,8 +227,8 @@ class ModPythonSetLoggedinUser(object):
 class PsycoMiddleware(object):
     def process_request(self, request):
         import psyco
-	psyco.profile()
-	return None
+        psyco.profile()
+        return None
 
 from sphene.community import PermissionDenied
 from django.template.context import RequestContext

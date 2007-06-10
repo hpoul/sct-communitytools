@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Group(models.Model):
-	name = models.CharField(maxlength = 250)
-	longname = models.CharField(maxlength = 250)
-	default_theme = models.ForeignKey('Theme', null = True, blank = True)
-	parent = models.ForeignKey('Group', null = True, blank = True)
+        name = models.CharField(maxlength = 250)
+        longname = models.CharField(maxlength = 250)
+        default_theme = models.ForeignKey('Theme', null = True, blank = True)
+        parent = models.ForeignKey('Group', null = True, blank = True)
         baseurl = models.CharField(maxlength = 250)
 
         def get_name(self):
@@ -26,29 +26,29 @@ class Group(models.Model):
                 except GroupMember.DoesNotExist:
                         return None
 
-	def __str__(self):
-		return self.name;
+        def __str__(self):
+                return self.name;
 
-	class Admin:
-		pass
+        class Admin:
+                pass
 
 class GroupMember(models.Model):
         group = models.ForeignKey( Group, edit_inline = models.TABULAR, core = True )
         user = models.ForeignKey( User, core = True, )
 
         class Admin:
-		list_display = ('group', 'user',)
-		list_filter = ('group',)
+                list_display = ('group', 'user',)
+                list_filter = ('group',)
 
 class Theme(models.Model):
-	name = models.CharField(maxlength = 250)
-	path = models.CharField(maxlength = 250)
+        name = models.CharField(maxlength = 250)
+        path = models.CharField(maxlength = 250)
 
-	def __str__(self):
-		return self.name;
+        def __str__(self):
+                return self.name;
 
-	class Admin:
-		pass
+        class Admin:
+                pass
 
 NAVIGATION_URL_TYPES = (
         (0, 'Relative (e.g. /wiki/show/Start)'),
