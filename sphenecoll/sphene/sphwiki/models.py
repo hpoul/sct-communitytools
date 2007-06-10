@@ -3,13 +3,15 @@ from django.db import models
 from sphene.community.templatetags.sph_extras import sph_markdown
 from django.contrib.auth.models import User
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink
+from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
 
 from sphene.community.models import Group
 
 from datetime import datetime
 
 from sphene.community.middleware import get_current_request, get_current_user
+
+import os
 
 """
 def permalink(func):
@@ -55,6 +57,95 @@ class WikiSnip(models.Model):
                                              'img': wikimacros.ImageMacro( ),
                                              })
 
+    def pdf_get_cachefile(self):
+        """ Returns the pathname to the cache file for this wiki snip. """
+        if not get_sph_setting( 'wiki_pdf_generation', False ) or not self.pdf_enabled():
+            raise Exception('PDF Generation not enabled by configuration.')
+        
+        cachedir = get_sph_setting( 'wiki_pdf_generation_cachedir', '/tmp/sct_pdf' )
+        
+        if not os.path.isdir( cachedir ):
+            os.mkdir( cachedir )
+            
+        cachefile = os.path.join( cachedir, '%s_%d.pdf' % (self.name, self.id) )
+
+        return cachefile
+
+    def pdf_needs_regenerate(self):
+        """ Determines if the PDF cachefile needs to be regenerated. """
+        cachefile = self.pdf_get_cachefile()
+        
+        if not os.path.isfile( cachefile ):
+            return False
+        
+        # Check if cache file is older than last modification of wiki snip.
+        modifytime = datetime.fromtimestamp(os.path.getmtime( cachefile ))
+        if modifytime < self.changed:
+            return True
+        return False
+
+    def pdf_generate(self):
+        """ Generates the PDF for this snip and stores it into cachedir. """
+        cachefile = self.pdf_get_cachefile()
+        xmlfile = os.path.join( cachedir, '%s_%d.xhtml' % (self.name, self.id) )
+
+        snip_rendered_body = sph_markdown(self.body) # TODO do this in the model ? like the board post body ?
+        snip_rendered_body = snip_rendered_body.replace( '<img src="/static/sphene/', '<img src="%s/static/sphene/' % os.path.join(settings.LIB_PATH, '..') )
+        xmlout = open(xmlfile, 'w')
+
+        xmlout.write('''
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>%(title)s</title>
+  </head>
+  <body>
+  ''' % { 'title': self.title or self.name } )
+        xmlout.write(snip_rendered_body)
+        xmlout.write('''
+  </body>
+</html>
+''')
+        
+        xmlout.close()
+        
+        command = get_sph_setting('wiki_pdf_generation_command')
+        os.system( command % { 'srcfile': xmlfile, 'destfile': cachefile, } )
+        if not os.path.isfile( cachefile ):
+            raise Exception( 'Error while generating PDF.' )
+
+    def pdf_get(self):
+        """
+        Returns the pathname to the generated PDF. - If a regeneration is
+        necessary it is done.
+        Raises an Exception if anything goes wrong.
+        """
+        if self.pdf_needs_regenerate():
+            self.pdf_generate()
+
+        cachefile = self.pdf_get_cachefile()
+
+        return cachefile
+
+    def pdf_enabled(self):
+        """
+        Checks if PDF generation is 1. enabled and 2. the current user has
+        permission. (E.g. setting 'wiki_pdf_generation' to 'loggedin' would
+        only allow loggedin users to view PDF versions.)
+        This method is ment to be used in templates.
+        """
+        setting = get_sph_setting('wiki_pdf_generation')
+        if setting == True:
+            return True
+        if setting == 'loggedin':
+            return get_current_user() and get_current_user().is_authenticated()
+        if setting == 'staff':
+            return get_current_user() and get_current_user().is_authenticated() and get_current_user().is_staff
+
+        return False
+
     def save(self):
         if not self.id:
             self.created = datetime.today()
@@ -89,6 +180,10 @@ class WikiSnip(models.Model):
     def get_absolute_recentchangesurl(self):
         return ('sphene.sphwiki.views.recentChanges', (), { 'groupName': self.group.name })
     get_absolute_recentchangesurl = permalink(get_absolute_recentchangesurl, get_current_request)
+
+    def get_absolute_pdfurl(self):
+        return ('sphene.sphwiki.views.generatePDF', (), { 'groupName': self.group.name, 'snipName': self.name })
+    get_absolute_pdfurl = permalink(get_absolute_pdfurl, get_current_request)
 
     def get_parent(self):
         lastslash = len(self.name)

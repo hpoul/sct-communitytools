@@ -7,6 +7,7 @@ from django.template.context import RequestContext
 from django import newforms as forms
 from django.newforms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
 
 from datetime import datetime
 from difflib import ndiff, HtmlDiff
@@ -16,6 +17,8 @@ from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community import PermissionDenied
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_sphdata
+
+import os
 
 # Create your views here.
 
@@ -34,8 +37,8 @@ def showSnip(request, group, snipName):
     if 'type' in request.GET:
         if request.GET['type'] == 'src':
             return HttpResponse( snip.body, mimetype = 'text/plain', )
-	if request.GET['type'] == 'full':
-	    return HttpResponse( snip.render(), mimetype = 'text/html', )
+        if request.GET['type'] == 'full':
+            return HttpResponse( snip.render(), mimetype = 'text/html', )
 
     # TODO do this in the model ? like the board post body ?
     snip_rendered_body = snip.render()
@@ -48,6 +51,26 @@ def showSnip(request, group, snipName):
                                  'snip_rendered_body': snip_rendered_body,
                                  },
                                context_instance = RequestContext(request) )
+
+
+def generatePDF(request, group, snipName):
+    if not hasattr(settings, 'SPH_SETTINGS'):
+        return HttpResponse( 'Not configured.' )
+
+    snip = get_object_or_404( WikiSnip,
+                              group = group,
+                              name = snipName )
+
+
+    try:
+        contents = open(snip.pdf_get(), 'rb').read()
+    except Exception, e:
+        return HttpResponse('Error while generating PDF file. %s' % str(e))
+
+    response = HttpResponse(contents, mimetype='application/pdf')
+    
+    
+    return response
 
 def history(request, group, snipName):
     snip = get_object_or_404( WikiSnip,
@@ -141,7 +164,6 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
         form = AttachmentForm(reqdata)
         if form.is_valid():
             attachment = form.save(commit=False)
-            print "filename: %s" % reqdata['fileupload']['filename']
             snip = WikiSnip.objects.get( name__exact = snipName )
             attachment.snip = snip
             attachment.uploader = request.user

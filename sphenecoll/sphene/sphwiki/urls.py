@@ -11,6 +11,7 @@ snip = r'(?P<snipName>[\w/:\-.]+?)'
 urlpatterns += patterns('sphene.sphwiki.views',
                         (r'^recentchanges/$', 'recentChanges'),
                         (r'^show/'          + snip + r'/$', 'showSnip'),
+                        (r'^pdf/'           + snip + r'/$', 'generatePDF'),
                         (r'^edit/'          + snip + r'/$', 'editSnip'),
                         (r'^history/'       + snip + r'/$', 'history'),
                         (r'^diff/'          + snip + r'/(?P<changeId>\d+)/$', 'diff'),
