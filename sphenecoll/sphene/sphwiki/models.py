@@ -1,7 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
 
 from sphene.community.templatetags.sph_extras import sph_markdown
-from django.contrib.auth.models import User
 #from django.db.models import permalink
 from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
 
@@ -12,6 +13,7 @@ from datetime import datetime
 from sphene.community.middleware import get_current_request, get_current_user
 
 import os
+import re
 
 """
 def permalink(func):
@@ -66,8 +68,9 @@ class WikiSnip(models.Model):
         
         if not os.path.isdir( cachedir ):
             os.mkdir( cachedir )
-            
-        cachefile = os.path.join( cachedir, '%s_%d.pdf' % (self.name, self.id) )
+
+        filename = re.sub("[^A-Za-z0-9]", "_", self.name)
+        cachefile = os.path.join( cachedir, '%s_%d.pdf' % (filename, self.id) )
 
         return cachefile
 
@@ -76,7 +79,7 @@ class WikiSnip(models.Model):
         cachefile = self.pdf_get_cachefile()
         
         if not os.path.isfile( cachefile ):
-            return False
+            return True
         
         # Check if cache file is older than last modification of wiki snip.
         modifytime = datetime.fromtimestamp(os.path.getmtime( cachefile ))
@@ -87,10 +90,12 @@ class WikiSnip(models.Model):
     def pdf_generate(self):
         """ Generates the PDF for this snip and stores it into cachedir. """
         cachefile = self.pdf_get_cachefile()
-        xmlfile = os.path.join( cachedir, '%s_%d.xhtml' % (self.name, self.id) )
+        xmlfile = cachefile + '.xhtml'
 
         snip_rendered_body = sph_markdown(self.body) # TODO do this in the model ? like the board post body ?
-        snip_rendered_body = snip_rendered_body.replace( '<img src="/static/sphene/', '<img src="%s/static/sphene/' % os.path.join(settings.LIB_PATH, '..') )
+        sctpath = hasattr(settings.LIB_PATH) and settings.LIB_PATH or '.'
+        static_filepath = get_sph_setting( 'wiki_pdf_generation_static_filepath', os.path.join(sctpath, '..', 'static', 'sphene') )
+        snip_rendered_body = snip_rendered_body.replace( '<img src="/static/sphene/', '<img src="%s/' % static_filepath )
         xmlout = open(xmlfile, 'w')
 
         xmlout.write('''
