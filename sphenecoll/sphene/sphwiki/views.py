@@ -14,9 +14,9 @@ from difflib import ndiff, HtmlDiff
 
 from sphene.sphwiki import wikimacros
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
-from sphene.community import PermissionDenied
+from sphene.community import PermissionDenied, sphutils
 from sphene.community.sphutils import get_sph_setting
-from sphene.community.middleware import get_current_sphdata
+from sphene.community.middleware import get_current_sphdata, get_current_user
 
 import os
 
@@ -180,23 +180,36 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
                                context_instance = RequestContext(request) )
 
 
+class CaptchaEditBaseForm(forms.BaseForm):
+    """ BaseForm which displays a captcha, if required. """
+
+    def __init__(self, *args, **kwargs):
+        super(CaptchaEditBaseForm, self).__init__(*args, **kwargs)
+        
+        if sphutils.has_captcha_support() and not get_current_user().is_authenticated():
+            self.fields['captcha'] = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
+                                                           help_text = 'Please enter the result of the above calculation.',
+                                                           )
+
+
 def editSnip(request, group, snipName):
     original_body = None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
         original_body = snip.body
-        SnipForm = forms.models.form_for_instance(snip)
+        SnipForm = forms.models.form_for_instance(snip, form = CaptchaEditBaseForm)
     except WikiSnip.DoesNotExist:
-        SnipForm = forms.models.form_for_model(WikiSnip)
+        SnipForm = forms.models.form_for_model(WikiSnip, form = CaptchaEditBaseForm)
         snip = WikiSnip( name = snipName, group = group )
         #snip = None
 
     if not snip.has_edit_permission():
         raise PermissionDenied()
-    
+
     SnipForm.base_fields['body'].widget.attrs['cols'] = 80
     SnipForm.base_fields['body'].widget.attrs['rows'] = 30
+
 
     if request.method == 'POST':
         if 'type' in request.POST and request.POST['type'] == 'preview':
