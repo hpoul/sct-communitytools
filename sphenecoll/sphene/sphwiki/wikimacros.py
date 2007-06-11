@@ -55,7 +55,10 @@ class AttachmentMacro (object):
 class ImageMacro (object):
     def handleMacroCall(self, doc, params):
         if params.has_key( 'id' ):
-            attachment = WikiAttachment.objects.get( id = params['id'] )
+            try:
+                attachment = WikiAttachment.objects.get( id = params['id'] )
+            except WikiAttachment.DoesNotExist:
+                return HTML( '<b>Attachment for image does not exist: %s</b>' % params['id'] )
             el = doc.createElement( 'img' )
             el.setAttribute( 'src', attachment.get_fileupload_url() )
             for paramName in [ 'width', 'height', 'alt', 'align' ]:
