@@ -282,6 +282,10 @@ class Category(models.Model):
         self.__monitor = monitor
         return self.__monitor
 
+    def get_absolute_url(self):
+        return ('sphene.sphboard.views.showCategory', (), { 'groupName': self.group.name, 'category_id': self.id })
+    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    
     def __str__(self):
         return self.name;
 

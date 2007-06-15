@@ -76,14 +76,19 @@ class GroupMiddleware(object):
             groupName = get_current_urlconf_params()['groupName']
             group = get_object_or_404(Group, name = groupName)
         if 'groupName' in view_kwargs:
-            groupName = view_kwargs['groupName']
-            if groupName == None: groupName = get_current_urlconf_params()['groupName']
-            if group == None:
-                group = get_object_or_404(Group, name = groupName )
-            del view_kwargs['groupName']
-            view_kwargs['group'] = group
-            request.attributes['group'] = group
-            #settings.TEMPLATE_DIRS = ( "/tmp/hehe", ) + settings.TEMPLATE_DIRS
+            if view_kwargs.get( 'noGroup', False ):
+                del view_kwargs['groupName']
+                del view_kwargs['noGroup']
+            else:
+                groupName = view_kwargs['groupName']
+                if groupName == None: groupName = get_current_urlconf_params()['groupName']
+                if group == None:
+                    group = get_object_or_404(Group, name = groupName )
+                    del view_kwargs['groupName']
+                view_kwargs['group'] = group
+                request.attributes['group'] = group
+                #settings.TEMPLATE_DIRS = ( "/tmp/hehe", ) + settings.TEMPLATE_DIRS
+                
         set_current_group( group )
         return None
 
