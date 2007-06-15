@@ -11,7 +11,7 @@ bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink
+from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
@@ -117,7 +117,8 @@ class Category(models.Model):
         self.touch( session, user )
 
     def get_children(self):
-        return self._childs.all()
+        """ Returns all children of this category in which the user has view permission. """
+        return Category.sph_objects.filter_for_group( self.group ).filter( parent = self )
 
     def canContainPosts(self):
         return self.allowthreads != 3
@@ -158,16 +159,22 @@ class Category(models.Model):
         return ret
 
     def catchup(self, session, user):
-        """Marks all posts in the current thread as read."""
-        sKey = self._getSessionKey()
-        if sKey in session: del session[sKey]
-        return True
+        """Marks all posts in the current category as read."""
+        ThreadLastVisit.objects.filter( user = user,
+                                        thread__category = self, ).delete()
+        try:
+            categoryLastVisit = CategoryLastVisit.objects.get( category = self,
+                                                               user = user, )
+            categoryLastVisit.oldlastvisit = None
+            categoryLastVisit.save()
+        except CategoryLastVisit.DoesNotExist:
+            return True
 
-    """
-      Touches the category object by updating 'lastVisit'
-      Returns the datetime object of when it was last visited.
-    """
     def touch(self, session, user):
+        """
+        Touches the category object by updating 'lastVisit'
+        Returns the datetime object of when it was last visited.
+        """
         # Check if we were already "touched" ;)
         if getattr(self, '_touched', False): return self._lastVisit
         self._touched = True
@@ -175,17 +182,16 @@ class Category(models.Model):
         if not user.is_authenticated(): return None
         try:
             lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
-            sKey = self._getSessionKey()
-            val = session.get( sKey )
-            if not val or not val.has_key( 'originalLastVisit' ):
-                val = { 'originalLastVisit': lastVisit.lastvisit,
-                        'originalLastVisitSet': datetime.today(), }
-                session[sKey] = val
-            self._lastVisit = val['originalLastVisit']
+
+            if not lastVisit.oldlastvisit:
+                if self.__hasNewPosts:
+                    # Only set oldlastvisit if we have new posts.
+                    lastVisit.oldlastvisit = lastVisit.lastvisit
+
         except CategoryLastVisit.DoesNotExist:
             lastVisit = CategoryLastVisit(user = user, category = self)
-            self._lastVisit = datetime.today()
         lastVisit.lastvisit = datetime.today()
+        self._lastVisit = lastVisit.oldlastvisit or lastVisit.lastvisit
         lastVisit.save()
         return self._lastVisit
 
@@ -199,38 +205,39 @@ class Category(models.Model):
             latestPost = Post.objects.filter( category = self ).latest( 'postdate' )
         except Post.DoesNotExist:
             return False
-        
-        sKey = self._getSessionKey()
-        val = session.get( sKey )
-        if not val or not val.has_key('originalLastVisit'):
-            # if no original lastvisit is stored, load lastvisit from DB.
-            try:
-                lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
-            except CategoryLastVisit.DoesNotExist:
-                return False
-            return lastVisit.lastvisit < latestPost.postdate
 
-        if val['originalLastVisit'] > latestPost.postdate:
+        # Retrieve last visit ...
+        try:
+            lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
+        except CategoryLastVisit.DoesNotExist:
             return False
 
-        if not val.has_key('thread_lasthits'):
-            return True
-
-        lasthits = val['thread_lasthits']
+        # If there was no last visit, we didn't store any last visits for threads.
+        if not lastVisit.oldlastvisit:
+            return lastVisit.lastvisit < latestPost.postdate
+        
+        if lastVisit.oldlastvisit > latestPost.postdate:
+            return False
 
         # Check all posts to see if they are new ....
         allNewPosts = Post.objects.filter( category = self,
-                                           postdate__gt = val['originalLastVisit'], )
+                                           postdate__gt = lastVisit.oldlastvisit, )
 
         for post in allNewPosts:
             threadid = post.thread and post.thread.id or post.id
-            if not lasthits.has_key( threadid ) or lasthits[threadid] < post.postdate:
+            try:
+                lasthit = ThreadLastVisit.objects.filter( user = user,
+                                                          thread__id = threadid, )[0]
+            except IndexError:
+                return True
+            if lasthit.lastvisit < post.postdate:
                 return True
 
-        # All posts are read .. cool.. we can remove 'thread_lasthits' and adapt 'originalLastVisit'
-        del val['thread_lasthits']
-        del val['originalLastVisit']
-        session[sKey] = val # Store the value back into the session so it gets stored.
+        # All posts are read .. cool.. we can remove all ThreadLastVisit and adapt CategoryLastVisit
+        ThreadLastVisit.objects.filter( user = user,
+                                        thread__category = self, ).delete()
+        lastVisit.oldlastvisit = None
+        lastVisit.save()
         return False
 
     def toggle_monitor(self):
@@ -275,9 +282,6 @@ class Category(models.Model):
         self.__monitor = monitor
         return self.__monitor
 
-    def _getSessionKey(self):
-        return 'sphene_sphboard_category_%d' % self.id;
-
     def __str__(self):
         return self.name;
 
@@ -289,10 +293,27 @@ class Category(models.Model):
         list_filter = ('group', 'parent', )
         search_fields = ('name')
 
-class CategoryLastVisit(models.Model):
+
+class ThreadLastVisit(models.Model):
+    """ Entity which stores when a thread was last read. """
     user = models.ForeignKey(User)
     lastvisit = models.DateTimeField()
+    thread = models.ForeignKey('Post')
+
+    class Meta:
+        unique_together = (( "user", "thread", ),)
+
+class CategoryLastVisit(models.Model):
+    """ Entity which stores when a category was last accessed. """
+    user = models.ForeignKey(User)
+    lastvisit = models.DateTimeField()
+    oldlastvisit = models.DateTimeField(null = True,)
     category = models.ForeignKey(Category)
+
+
+    changelog = ( ( '2007-06-15 00', 'alter', 'ADD oldlastvisit timestamp with time zone' ),
+                  )
+
 
     class Admin:
         list_display = ('user', 'lastvisit')
@@ -436,12 +457,16 @@ class Post(models.Model):
     def _touch(self, session, user):
         if not user.is_authenticated(): return None
         if not self._hasNewPosts(session, user): return
-        sKey = self.category._getSessionKey()
-        val = session.get( sKey )
-        if not val: val = { }
-        if not val.has_key( 'thread_lasthits' ): val['thread_lasthits'] = { }
-        val['thread_lasthits'][self.id] = datetime.today()
-        session[sKey] = val
+        thread = self.thread or self
+        try:
+            threadLastVisit = ThreadLastVisit.objects.filter( user = user,
+                                                              thread = thread, )[0]
+        except IndexError:
+            threadLastVisit = ThreadLastVisit( user = user,
+                                               thread = thread, )
+
+        threadLastVisit.lastvisit = datetime.today()
+        threadLastVisit.save()
 
     def has_new_posts(self):
         if hasattr(self, '__has_new_posts'): return self.__has_new_posts
@@ -458,11 +483,14 @@ class Post(models.Model):
         categoryLastVisit = self.category.touch(session, user)
         if categoryLastVisit > latestPost.postdate:
             return False
-        sKey = self.category._getSessionKey()
-        val = session.get( sKey )
-        if not val or not val.has_key( 'thread_lasthits' ) or not val['thread_lasthits'].has_key(self.id):
+
+        try:
+            threadLastVisit = ThreadLastVisit.objects.filter( user = user,
+                                                              thread__id = self.id, )[0]
+            return threadLastVisit.lastvisit < latestPost.postdate
+        except IndexError:
             return True
-        return val['thread_lasthits'][self.id] < latestPost.postdate
+        
 
     def poll(self):
         try:
