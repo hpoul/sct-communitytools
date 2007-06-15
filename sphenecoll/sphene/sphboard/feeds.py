@@ -1,6 +1,6 @@
 
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.syndication.feeds import Feed
 from sphene.sphboard.models import Category, Post
 
@@ -12,7 +12,10 @@ class LatestThreads(Feed):
     def get_object(self, bits):
         if len(bits) < 1:
             raise ObjectDoesNotExist
-        return Category.objects.get( pk = bits[0] )
+        category = Category.objects.get( pk = bits[0] )
+        if not category.has_view_permission():
+            raise PermissionDenied
+        return category
 
     def title(self, obj):
         return "Latest threads in %s" % obj.name
