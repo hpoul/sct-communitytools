@@ -84,7 +84,7 @@ class GroupMiddleware(object):
                 if groupName == None: groupName = get_current_urlconf_params()['groupName']
                 if group == None:
                     group = get_object_or_404(Group, name = groupName )
-                    del view_kwargs['groupName']
+                del view_kwargs['groupName']
                 view_kwargs['group'] = group
                 request.attributes['group'] = group
                 #settings.TEMPLATE_DIRS = ( "/tmp/hehe", ) + settings.TEMPLATE_DIRS
