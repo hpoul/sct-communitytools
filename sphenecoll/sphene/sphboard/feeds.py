@@ -27,4 +27,7 @@ class LatestThreads(Feed):
         return Post.objects.filter( category = obj,
                                     thread__isnull = True,
                                     ).order_by( '-postdate' )[:10]
-    
+
+    def item_pubdate(self, item):
+        return item.postdate
+
