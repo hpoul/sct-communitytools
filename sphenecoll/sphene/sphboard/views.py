@@ -12,7 +12,7 @@ from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
-from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters
+from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
 
 class SpheneModelInitializer:
     def __init__(self, request):
@@ -135,6 +135,7 @@ class PostForm(forms.Form):
     subject = forms.CharField()
     body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
                             help_text = 'You can use <a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a> in your posts.', )
+    markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
                                     help_text = 'Please enter the result of the above calculation.',
                                     )
@@ -143,6 +144,8 @@ class PostForm(forms.Form):
         super(PostForm, self).__init__(*args, **kwargs)
         if not sphutils.has_captcha_support() or get_current_user().is_authenticated():
             del self.fields['captcha']
+        if len( POST_MARKUP_CHOICES ) == 1:
+            del self.fields['markup']
 
 class PostPollForm(forms.Form):
     question = forms.CharField()
@@ -157,7 +160,8 @@ class PostPollForm(forms.Form):
 
 def post(request, group = None, category_id = None, post_id = None):
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
-        previewpost = Post( body = request.REQUEST['body'] )
+        previewpost = Post( body = request.REQUEST['body'],
+                            markup = request.REQUEST.get('markup', None), )
         return HttpResponse( previewpost.body_escaped() )
 
     
@@ -198,6 +202,8 @@ def post(request, group = None, category_id = None, post_id = None):
                                 author = request.user,
                                 thread = thread,
                                 )
+            if 'markup' in data:
+                newpost.markup = data['markup']
             newpost.save()
 
 
@@ -241,7 +247,10 @@ def post(request, group = None, category_id = None, post_id = None):
     if post:
         postForm.fields['subject'].initial = post.subject
         postForm.fields['body'].initial = post.body
+        if 'markup' in postForm.fields:
+            postForm.fields['markup'].initial = post.markup
         context['post'] = post
+        context['thread'] = post.thread or post
     elif 'quote' in request.REQUEST:
         quotepost = Post.objects.get( pk = request.REQUEST['quote'] )
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject

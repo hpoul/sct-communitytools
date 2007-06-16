@@ -7,7 +7,11 @@
   <script language="JavaScript" type="text/javascript">
   <!--
    function doPreview() {
-     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview&body=" + escape( document.postform.body.value ) );
+     var markup = "";
+     if(document.postform.markup) {
+       markup = "&markup=" + escape( document.postform.markup.value );
+     }
+     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview" + markup + "&body=" + escape( document.postform.body.value ) );
    }
   //-->
   </script>

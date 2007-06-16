@@ -12,6 +12,7 @@ from datetime import datetime
 
 #from django.db.models import permalink
 from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, get_urlconf
+from sphene.community.templatetags.sph_extras import sph_markdown
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
@@ -384,6 +385,18 @@ POST_STATUSES = {
     'poll': 4,
     }
 
+AVAILABLE_MARKUP = {
+    'bbcode': 'BBCode',
+    'markdown': 'Markdown',
+    }
+# Markup choices used for the 'choices' option for model fields.
+POST_MARKUP_CHOICES = ( )
+
+enabled_markup = get_sph_setting( 'board_markup_enabled', ( 'bbcode', ) )
+
+for en in enabled_markup:
+    POST_MARKUP_CHOICES += ( ( en, AVAILABLE_MARKUP[en] ), )
+
 from django.contrib.auth.models import AnonymousUser
 
 class Post(models.Model):
@@ -394,8 +407,12 @@ class Post(models.Model):
     thread = models.ForeignKey('self', null = True, editable = False )
     postdate = models.DateTimeField( auto_now_add = True, editable = False )
     author = models.ForeignKey(User, editable = False, null = True, blank = True )
+    markup = models.CharField(maxlength = 250,
+                              null = True,
+                              choices = POST_MARKUP_CHOICES, )
 
     changelog = ( ( '2007-04-07 00', 'alter', 'ALTER author_id DROP NOT NULL', ),
+                  ( '2007-06-16 00', 'alter', 'ADD markup varchar(250) NULL', ),
                   )
 
     def do_init(self, initializer, session, user):
@@ -449,13 +466,18 @@ class Post(models.Model):
 
 
     def body_escaped(self):
+        """ returns the rendered body. """
         body = self.body
-        if USED_STYLE == 'html':
+        markup = self.markup
+        if not markup:
+            markup = POST_MARKUP_CHOICES[0][0]
+            
+        if False and USED_STYLE == 'html':
             regex = re.compile("&(?!nbsp;)");
             body = regex.sub( "&amp;", body )
             regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
             return regex.sub( htmltag_replace, body )
-        else:
+        elif markup == 'bbcode':
             """
             body = html.escape( body )
             body = html.linebreaks( body )
@@ -463,6 +485,8 @@ class Post(models.Model):
             bbcode = regex.sub( bbcode_replace, body )
             """
             return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
+        elif markup == 'markdown':
+            return sph_markdown(body)
 
     def touch(self, session, user):
         return self._touch( session, user )
