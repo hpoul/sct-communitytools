@@ -1,9 +1,12 @@
 
 import re
 from sphene.sphwiki.models import WikiSnip
+from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
 
-WIKILINK_RE = r'''(((?P<escape>\\|\b)(?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?\])'''
+WIKILINK_RE = r'''(?P<escape>\\|\b)?(((?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<allinbrackets>(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>[\w \-]+?))?)\])'''
+
+WIKILINK_RE = get_sph_setting( 'wikilink_regexp', WIKILINK_RE )
 
 WIKILINK_RE_COMPILED = re.compile(WIKILINK_RE)
 
@@ -15,7 +18,7 @@ def get_wikilink_regex():
 
 
 def handle_wikilinks_match(matchgroups):
-    if matchgroups.get('escape'): return { 'label': matchgroups.get('camelcase') }
+    if matchgroups.get('escape'): return { 'label': matchgroups.get('camelcase') or matchgroups.get('allinbrackets') }
     snipname = matchgroups.get('camelcase') or matchgroups.get('snipname')
     label = matchgroups.get('sniplabel') or snipname.replace('_', ' ')
     try:
