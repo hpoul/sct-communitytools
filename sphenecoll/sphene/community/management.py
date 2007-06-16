@@ -71,7 +71,7 @@ def do_changelog(app, created_models, verbosity, **kwargs):
 
         for change in changelog:
             date, changetype, stmt = change
-            if version != None and version > date:
+            if version != None and version >= date:
                 # This change was already applied ...
                 continue
             
