@@ -510,13 +510,17 @@ class Post(models.Model):
         self.__has_new_posts = self._hasNewPosts(get_current_session(), get_current_user())
         return self.__has_new_posts
 
-    def _hasNewPosts(self, session, user):
-        if not user.is_authenticated(): return False
+    def get_latest_post(self):
         try:
             latestPost = Post.objects.filter( thread = self.id ).latest( 'postdate' )
         except Post.DoesNotExist:
             # if no post was found, the thread is the latest post ...
             latestPost = self
+        return latestPost
+
+    def _hasNewPosts(self, session, user):
+        if not user.is_authenticated(): return False
+        latestPost = self.get_latest_post()
         categoryLastVisit = self.category.touch(session, user)
         if categoryLastVisit > latestPost.postdate:
             return False

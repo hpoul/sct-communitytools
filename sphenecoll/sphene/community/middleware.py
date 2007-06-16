@@ -248,3 +248,29 @@ class PermissionDeniedMiddleware(object):
                                                                     },
                                                                   context_instance = RequestContext(request) ) )
         return None
+
+
+
+class LastModified(object):
+    """ Middleware that sets the Last-Modified and associated headers,
+    if requested by the view. (By setting the sph_lastmodified attribute
+    of the response object.
+
+    based on a contribution of Andrew Plotkin:
+    http://eblong.com/zarf/boodler/sitework/
+    """
+
+    def process_response(self, request, response):
+        stamp = getattr(response, 'sph_lastmodified', None)
+        if not stamp: return response
+
+        import rfc822
+        import calendar
+        if stamp is True:
+            val = rfc822.formatdate()
+        else:
+            val = rfc822.formatdate(calendar.timegm(stamp.timetuple()))
+        response['Last-Modified'] = val
+        response['Cache-Control'] = 'private, must-revalidate, max-age=0'
+        return response
+

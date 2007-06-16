@@ -34,23 +34,27 @@ def showSnip(request, group, snipName):
     if not snip.has_view_permission():
         raise PermissionDenied()
 
+    res = None
     if 'type' in request.GET:
         if request.GET['type'] == 'src':
-            return HttpResponse( snip.body, mimetype = 'text/plain', )
+            res =  HttpResponse( snip.body, mimetype = 'text/plain', )
         if request.GET['type'] == 'full':
-            return HttpResponse( snip.render(), mimetype = 'text/html', )
+            res = HttpResponse( snip.render(), mimetype = 'text/html', )
 
-    # TODO do this in the model ? like the board post body ?
-    snip_rendered_body = snip.render()
-    sphdata = get_current_sphdata()
-    if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
+    if not res:
+        snip_rendered_body = snip.render()
+        sphdata = get_current_sphdata()
+        if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
     
-    return render_to_response( 'sphene/sphwiki/showSnip.html',
-                               { 'snip': snip,
-                                 'snipName' : snipName,
-                                 'snip_rendered_body': snip_rendered_body,
-                                 },
-                               context_instance = RequestContext(request) )
+        res = render_to_response( 'sphene/sphwiki/showSnip.html',
+                                  { 'snip': snip,
+                                    'snipName' : snipName,
+                                    'snip_rendered_body': snip_rendered_body,
+                                    },
+                                  context_instance = RequestContext(request) )
+
+    res.sph_lastmodified = snip.changed
+    return res
 
 
 def generatePDF(request, group, snipName):
@@ -86,11 +90,13 @@ def history(request, group, snipName):
                         )
 
 def recentChanges(request, group):
-    return object_list( request = request,
+    res =  object_list( request = request,
                         queryset = WikiSnipChange.objects.filter( snip__group = group ).order_by('-edited'),
                         template_name = 'sphene/sphwiki/recentChanges.html',
                         allow_empty = True,
                         )
+    res.sph_lastmodified = True
+    return res
 
 def diff(request, group, snipName, changeId = None):
     snip = get_object_or_404( WikiSnip,

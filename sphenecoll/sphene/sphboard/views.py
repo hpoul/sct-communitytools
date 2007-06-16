@@ -88,7 +88,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
     else:
         thread_list = thread_list.order_by( '-latest_postdate' )
 
-    return object_list( request = request,
+    res =  object_list( request = request,
                         queryset = thread_list,
                         template_name = templateName,
                         extra_context = context,
@@ -96,6 +96,9 @@ def showCategory(request, group = None, category_id = None, showType = None):
                         allow_empty = True,
                         paginate_by = 10,
                         )
+    
+    res.sph_lastmodified = True
+    return res
 
 def showThread(request, thread_id, group = None):
     thread = Post.objects.filter( pk = thread_id ).get()
@@ -107,7 +110,7 @@ def showThread(request, thread_id, group = None):
     sphdata = get_current_sphdata()
     if sphdata != None: sphdata['subtitle'] = thread.subject
     
-    return object_list( request = request,
+    res =  object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
                         queryset = thread.allPosts().order_by('postdate'),
                         allow_empty = True,
@@ -118,6 +121,9 @@ def showThread(request, thread_id, group = None):
                                           },
                         template_object_name = 'post',
                         )
+
+    res.sph_lastmodified = thread.get_latest_post().postdate
+    return res
 
 def options(request, thread_id, group = None):
     thread = Post.objects.get( pk = thread_id )
@@ -334,5 +340,7 @@ def toggle_monitor(request, group, monitortype, object_id):
 def catchup(request, group, category_id):
     category = get_object_or_404(Category, pk = category_id )
     category.catchup(request.session, request.user)
-    return HttpResponseRedirect( '../../show/%s/' % category_id )
+    req = HttpResponseRedirect( '../../show/%s/' % category_id )
+    req.sph_lastmodified = True
+    return req
 
