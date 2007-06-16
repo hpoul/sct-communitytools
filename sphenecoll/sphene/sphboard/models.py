@@ -11,7 +11,8 @@ bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
+from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, get_urlconf
+from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
@@ -285,6 +286,14 @@ class Category(models.Model):
     def get_absolute_url(self):
         return ('sphene.sphboard.views.showCategory', (), { 'groupName': self.group.name, 'category_id': self.id })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
+
+    def get_absolute_url_rss_latest_threads(self):
+        """ Returns the absolute url to the RSS feed displaying the latest threads.
+        This will only work since django changeset 4901 (>0.96) """
+        return reverse( 'sphboard-feeds',
+                        urlconf = get_urlconf(),
+                        kwargs = { 'groupName': self.group.name,
+                                   'url': 'latest/%d' % self.id } )
     
     def __str__(self):
         return self.name;

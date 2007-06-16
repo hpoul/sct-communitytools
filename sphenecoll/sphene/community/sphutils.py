@@ -1,6 +1,7 @@
 
 import re
 from django.conf import settings
+from sphene.community.middleware import get_current_request
 
 # Decorator. Takes a function that returns a tuple in this format:
 #     (viewname, viewargs, viewkwargs)
@@ -26,6 +27,9 @@ def sphpermalink(func, get_urlconf_func = None):
         return reverse(bits[0], urlconf, *bits[1:3])
     return inner
 
+def get_urlconf():
+    request = get_current_request()
+    return getattr(request, 'urlconf', None)
 
 def get_fullusername(value):
     """ returns the full username of the given user - if defined

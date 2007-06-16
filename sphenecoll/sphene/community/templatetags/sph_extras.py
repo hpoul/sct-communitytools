@@ -71,7 +71,7 @@ class NewsMacro (object):
             return doc.createTextNode("Error, no 'category' or 'template' given for news macro.")
 
         limit = 'limit' in params and params['limit'] or 5
-        templateName = 'wiki/news.html'
+        templateName = 'sphene/sphboard/wikimacros/news.html'
         if params.has_key( 'template' ): templateName = params['template']
         
         category_ids = params['category'].split(',')
@@ -83,12 +83,28 @@ class NewsMacro (object):
         if params.has_key( 'baseURL' ): baseURL = params['baseURL']
         c = template.Context({ 'threads': threads,
                                'baseURL': baseURL,
+                               'category': params['category'],
+                               'params': params,
                                })
         
         return HTML( t.render(c) )
 
 
-        
+class NewsRSSLinkMacro (object):
+    """
+    displays threads in the given board category
+    """
+    def handleMacroCall(self, doc, params):
+        from sphene.sphboard.models import Category
+
+        category = params['category']
+        try:
+            categoryObj = Category.objects.get( pk = category, )
+        except Category.DoesNotExist:
+            return HTML( 'Category %d does not exist.' % category )
+
+        url = categoryObj.get_absolute_url_rss_latest_threads()
+        return HTML( '<a href="%s"><img src="/static/sphene/community/icons/feed-icon-14x14.png" border="0" alt="RSS Feed of latest threads" title="RSS Feed of latest threads" /></a>' % url )
 
 from sphene.community.middleware import get_current_sphdata, get_current_group
 
@@ -105,6 +121,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
         save_mode = arg == 'safe'
         macros = { 'helloWorld': SimpleHelloWorldMacro(),
                    'news': NewsMacro(),
+                   'newsrss': NewsRSSLinkMacro(),
                    'include': IncludeMacro(),
                    }
         macros.update(extra_macros),

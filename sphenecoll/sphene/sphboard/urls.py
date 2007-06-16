@@ -8,8 +8,10 @@ feeds = {
 
 urlpatterns = patterns('',
                        (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/0/'}),
-                       (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', { 'feed_dict': feeds,
-                                                                                            'noGroup': True, }),
+                       url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
+                           { 'feed_dict': feeds,
+                             'noGroup': True, },
+                           'sphboard-feeds'),
                        )
 urlpatterns += patterns('sphene.sphboard.views',
                         (r'^show/(?P<category_id>\d+)/$', 'showCategory'),
