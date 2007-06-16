@@ -3,7 +3,7 @@
   {% for category in categories %}
     &gt;&gt; 
     {% ifnotequal category current %}
-      <a href="../../show/{{ category.id }}/">{{ category.name }}</a>
+      <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
     {% else %}
       {{ category.name }}
     {% endifnotequal %}
@@ -12,7 +12,7 @@
 {% if thread %}
   &gt;&gt;
   {% if linkall %}
-    <a href="../../thread/{{ thread.id }}/">{{ thread.subject }}</a>
+    <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>
   {% else %}
     {{ thread.subject }}
   {% endif %}
