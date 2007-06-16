@@ -1,0 +1,21 @@
+    .sphform input[type="text"] {
+      width: 100%;
+      border: 1px solid black;
+      padding: 3px;
+    }
+    .sphform textarea{
+      width: 100%;
+      border: 1px solid black;
+      padding: 3px;
+    }
+    
+    .sph_object_list {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .sph_object_list th,
+    .sph_object_list td {
+      border: 1px solid black;
+      padding: 5px;
+    }

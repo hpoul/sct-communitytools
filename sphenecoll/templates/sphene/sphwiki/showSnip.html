@@ -4,6 +4,7 @@
 {% load sph_extras %}
 
 {% block head %}
+  {{ block.super }}
   {% if sph_settings.wiki_rss_url %}
     <link rel="alternate" title="Latest Wiki Changes" href="{{ sph_settings.wiki_rss_url }}" type="application/rss+xml">
   {% endif %}
