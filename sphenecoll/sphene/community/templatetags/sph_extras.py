@@ -60,6 +60,23 @@ class IncludeMacro (mdx_macros.PreprocessorMacro):
         """
         return doc.createTextNode("Error, no 'url' given for include macro.")
 
+class IncludeTemplateMacro (object):
+    """
+    allows users to include arbitrary html content through django's
+    templating system.
+    """
+    def handleMacroCall(self, doc, params):
+        if not params.has_key( 'templateName' ):
+            return doc.createTextNode("Error, no 'templateName' given for includetemplate macro.")
+
+        templateName = params['templateName']
+        t = template.loader.get_template( templateName )
+        c = template.Context( { 'params': params,
+                                })
+
+        return HTML( t.render(c) )
+
+
 class NewsMacro (object):
     """
     displays threads in the given board category
@@ -123,6 +140,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
                    'news': NewsMacro(),
                    'newsrss': NewsRSSLinkMacro(),
                    'include': IncludeMacro(),
+                   'includetemplate': IncludeTemplateMacro(),
                    }
         macros.update(extra_macros),
         md = markdown.Markdown(value,
