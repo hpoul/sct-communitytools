@@ -12,6 +12,13 @@
 
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
+  {% if redirects %}
+    <ul style="sphwiki redirects">
+    {% for redirect in redirects %}
+      <li>Redirected from <a href="{{ redirect.get_absolute_url }}?redirect=no">{{ redirect.get_title }}</a></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
   {% if snip.id %}
     {% if False and sph.toc %}
       <div id="sphwiki_toc">{{ sph.toc }}</div>

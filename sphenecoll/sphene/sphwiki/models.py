@@ -57,7 +57,11 @@ class WikiSnip(models.Model):
                             extra_macros = { 'attachmentlist': wikimacros.AttachmentListMacro( snip = self, ),
                                              'attachment': wikimacros.AttachmentMacro( snip = self, ),
                                              'img': wikimacros.ImageMacro( ),
+                                             'redirect': wikimacros.RedirectMacro( ),
                                              })
+
+    def get_title(self):
+        return self.title or self.name
 
     def pdf_get_cachefile(self):
         """ Returns the pathname to the cache file for this wiki snip. """

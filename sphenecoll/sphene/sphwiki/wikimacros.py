@@ -1,10 +1,11 @@
 from django.views.generic.list_detail import object_list
 from django import template
 
+from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.sphutils import HTML
-from sphene.community.middleware import get_current_request
+from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 
-from sphene.sphwiki.models import WikiAttachment
+from sphene.sphwiki.models import WikiAttachment, WikiSnip
 
 class AttachmentListMacro (object):
     """ Displays a list of attachments for a macro. """
@@ -66,4 +67,28 @@ class ImageMacro (object):
                     el.setAttribute( paramName, params[paramName] )
             return el
         return doc.createTextNode("Error, no 'id' given for img macro.")
+
+class RedirectMacro (mdx_macros.PreprocessorMacro):
+    """ Redirects the user from one wiki snip to another.
+    This allows to create aliases for snip names. """
+
+    def handlePreprocessorMacroCall(self, params):
+        if not params.has_key( 'snip' ):
+            return 'No "snip" parameter given to redirect macro.'
+
+        sphdata = get_current_sphdata()
+        snipName = params['snip'];
+        try:
+            snip = WikiSnip.objects.get( group = get_current_group(),
+                                         name = snipName )
+        except WikiSnip.DoesNotExist:
+            return '**Wiki snip "%s" does not exist.**' % snipName
+
+        request = get_current_request()
+        if 'redirect' in request.GET and request.GET['redirect'] == 'no':
+            return '**Redirect to "%s" disabled.**' % snipName
+        
+        sphdata['sphwiki_redirect_to_snip'] = snip
+        
+        return "**Redirecting to %s ...**" % snipName
 

@@ -11,6 +11,7 @@ from django.conf import settings
 
 from datetime import datetime
 from difflib import ndiff, HtmlDiff
+from urllib import quote
 
 from sphene.sphwiki import wikimacros
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
@@ -42,14 +43,26 @@ def showSnip(request, group, snipName):
             res = HttpResponse( snip.render(), mimetype = 'text/html', )
 
     if not res:
-        snip_rendered_body = snip.render()
         sphdata = get_current_sphdata()
+        snip_rendered_body = False
+        redirects = ()
+        while not snip_rendered_body or 'sphwiki_redirect_to_snip' in sphdata:
+            if snip_rendered_body:
+                if snip in redirects:
+                    request.user.message_set.create( message = "Detected redirect loop." )
+                    break
+                redirects += (snip,)
+                snip = sphdata['sphwiki_redirect_to_snip']
+                del sphdata['sphwiki_redirect_to_snip']
+            snip_rendered_body = snip.render()
+            
         if sphdata != None: sphdata['subtitle'] = snip.title or snip.name
     
         res = render_to_response( 'sphene/sphwiki/showSnip.html',
                                   { 'snip': snip,
                                     'snipName' : snipName,
                                     'snip_rendered_body': snip_rendered_body,
+                                    'redirects': redirects,
                                     },
                                   context_instance = RequestContext(request) )
 
