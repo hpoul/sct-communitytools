@@ -180,3 +180,9 @@ import os
 def sph_basename(value):
     basename = os.path.basename( value )
     return basename
+
+@register.simple_tag
+def sph_truncate(string, charlen, replacement):
+    if len(string) > charlen:
+        return string[0:charlen-len(replacement)] + replacement
+    return string
