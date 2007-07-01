@@ -6,7 +6,9 @@ import re
 from sphene.community.sphutils import HTML, get_sph_setting
 
 from sphene.contrib.libs.markdown import mdx_macros
-
+from sphene.community.middleware import get_current_request
+from django.core.urlresolvers import reverse
+    
 register = template.Library()
 
 
@@ -181,8 +183,21 @@ def sph_basename(value):
     basename = os.path.basename( value )
     return basename
 
+@register.filter
+def sph_dictget(value, param):
+    return value.get(param, '')
+
+@register.simple_tag
+def sph_url(view):
+    req = get_current_request()
+    urlconf = getattr(req, 'urlconf', None)
+    return reverse(view, urlconf)
+
+
 @register.simple_tag
 def sph_truncate(string, charlen, replacement):
     if len(string) > charlen:
         return string[0:charlen-len(replacement)] + replacement
     return string
+
+
