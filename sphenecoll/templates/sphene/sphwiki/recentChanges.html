@@ -23,9 +23,14 @@
     </tr>
 
     {% for change in object_list %}
-      <tr>
-        <td><a href="{{ change.snip.get_absolute_url }}">{{ change.snip.name }}</a></td>
-        <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+      <tr{% if not change.snip.has_view_permission %} class="nopermission" title="Not enough permissions to view this wiki snip."{% endif %}>
+        {% if change.snip.has_view_permission %}
+          <td><a href="{{ change.snip.get_absolute_url }}">{{ change.snip.name }}</a></td>
+          <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+        {% else %}
+          <td>{{ change.snip.name }}</td>
+          <td style="white-space: nowrap">{{ change.edited|sph_date }}</td>
+        {% endif %}
         <td style="white-space: nowrap">{% sphboard_displayUserName change.editor %}</td>
         <td>{{ change.message }}</td>
       </tr>

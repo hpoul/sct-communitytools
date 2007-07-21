@@ -13,3 +13,6 @@
       padding-left: 15px;
     }
 
+.sph_object_list .nopermission {
+  background-color: #ccc;
+}
