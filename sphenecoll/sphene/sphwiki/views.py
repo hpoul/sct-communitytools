@@ -49,7 +49,8 @@ def showSnip(request, group, snipName):
         while not snip_rendered_body or 'sphwiki_redirect_to_snip' in sphdata:
             if snip_rendered_body:
                 if snip in redirects:
-                    request.user.message_set.create( message = "Detected redirect loop." )
+                    if request.user.is_authenticated():
+                        request.user.message_set.create( message = "Detected redirect loop." )
                     break
                 redirects += (snip,)
                 snip = sphdata['sphwiki_redirect_to_snip']
@@ -77,6 +78,8 @@ def generatePDF(request, group, snipName):
     snip = get_object_or_404( WikiSnip,
                               group = group,
                               name = snipName )
+    if not snip.has_view_permission():
+        raise PermissionDenied()
 
 
     try:
@@ -93,6 +96,8 @@ def history(request, group, snipName):
     snip = get_object_or_404( WikiSnip,
                               group = group,
                               name = snipName )
+    if not snip.has_view_permission():
+        raise PermissionDenied()
     return object_list( request = request,
                         queryset = snip.wikisnipchange_set.order_by('-edited'),
                         template_name = 'sphene/sphwiki/history.html',
@@ -115,6 +120,8 @@ def diff(request, group, snipName, changeId = None):
     snip = get_object_or_404( WikiSnip,
                               group = group,
                               name = snipName )
+    if not snip.has_view_permission():
+        raise PermissionDenied()
     changeEnd = get_object_or_404( WikiSnipChange,
                                    snip = snip,
                                    pk = changeId, )
@@ -150,6 +157,8 @@ def diff(request, group, snipName, changeId = None):
     
 def attachment(request, group, snipName):
     snip = WikiSnip.objects.get( name__exact = snipName, group = group )
+    if not snip.has_view_permission():
+        raise PermissionDenied()
     res = WikiAttachment.objects.filter( snip = snip )
     return object_list( request = request,
                         queryset = WikiAttachment.objects.filter( snip = snip ),
