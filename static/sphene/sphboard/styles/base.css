@@ -82,4 +82,5 @@
         border-top: 1px solid gray;
         font-size: smaller;
         color: gray;
+	display: block;
     }
