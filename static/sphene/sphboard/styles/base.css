@@ -75,3 +75,11 @@
       border: 1px solid gray;
       padding: 5px;
     }
+
+    .sphboard_post_body .signature {
+        margin-top: 20px;
+        padding-left: 10px;
+        border-top: 1px solid gray;
+        font-size: smaller;
+        color: gray;
+    }

@@ -5,12 +5,21 @@ from django import newforms as forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template import loader, Context
 from django.core.mail import send_mail
+from django.dispatch import dispatcher
 from django.contrib.auth import authenticate,login
+from django.contrib.auth.models import User
 
+from sphene.community import PermissionDenied
+from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
+from sphene.community.sphutils import sph_reverse
+from sphene.community.templatetags.sph_extras import sph_user_profile_link
+from sphene.community.middleware import get_current_sphdata
 from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 class RegisterEmailAddress(forms.Form):
@@ -25,6 +34,69 @@ class RegisterEmailAddress(forms.Form):
                                         % self.cleaned_data['email_address'] )
         return self.cleaned_data
 
+from django.contrib.auth.views import login, logout
+from django.contrib.auth import REDIRECT_FIELD_NAME
+
+def accounts_login(request, group = None):
+    return login( request, template_name = 'sphene/community/accounts/login.html', )
+
+def accounts_logout(request, group = None):
+    sphdata = get_current_sphdata()
+    sphdata['is_logout'] = True
+    return logout( request, template_name = 'sphene/community/accounts/logged_out.html', )
+
+
+class ForgotUsernamePassword(forms.Form):
+    email_address = forms.EmailField()
+
+    def clean_email_address(self):
+        try:
+            user = User.objects.get( email__exact = self.cleaned_data['email_address'] )
+            self.cleaned_data['user'] = user
+        except User.DoesNotExist:
+            raise forms.ValidationError( 'No user found with that email address.' )
+        return self.cleaned_data
+
+from random import choice
+import string
+def generate_password():
+    chars = string.letters + string.digits
+    newpassword = ''
+    for i in range(10):
+        newpassword = newpassword + choice(chars)
+    return newpassword
+
+def accounts_forgot(request, group = None):
+    if request.method == 'POST':
+        form = ForgotUsernamePassword(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = data['user']
+
+            password = generate_password()
+            user.set_password(password)
+            user.save()
+            if not group:
+                subject = 'Your requested username / password'
+            else:
+                subject = 'Your requested username / password for site %s' % group.get_name()
+            t = loader.get_template('sphene/community/accounts/forgot_password_email.txt')
+            c = {
+                'currentuser': user,
+                'password': password,
+                }
+            body = t.render(RequestContext(request, c))
+
+            send_mail( subject, body, None, [user.email] )
+            return render_to_response( 'sphene/community/accounts/forgot_sent.html',
+                                       { },
+                                       context_instance = RequestContext(request) )
+    else:
+        form = ForgotUsernamePassword()
+    return render_to_response( 'sphene/community/accounts/forgot.html',
+                               { 'form': form,
+                                 },
+                               context_instance = RequestContext(request) )
 
 def register(request, group = None):
 
@@ -157,3 +229,100 @@ def captcha_image(request,token_id,group = None):
     response['Content-Type'] = 'image/jpeg'
     response.write(out.read())
     return response
+
+
+def profile(request, group, user_id):
+    user = get_object_or_404(User, pk = user_id)
+    has_edit_permission = False
+    profile_edit_url = None
+
+    if user == request.user:
+        has_edit_permission = True
+        profile_edit_url = sph_reverse( 'sphene.community.views.profile_edit', (), { 'user_id': user.id, })
+
+    ret = dispatcher.send(signal = profile_display,
+                          request = request,
+                          user = user, )
+
+    additionalprofile = ''
+    for listener in ret:
+        if listener[1]:
+            additionalprofile += listener[1]
+    
+    return render_to_response( 'sphene/community/profile.html',
+                               { 'user': user,
+                                 'has_edit_permission': has_edit_permission,
+                                 'profile_edit_url': profile_edit_url,
+                                 'additionalprofile': additionalprofile,
+                                 },
+                               context_instance = RequestContext( request ))
+
+def profile_edit_mine(request, group):
+    return profile_edit(request, group = group, user_id = None)
+
+
+def profile_edit(request, group, user_id):
+    if user_id:
+        user = get_object_or_404(User, pk = user_id)
+    else:
+        user = request.user
+
+    if user != request.user:
+        raise PermissionDenied()
+
+    if request.method == 'POST':
+        form = EditProfileForm(user, request.POST)
+    else:
+        form = EditProfileForm(user)
+
+    dispatcher.send(signal = profile_edit_init_form,
+                    sender = EditProfileForm,
+                    instance = form,
+                    request = request,
+                    )
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+
+            if user.email != data['email_address']:
+                # Require email validation ...
+                pass
+
+            if data['new_password']:
+                # Check was already made in form, we only need to change the password.
+                user.set_password( data['new_password'] )
+
+            dispatcher.send(signal = profile_edit_save_form,
+                            sender = EditProfileForm,
+                            instance = form,
+                            request = request,
+                            )
+            
+
+            user.save()
+            request.user.message_set.create( message = "Successfully changed user profile." )
+            
+            return HttpResponseRedirect( sph_user_profile_link( user ) )
+
+    else:
+        form.fields['first_name'].initial = user.first_name
+        form.fields['last_name'].initial = user.last_name
+        form.fields['email_address'].initial = user.email
+
+    
+    """
+    form = EditProfileForm( { 'first_name': user.first_name,
+                              'last_name': user.last_name,
+                              'email_address': user.email,
+                              } )
+    """
+    
+    return render_to_response( 'sphene/community/profile_edit.html',
+                               { 'user': user,
+                                 'form': form,
+                                 },
+                               context_instance = RequestContext(request) )
+

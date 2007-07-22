@@ -1,6 +1,7 @@
 
 import re
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from sphene.community.middleware import get_current_request
 
 # Decorator. Takes a function that returns a tuple in this format:
@@ -160,3 +161,8 @@ def get_sph_setting(name, default_value = None):
         return default_value
 
     return settings.SPH_SETTINGS.get(name, default_value)
+
+def sph_reverse( viewname, args, kwargs ):
+    req = get_current_request()
+    urlconf = getattr(req, 'urlconf', None)
+    return reverse( viewname, urlconf, args, kwargs )

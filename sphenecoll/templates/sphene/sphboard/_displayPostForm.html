@@ -1,3 +1,4 @@
+{% load sphboard_extras %}
 <style>
   .sphboard { width: 100%; }
   textarea { width: 100%; }
@@ -29,7 +30,7 @@
           {% if thread.has_monitor or category.has_monitor %}
             <small>You are already receiving email notifications for this thread or category.</small>
           {% else %}
-            <input type="checkbox" name="addmonitor" value="1" id="addmonitor_id" checked="checked" /> <label for="addmonitor_id">Notify me by email on new posts in this thread.</label>
+            <input type="checkbox" name="addmonitor" value="1" id="addmonitor_id" {% if user|sphboard_default_notify_me %}checked="checked"{% endif %} /> <label for="addmonitor_id">Notify me by email on new posts in this thread.</label>
           {% endif %}
           <br/><br/>
     {% endif %}

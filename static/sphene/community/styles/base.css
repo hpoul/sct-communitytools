@@ -1,12 +1,21 @@
-    .sphform input[type="text"] {
+
+    .sphform input[type="text"],
+    .sphform input[type="password"] {
       width: 100%;
       border: 1px solid black;
       padding: 3px;
     }
-    .sphform textarea{
+    .sphform textarea {
       width: 100%;
       border: 1px solid black;
       padding: 3px;
+    }
+    .sphform .separator {
+      margin: 20px;
+      height: 30px;
+    }
+    .sphform .separator th {
+      border-top: 1px solid gray;
     }
     
     .sph_object_list {

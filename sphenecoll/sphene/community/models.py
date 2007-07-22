@@ -4,33 +4,33 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Group(models.Model):
-        name = models.CharField(maxlength = 250)
-        longname = models.CharField(maxlength = 250)
-        default_theme = models.ForeignKey('Theme', null = True, blank = True)
-        parent = models.ForeignKey('Group', null = True, blank = True)
-        baseurl = models.CharField(maxlength = 250)
+    name = models.CharField(maxlength = 250)
+    longname = models.CharField(maxlength = 250)
+    default_theme = models.ForeignKey('Theme', null = True, blank = True)
+    parent = models.ForeignKey('Group', null = True, blank = True)
+    baseurl = models.CharField(maxlength = 250)
 
-        def get_name(self):
-                return self.longname or self.name
+    def get_name(self):
+        return self.longname or self.name
 
-        def recursiveName(self):
-                recname = ''
-                if self.parent:
-                        recname = self.parent.recursiveName() + ' / '
-                return recname + self.name
+    def recursiveName(self):
+        recname = ''
+        if self.parent:
+            recname = self.parent.recursiveName() + ' / '
+        return recname + self.name
 
-        def get_member(self, user):
-                try:
-                        return GroupMember.objects.get( group = self,
-                                                         user = user, )
-                except GroupMember.DoesNotExist:
-                        return None
+    def get_member(self, user):
+        try:
+            return GroupMember.objects.get( group = self,
+                                            user = user, )
+        except GroupMember.DoesNotExist:
+            return None
 
-        def __str__(self):
-                return self.name;
+    def __str__(self):
+        return self.name;
 
-        class Admin:
-                pass
+    class Admin:
+        pass
 
 class GroupMember(models.Model):
         group = models.ForeignKey( Group, edit_inline = models.TABULAR, core = True )
@@ -91,3 +91,119 @@ class ApplicationChangelog(models.Model):
                 get_latest_by = 'applied'
 
 
+class CommunityUserProfile(models.Model):
+    user = models.ForeignKey( User, unique = True)
+    public_emailaddress = models.CharField(maxlength = 250)
+
+class CommunityUserProfileField(models.Model):
+    """ User profile fields, configurable through the django admin
+    interface. """
+    name = models.CharField(maxlength = 250)
+    help_text = models.CharField(maxlength = 250, blank = True, help_text = 'An optional help text displayed to the user.' )
+    regex = models.CharField(maxlength = 250, blank = True, help_text = 'An optional regular expression to validate user input.', )
+    renderstring = models.CharField(maxlength = 250, blank = True, help_text = 'An optional render string how the value should be displayed in the profile (e.g. &lt;a href="%(value)s"&gt;%(value)s&lt;/a&gt; - default: %(value)s' )
+    sortorder = models.IntegerField()
+
+    class Meta:
+        ordering = [ 'sortorder' ]
+
+    class Admin:
+        list_display = ('name', 'regex', 'renderstring', 'sortorder', )
+
+class CommunityUserProfileFieldValue(models.Model):
+    user_profile = models.ForeignKey( CommunityUserProfile )
+    profile_field = models.ForeignKey( CommunityUserProfileField )
+
+    value = models.CharField( maxlength = 250 )
+
+    class Meta:
+        unique_together = (("user_profile", "profile_field"),)
+
+from django.dispatch import dispatcher
+from django import newforms as forms
+from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
+
+
+
+def community_profile_edit_init_form(sender, instance, signal, request, *args, **kwargs):
+    user = instance.user
+    try:
+        profile = CommunityUserProfile.objects.get( user = user, )
+    except CommunityUserProfile.DoesNotExist:
+        profile = CommunityUserProfile( user = user, )
+        
+    instance.fields['community_settings'] = Separator()
+    instance.fields['public_emailaddress'] = forms.CharField( required = False,
+                                                              initial = profile.public_emailaddress )
+
+    fields = CommunityUserProfileField.objects.all()
+    for field in fields:
+        initial = ''
+        if profile.id:
+            try:
+                value = CommunityUserProfileFieldValue.objects.get( user_profile = profile,
+                                                                    profile_field = field, )
+                initial = value.value
+            except CommunityUserProfileFieldValue.DoesNotExist:
+                pass
+                                                    
+        instance.fields['community_field_%d' % field.id] = forms.RegexField( regex = field.regex,
+                                                                             label = field.name,
+                                                                             help_text = field.help_text,
+                                                                             initial = initial,
+                                                                             required = False,
+                                                                             )
+
+def community_profile_edit_save_form(sender, instance, signal, request, *args, **kwargs):
+    data = instance.cleaned_data
+    user = instance.user
+    try:
+        profile = CommunityUserProfile.objects.get( user = user, )
+    except CommunityUserProfile.DoesNotExist:
+        profile = CommunityUserProfile( user = user, )
+
+    profile.public_emailaddress = data['public_emailaddress']
+    profile.save()
+
+    fields = CommunityUserProfileField.objects.all()
+    for field in fields:
+        try:
+            value = CommunityUserProfileFieldValue.objects.get( user_profile = profile,
+                                                                profile_field = field, )
+            initial = value.value
+        except CommunityUserProfileFieldValue.DoesNotExist:
+            value = CommunityUserProfileFieldValue( user_profile = profile,
+                                                    profile_field = field, )
+        newvalue = data['community_field_%d' % field.id]
+        if newvalue:
+            value.value = data['community_field_%d' % field.id]
+            value.save()
+        else:
+            if value.id: value.delete()
+    
+    request.user.message_set.create( message = "Successfully saved community profile." )
+
+def community_profile_display(sender, signal, request, user):
+    try:
+        profile = CommunityUserProfile.objects.get( user = user, )
+    except CommunityUserProfile.DoesNotExist:
+        return None
+
+    ret = ''
+    fields = CommunityUserProfileField.objects.all()
+    for field in fields:
+        try:
+            value = CommunityUserProfileFieldValue.objects.get( user_profile = profile,
+                                                                profile_field = field, )
+            formatstring = '<tr><th>%(label)s</th><td>' + (field.renderstring or '%(value)s') + '</td></tr>'
+            ret += (formatstring % { 'label': field.name,
+                                     'value': value.value, })
+        except CommunityUserProfileFieldValue.DoesNotExist:
+            continue
+                                            
+    return ret
+
+dispatcher.connect(community_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
+dispatcher.connect(community_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
+dispatcher.connect(community_profile_display, signal = profile_display)

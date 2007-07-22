@@ -1,7 +1,7 @@
 from django import template
 from django import newforms as forms
 from django.newforms import widgets
-from sphene.sphboard.models import Post
+from sphene.sphboard.models import Post, BoardUserProfile
 from sphene.sphboard.views import PostForm
 
 register = template.Library()
@@ -102,3 +102,14 @@ def sphboard_displayPostForm(context, post = None):
     return { 'form': form,
              'category': category,
              'thread': thread, }
+
+
+@register.filter
+def sphboard_default_notify_me(user):
+    try:
+        profile = BoardUserProfile.objects.get(user = user)
+        if profile.default_notifyme_value is False:
+            return False
+    except BoardUserProfile.DoesNotExist:
+        pass
+    return True

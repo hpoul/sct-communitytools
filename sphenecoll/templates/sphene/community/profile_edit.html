@@ -1,0 +1,34 @@
+{% extends "sphene/community/base.html" %}
+{% load sph_extras %}
+
+{% block content %}
+Modifying user profile for {% sph_html_user user %}<br/><br/>
+<form method="POST" action="." class="sphform">
+  <table border="0">
+    <tr>
+      <th>Username:</th>
+      <td>{{ user.username }}</td>
+    </tr>
+    {% for field in form %}
+      {% if field.field.is_separator %}
+        <tr class="separator">
+          <th colspan="2">{{ field.label }}</th>
+        </tr>
+        {% if field.help_text %}
+          <tr>
+            <td colspan="2">{{ field.help_text }}</td>
+          </tr>
+        {% endif %}
+      {% else %}
+        <tr>
+          <th><label for="{{ field.auto_id }}">{{ field.label }}</label></th>
+          <td>{% if field.errors %}{{ field.errors }}{% endif %}{{ field }}{% if field.help_text %}<br/>{{ field.help_text }}{% endif %}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+    <tr>
+      <td colspan="2"><input type="submit" value="Save" /></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}

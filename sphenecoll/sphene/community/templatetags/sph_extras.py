@@ -6,6 +6,7 @@ import re
 from sphene.community.sphutils import HTML, get_sph_setting
 
 from sphene.contrib.libs.markdown import mdx_macros
+from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request
 from django.core.urlresolvers import reverse
     
@@ -175,6 +176,28 @@ def sph_fullusername(value):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
     return get_fullusername(value)
+
+@register.filter
+def sph_publicemailaddress(value):
+    try:
+        profile = CommunityUserProfile.objects.get( user = value, )
+    except CommunityUserProfile.DoesNotExist:
+        return value.email
+    return profile.public_emailaddress or value.email
+
+@register.inclusion_tag('sphene/community/_display_username.html')
+def sph_html_user(user):
+    """ Displays the full username of a given user including a link to
+    his profile. """
+    return { 'user': user }
+
+@register.filter
+def sph_user_profile_link(value):
+    """ Returns the URL to the user profile. """
+    req = get_current_request()
+    urlconf = getattr(req, 'urlconf', None)
+    return reverse('sphene.community.views.profile', urlconf, (), { 'user_id': value.id } )
+
 
 import os
 

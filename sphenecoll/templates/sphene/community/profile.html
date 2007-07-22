@@ -1,0 +1,17 @@
+{% extends "sphene/community/base.html" %}
+{% load sph_extras %}
+
+{% block content %}
+  Profile for {% sph_html_user user %}{% if has_edit_permission %} [ <a href="{{ profile_edit_url }}">Edit</a> ]{% endif %}<br/><br/>
+  <table border="0">
+    <tr>
+      <th>Name</th>
+      <td>{{ user|sph_fullusername }}</td>
+    </tr>
+    <tr>
+      <th>Email Address</th>
+      <td>{{ user|sph_publicemailaddress }}</td>
+    </tr>
+    {{ additionalprofile }}
+  </table>
+{% endblock %}

@@ -5,6 +5,7 @@ from django.views.generic.list_detail import object_list
 from django.db.models import Q
 from django.template.context import RequestContext
 from django import newforms as forms
+from django.dispatch import dispatcher
 
 from datetime import datetime
 
@@ -343,4 +344,6 @@ def catchup(request, group, category_id):
     req = HttpResponseRedirect( '../../show/%s/' % category_id )
     req.sph_lastmodified = True
     return req
+
+
 

@@ -399,6 +399,25 @@ for en in enabled_markup:
 
 from django.contrib.auth.models import AnonymousUser
 
+def render_body(body, markup = None):
+    """ Renders the given body string using the given markup.
+    """
+    if False and markup == 'html':
+        regex = re.compile("&(?!nbsp;)");
+        body = regex.sub( "&amp;", body )
+        regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
+        return regex.sub( htmltag_replace, body )
+    elif markup == 'bbcode':
+        """
+        body = html.escape( body )
+        body = html.linebreaks( body )
+        regex = re.compile("\[(.*?)\](?:([^\[]+)\[/(.*?)\])?")
+        bbcode = regex.sub( bbcode_replace, body )
+        """
+        return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
+    elif markup == 'markdown':
+        return sph_markdown(body)
+
 class Post(models.Model):
     status = models.IntegerField(default = 0, editable = False )
     category = models.ForeignKey(Category, related_name = 'posts', editable = False )
@@ -471,22 +490,13 @@ class Post(models.Model):
         markup = self.markup
         if not markup:
             markup = POST_MARKUP_CHOICES[0][0]
-            
-        if False and USED_STYLE == 'html':
-            regex = re.compile("&(?!nbsp;)");
-            body = regex.sub( "&amp;", body )
-            regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
-            return regex.sub( htmltag_replace, body )
-        elif markup == 'bbcode':
-            """
-            body = html.escape( body )
-            body = html.linebreaks( body )
-            regex = re.compile("\[(.*?)\](?:([^\[]+)\[/(.*?)\])?")
-            bbcode = regex.sub( bbcode_replace, body )
-            """
-            return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
-        elif markup == 'markdown':
-            return sph_markdown(body)
+
+        bodyhtml = render_body( body, markup )
+        if self.author:
+            signature = get_rendered_signature( self.author )
+            if signature:
+                bodyhtml += '<div class="signature">%s</div>' % signature
+        return bodyhtml
 
     def touch(self, session, user):
         return self._touch( session, user )
@@ -722,6 +732,83 @@ class PollVoters(models.Model):
 
 
 
+class BoardUserProfile(models.Model):
+    user = models.ForeignKey( User, unique = True)
+    signature = models.TextField()
+    
+    markup = models.CharField(maxlength = 250,
+                              null = True,
+                              choices = POST_MARKUP_CHOICES, )
+
+    default_notifyme_value = models.BooleanField(null = True, )
+
+    def render_signature(self):
+        return render_body(self.signature, self.markup)
 
 
 
+from django.dispatch import dispatcher
+from django import newforms as forms
+from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
+
+def get_rendered_signature(user):
+    """ Returns the rendered signature for the given user. """
+    # TODO add caching !
+    try:
+        profile = BoardUserProfile.objects.get( user = user, )
+    except BoardUserProfile.DoesNotExist:
+        return None
+    return profile.render_signature()
+
+
+def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
+    user = instance.user
+    try:
+        profile = BoardUserProfile.objects.get( user = user, )
+    except:
+        profile = BoardUserProfile( user = user )
+
+    instance.fields['board_settings'] = Separator()
+    instance.fields['signature'] = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 3, 'cols': 40 } ),
+                                                    required = False,
+                                                    initial = profile.signature, )
+    if len( POST_MARKUP_CHOICES ) != 1:
+        instance.fields['markup'] = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ),
+                                                     required = False,
+                                                     initial = profile.markup, )
+    instance.fields['default_notifyme_value'] = forms.NullBooleanField( label = 'Default Notify Me - Value',
+                                                                        required = False,
+                                                                        initial = profile.default_notifyme_value, )
+
+def board_profile_edit_save_form(sender, instance, signal, request):
+    user = instance.user
+    data = instance.cleaned_data
+    try:
+        profile = BoardUserProfile.objects.get( user = user, )
+    except BoardUserProfile.DoesNotExist:
+        profile = BoardUserProfile( user = user )
+
+    profile.signature = data['signature']
+    if len( POST_MARKUP_CHOICES ) != 1:
+        profile.markup = data['markup']
+    else:
+        profile.markup = POST_MARKUP_CHOICES[0][0]
+    profile.default_notifyme_value = data['default_notifyme_value']
+
+    profile.save()
+    request.user.message_set.create( message = "Successfully saved board profile." )
+
+def board_profile_display(sender, signal, request, user):
+    try:
+        profile = BoardUserProfile.objects.get( user = user, )
+    except BoardUserProfile.DoesNotExist:
+        return None
+
+    if profile.signature:
+        return '<tr><th colspan="2">Board Signature</th></tr><tr><td colspan="2">%s</td></tr>' % profile.render_signature()
+    return None
+
+dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
+dispatcher.connect(board_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
+dispatcher.connect(board_profile_display, signal = profile_display)

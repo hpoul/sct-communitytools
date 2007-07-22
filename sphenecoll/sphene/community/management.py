@@ -4,7 +4,7 @@ from django.db.models import signals, get_apps, get_models
 from sphene.community import models
 
 def init_data(app, created_models, verbosity, **kwargs):
-    from sphene.community.models import Group, Navigation
+    from sphene.community.models import Group, Navigation, CommunityUserProfileField
     if Group in created_models:
         group = Group( name = 'example',
                        longname = 'Example Group',
@@ -30,6 +30,18 @@ def init_data(app, created_models, verbosity, **kwargs):
                               )
             nav.save()
 
+    if CommunityUserProfileField in created_models:
+        CommunityUserProfileField( name = 'ICQ UIN',
+                                   regex = '\d+',
+                                   sortorder = 100, ).save()
+        CommunityUserProfileField( name = 'Jabber Id',
+                                   regex = '.+@.+',
+                                   sortorder = 200, ).save()
+        CommunityUserProfileField( name = 'Website URL',
+                                   regex = 'http://.*',
+                                   sortorder = 300,
+                                   renderstring = '<a href="%(value)s">%(value)s</a>', ).save()
+        
 
 from django.db import backend, connection, transaction
 from sphene.community.models import ApplicationChangelog
