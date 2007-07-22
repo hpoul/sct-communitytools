@@ -28,3 +28,8 @@
       border: 1px solid black;
       padding: 5px;
     }
+
+    /* Small hack to have the signature not display outside of the board. */
+    .signature {
+      display: none;
+    }
