@@ -267,7 +267,7 @@ def profile_edit(request, group, user_id):
     else:
         user = request.user
 
-    if user != request.user:
+    if user is None or user != request.user or not user.is_authenticated():
         raise PermissionDenied()
 
     if request.method == 'POST':
