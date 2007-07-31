@@ -1,6 +1,7 @@
 
 import re
 from django.conf import settings
+from django.core import exceptions
 from django.core.urlresolvers import reverse
 from sphene.community.middleware import get_current_request
 
@@ -166,3 +167,26 @@ def sph_reverse( viewname, args, kwargs ):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     return reverse( viewname, urlconf, args, kwargs )
+
+def get_method_by_name(methodname):
+    """Import a named method from a string.  
+    Usually used to load a method configured in settings.
+    """
+    try:
+        dot = methodname.rindex('.')
+    except ValueError:
+        raise exceptions.ImproperlyConfigured, '%s isn\'t a module' % methodname
+    named_module, named_method = methodname[:dot], methodname[dot+1:]
+    try:
+        named_mod = __import__(named_module, {}, {}, [''])
+    except ImportError, e:
+        raise exceptions.ImproperlyConfigured(
+            'Error importing named method %s: "%s"' % (named_module, e))
+    try:
+        named_method = getattr(named_mod, named_method)
+    except AttributeError:
+        raise exceptions.ImproperlyConfigured(
+            'Named module "%s" does not define a "%s" method' 
+            % (named_module, named_method))
+
+    return named_method

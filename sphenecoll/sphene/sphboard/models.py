@@ -11,8 +11,9 @@ bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, get_urlconf
+from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, get_urlconf, get_method_by_name
 from sphene.community.templatetags.sph_extras import sph_markdown
+from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
@@ -372,6 +373,19 @@ def htmltag_replace(test):
 def bbcode_replace(test):
     print "bbcode ... %s %s %s" % (test.group(1), test.group(2), test.group(3))
     return test.group()
+
+def bbcode_render(body):
+    return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
+
+def html_render(body):
+    """DISABLED.  Render the body as html"""
+    if False:
+        regex = re.compile("&(?!nbsp;)");
+        body = regex.sub( "&amp;", body )
+        regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
+        return regex.sub( htmltag_replace, body )
+    return ""
+
 POST_STATUS_DEFAULT = 0
 POST_STATUS_STICKY = 1
 POST_STATUS_CLOSED = 2
@@ -393,30 +407,39 @@ AVAILABLE_MARKUP = {
 POST_MARKUP_CHOICES = ( )
 
 enabled_markup = get_sph_setting( 'board_markup_enabled', ( 'bbcode', ) )
+custom_markup = get_sph_setting( 'board_custom_markup', {} )
+
+render_functions = {
+    'bbcode' : bbcode_render,
+    'markdown' : sph_markdown,
+    'html' : html_render,
+}
 
 for en in enabled_markup:
-    POST_MARKUP_CHOICES += ( ( en, AVAILABLE_MARKUP[en] ), )
+    try:
+        POST_MARKUP_CHOICES += ( ( en, AVAILABLE_MARKUP[en] ), )
+    except KeyError:
+        try:
+            POST_MARKUP_CHOICES += ( ( en, custom_markup[en] ), )
+        except KeyError:
+            raise exceptions.ImproperlyConfigured(
+                "Custom renderer '%s' needs a matching label entry in your "
+                 % en + "sphene settings 'board_custom_markup'")
+        render_functions[en] = get_method_by_name(en)
 
 from django.contrib.auth.models import AnonymousUser
 
 def render_body(body, markup = None):
     """ Renders the given body string using the given markup.
     """
-    if False and markup == 'html':
-        regex = re.compile("&(?!nbsp;)");
-        body = regex.sub( "&amp;", body )
-        regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
-        return regex.sub( htmltag_replace, body )
-    elif markup == 'bbcode':
-        """
-        body = html.escape( body )
-        body = html.linebreaks( body )
-        regex = re.compile("\[(.*?)\](?:([^\[]+)\[/(.*?)\])?")
-        bbcode = regex.sub( bbcode_replace, body )
-        """
-        return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
-    elif markup == 'markdown':
-        return sph_markdown(body)
+    if markup:
+        try:
+            return render_functions[markup](body)
+        except KeyError:
+            raise exceptions.ImproperlyConfigured(
+                "Can't render markup '%s'" % markup)
+    else:
+        return body
 
 class Post(models.Model):
     status = models.IntegerField(default = 0, editable = False )

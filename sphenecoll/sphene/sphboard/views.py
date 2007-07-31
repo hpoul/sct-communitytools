@@ -211,6 +211,10 @@ def post(request, group = None, category_id = None, post_id = None):
                                 )
             if 'markup' in data:
                 newpost.markup = data['markup']
+                
+            elif len( POST_MARKUP_CHOICES ) == 1:
+                newpost.markup = POST_MARKUP_CHOICES[0][0]
+                
             newpost.save()
 
 
