@@ -55,6 +55,16 @@ class MultiHostMiddleware:
                 return
             while 'alias' in urlconf:
                 urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[urlconf['alias']]
+                
+            myparams = urlconf_params or urlconf['params']
+
+            # if there is a parameter called 'groupName', load the given group,
+            # and set it into the thread locals.
+            if myparams and 'groupName' in myparams:
+                try:
+                    set_current_group( Group.objects.get( name__exact = myparams['groupName'] ) )
+                except Group.DoesNotExist:
+                    pass
             set_current_urlconf_params( urlconf_params or urlconf['params'] )
             request.urlconf = urlconf['urlconf']
             
@@ -74,7 +84,11 @@ class GroupMiddleware(object):
         groupName = None
         if get_current_urlconf_params() and 'groupName' in get_current_urlconf_params():
             groupName = get_current_urlconf_params()['groupName']
-            group = get_object_or_404(Group, name = groupName)
+            # Check if we already loaded the current group in another
+            # middleware.
+            group = get_current_group()
+            if group is None or group.name != groupName:
+                group = get_object_or_404(Group, name = groupName)
         if 'groupName' in view_kwargs:
             if view_kwargs.get( 'noGroup', False ):
                 del view_kwargs['groupName']
