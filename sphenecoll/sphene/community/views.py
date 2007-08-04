@@ -34,16 +34,16 @@ class RegisterEmailAddress(forms.Form):
                                         % self.cleaned_data['email_address'] )
         return self.cleaned_data
 
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import login as view_login, view_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 def accounts_login(request, group = None):
-    return login( request, template_name = 'sphene/community/accounts/login.html', )
+    return view_login( request, template_name = 'sphene/community/accounts/login.html', )
 
 def accounts_logout(request, group = None):
     sphdata = get_current_sphdata()
     sphdata['is_logout'] = True
-    return logout( request, template_name = 'sphene/community/accounts/logged_out.html', )
+    return view_logout( request, template_name = 'sphene/community/accounts/logged_out.html', )
 
 
 class ForgotUsernamePassword(forms.Form):
