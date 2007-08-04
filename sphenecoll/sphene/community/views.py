@@ -34,7 +34,7 @@ class RegisterEmailAddress(forms.Form):
                                         % self.cleaned_data['email_address'] )
         return self.cleaned_data
 
-from django.contrib.auth.views import login as view_login, view_logout
+from django.contrib.auth.views import login as view_login, logout as view_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 def accounts_login(request, group = None):
