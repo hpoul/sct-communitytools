@@ -6,25 +6,20 @@ from sphene.community.models import Group
 
 from django.utils import html
 from django.conf import settings
-from sphene.contrib.libs.common.text import bbcode
-bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 from datetime import datetime
 
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, get_urlconf, get_method_by_name
-from sphene.community.templatetags.sph_extras import sph_markdown
+from sphene.community.sphutils import sphpermalink as permalink, get_urlconf
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
-from sphene.sphwiki import wikilink_utils
-
+from renderers import POST_MARKUP_CHOICES, render_body
 import logging
 
 logger = logging.getLogger('sphene.sphwiki.models')
-
 
 import re
 
@@ -335,57 +330,6 @@ class CategoryLastVisit(models.Model):
         list_filter = ('user',)
         pass
 
-ALLOWED_TAGS = {
-    'p': ( 'align' ),
-    'em': (),
-    'strike': (),
-    'strong': (),
-    'img': ( 'src', 'width', 'height', 'border', 'alt', 'title' ),
-    'u': ( ),
-    }
-
-#USED_STYLE = 'html'
-USED_STYLE = 'bbcode'
-
-def htmlentities_replace(test):
-    print "entity allowed: %s" % test.group(1)
-    return test.group()
-
-def htmltag_replace(test):
-    if ALLOWED_TAGS.has_key( test.group(2) ):
-        print "tag is allowed.... %s - %s" % (test.group(), test.group(3))
-        if test.group(3) == None: return test.group()
-        attrs = test.group(3).split(' ')
-        allowedParams = ALLOWED_TAGS[test.group(2)]
-        i = 1
-        allowed = True
-        for attr in attrs:
-            if attr == '': continue
-            val = attr.split('=')
-            if not val[0] in allowedParams:
-                allowed = False
-                print "Not allowed: %s" % val[0]
-                break
-        if allowed: return test.group()
-    print "tag is not allowed ? %s" % test.group(2)
-    return test.group().replace('<','&lt;').replace('>','&gt;')
-
-def bbcode_replace(test):
-    print "bbcode ... %s %s %s" % (test.group(1), test.group(2), test.group(3))
-    return test.group()
-
-def bbcode_render(body):
-    return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(body))
-
-def html_render(body):
-    """DISABLED.  Render the body as html"""
-    if False:
-        regex = re.compile("&(?!nbsp;)");
-        body = regex.sub( "&amp;", body )
-        regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
-        return regex.sub( htmltag_replace, body )
-    return ""
-
 POST_STATUS_DEFAULT = 0
 POST_STATUS_STICKY = 1
 POST_STATUS_CLOSED = 2
@@ -399,47 +343,7 @@ POST_STATUSES = {
     'poll': 4,
     }
 
-AVAILABLE_MARKUP = {
-    'bbcode': 'BBCode',
-    'markdown': 'Markdown',
-    }
-# Markup choices used for the 'choices' option for model fields.
-POST_MARKUP_CHOICES = ( )
-
-enabled_markup = get_sph_setting( 'board_markup_enabled', ( 'bbcode', ) )
-custom_markup = get_sph_setting( 'board_custom_markup', {} )
-
-render_functions = {
-    'bbcode' : bbcode_render,
-    'markdown' : sph_markdown,
-    'html' : html_render,
-}
-
-for en in enabled_markup:
-    try:
-        POST_MARKUP_CHOICES += ( ( en, AVAILABLE_MARKUP[en] ), )
-    except KeyError:
-        try:
-            POST_MARKUP_CHOICES += ( ( en, custom_markup[en] ), )
-        except KeyError:
-            raise exceptions.ImproperlyConfigured(
-                "Custom renderer '%s' needs a matching label entry in your "
-                 % en + "sphene settings 'board_custom_markup'")
-        render_functions[en] = get_method_by_name(en)
-
 from django.contrib.auth.models import AnonymousUser
-
-def render_body(body, markup = None):
-    """ Renders the given body string using the given markup.
-    """
-    if markup:
-        try:
-            return render_functions[markup](body)
-        except KeyError:
-            raise exceptions.ImproperlyConfigured(
-                "Can't render markup '%s'" % markup)
-    else:
-        return body
 
 class Post(models.Model):
     status = models.IntegerField(default = 0, editable = False )

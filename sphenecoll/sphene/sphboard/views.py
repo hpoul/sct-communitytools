@@ -14,6 +14,7 @@ from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
 from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
+from sphene.sphboard.renderers import describe_render_choices
 
 class SpheneModelInitializer:
     def __init__(self, request):
@@ -141,7 +142,7 @@ def options(request, thread_id, group = None):
 class PostForm(forms.Form):
     subject = forms.CharField()
     body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
-                            help_text = 'You can use <a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a> in your posts.', )
+                            help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
                                     help_text = 'Please enter the result of the above calculation.',
