@@ -10,37 +10,32 @@ from sphene.sphwiki import wikilink_utils
 bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 
 class BaseRenderer(object):
+    """ base class for all board renderers.
+    see documentation on http://sct.sphene.net for more details. """
     
-    LABEL = 'Invalid'
+    label = 'Invalid'
     
-    REFERENCE = 'Invalid'
+    reference = 'Invalid'
     
-    def __init__(self, text):
-        self.text = text
+    def __init__(self):
+        pass
     
-                
-    def render(self):
-        return self.text
-        
-    def __str__(self):
-        return self.render
+    def render(self, text):
+        return text
         
 
 class BBCodeRenderer(BaseRenderer):
 
-    LABEL = 'BBCode'
+    label = 'BBCode'
 
-    REFERENCE ='<a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a>'
-
-    def label(self):
-        return "BBCode"
+    reference ='<a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a>'
 
     def bbcode_replace(test):
         print "bbcode ... %s %s %s" % (test.group(1), test.group(2), test.group(3))
         return test.group()
 
-    def render(self):
-        return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(self.text))
+    def render(self, text):
+        return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(text))
 
 
 HTML_ALLOWED_TAGS = {
@@ -55,9 +50,9 @@ HTML_ALLOWED_TAGS = {
 
 class HtmlRenderer(BaseRenderer):
     
-    LABEL = 'HTML'
+    label = 'HTML'
     
-    REFERENCE = 'HTML (%s and %s)' % (", ".join(["'%s', " % tag for tag in HTML_ALLOWED_TAGS.keys()[:-1]]), HTML_ALLOWED_TAGS.keys()[-1])
+    reference = 'HTML (%s and %s)' % (", ".join(["'%s', " % tag for tag in HTML_ALLOWED_TAGS.keys()[:-1]]), HTML_ALLOWED_TAGS.keys()[-1])
     
     def htmlentities_replace(test):
         print "entity allowed: %s" % test.group(1)
@@ -82,11 +77,11 @@ class HtmlRenderer(BaseRenderer):
         print "tag is not allowed ? %s" % test.group(2)
         return test.group().replace('<','&lt;').replace('>','&gt;')
         
-    def render(self):
+    def render(self, text):
         """DISABLED.  Render the body as html"""
         if False:
             regex = re.compile("&(?!nbsp;)");
-            body = regex.sub( "&amp;", self.text )
+            body = regex.sub( "&amp;", text )
             regex = re.compile("<(/?)([a-zA-Z]+?)( .*?)?/?>")
             return regex.sub( htmltag_replace, body )
         return ""
@@ -94,12 +89,12 @@ class HtmlRenderer(BaseRenderer):
 
 class MarkdownRenderer(BaseRenderer):
     
-    LABEL = 'Markdown'
+    label = 'Markdown'
     
-    REFERENCE = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
+    reference = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
 
-    def render(self):
-        return sph_markdown(self.text)
+    def render(self, text):
+        return sph_markdown(text)
 
 AVAILABLE_MARKUP = {
     'bbcode': BBCodeRenderer,
@@ -128,7 +123,7 @@ def _get_markup_choices():
 
         classes[en] = renderclass
 
-        choices.append( ( en, renderclass.LABEL ) )
+        choices.append( ( en, renderclass.label ) )
 
     return tuple(choices), classes
 
@@ -139,8 +134,8 @@ def render_body(body, markup = None):
     """
     if markup:
         try:
-            renderer = RENDER_CLASSES[markup](body)
-            return renderer.render()
+            renderer = RENDER_CLASSES[markup]()
+            return renderer.render(body)
         except KeyError:
             raise exceptions.ImproperlyConfigured(
                 "Can't render markup '%s'" % markup)
@@ -151,7 +146,7 @@ def render_body(body, markup = None):
 def describe_render_choices():
     choices = []
     for renderer, label in POST_MARKUP_CHOICES:
-        choices.append(RENDER_CLASSES[renderer].REFERENCE)
+        choices.append(RENDER_CLASSES[renderer].reference)
 
     if len(choices) > 1:
         desc = "%s or %s" % (", ".join(choices[:-1]), choices[-1])
