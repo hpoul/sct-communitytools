@@ -408,6 +408,10 @@ class Post(models.Model):
 
     def allowEditing(self, user = None):
         if user == None: user = get_current_user()
+        
+        if not user or not user.is_authenticated():
+            return False
+        
         return user == self.author or user.is_superuser
 
 
