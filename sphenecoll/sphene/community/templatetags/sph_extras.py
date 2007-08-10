@@ -223,4 +223,27 @@ def sph_truncate(string, charlen, replacement):
         return string[0:charlen-len(replacement)] + replacement
     return string
 
+@register.simple_tag
+def sph_showavatar(user):
+    profile = None
+    try:
+        profile = CommunityUserProfile.objects.get( user = user, )
+    except CommunityUserProfile.DoesNotExist:
+        pass
+    
+    avatar = None
+    avatar_width = None
+    avatar_height = None
+    if not profile or not profile.avatar:
+        avatar = get_sph_setting( 'community_avatar_default' )
+        if not avatar:
+            return ''
+        avatar_width = get_sph_setting( 'community_avatar_default_width' )
+        avatar_height = get_sph_setting( 'community_avatar_default_height' )
+    else:
+        avatar = profile.get_avatar_url()
+        avatar_width = profile.avatar_width
+        avatar_height = profile.avatar_height
+        
+    return '<img src="%s" width="%dpx" height="%dpx" alt="Users avatar" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height)
 

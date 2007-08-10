@@ -31,8 +31,7 @@
     {% for post in post_list %}
       <tr>
         <td rowspan="2" class="sphboard_post_authorinfo">
-          Posted by<br/>
-          {% sphboard_displayUserName post.author %}<br/>
+          {% include "sphene/sphboard/_post_authorinfo.html" %}
         </td>
         <td>
           <div style="float:left"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>

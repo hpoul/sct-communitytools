@@ -155,13 +155,23 @@ class HTML:
     def toxml(self):
         return self.value
 
-
+sph_settings_defaults = {
+    'django096compatibility': False,
+    
+    
+    'community_avatar_default': '/static/sphene/community/default_avatar.png',
+    'community_avatar_default_width': 48,
+    'community_avatar_default_height': 48,
+    'community_avatar_max_width': 150,
+    'community_avatar_max_height': 150,
+    }
 
 def get_sph_setting(name, default_value = None):
     if not hasattr(settings, 'SPH_SETTINGS'):
-        return default_value
+        return sph_settings_defaults.get(name, default_value)
 
-    return settings.SPH_SETTINGS.get(name, default_value)
+    # TODO this needs to be done more efficient !
+    return settings.SPH_SETTINGS.get(name, sph_settings_defaults.get(name, default_value))
 
 def sph_reverse( viewname, args, kwargs ):
     req = get_current_request()

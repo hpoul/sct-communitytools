@@ -271,7 +271,9 @@ def profile_edit(request, group, user_id):
         raise PermissionDenied()
 
     if request.method == 'POST':
-        form = EditProfileForm(user, request.POST)
+        reqdata = request.POST.copy()
+        reqdata.update(request.FILES)
+        form = EditProfileForm(user, request.POST, request.FILES)
     else:
         form = EditProfileForm(user)
 

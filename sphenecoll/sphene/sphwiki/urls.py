@@ -16,6 +16,6 @@ urlpatterns += patterns('sphene.sphwiki.views',
                         (r'^history/'       + snip + r'/$', 'history'),
                         (r'^diff/'          + snip + r'/(?P<changeId>\d+)/$', 'diff'),
                         (r'^attachments/edit/'   + snip + r'/(?P<attachmentId>\d+)/$', 'attachmentEdit'),
-                        (r'^attachments/create/'   + snip + r'/$', 'attachmentEdit'),
+                        (r'^attachments/create/'   + snip + r'/$', 'attachmentCreate'),
                         (r'^attachments/list/'   + snip + r'/$', 'attachment'),
                         )

@@ -167,7 +167,8 @@ class WikiSnip(models.Model):
         return '%s (%s)' % (self.name, self.group.name)
 
     def get_absolute_url(self):
-        return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
+        return ('shortwiki', (), { 'groupName': self.group.name, 'snipName': self.name })
+        #return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
 
     def get_absolute_editurl(self):
@@ -179,7 +180,7 @@ class WikiSnip(models.Model):
     get_absolute_attachmenturl = permalink(get_absolute_attachmenturl, get_current_request)
 
     def get_absolute_create_attachmenturl(self):
-        return ('sphene.sphwiki.views.attachmentEdit', (), { 'groupName': self.group.name, 'snipName': self.name })
+        return ('sphene.sphwiki.views.attachmentCreate', (), { 'groupName': self.group.name, 'snipName': self.name })
     get_absolute_create_attachmenturl = permalink(get_absolute_create_attachmenturl, get_current_request)
 
     def get_absolute_historyurl(self):

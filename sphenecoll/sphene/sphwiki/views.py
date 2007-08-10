@@ -168,6 +168,10 @@ def attachment(request, group, snipName):
                                           },
                         allow_empty = True )
 
+def attachmentCreate(request, group, snipName, attachmentId = None):
+    """ Sick workaround for reverse lookup. """
+    return attachmentEdit(request, group, snipName, attachmentId)
+
 def attachmentEdit(request, group, snipName, attachmentId = None):
     attachment = None
     if attachmentId is None:
@@ -187,15 +191,24 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
     AttachmentForm.base_fields['fileupload'].widget = widgets.FileInput()
 
     if request.method == 'POST':
-        reqdata = request.POST.copy()
-        reqdata.update(request.FILES)
-        form = AttachmentForm(reqdata)
+        if get_sph_setting( 'django096compatibility' ):
+            reqdata = request.POST.copy()
+            reqdata.update(request.FILES)
+            form = AttachmentForm(reqdata)
+        else:
+            form = AttachmentForm(request.POST, request.FILES)
         if form.is_valid():
             attachment = form.save(commit=False)
             snip = WikiSnip.objects.get( name__exact = snipName )
             attachment.snip = snip
             attachment.uploader = request.user
-            attachment.save_fileupload_file( reqdata['fileupload']['filename'], reqdata['fileupload']['content'] )
+
+            if get_sph_setting( 'django096compatibility' ):
+                attachment.save_fileupload_file( reqdata['fileupload']['filename'], reqdata['fileupload']['content'] )
+            else:
+                data = form.cleaned_data
+                attachment.save_fileupload_file( data['fileupload'].filename, data['fileupload'].content )
+                
             attachment.save()
             return HttpResponseRedirect( snip.get_absolute_attachmenturl() )
     else:

@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+import logging
+
+logger = logging.getLogger('sphene.community.models')
 
 # Create your models here.
 
@@ -94,6 +97,18 @@ class ApplicationChangelog(models.Model):
 class CommunityUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     public_emailaddress = models.CharField(maxlength = 250)
+
+    avatar = models.ImageField( height_field = 'avatar_height',
+                                width_field = 'avatar_width',
+                                upload_to = 'var/sphene/community/avatar/%Y/%m/%d',
+                                blank = True, null = True, )
+    avatar_height = models.IntegerField(blank = True, null = True, )
+    avatar_width = models.IntegerField(blank = True, null = True, )
+
+
+    changelog = ( ( '2007-08-10 00', 'alter', 'ADD avatar varchar(100)'   ),
+                  ( '2007-08-10 01', 'alter', 'ADD avatar_height integer' ),
+                  ( '2007-08-10 02', 'alter', 'ADD avatar_width integer'  ) )
 
 class CommunityUserProfileField(models.Model):
     """ User profile fields, configurable through the django admin
@@ -207,3 +222,5 @@ def community_profile_display(sender, signal, request, user):
 dispatcher.connect(community_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
 dispatcher.connect(community_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
 dispatcher.connect(community_profile_display, signal = profile_display)
+
+
