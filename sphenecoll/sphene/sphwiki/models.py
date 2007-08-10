@@ -167,8 +167,7 @@ class WikiSnip(models.Model):
         return '%s (%s)' % (self.name, self.group.name)
 
     def get_absolute_url(self):
-        return ('shortwiki', (), { 'groupName': self.group.name, 'snipName': self.name })
-        #return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
+        return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
 
     def get_absolute_editurl(self):
