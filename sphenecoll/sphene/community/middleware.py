@@ -238,7 +238,9 @@ class ModPythonSetLoggedinUser(object):
         if not hasattr(request, 'user') or not request.user.is_authenticated():
             return None
 
-        request._req.user = request.user.username
+	# request.user.username is a unicode string
+	# but _req.user requires an ascii string (afaik)
+        request._req.user = str(request.user.username)
 
         return None
 
