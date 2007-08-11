@@ -52,8 +52,12 @@
       padding: 5px;
     }
 
+    .sphboard_post_list td.sphboard_post_subject {
+      height: 10px;
+    }
+
     .sphboard_post_list td.sphboard_post_body {
-      height: 100px;
+      min-height: 100px;
       vertical-align: top;
     }
 

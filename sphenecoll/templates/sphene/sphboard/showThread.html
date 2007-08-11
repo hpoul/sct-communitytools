@@ -33,7 +33,7 @@
         <td rowspan="2" class="sphboard_post_authorinfo">
           {% include "sphene/sphboard/_post_authorinfo.html" %}
         </td>
-        <td>
+        <td class="sphboard_post_subject">
           <div style="float:left"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
           <div style="float:right">
             {% if post.allowEditing %}
