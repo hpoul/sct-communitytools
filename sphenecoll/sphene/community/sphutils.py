@@ -4,6 +4,10 @@ from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from sphene.community.middleware import get_current_request
+import logging
+
+logger = logging.getLogger('sphene.community.sphutils')
+
 
 # Decorator. Takes a function that returns a tuple in this format:
 #     (viewname, viewargs, viewkwargs)
@@ -43,6 +47,9 @@ def get_fullusername(value):
 
 
 def format_date(value):
+    if not hasattr(value, 'strftime') :
+        logger.error( 'Wrong value to format date: %s' % (str(value)) )
+	return str(value)
     return value.strftime( "%Y-%m-%d %H:%M:%S" )
 
 
