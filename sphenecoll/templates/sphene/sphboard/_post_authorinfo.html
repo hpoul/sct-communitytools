@@ -3,4 +3,6 @@
 Posted by<br/>
 {% sphboard_displayUserName post.author %}<br/><br/><br/>
 {% sph_showavatar post.author %}<br/><br/>
-<small>Registered at {{ post.author.date_joined|sph_date }}</small>
+{% if post.author %}
+  <small>Registered at {{ post.author.date_joined|sph_date }}</small>
+{% endif %}
