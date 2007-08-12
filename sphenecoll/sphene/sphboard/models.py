@@ -672,6 +672,7 @@ class ThreadInformation(models.Model):
         self.sticky_value = self.root_post.is_sticky() and 1 or 0
         # Find the last post ...
         self.latest_post = self.root_post.get_latest_post()
+	self.thread_latest_postdate = self.latest_post.postdate
         # Calculate post count ...
         self.post_count = self.root_post.postCount()
         self.update_heat()
@@ -697,7 +698,7 @@ class ThreadInformation(models.Model):
                                 viewcount = views,
                                 age = age, )
         logger.debug( "Number of posts in the last %d days: %d - age: %d - views: %d - resulting heat: %d" % (days, count, age, views, heat) )
-        self.heat = heat
+        self.heat = int(heat)
         self.heat_calculated = datetime.today()
         
 
