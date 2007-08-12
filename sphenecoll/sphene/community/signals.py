@@ -26,7 +26,7 @@ maintenance = object()
 
 # This method should be regularly called (once a day) through a cron job like:
 #
-# echo -e "from sphene.community.signals import triggei_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
+# echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 def trigger_maintenance():
     from django.dispatch import dispatcher
     dispatcher.send( signal = maintenance,
