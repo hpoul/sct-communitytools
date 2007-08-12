@@ -171,7 +171,18 @@ sph_settings_defaults = {
     'community_avatar_default_height': 48,
     'community_avatar_max_width': 150,
     'community_avatar_max_height': 150,
+    'community_avatar_max_size': 20*1024,
     }
+
+def add_setting_defaults(newdefaults):
+    """
+    This method can be used by other applications to define their
+    default values.
+    
+    newdefaults has to be a dictionary containing name -> value of
+    the settings.
+    """
+    sph_settings_defaults.update(newdefaults)
 
 def get_sph_setting(name, default_value = None):
     if not hasattr(settings, 'SPH_SETTINGS'):
@@ -179,6 +190,15 @@ def get_sph_setting(name, default_value = None):
 
     # TODO this needs to be done more efficient !
     return settings.SPH_SETTINGS.get(name, sph_settings_defaults.get(name, default_value))
+
+
+class SphSettings(object):
+    """
+    Simple class which can be put into the django context to retrieve settings.
+    """
+
+    def __getattribute__(self, name):
+        return get_sph_setting(name)
 
 def sph_reverse( viewname, args, kwargs ):
     req = get_current_request()
@@ -207,3 +227,4 @@ def get_method_by_name(methodname):
             % (named_module, named_method))
 
     return named_method
+

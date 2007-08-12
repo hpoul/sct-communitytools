@@ -184,44 +184,52 @@ class StatsMiddleware(object):
 
         # time the view
         start = time()
-        response = view_func(request, *view_args, **view_kwargs)
-        totTime = time() - start
+        response = None
+        try:
+            response = view_func(request, *view_args, **view_kwargs)
+        finally:
+            totTime = time() - start
 
-        # compute the db time for the queries just run
-        queries = len(connection.queries) - n
-        if queries:
-            dbTime = reduce(add, [float(q['time']) 
-                                  for q in connection.queries[n:]])
-        else:
-            dbTime = 0.0
+            # compute the db time for the queries just run
+            queries = len(connection.queries) - n
+            if queries:
+                dbTime = reduce(add, [float(q['time']) 
+                                      for q in connection.queries[n:]])
+            else:
+                dbTime = 0.0
 
-        # and backout python time
-        pyTime = totTime - dbTime
+            # and backout python time
+            pyTime = totTime - dbTime
 
-        # restore debugging setting
-        settings.DEBUG = debug
+            # restore debugging setting
+            settings.DEBUG = debug
 
-        stats = {
-            'totTime': totTime,
-            'pyTime': pyTime,
-            'dbTime': dbTime,
-            'queries': queries,
-            }
+            stats = {
+                'totTime': totTime,
+                'pyTime': pyTime,
+                'dbTime': dbTime,
+                'queries': queries,
+                }
 
-        # replace the comment if found            
-        if response and response.content:
-            s = response.content
-            regexp = re.compile(r'(?P<cmt><!--\s*STATS:(?P<fmt>.*?)-->)')
-            match = regexp.search(s)
-            if match:
-                s = s[:match.start('cmt')] + \
-                    match.group('fmt') % stats + \
-                    s[match.end('cmt'):]
-                out = match.group('fmt') % stats
-                logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
-                #for query in connection.queries:
-                #    logger.debug( '  %5s : %s' % (query['time'], query['sql'], ) )
-                response.content = s
+            # replace the comment if found            
+            if response and response.content:
+                s = response.content
+                regexp = re.compile(r'(?P<cmt><!--\s*STATS:(?P<fmt>.*?)-->)')
+                match = regexp.search(s)
+                if match:
+                    s = s[:match.start('cmt')] + \
+                        match.group('fmt') % stats + \
+                        s[match.end('cmt'):]
+                    out = match.group('fmt') % stats
+                    #for query in connection.queries:
+                    #    logger.debug( '  %5s : %s' % (query['time'], query['sql'], ) )
+                    response.content = s
+
+            logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
+            querystr = ''
+            for query in connection.queries:
+                querystr += "\t" + query['time'] + "\t" + query['sql'] + "\n"
+            logger.debug( 'All Queries: %s' % (querystr,) )
 
         return response
 

@@ -5,7 +5,7 @@ from sphene.sphboard import models
 
 def init_data(app, created_models, verbosity, **kwargs):
     from sphene.community.models import Group
-    from sphene.sphboard.models import Category
+    from sphene.sphboard.models import Category, ThreadInformation, Post
     if Category in created_models:
         group = Group.objects.get( name = 'example' )
         category = Category( name = 'Example Category',
@@ -13,6 +13,33 @@ def init_data(app, created_models, verbosity, **kwargs):
                              description = 'This is just an example Category. You can modify categories in the django admin interface.',
                              )
         category.save()
+
+    if ThreadInformation in created_models:
+        # Synchronize ThreadInformation with all posts ..
+        # (Required for backward compatibility)
+        synchronize_threadinformation()
+
+
+def synchronize_threadinformation():
+    """ Will synchronize the 'ThreadInformation' objects. """
+    from sphene.sphboard.models import Category, ThreadInformation, Post, THREAD_TYPE_DEFAULT
+    
+    # First find all threads ...
+    print "Synchronizing ThreadInformation ..."
+    all_threads = Post.objects.filter( thread__isnull = True )
+
+    for thread in all_threads:
+        # Find corresponding ThreadInformation
+        try:
+            thread_info = ThreadInformation.objects.type_default().filter( root_post = thread ).get()
+        except ThreadInformation.DoesNotExist:
+            thread_info = ThreadInformation( root_post = thread,
+                                             category = thread.category,
+                                             thread_type = THREAD_TYPE_DEFAULT )
+
+        thread_info.update_cache()
+        thread_info.save()
+
 
 
 dispatcher.connect(init_data, sender=models, signal=signals.post_syncdb)

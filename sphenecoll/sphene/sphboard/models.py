@@ -6,10 +6,13 @@ from sphene.community.models import Group
 
 from django.utils import html
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_urlconf
+from django.dispatch import dispatcher
+from django.db.models import signals
+from sphene.community.sphutils import sphpermalink as permalink, get_urlconf, get_sph_setting, get_method_by_name
+import sphene.community.signals
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
@@ -108,12 +111,6 @@ class Category(models.Model):
                   ( '2007-04-14 02', 'alter', 'ALTER sortorder SET NOT NULL' ),
                   )
 
-    def do_init(self, initializer, session, user):
-        self._initializer = initializer
-        self._session = session
-        self._user = user
-        self.touch( session, user )
-
     def get_children(self):
         """ Returns all children of this category in which the user has view permission. """
         return Category.sph_objects.filter_for_group( self.group ).filter( parent = self )
@@ -121,17 +118,21 @@ class Category(models.Model):
     def canContainPosts(self):
         return self.allowthreads != 3
 
-    def thread_list(self):
-        return self.posts.filter( thread__isnull = True )
+    def get_thread_list(self):
+        #return self.posts.filter( thread__isnull = True )
+        return self.threadinformation_set.select_related( depth = 1 )
 
     def threadCount(self):
-        return self.posts.filter( thread__isnull = True ).count()
+        return self.threadinformation_set.count()
 
     def postCount(self):
         return self.posts.count()
 
-    def latestPost(self):
+    def get_latest_post(self):
         return self.posts.latest( 'postdate' )
+
+    # For backward compatibility ...
+    latestPost = get_latest_post
 
     def allowPostThread(self, user):
         return self.testAllowance(user, self.allowthreads)
@@ -163,6 +164,7 @@ class Category(models.Model):
         try:
             categoryLastVisit = CategoryLastVisit.objects.get( category = self,
                                                                user = user, )
+            categoryLastVisit.lastvisit = datetime.today()
             categoryLastVisit.oldlastvisit = None
             categoryLastVisit.save()
         except CategoryLastVisit.DoesNotExist:
@@ -211,15 +213,16 @@ class Category(models.Model):
             return False
 
         # If there was no last visit, we didn't store any last visits for threads.
-        if not lastVisit.oldlastvisit:
-            return lastVisit.lastvisit < latestPost.postdate
+        # (Because there was no new threads between 'lastvisit' and 'oldlastvisit'
+        #  so use 'lastvisit')
+        lastvisit = lastVisit.oldlastvisit or lastVisit.lastvisit
         
-        if lastVisit.oldlastvisit > latestPost.postdate:
+        if lastvisit > latestPost.postdate:
             return False
 
         # Check all posts to see if they are new ....
         allNewPosts = Post.objects.filter( category = self,
-                                           postdate__gt = lastVisit.oldlastvisit, )
+                                           postdate__gt = lastvisit, )
 
         for post in allNewPosts:
             threadid = post.thread and post.thread.id or post.id
@@ -361,10 +364,6 @@ class Post(models.Model):
                   ( '2007-06-16 00', 'alter', 'ADD markup varchar(250) NULL', ),
                   )
 
-    def do_init(self, initializer, session, user):
-        self._initializer = initializer
-        self.hasNewPosts = self._hasNewPosts(session, user)
-
     def is_sticky(self):
         return self.status & POST_STATUS_STICKY
     def is_closed(self):
@@ -388,17 +387,20 @@ class Post(models.Model):
         if self.thread == None: return self;
         return self.thread;
 
-    def latestPost(self):
-        return self.allPosts().latest( 'postdate' )
+    def get_threadinformation(self):
+        return ThreadInformation.objects.type_default().get( root_post = self.get_thread() )
 
-    def allPosts(self):
+    def get_latest_post(self):
+        return self.get_all_posts().latest( 'postdate' )
+
+    def get_all_posts(self):
         return Post.objects.filter( Q( pk = self.id ) | Q( thread = self ) )
 
     def replies(self):
         return Post.objects.filter( thread = self )
 
     def postCount(self):
-        return self.allPosts().count()
+        return self.get_all_posts().count()
 
     def replyCount(self):
         return self.replies().count()
@@ -428,6 +430,13 @@ class Post(models.Model):
             if signature:
                 bodyhtml += '<div class="signature">%s</div>' % signature
         return bodyhtml
+
+    def viewed(self, session, user):
+        if get_sph_setting( 'board_count_views' ):
+            threadinfo = self.get_threadinformation()
+            threadinfo.view_count += 1
+            threadinfo.save()
+        self.touch(session, user)
 
     def touch(self, session, user):
         return self._touch( session, user )
@@ -595,6 +604,186 @@ class Post(models.Model):
         pass
 
 
+THREAD_TYPE_DEFAULT = 1
+THREAD_TYPE_MOVED = 2
+
+thread_types = (
+    (THREAD_TYPE_DEFAULT, 'Default'),
+    (THREAD_TYPE_MOVED  , 'Moved Thread'),
+    )
+
+
+class ThreadInformationManager(models.Manager):
+    def type_default(self):
+        return self.filter( thread_type = THREAD_TYPE_DEFAULT )
+
+
+class ThreadInformation(models.Model):
+    """ A object which holds information about threads and caches
+    a couple of things which are redundant. """
+    root_post = models.ForeignKey( Post, null = False, blank = False )
+    category = models.ForeignKey( Category )
+
+    # A thread type allows the decleration of a "Moved" thread.
+    thread_type = models.IntegerField( choices = thread_types )
+
+    # the "heat" value between -100 and 100 where >0 represents a "hot" thread.
+    heat = models.IntegerField( default = 0, db_index = True )
+    heat_calculated = models.DateTimeField( null = True )
+
+    # For performance reasons store latest posts and various counters here ..
+    sticky_value = models.IntegerField( default = 0, db_index = True )
+    latest_post = models.ForeignKey( Post, related_name = 'thread_latest_set' )
+    post_count = models.IntegerField( default = 0 )
+    view_count = models.IntegerField( default = 0 )
+    # To make it even easier / faster to order by the latest post date..
+    thread_latest_postdate = models.DateTimeField( db_index = True )
+
+    objects = ThreadInformationManager()
+
+
+    def save(self):
+        if self.thread_latest_postdate is None:
+            self.thread_latest_postdate = self.latest_post.postdate
+        
+        super(ThreadInformation, self).save()
+
+
+    def is_moved(self):
+        """ Returns true if this thread represents a thread which was moved
+        into another category. """
+        return self.tread_type & THREAD_TYPE_MOVED
+
+    def is_hot(self):
+        if self.heat_calculated and (datetime.today() - self.heat_calculated).days > 7:
+            logger.debug( 'Heat was not calculated in the last 7 days - recalculating...' )
+            self.update_heat()
+            self.save()
+            
+        """ Returns True if this thread represents a "Hot" topic.
+        If it returns True you can look for the 'heat' property for the exact value. """
+        return self.heat > 0
+
+    def update_cache(self):
+        """ Will update the latest_post and post_count of this model.
+        (Ie. the cache - or redundant information.)
+        Does not save this model ! This has to be done by the caller. """
+        # Find sticky ..
+        self.sticky_value = self.root_post.is_sticky() and 1 or 0
+        # Find the last post ...
+        self.latest_post = self.root_post.get_latest_post()
+        # Calculate post count ...
+        self.post_count = self.root_post.postCount()
+        self.update_heat()
+
+    def update_heat(self):
+        """
+        Updates the heat value - this should be run periodically.
+        Or at least every time a post is added to a thread.
+        
+        The caller has to ensure that the thread is saved afterwards !
+        """
+        days = get_sph_setting( 'board_heat_days' )
+
+        # Get the number of posts of the last x days
+        count = self.root_post.get_all_posts().filter( postdate__gte = datetime.today() - timedelta( days ) ).count()
+        views = self.view_count
+
+        age = -(self.root_post.postdate - datetime.today()).days
+
+        heat_calculator = get_method_by_name( get_sph_setting( 'board_heat_calculator' ) )
+        heat = heat_calculator( thread = self,
+                                postcount = count,
+                                viewcount = views,
+                                age = age, )
+        logger.debug( "Number of posts in the last %d days: %d - age: %d - views: %d - resulting heat: %d" % (days, count, age, views, heat) )
+        self.heat = heat
+        self.heat_calculated = datetime.today()
+        
+
+    def is_sticky(self):
+        return self.sticky_value > 0
+
+
+    #################################
+    ## Some proxy methods which will simply forward
+    ## the calls to the root post.
+
+    def author(self):
+        return self.root_post.author
+
+    def subject(self):
+        return self.root_post.subject
+
+    def is_poll(self):
+        return self.root_post.is_poll()
+
+    def is_closed(self):
+        return self.root_post.is_closed()
+
+    ##
+    ###################################
+
+    def get_absolute_url(self):
+        return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.root_post.id })
+    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    
+
+def calculate_heat(thread, postcount, viewcount, age):
+    """
+    This method can be customized by setting board_heat_calculator to your own
+    method which will replace this one.
+
+    It should return the "heat" (Usually something between -100 and 100 - where >0 should represent
+    a "hot" thread.
+    """
+
+    post_threshold = get_sph_setting( 'board_heat_post_threshold' )
+    view_threshold = get_sph_setting( 'board_heat_view_threshold' )
+
+    # It is enough to fulfill one threshold to make a hot thread.
+    postheat = (100. / post_threshold * postcount)
+    viewheat = (100. / view_threshold * (viewcount/age))
+
+    # Subtract 100 to have non-hot topic <0
+    heat = (postheat + viewheat) - 100
+
+    return heat
+
+def update_heat():
+    """
+    This method should be regularly called through a cronjob or similar -
+    this can be done by simply dispatching the maintenance signal.
+
+    see sphenecoll/sphene/community/signals.py for more details.
+    """
+    all_threads = ThreadInformation.objects.all()
+    for thread in all_threads:
+        thread.update_heat()
+        thread.save()
+
+dispatcher.connect(update_heat,
+                   signal = sphene.community.signals.maintenance, )
+
+def update_thread_information(instance):
+    """
+    Updates the thread information every time a post is saved.
+    """
+    thread = instance.get_thread()
+    threadinfos = ThreadInformation.objects.filter( root_post = thread )
+    
+    if len(threadinfos) < 1:
+        threadinfos = ( ThreadInformation( root_post = instance,
+                                           category = instance.category,
+                                           thread_type = THREAD_TYPE_DEFAULT, ),  )
+    for threadinfo in threadinfos:
+        threadinfo.update_cache()
+        threadinfo.save()
+
+
+dispatcher.connect(update_thread_information,
+                   sender = Post,
+                   signal = signals.post_save)
 
 
 class Monitor(models.Model):
@@ -616,10 +805,6 @@ class Poll(models.Model):
     question = models.CharField( maxlength = 250 )
     choices_per_user = models.IntegerField( )
 
-    def do_init(self, initializer, session, user):
-        self._initializer = initializer
-        self._user = user
-        
     def multiplechoice(self):
         return self.choices_per_user != 1
 
@@ -678,7 +863,6 @@ class BoardUserProfile(models.Model):
 
 
 
-from django.dispatch import dispatcher
 from django import newforms as forms
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display

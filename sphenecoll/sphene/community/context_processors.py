@@ -1,5 +1,6 @@
 from django.conf import settings
 from sphene.community.models import Navigation
+from sphene.community.sphutils import SphSettings
 from sphene.community.middleware import get_current_group, get_current_sphdata
 
 def navigation(request):
@@ -20,8 +21,8 @@ def navigation(request):
                  'urlPrefix': urlPrefix,
                  'group': group,
                  'sph': sphdata,
-                 'sph_settings': sph_settings,
+                 'sph_settings': SphSettings(),
                  }
     return { 'sph': sphdata,
-             'sph_settings': sph_settings,
+             'sph_settings': SphSettings(),
              }

@@ -41,8 +41,10 @@
   </table>
   <br/><br/>
   {% else %}
-    {% if not category %}
-      There are currently no categories. (Or you have no permission to see them.)
+    {% if not isShowLatest %}
+      {% if not category %}
+        There are currently no categories. (Or you have no permission to see them.)
+      {% endif %}
     {% endif %}
   {% endif %}
 
@@ -50,23 +52,29 @@
     {% include "sphene/sphboard/_new_thread_link.html" %}
     <table class="sphboard_thread_list">
       <tr>
-        <th class="sphboard_mainhead" colspan="4">Threads</th>
+        <th class="sphboard_mainhead" colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}">Threads</th>
       </tr>
       <tr>
         <th colspan="2">Subject / Author</th>
+        {% if sph_settings.board_count_views %}
+          <th>Views</th>
+        {% endif %}
         <th>Posts</th>
         <th>Last Post</th>
       </tr>
       {% for thread in thread_list %}
         <tr>
-          <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
-          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}<a href="../../thread/{{ thread.id }}/">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
-          <td class="sphboard_postcount">{{ thread.postCount }}</td>
-          <td class="sphboard_latestpost">{% sphboard_latestPost thread.latestPost 0 %}
+          <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td>
+          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          {% if sph_settings.board_count_views %}
+            <td class="sphboard_viewcount">{{ thread.view_count }}</td>
+          {% endif %}
+          <td class="sphboard_postcount">{{ thread.post_count }}</td>
+          <td class="sphboard_latestpost">{% sphboard_latestPost thread.latest_post 0 %}
         </tr>
       {% endfor %}
       <tr>
-        <td colspan="4"><span style="float:left;">{{ hits }} Threads in this category yet.</span><span style="display:block;float:right;">{% sphboard_pagination pages page %}</span></td>
+        <td colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}"><span style="float:left;">{{ hits }} Threads in this category yet.</span><span style="display:block;float:right;">{% sphboard_pagination pages page %}</span></td>
       </tr>
     </table>
     <br/><br/>

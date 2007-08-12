@@ -13,15 +13,9 @@ from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
-from sphene.sphboard.models import Category, Post, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
+from sphene.sphboard.models import Category, Post, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
 from sphene.sphboard.renderers import describe_render_choices
 
-class SpheneModelInitializer:
-    def __init__(self, request):
-        self.request = request
-
-    def init_model(self, model):
-        model.do_init( self, self.request.session, self.request.user )
         
 
 def showCategory(request, group = None, category_id = None, showType = None):
@@ -77,18 +71,18 @@ def showCategory(request, group = None, category_id = None, showType = None):
         
         if group != None: thread_args = { 'category__group': group }
         else: thread_args = { 'category__group__isnull': True }
-        thread_args[ 'thread__isnull'] = True
+        #thread_args[ 'thread__isnull'] = True
         thread_args[ 'category__id__in'] = allowed_categories
         context['isShowLatest'] = True
-        thread_list = Post.objects.filter( **thread_args )
+        thread_list = ThreadInformation.objects.filter( **thread_args )
     else:
-        thread_list = categoryObject.thread_list()
+        thread_list = categoryObject.get_thread_list()
 
-    thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
+    #thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
     if showType != 'threads':
-        thread_list = thread_list.order_by( '-is_sticky', '-latest_postdate' )
+        thread_list = thread_list.order_by( '-sticky_value', '-thread_latest_postdate' )
     else:
-        thread_list = thread_list.order_by( '-latest_postdate' )
+        thread_list = thread_list.order_by( '-thread_latest_postdate' )
 
     res =  object_list( request = request,
                         queryset = thread_list,
@@ -106,7 +100,7 @@ def showThread(request, thread_id, group = None):
     thread = Post.objects.filter( pk = thread_id ).get()
     if not thread.category.has_view_permission(request.user):
         raise PermissionDenied()
-    thread.touch( request.session, request.user )
+    thread.viewed( request.session, request.user )
     #thread = get_object_or_404(Post, pk = thread_id )
 
     sphdata = get_current_sphdata()
@@ -114,7 +108,7 @@ def showThread(request, thread_id, group = None):
     
     res =  object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
-                        queryset = thread.allPosts().order_by('postdate'),
+                        queryset = thread.get_all_posts().order_by('postdate'),
                         allow_empty = True,
                         template_name = 'sphene/sphboard/showThread.html',
                         extra_context = { 'thread': thread,

@@ -36,6 +36,12 @@ You need to add libs/ and sphenecoll/ to your python include path and
 static/ needs to be served from your django installation.
 (static/sphene/ is enough)
 
+### Maintenance cron job (Optional)
+
+To recaulcate heat for forum threads and similar, you should add the following
+cronjob to run once a day (or similar)
+
+echo -e "from sphene.community.signals import triggei_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 
 ## Examples
 

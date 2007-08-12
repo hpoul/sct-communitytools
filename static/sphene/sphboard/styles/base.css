@@ -12,7 +12,8 @@
       white-space: nowrap;
     }
 
-    .sphboard_threadcount, .sphboard_postcount {
+    .sphboard_threadcount, .sphboard_postcount,
+    .sphboard_threadcount, .sphboard_viewcount {
       width: 5%;
       text-align: right;
     }

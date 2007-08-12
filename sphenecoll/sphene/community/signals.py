@@ -15,3 +15,19 @@ profile_edit_save_form = object()
 #  - request (Containing the http request)
 #  - user (The User from whom to display the profile.)
 profile_display = object()
+
+
+# A signal which can be used to do periodic work,
+# e.g. the board could recalculate the heat of threads.
+# Should be called once a day.
+maintenance = object()
+
+
+
+# This method should be regularly called (once a day) through a cron job like:
+#
+# echo -e "from sphene.community.signals import triggei_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
+def trigger_maintenance():
+    from django.dispatch import dispatcher
+    dispatcher.send( signal = maintenance,
+                     )
