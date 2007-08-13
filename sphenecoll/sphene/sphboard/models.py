@@ -416,17 +416,41 @@ class Post(models.Model):
     def replyCount(self):
         return self.replies().count()
 
-    def allowPosting(self, user):
-        return self.category.testAllowance( user, self.category.allowreplies )
+    def allow_posting(self, user):
+        """
+        Returns True if the user is allowed to post replies in this thread.
 
-    def allowEditing(self, user = None):
+        if user is None, the current user is taken into account.
+        """
+        return self.category.testAllowance( user, self.category.allowreplies )
+    allowPosting = allow_posting
+
+    def allow_editing(self, user = None):
+        """
+        Returns True if the user is allowed to edit this post.
+
+        if user is None, the current user is taken into account.
+        """
         if user == None: user = get_current_user()
         
         if not user or not user.is_authenticated():
             return False
         
         return user == self.author or user.is_superuser
+    allowEditing = allow_editing
 
+    def allow_annotating(self, user = None):
+        """
+        Returns True if the user is allowed to annotate this post.
+
+        if user is None, the current user is taken into account.
+        """
+        if user == None: user = get_current_user()
+
+        if not user or not user.is_authenticated():
+            return False
+
+        return user.is_staff
 
     def body_escaped(self):
         """ returns the rendered body. """
@@ -611,9 +635,48 @@ class Post(models.Model):
         return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
     get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
 
+    def get_absolute_annotate_url(self):
+        return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+    get_absolute_annotate_url = permalink(get_absolute_annotate_url, get_current_request)
+
     class Admin:
         pass
 
+
+class PostAnnotation(models.Model):
+    """
+    Represents an admin annotation to a post - for example to hide
+    a post if it violates the rules.
+    It is also used as comment field when a thread is moved into
+    another category.
+    """
+
+    # Only one annotation per post allowed !
+    post = models.ForeignKey(Post, related_name = 'annotation', unique = True, )
+    body = models.TextField()
+    author = models.ForeignKey(User)
+    created = models.DateTimeField( )
+    hide_post = models.BooleanField()
+    markup = models.CharField(maxlength = 250,
+                              null = True,
+                              choices = POST_MARKUP_CHOICES, )
+
+    def save(self):
+        if not self.post.is_annotated():
+            self.post.set_annotated(True)
+            self.post.save()
+        if not self.created:
+            self.created = datetime.today()
+        if not self.id:
+            self.author = get_current_user()
+        return super(PostAnnotation, self).save()
+
+    def body_escaped(self):
+        body = self.body
+        markup = self.markup
+        if not markup:
+            markup = POST_MARKUP_CHOICES[0][0]
+        return render_body( body, markup )
 
 THREAD_TYPE_DEFAULT = 1
 THREAD_TYPE_MOVED = 2

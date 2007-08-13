@@ -36,6 +36,9 @@
         <td class="sphboard_post_subject">
           <div style="float:left"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
           <div style="float:right">
+            {% if post.allow_annotating %}
+              [ <a href="{{ post.get_absolute_annotate_url }}">Annotate/Hide</a> ]
+            {% endif %}
             {% if post.allowEditing %}
               [ <a href="{{ post.get_absolute_editurl }}">Edit</a> ]
             {% endif %}
@@ -46,7 +49,20 @@
         </td>
       </tr>
       <tr>
-        <td class="sphboard_post_body">{{ post.body_escaped }}</td>
+        <td class="sphboard_post_body">
+          {% if post.is_annotated %}
+            {% if post.annotation.get.hide_post %}
+              <div class="annotation annotation_post_hidden">
+              <strong>Post hidden by {% sphboard_displayUserName post.annotation.get.author %}:</strong><br/>{{ post.annotation.get.body_escaped }}
+              </div>
+            {% else %}
+              <div class="annotation annotation_not_hidden"><strong>Post annotated by {% sphboard_displayUserName post.annotation.get.author %}:</strong> {{ post.annotation.get.body_escaped }}</small></div>
+              {{ post.body_escaped }}
+            {% endif %}
+          {% else %}
+            {{ post.body_escaped }}
+          {% endif %}
+        </td>
       </tr>
       {% ifequal post thread %}
         {% if post.poll %}

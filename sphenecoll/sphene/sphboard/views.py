@@ -13,7 +13,7 @@ from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
-from sphene.sphboard.models import Category, Post, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
 from sphene.sphboard.renderers import describe_render_choices
 
         
@@ -275,6 +275,65 @@ def post(request, group = None, category_id = None, post_id = None):
     return render_to_response( "sphene/sphboard/post.html", context,
                                context_instance = RequestContext(request) )
 
+
+class AnnotateForm(forms.Form):
+    body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10,
+                                                               'cols': 80, }, ),
+                                                     help_text = describe_render_choices(), )
+    markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
+    hide_post = forms.BooleanField( required = False )
+
+    def __init__(self, *args, **kwargs):
+        super(AnnotateForm, self).__init__(*args, **kwargs)
+        if len( POST_MARKUP_CHOICES ) == 1:
+            del self.fields['markup']
+
+
+def annotate(request, group, post_id):
+    post = Post.objects.get( pk = post_id )
+    thread = post.get_thread()
+
+    annotation = None
+    if post.is_annotated():
+        try:
+            annotation = post.annotation.get()
+        except PostAnnotation.DoesNotExist:
+            # Ignore for now ..
+            pass
+
+
+    if request.method == 'POST':
+        form = AnnotateForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            if annotation is None:
+                annotation = PostAnnotation( post = post, )
+            annotation.body = data['body']
+            annotation.hide_post = data['hide_post']
+            if 'markup' in data:
+                annotation.markup = data['markup']
+            elif len( POST_MARKUP_CHOICES ) > 0:
+                annotation.markup = POST_MARKUP_CHOICES[0][0]
+            annotation.save()
+            request.user.message_set.create( message = "Annotated a users post." )
+            return HttpResponseRedirect( post.get_absolute_url() )
+        
+    else:
+        form = AnnotateForm()
+
+    if annotation is not None:
+        form.fields['body'].initial = annotation.body
+        form.fields['hide_post'].initial = annotation.hide_post
+        if 'markup' in form.fields:
+            form.fields['markup'].initial = annotation.markup
+
+    
+    return render_to_response( "sphene/sphboard/annotate.html",
+                               { 'thread': thread,
+                                 'post': post,
+                                 'form': form,
+                                 },
+                               context_instance = RequestContext(request) )
 
 def vote(request, group = None, thread_id = None):
     thread = get_object_or_404(Post, pk = thread_id)

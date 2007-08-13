@@ -89,3 +89,9 @@
         color: gray;
 	display: block;
     }
+
+
+    .sphboard_post_body .annotation_not_hidden {
+        font-size: smaller;
+        border-bottom: 1px solid gray;
+    }

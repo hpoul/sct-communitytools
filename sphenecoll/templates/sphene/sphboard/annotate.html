@@ -1,0 +1,21 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% load sphboard_extras %}
+
+{% block content %}
+
+  {% sphboard_displayBreadcrumbsForThread thread 1 %}
+  <br/><br/>
+
+  <b>Annotate post: {{ post.subject|escape }} by {% sphboard_displayUserName post.author %}</b>
+  <br/><br/>
+
+  <form method="POST" action=".">
+    <table class="sphboard form">
+      {{ form }}
+      <tr>
+        <td colspan="2"><input type="submit" value="Annotate" /></td>
+      </tr>
+    </table>
+  </form>
+{% endblock %}
