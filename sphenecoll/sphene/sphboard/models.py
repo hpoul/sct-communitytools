@@ -120,6 +120,9 @@ class Category(models.Model):
 
     def get_thread_list(self):
         #return self.posts.filter( thread__isnull = True )
+        if get_sph_setting( 'workaround_select_related_bug' ):
+            # See http://code.djangoproject.com/ticket/4789
+            return self.threadinformation_set
         return self.threadinformation_set.select_related( depth = 1 )
 
     def threadCount(self):
@@ -337,6 +340,7 @@ POST_STATUS_DEFAULT = 0
 POST_STATUS_STICKY = 1
 POST_STATUS_CLOSED = 2
 POST_STATUS_POLL = 4
+POST_STATUS_ANNOTATED = 8
 
 POST_STATUSES = {
     'default': 0,
@@ -344,6 +348,7 @@ POST_STATUSES = {
     'closed': 2,
 
     'poll': 4,
+    'annotated': 8,
     }
 
 from django.contrib.auth.models import AnonymousUser
@@ -370,6 +375,8 @@ class Post(models.Model):
         return self.status & POST_STATUS_CLOSED
     def is_poll(self):
         return self.status & POST_STATUS_POLL
+    def is_annotated(self):
+        return self.status & POST_STATUS_ANNOTATED
 
     def set_sticky(self, sticky):
         if sticky: self.status = self.status | POST_STATUS_STICKY
@@ -382,6 +389,10 @@ class Post(models.Model):
     def set_poll(self, poll):
         if poll: self.status = self.status | POST_STATUS_POLL
         else: self.status = self.status ^ POST_STATUS_POLL
+
+    def set_annotated(self, annotated):
+        if annotated: self.status = self.status | POST_STATUS_ANNOTATED
+        else: self.status = self.status ^ POST_STATUS_ANNOTATED
 
     def get_thread(self):
         if self.thread == None: return self;

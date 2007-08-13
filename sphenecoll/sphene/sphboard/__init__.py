@@ -8,4 +8,7 @@ add_setting_defaults( {
     'board_heat_post_threshold': 10,
     'board_heat_view_threshold': 10,
     'board_heat_calculator': 'sphene.sphboard.models.calculate_heat',
+
+
+    'workaround_select_related_bug': False,
     })
