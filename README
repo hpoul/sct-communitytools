@@ -43,6 +43,12 @@ cronjob to run once a day (or similar)
 
 echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 
+### Cache
+
+SCT makes use of djang caching framework - it is therefore advised to 
+configure CACHE_BACKEND django setting & co.
+look at the [django caching documentation](http://www.djangoproject.com/documentation/cache/)
+
 ## Examples
 
 The examples/ directory (currently) contains one example project.
