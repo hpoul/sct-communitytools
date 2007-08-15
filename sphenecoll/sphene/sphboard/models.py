@@ -464,8 +464,10 @@ class Post(models.Model):
             markup = POST_MARKUP_CHOICES[0][0]
 
         # Check cache
-        cachekey = self.__get_render_cachekey()
-        bodyhtml = cache.get( cachekey )
+        bodyhtml = None
+        if self.id:
+            cachekey = self.__get_render_cachekey()
+            bodyhtml = cache.get( cachekey )
         if bodyhtml is None:
             # Nothing found in cache, render body.
             bodyhtml = render_body( body, markup )
