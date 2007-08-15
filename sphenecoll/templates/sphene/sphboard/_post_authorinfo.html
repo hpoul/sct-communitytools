@@ -1,8 +1,8 @@
 {% load sph_extras %}
 {% load sphboard_extras %}
 Posted by<br/>
-{% sphboard_displayUserName post.author %}<br/><br/><br/>
-{% sph_showavatar post.author %}<br/><br/>
-{% if post.author %}
-  <small>Registered at {{ post.author.date_joined|sph_date }}</small>
+{% sphboard_displayUserName author %}<br/><br/><br/>
+{% sph_showavatar author %}<br/><br/>
+{% if author %}
+  <small>Registered at {{ author.date_joined|sph_date }}</small>
 {% endif %}

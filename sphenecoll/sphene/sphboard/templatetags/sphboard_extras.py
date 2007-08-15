@@ -1,8 +1,12 @@
 from django import template
 from django import newforms as forms
+from django.contrib.auth.models import User
+from django.dispatch import dispatcher
 from django.newforms import widgets
+from sphene.community.sphutils import get_sph_setting
 from sphene.sphboard.models import Post, BoardUserProfile
 from sphene.sphboard.views import PostForm
+from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 
 register = template.Library()
 
@@ -113,3 +117,27 @@ def sphboard_default_notify_me(user):
     except BoardUserProfile.DoesNotExist:
         pass
     return True
+
+
+
+def authorinfo_cachekey(user_id):
+    return 'sphboard_authorinfo_%s' % user_id
+
+@cache_inclusion_tag(register,
+                     'sphene/sphboard/_post_authorinfo.html',
+                     cache_key_func=authorinfo_cachekey,
+                     cache_time = get_sph_setting( 'board_authorinfo_cache_timeout' ))
+def sphboard_post_authorinfo(user_id):
+    if user_id is None:
+        user = None
+    else:
+        user = User.objects.get(pk = user_id)
+    return { 'author': user, }
+
+
+def clear_authorinfo_cache(instance):
+    cache.delete( authorinfo_cachekey( instance.id ) )
+
+dispatcher.connect(clear_authorinfo_cache,
+                   sender = User,
+                   signal = signals.post_save)

@@ -18,6 +18,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.template.context import RequestContext
 from django.template import loader, Context
+from django.core.cache import cache
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 from renderers import POST_MARKUP_CHOICES, render_body
 import logging
@@ -452,6 +453,9 @@ class Post(models.Model):
 
         return user.is_staff
 
+    def __get_render_cachekey(self):
+        return 'sphboard_rendered_body_%d' % self.id
+
     def body_escaped(self):
         """ returns the rendered body. """
         body = self.body
@@ -459,9 +463,16 @@ class Post(models.Model):
         if not markup:
             markup = POST_MARKUP_CHOICES[0][0]
 
-        bodyhtml = render_body( body, markup )
-        if self.author:
-            signature = get_rendered_signature( self.author )
+        # Check cache
+        cachekey = self.__get_render_cachekey()
+        bodyhtml = cache.get( cachekey )
+        if bodyhtml is None:
+            # Nothing found in cache, render body.
+            bodyhtml = render_body( body, markup )
+            cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
+
+        if self.author_id:
+            signature = get_rendered_signature( self.author_id )
             if signature:
                 bodyhtml += '<div class="signature">%s</div>' % signature
         return bodyhtml
@@ -568,6 +579,8 @@ class Post(models.Model):
         isnew = not self.id
         ret = super(Post, self).save()
 
+        # Clear cache
+        cache.delete( self.__get_render_cachekey() )
         if isnew:
             if not hasattr(settings, 'SPH_SETTINGS') or \
                    not 'noemailnotifications' in settings.SPH_SETTINGS or \
@@ -942,14 +955,35 @@ from django import newforms as forms
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 
-def get_rendered_signature(user):
+def __get_signature_cachekey(user_id):
+    return 'sphboard_signature_%s' % user_id
+
+def get_rendered_signature(user_id):
     """ Returns the rendered signature for the given user. """
     # TODO add caching !
+    cachekey = __get_signature_cachekey(user_id)
+    rendered_profile = cache.get( cachekey )
+    if rendered_profile is not None:
+        return rendered_profile
+    
     try:
-        profile = BoardUserProfile.objects.get( user = user, )
+        profile = BoardUserProfile.objects.get( user__pk = user_id, )
+        
+        rendered_profile = profile.render_signature()
     except BoardUserProfile.DoesNotExist:
-        return None
-    return profile.render_signature()
+        rendered_profile = ''
+
+    cache.set( cachekey, rendered_profile, get_sph_setting( 'board_signature_cache_timeout' ) )
+    
+    return rendered_profile
+
+def clear_signature_cache(instance):
+    cache.delete( __get_signature_cachekey( instance.user.id ) )
+
+
+dispatcher.connect(clear_signature_cache,
+                   sender = BoardUserProfile,
+                   signal = signals.post_save)
 
 
 def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
