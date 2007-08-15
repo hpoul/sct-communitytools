@@ -1,6 +1,7 @@
 from django import template
 from django import newforms as forms
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db.models import signals
 from django.dispatch import dispatcher
 from django.newforms import widgets
