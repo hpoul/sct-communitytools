@@ -23,7 +23,7 @@ from sphene.community.middleware import get_current_request, get_current_user, g
 from renderers import POST_MARKUP_CHOICES, render_body
 import logging
 
-logger = logging.getLogger('sphene.sphwiki.models')
+logger = logging.getLogger('sphene.sphboard.models')
 
 import re
 

@@ -19,4 +19,4 @@ class ThreadsSitemap(Sitemap):
         return Post.objects.filter( category__id__in = allowed_categories, thread__isnull = True, )
 
     def lastmod(self, obj):
-        return obj.latestPost().postdate
+        return obj.get_latest_post().postdate
