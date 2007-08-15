@@ -465,13 +465,15 @@ class Post(models.Model):
 
         # Check cache
         bodyhtml = None
+        cachekey = None
         if self.id:
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
         if bodyhtml is None:
             # Nothing found in cache, render body.
             bodyhtml = render_body( body, markup )
-            cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
+            if cachekey is not None:
+                cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
 
         if self.author_id:
             signature = get_rendered_signature( self.author_id )
