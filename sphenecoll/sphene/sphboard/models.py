@@ -797,6 +797,9 @@ class ThreadInformation(models.Model):
     def is_sticky(self):
         return self.sticky_value > 0
 
+    def is_moved(self):
+        return self.thread_type == THREAD_TYPE_MOVED
+
 
     #################################
     ## Some proxy methods which will simply forward

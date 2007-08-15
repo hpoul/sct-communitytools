@@ -13,7 +13,8 @@ from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES
+from sphene.sphboard import boardforms
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT
 from sphene.sphboard.renderers import describe_render_choices
 
         
@@ -290,6 +291,11 @@ class AnnotateForm(forms.Form):
         if len( POST_MARKUP_CHOICES ) == 1:
             del self.fields['markup']
 
+    def clean(self):
+        if 'markup' not in self.cleaned_data and len( POST_MARKUP_CHOICES ):
+            self.cleaned_data['markup'] = POST_MARKUP_CHOICES[0][0]
+            
+        return self.cleaned_data
 
 def annotate(request, group, post_id):
     post = Post.objects.get( pk = post_id )
@@ -312,10 +318,7 @@ def annotate(request, group, post_id):
                 annotation = PostAnnotation( post = post, )
             annotation.body = data['body']
             annotation.hide_post = data['hide_post']
-            if 'markup' in data:
-                annotation.markup = data['markup']
-            elif len( POST_MARKUP_CHOICES ) > 0:
-                annotation.markup = POST_MARKUP_CHOICES[0][0]
+            annotation.markup = data['markup']
             annotation.save()
             request.user.message_set.create( message = "Annotated a users post." )
             return HttpResponseRedirect( post.get_absolute_url() )
@@ -336,6 +339,93 @@ def annotate(request, group, post_id):
                                  'form': form,
                                  },
                                context_instance = RequestContext(request) )
+
+
+class MoveForm(forms.Form):
+    """
+    A basic form which allows a user to select a target
+    category.
+
+    This should not be used allown, but in stead use
+    MoveAndAnnotateForm
+    """
+    category = boardforms.SelectCategoryField(help_text = u'Select target category')
+
+
+class MoveAndAnnotateForm(MoveForm, AnnotateForm):
+
+    
+    def __init__(self, *args, **kwargs):
+        super(MoveAndAnnotateForm, self).__init__(*args, **kwargs)
+
+        del self.fields['hide_post']
+
+        self.fields['body'].help_text = 'Please describe why this thread had to be moved. ' + self.fields['body'].help_text
+
+
+def move(request, group, thread_id):
+    thread = get_object_or_404(Post, pk = thread_id)
+
+    annotation = None
+    if thread.is_annotated():
+        try:
+            annotation = thread.annotation.get()
+        except PostAnnotation.DoesNotExist:
+            # Ignore for now ..
+            pass
+    if request.method == 'POST':
+        form = MoveAndAnnotateForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            newcategory = data['category']
+
+            threadinfo = thread.get_threadinformation()
+            threadinfo.thread_type = THREAD_TYPE_MOVED
+            threadinfo.save()
+
+            try:
+                newthreadinfo = ThreadInformation.objects.get( root_post = thread,
+                                                               category = newcategory,
+                                                               thread_type = THREAD_TYPE_MOVED )
+            except ThreadInformation.DoesNotExist:
+                newthreadinfo = ThreadInformation( root_post = thread,
+                                                   category = newcategory, )
+
+            newthreadinfo.thread_type = THREAD_TYPE_DEFAULT
+            newthreadinfo.update_cache()
+            newthreadinfo.save()
+
+            thread.set_annotated(True)
+
+            if annotation is None:
+                annotation = PostAnnotation( post = thread, )
+            annotation.body = data['body']
+            annotation.hide_post = False
+            annotation.markup = data['markup']
+            annotation.save()
+
+            thread.category = newcategory
+            thread.save()
+
+            request.user.message_set.create( message = "Moved thread into new category." )
+
+            return HttpResponseRedirect( thread.get_absolute_url() )
+        
+    else:
+        form = MoveAndAnnotateForm()
+
+    if POST_MARKUP_CHOICES[0][0] == 'bbcode':
+        category_name = '[url=%s]%s[/url].' % (thread.category.get_absolute_url(), thread.category.name)
+    else:
+        category_name = thread.category.name
+    form.fields['body'].initial = 'This thread was moved from the category %s' % category_name
+
+    return render_to_response( "sphene/sphboard/move.html",
+                               { 'thread': thread,
+                                 'form': form,
+                                 },
+                               context_instance = RequestContext(request))
+
 
 def vote(request, group = None, thread_id = None):
     thread = get_object_or_404(Post, pk = thread_id)
