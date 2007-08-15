@@ -65,7 +65,7 @@
       {% for thread in thread_list %}
         <tr>
           <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td>
-          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
           {% if sph_settings.board_count_views %}
             <td class="sphboard_viewcount">{{ thread.view_count }}</td>
           {% endif %}

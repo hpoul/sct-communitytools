@@ -128,6 +128,8 @@ def options(request, thread_id, group = None):
         thread.set_sticky(True)
     elif request['cmd'] == 'removeSticky':
         thread.set_sticky(False)
+    elif request['cmd'] == 'toggleClosed':
+        thread.set_closed(not thread.is_closed())
 
     thread.save()
     

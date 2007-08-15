@@ -423,7 +423,8 @@ class Post(models.Model):
 
         if user is None, the current user is taken into account.
         """
-        return self.category.testAllowance( user, self.category.allowreplies )
+        return not self.is_closed() and \
+               self.category.testAllowance( user, self.category.allowreplies )
     allowPosting = allow_posting
 
     def allow_editing(self, user = None):

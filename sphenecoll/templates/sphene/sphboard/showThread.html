@@ -8,10 +8,13 @@
   {% if perms.post.change_post %}
     Thread Options: 
       {% if thread.is_sticky %}
-        <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a>
+        [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a> ]
       {% else %}
-        <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a>
+        [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a> ]
       {% endif %}
+      [ <a href="../../options/{{ thread.id }}/?cmd=toggleClosed">
+          {% if thread.is_closed %}Unlock Thread{% else %}Lock Thread{% endif %}
+        </a> ]
       <br/>
   {% endif %}
   <br/>
@@ -119,10 +122,14 @@
     <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}">Post Reply</a>
     {# sphboard_displayPostForm thread #}
   {% else %}
-    {% if user.is_authenticated %}
-      You have no permission to post a reply.
+    {% if thread.is_closed %}
+      Thread is locked.
     {% else %}
-      Please login to post a reply.
+      {% if user.is_authenticated %}
+        You have no permission to post a reply.
+      {% else %}
+        Please login to post a reply.
+      {% endif %}
     {% endif %}
   {% endif %}
   <br/><br/>
