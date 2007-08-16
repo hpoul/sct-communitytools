@@ -295,7 +295,7 @@ class WikiAttachment(models.Model):
     snip = models.ForeignKey(WikiSnip, editable = False)
     uploader = models.ForeignKey(User, editable = False)
     uploaded = models.DateTimeField(editable = False)
-    fileupload = models.FileField( upload_to = 'var/sphene/sphwiki/attachment/%Y/%m/%d' )
+    fileupload = models.FileField( upload_to = get_sph_setting( 'wiki_attachments_upload_to' ) )
     description = models.TextField(blank=True)
 
     def get_absolute_editurl(self):

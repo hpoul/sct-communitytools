@@ -1,5 +1,4 @@
 
-
 class PermissionDenied(Exception):
     pass
 
@@ -116,3 +115,5 @@ def community_advprofile_display(sender, signal, request, user):
 dispatcher.connect(community_advprofile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
 dispatcher.connect(community_advprofile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
 dispatcher.connect(community_advprofile_display, signal = profile_display)
+
+

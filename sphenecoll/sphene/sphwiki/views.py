@@ -199,7 +199,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             form = AttachmentForm(request.POST, request.FILES)
         if form.is_valid():
             attachment = form.save(commit=False)
-            snip = WikiSnip.objects.get( name__exact = snipName )
+            snip = WikiSnip.objects.get( name__exact = snipName, group = group )
             attachment.snip = snip
             attachment.uploader = request.user
 

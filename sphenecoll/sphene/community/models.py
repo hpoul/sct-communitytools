@@ -94,13 +94,16 @@ class ApplicationChangelog(models.Model):
                 get_latest_by = 'applied'
 
 
+from sphene.community.sphsettings import get_sph_setting
+#from sphene.community import sphutils
+
 class CommunityUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     public_emailaddress = models.CharField(maxlength = 250)
 
     avatar = models.ImageField( height_field = 'avatar_height',
                                 width_field = 'avatar_width',
-                                upload_to = 'var/sphene/community/avatar/%Y/%m/%d',
+                                upload_to = get_sph_setting('community_avatar_upload_to'),
                                 blank = True, null = True, )
     avatar_height = models.IntegerField(blank = True, null = True, )
     avatar_width = models.IntegerField(blank = True, null = True, )

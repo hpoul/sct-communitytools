@@ -162,17 +162,7 @@ class HTML:
     def toxml(self):
         return self.value
 
-sph_settings_defaults = {
-    'django096compatibility': False,
-    
-    
-    'community_avatar_default': '/static/sphene/community/default_avatar.png',
-    'community_avatar_default_width': 48,
-    'community_avatar_default_height': 48,
-    'community_avatar_max_width': 150,
-    'community_avatar_max_height': 150,
-    'community_avatar_max_size': 20*1024,
-    }
+from sphene.community import sphsettings
 
 def add_setting_defaults(newdefaults):
     """
@@ -182,14 +172,10 @@ def add_setting_defaults(newdefaults):
     newdefaults has to be a dictionary containing name -> value of
     the settings.
     """
-    sph_settings_defaults.update(newdefaults)
+    sphsettings.add_setting_defaults(newdefaults)
 
 def get_sph_setting(name, default_value = None):
-    if not hasattr(settings, 'SPH_SETTINGS'):
-        return sph_settings_defaults.get(name, default_value)
-
-    # TODO this needs to be done more efficient !
-    return settings.SPH_SETTINGS.get(name, sph_settings_defaults.get(name, default_value))
+    return sphsettings.get_sph_setting(name, default_value)
 
 
 class SphSettings(object):
