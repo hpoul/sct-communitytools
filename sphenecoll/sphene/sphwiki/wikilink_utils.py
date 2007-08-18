@@ -4,7 +4,7 @@ from sphene.sphwiki.models import WikiSnip
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
 
-WIKILINK_RE = r'''(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/]+)(\|(?P<sniplabel>.+?))?\]))'''
+WIKILINK_RE = r'''(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\]))'''
 
 WIKILINK_RE = get_sph_setting( 'wikilink_regexp', WIKILINK_RE )
 
