@@ -15,5 +15,7 @@ add_setting_defaults( {
     'board_signature_cache_timeout': 6 * 3600,
     'board_authorinfo_cache_timeout': 6 * 3600,
 
+    # See http://code.djangoproject.com/ticket/4789
+    # When activating this setting, select_related() will not be used.
     'workaround_select_related_bug': False,
     })

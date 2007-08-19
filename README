@@ -22,6 +22,19 @@ pluggable into any django project.
 
 ## Installation
 
+### Django bug workarounds
+
+The current django trunk contains a bug in the select_related method.
+
+To workaround the problem (ie. don't use it) you need to activate the 
+following setting:
+
+    SPH_SETTING['workaround_select_related_bug'] = True
+
+See <http://code.djangoproject.com/ticket/4789> - If this patch was already
+committed or you applied it manually you can disable the workaround to
+improve performance.
+
 ### Apply Patches
 
 As of 2007-05-13 no patches are needed any more. The customization of
