@@ -740,12 +740,6 @@ class ThreadInformation(models.Model):
         
         super(ThreadInformation, self).save()
 
-
-    def is_moved(self):
-        """ Returns true if this thread represents a thread which was moved
-        into another category. """
-        return self.tread_type & THREAD_TYPE_MOVED
-
     def is_hot(self):
         if self.heat_calculated and (datetime.today() - self.heat_calculated).days > 7:
             logger.debug( 'Heat was not calculated in the last 7 days - recalculating...' )
@@ -798,6 +792,8 @@ class ThreadInformation(models.Model):
         return self.sticky_value > 0
 
     def is_moved(self):
+        """ Returns true if this thread represents a thread which was moved
+        into another category. """
         return self.thread_type == THREAD_TYPE_MOVED
 
 
