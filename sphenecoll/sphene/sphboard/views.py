@@ -131,6 +131,9 @@ def options(request, thread_id, group = None):
         thread.set_sticky(False)
     elif request['cmd'] == 'toggleClosed':
         thread.set_closed(not thread.is_closed())
+    elif request['cmd'] == 'modifytags':
+        from tagging.models import Tag
+        Tag.objects.update_tags( thread.get_threadinformation(), [request.POST['tags'], ] )
 
     thread.save()
     

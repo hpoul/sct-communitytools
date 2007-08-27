@@ -30,6 +30,11 @@ def add_setting_defaults(newdefaults):
     """
     sph_settings_defaults.update(newdefaults)
 
+def set_sph_setting(name, value):
+    if not hasattr(settings, 'SPH_SETTINGS'):
+        settings.SPH_SETTINGS = {}
+    settings.SPH_SETTINGS[name] = value
+    
 
 def get_sph_setting(name, default_value = None):
     if not hasattr(settings, 'SPH_SETTINGS'):

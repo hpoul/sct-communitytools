@@ -2,6 +2,22 @@
 
 {% load sphboard_extras %}
 
+{% block head %}
+  {{ block.super }}
+  <script type="text/javascript" src="/static/sphene/community/jquery.pack.js"></script>
+  <script type="text/javascript">
+  <!--
+    $(document).ready(function(){
+      $("#modifythreadtags").click(function(){
+        $("#threadtagsfield").toggle( );
+        //$("#threadtagsfield").slideToggle( "slow" );
+      });
+    });
+  //-->
+  </script>
+
+{% endblock %}
+
 {% block content %}
   {% sphboard_displayBreadcrumbsForThread thread %}
   <br/>
@@ -16,7 +32,14 @@
           {% if thread.is_closed %}Unlock Thread{% else %}Lock Thread{% endif %}
         </a> ]
       [ <a href="../../move/{{ thread.id }}/">Move Thread</a> ]
+      <!-- [ <a href="#" id="modifythreadtags">Modify Thread Tags</a> ] -->
       <br/>
+      <div id="threadtagsfield" style="display:none;">
+        <form method="POST" action="../../options/{{ thread.id }}/?cmd=modifytags">
+          <input type="text" name="tags" size="30" />
+          <input type="submit" value="Store" />
+        </form>
+      </div>
   {% endif %}
   <br/>
   {% if user.is_authenticated %}

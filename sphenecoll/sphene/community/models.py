@@ -137,6 +137,18 @@ class CommunityUserProfileFieldValue(models.Model):
     class Meta:
         unique_together = (("user_profile", "profile_field"),)
 
+class GroupTemplate(models.Model):
+    group = models.ForeignKey(Group)
+    template_name = models.CharField( maxlength = 250, db_index = True )
+    source = models.TextField()
+    
+    class Meta:
+        unique_together = (("group", "template_name"),)
+
+    class Admin:
+        pass
+
+
 from django.dispatch import dispatcher
 from django import newforms as forms
 from sphene.community.forms import EditProfileForm, Separator
