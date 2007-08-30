@@ -2,7 +2,8 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from sphene.community.models import Group
+from sphene.community.permissionutils import has_permission_flag
+from sphene.community.models import Group, Role, PermissionFlag, RoleMember
 
 from django.utils import html
 from django.conf import settings
@@ -92,6 +93,10 @@ class AccessCategoryManager(models.Manager):
         return self.filter(group = group,
                            allowview__lte = level)
 
+    def rolemember_limitation_objects(self, group):
+        return self.filter( group = group )
+
+
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(maxlength = 250)
@@ -103,7 +108,7 @@ class Category(models.Model):
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     sortorder = models.IntegerField( default = 0, null = False )
 
-    objects = models.Manager()
+    objects = AccessCategoryManager()#models.Manager()
     sph_objects = AccessCategoryManager()
 
 
@@ -111,6 +116,38 @@ class Category(models.Model):
                   ( '2007-04-14 01', 'update', 'SET sortorder = 0' ),
                   ( '2007-04-14 02', 'alter', 'ALTER sortorder SET NOT NULL' ),
                   )
+
+    sph_permission_flags = { 'sphboard_editallposts':
+                             'Allow editing of all posts.',
+
+                             'sphboard_annotate':
+                             'Allow annotating users posts.',
+
+                             'sphboard_move':
+                             'Allow moving of users posts.',
+
+                             'sphboard_sticky':
+                             'Allow marking threads as sticky.',
+
+                             'sphboard_lock':
+                             'Allow locking of threads.',
+
+                             'sphboard_post_threads':
+                             'Allow creating new threads.',
+
+                             'sphboard_post_replies':
+                             'Allow posting of replies to existing threads.',
+
+                             'sphboard_view':
+                             'Allows viewing of threads.',
+                             }
+
+    def get_rolemember_limitation_objects(group):
+        """
+        Tells sphene community objects that this model can be used to limit
+        the membership of a user in a given role.
+        """
+        return Category.objects.filter( group = group )
 
     def get_children(self):
         """ Returns all children of this category in which the user has view permission. """
@@ -139,10 +176,14 @@ class Category(models.Model):
     latestPost = get_latest_post
 
     def allowPostThread(self, user):
-        return self.testAllowance(user, self.allowthreads)
+        return self.testAllowance(user, self.allowthreads) \
+               or has_permission_flag(user, 'sphboard_post_threads', self)
 
     def has_view_permission(self, user = None):
-        return self.testAllowance(user or get_current_user(), self.allowview)
+        if not user:
+            user = get_current_user()
+        return self.testAllowance(user, self.allowview) \
+               or has_permission_flag(user, 'sphboard_view', self)
 
     def testAllowance(self, user, level):
         if level == -1:
@@ -156,6 +197,9 @@ class Category(models.Model):
             return True
         
         return user.has_perm( 'sphboard.add_post' );
+
+    def has_permission_flag(self, user, flag):
+        return False
 
     def has_new_posts(self):
         ret = self.hasNewPosts()
@@ -311,6 +355,7 @@ class Category(models.Model):
         search_fields = ('name')
 
 
+
 class ThreadLastVisit(models.Model):
     """ Entity which stores when a thread was last read. """
     user = models.ForeignKey(User)
@@ -424,7 +469,8 @@ class Post(models.Model):
         if user is None, the current user is taken into account.
         """
         return not self.is_closed() and \
-               self.category.testAllowance( user, self.category.allowreplies )
+               ( self.category.testAllowance( user, self.category.allowreplies ) \
+                 or has_permission_flag( user, 'sphboard_post_replies', self.category ) )
     allowPosting = allow_posting
 
     def allow_editing(self, user = None):
@@ -438,8 +484,18 @@ class Post(models.Model):
         if not user or not user.is_authenticated():
             return False
         
-        return user == self.author or user.is_superuser
+        return user == self.author or user.is_superuser \
+               or has_permission_flag( user, 'sphboard_editallposts', self.category )
     allowEditing = allow_editing
+
+    def _allow_adminfunctionality(self, flag, user = None):
+        if user == None:
+            user = get_current_user()
+
+        if not user or not user.is_authenticated():
+            return False
+
+        return user.is_staff or has_permission_flag( user, flag, self.category )
 
     def allow_annotating(self, user = None):
         """
@@ -447,12 +503,16 @@ class Post(models.Model):
 
         if user is None, the current user is taken into account.
         """
-        if user == None: user = get_current_user()
+        return self._allow_adminfunctionality( 'sphboard_annotate', user )
 
-        if not user or not user.is_authenticated():
-            return False
+    def allow_moving(self, user = None):
+        return self._allow_adminfunctionality( 'sphboard_move', user )
 
-        return user.is_staff
+    def allow_locking(self, user = None):
+        return self._allow_adminfunctionality( 'sphboard_lock', user )
+    
+    def allow_sticking(self, user = None):
+        return self._allow_adminfunctionality( 'sphboard_stick', user )
 
     def __get_render_cachekey(self):
         return 'sphboard_rendered_body_%d' % self.id

@@ -303,6 +303,8 @@ class AnnotateForm(forms.Form):
 def annotate(request, group, post_id):
     post = Post.objects.get( pk = post_id )
     thread = post.get_thread()
+    if not thread.allow_moving():
+        raise PermissionDenied()
 
     annotation = None
     if post.is_annotated():
@@ -368,6 +370,8 @@ class MoveAndAnnotateForm(MoveForm, AnnotateForm):
 
 def move(request, group, thread_id):
     thread = get_object_or_404(Post, pk = thread_id)
+    if not thread.allow_moving():
+        raise PermissionDenied()
 
     annotation = None
     if thread.is_annotated():

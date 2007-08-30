@@ -4,34 +4,14 @@ from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from sphene.community.middleware import get_current_request
+from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
 import logging
 
 logger = logging.getLogger('sphene.community.sphutils')
 
 
-# Decorator. Takes a function that returns a tuple in this format:
-#     (viewname, viewargs, viewkwargs)
-#   Optionally takes a function which should either return an object with
-#     an attribute 'urlconf' or directly a python list which is used instead of
-#     settings.ROOT_URLCONF
-# Returns a function that calls urlresolvers.reverse() on that data, to return
-# the URL for those parameters.
-def sphpermalink(func, get_urlconf_func = None):
-    from django.core.urlresolvers import reverse
-    def inner(*args, **kwargs):
-        # Find urlconf ...
-        urlconf = None
-        if get_urlconf_func != None:
-            urlconf = get_urlconf_func()
-            if type(urlconf) != list:
-                # If type is no list, we assume it is a request object and
-                # look for a 'urlconf' attribute
-                urlconf = getattr(urlconf, 'urlconf', None)
-        
-        bits = func(*args, **kwargs)
-        viewname = bits[0]
-        return reverse(bits[0], urlconf, *bits[1:3])
-    return inner
+# For backward compatibility .. it has been moved into it's own module file.
+sphpermalink = imported_sphpermalink
 
 def get_urlconf():
     request = get_current_request()

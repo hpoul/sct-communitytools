@@ -23,15 +23,21 @@
   <br/>
   {% if perms.post.change_post %}
     Thread Options: 
-      {% if thread.is_sticky %}
-        [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a> ]
-      {% else %}
-        [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a> ]
+      {% if thread.allow_sticking %}
+        {% if thread.is_sticky %}
+          [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a> ]
+        {% else %}
+          [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a> ]
+        {% endif %}
       {% endif %}
-      [ <a href="../../options/{{ thread.id }}/?cmd=toggleClosed">
-          {% if thread.is_closed %}Unlock Thread{% else %}Lock Thread{% endif %}
-        </a> ]
-      [ <a href="../../move/{{ thread.id }}/">Move Thread</a> ]
+      {% if thread.allow_locking %}
+        [ <a href="../../options/{{ thread.id }}/?cmd=toggleClosed">
+            {% if thread.is_closed %}Unlock Thread{% else %}Lock Thread{% endif %}
+          </a> ]
+      {% endif %}
+      {% if thread.allow_moving %}
+        [ <a href="../../move/{{ thread.id }}/">Move Thread</a> ]
+      {% endif %}
       <!-- [ <a href="#" id="modifythreadtags">Modify Thread Tags</a> ] -->
       <br/>
       <div id="threadtagsfield" style="display:none;">

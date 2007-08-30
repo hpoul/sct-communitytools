@@ -17,15 +17,16 @@ def init_data(app, created_models, verbosity, **kwargs):
     if ThreadInformation in created_models:
         # Synchronize ThreadInformation with all posts ..
         # (Required for backward compatibility)
-        synchronize_threadinformation()
+        synchronize_threadinformation(verbosity)
 
 
-def synchronize_threadinformation():
+def synchronize_threadinformation(verbosity = -1):
     """ Will synchronize the 'ThreadInformation' objects. """
     from sphene.sphboard.models import Category, ThreadInformation, Post, THREAD_TYPE_DEFAULT
     
     # First find all threads ...
-    print "Synchronizing ThreadInformation ..."
+    if verbosity >= 2:
+        print "Synchronizing ThreadInformation ..."
     all_threads = Post.objects.filter( thread__isnull = True )
 
     for thread in all_threads:

@@ -49,13 +49,16 @@ def run_tests(test_labels, verbosity = 1, interactive = True, extra_tests=[]):
     coverage.stop()
     if not os.path.exists(settings.COVERAGE_DIR):
         os.makedirs(settings.COVERAGE_DIR)
+
+    modules = []
     for module_string in settings.COVERAGE_MODULES:
         module = __import__(module_string, globals(), locals(), [""])
+        modules.append(module)
         f,s,m,mf = coverage.analysis(module)
         fp = file(os.path.join(settings.COVERAGE_DIR, module_string + ".html"), "wb")
         coverage_color.colorize_file(f, outstream=fp, not_covered=mf)
         fp.close()
-    coverage.report(module)
+    coverage.report(modules)
     coverage.erase()
     
     destroy_test_db(old_name, verbosity)

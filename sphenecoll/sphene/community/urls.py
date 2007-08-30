@@ -17,4 +17,10 @@ urlpatterns += patterns( 'sphene.community.views',
                          (r'profile/(?P<user_id>\d+)/$', 'profile'),
                          (r'profile/edit/$', 'profile_edit_mine'),
                          (r'profile/edit/(?P<user_id>\d+)/$', 'profile_edit'),
+
+                         url(r'admin/permission/role/list/$', 'admin_permission_role_list', name = 'community_admin_permission_role_list'),
+                         url(r'admin/permission/role/edit/(?P<role_id>\d+)/$', 'admin_permission_role_edit'),
+                         url(r'admin/permission/role/create/$', 'admin_permission_role_edit', name = 'admin_permission_role_create'),
+                         url(r'admin/permission/role/member/(?P<role_id>\d+)/list/$', 'admin_permission_role_member_list'),
+                         url(r'admin/permission/role/member/(?P<role_id>\d+)/add/$', 'admin_permission_role_member_add'),
                          )

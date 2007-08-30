@@ -3,7 +3,6 @@ from django.dispatch import dispatcher
 
 from sphene.community.signals import profile_edit_init_form
 
-
 class Separator(forms.Field):
     def __init__(self, *args, **kwargs):
         super(Separator, self).__init__( required = False, *args, **kwargs)
@@ -42,3 +41,85 @@ class EditProfileForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
         return self.cleaned_data
     
+
+from django.contrib.auth.models import User
+from django.db.models import signals, get_apps, get_models
+from django.contrib.contenttypes.models import ContentType
+
+def get_object_type_choices():
+    ret = list()
+    ret.append( ('', '-- Select Object Type --') )
+    apps = get_apps()
+    for app in apps:
+        ms = get_models(app)
+        for m in ms:
+            if hasattr(m.objects, 'rolemember_limitation_objects'):
+                ret.append( (ContentType.objects.get_for_model(m).id, m._meta.object_name) )
+
+    return ret
+
+
+def get_object_id_choices(object_type, group):
+    ret = list()
+    m = object_type.model_class()
+    objs = m.objects.rolemember_limitation_objects(group)
+    for obj in objs:
+        ret.append( (obj.id, unicode(obj)) )
+    return ret
+
+def get_permission_flag_choices():
+    ret = list()
+
+    apps = get_apps()
+    for app in apps:
+        ms = get_models(app)
+        for klass in ms:
+            if hasattr(klass, 'sph_permission_flags'):
+                sph_permission_flags = klass.sph_permission_flags
+
+                if isinstance(sph_permission_flags, dict):
+                    sph_permission_flags = sph_permission_flags.iteritems()
+
+                for (flag, description) in sph_permission_flags:
+                    ret.append( (flag, "%s (%s)" % (flag, description) ) )
+
+    return ret
+
+class EditRoleForm(forms.Form):
+    name = forms.CharField()
+    permission_flags = forms.MultipleChoiceField()
+
+    def __init__(self, *args, **kwargs):
+        super(EditRoleForm, self).__init__( *args, **kwargs )
+        self.fields['permission_flags'].choices = get_permission_flag_choices()
+        
+
+autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.submit();' }
+
+class EditRoleMemberForm(forms.Form):
+    username = forms.CharField()
+    has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = 'Allows you to limit the given permission to only one specific object.' )
+    auto_submit = forms.BooleanField(widget = forms.HiddenInput)
+
+    def __init__(self, group, *args, **kwargs):
+        super(EditRoleMemberForm, self).__init__( *args, **kwargs )
+        if self.data.get( 'has_limitations', False ):
+            self.fields['object_type'] = forms.ChoiceField( choices = get_object_type_choices(), widget = forms.Select( attrs = autosubmit_args ) )
+
+        if self.data.get( 'object_type', ''):
+            object_type = ContentType.objects.get( pk = self.data['object_type'] )
+            self.fields['object'] = forms.ChoiceField( choices = get_object_id_choices(object_type, group) )
+
+    def clean_username(self):
+        try:
+            user = User.objects.get( username = self.cleaned_data['username'] )
+            self.cleaned_data['user'] = user
+        except User.DoesNotExist:
+            raise forms.ValidationError("User does not exist.")
+        return self.cleaned_data['username']
+
+    def clean_object_type(self):
+        try:
+            return ContentType.objects.get( pk = self.cleaned_data['object_type'] )
+        except ContentType.DoesNotExist:
+            raise forms.ValidationError("Invalid Object Type")

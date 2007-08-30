@@ -1,7 +1,14 @@
 from django.conf import settings
 from sphene.community.models import Navigation
+from sphene.community.permissionutils import has_permission_flag
 from sphene.community.sphutils import SphSettings
-from sphene.community.middleware import get_current_group, get_current_sphdata
+from sphene.community.middleware import get_current_group, get_current_sphdata, get_current_user
+
+
+class PermissionFlagLookup(object):
+    def __getitem__(self, flag_name):
+        return has_permission_flag(get_current_user(), flag_name)
+
 
 def navigation(request):
     if hasattr(request, 'attributes') and 'group' in request.attributes:
@@ -22,7 +29,9 @@ def navigation(request):
                  'group': group,
                  'sph': sphdata,
                  'sph_settings': SphSettings(),
+                 'sph_perms': PermissionFlagLookup(),
                  }
     return { 'sph': sphdata,
              'sph_settings': SphSettings(),
+             'sph_perms': PermissionFlagLookup(),
              }

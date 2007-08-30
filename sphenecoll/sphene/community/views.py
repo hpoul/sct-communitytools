@@ -15,6 +15,7 @@ from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 
 from sphene.community import PermissionDenied
+from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphutils import sph_reverse
@@ -328,3 +329,99 @@ def profile_edit(request, group, user_id):
                                  },
                                context_instance = RequestContext(request) )
 
+
+
+def admin_permission_role_list(request, group):
+    roles = Role.objects.filter( group = group )
+    return render_to_response( 'sphene/community/admin/permission/role_list.html',
+                               { 'roles' : roles,
+                                 },
+                               context_instance = RequestContext(request) )
+
+from forms import EditRoleForm
+
+def admin_permission_role_edit(request, group, role_id = None):
+    role = None
+    if role_id:
+        role = get_object_or_404(Role, pk = role_id)
+        
+    if request.method == 'POST':
+        form = EditRoleForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            r = role
+            if not r:
+                r = Role(group = group)
+            r.name = data['name']
+            r.save()
+            
+            # Delete old flags
+            r.permission_flags.clear()
+
+            # Add all flags
+            for flag_name in data['permission_flags']:
+                r.permission_flags.add( PermissionFlag.objects.get( name = flag_name ) )
+
+            r.save()
+
+            request.user.message_set.create( message = "Successfully saved role." )
+            return HttpResponseRedirect( r.get_absolute_memberlisturl() )
+            
+    else:
+        form = EditRoleForm()
+
+    if role:
+        form.fields['name'].initial = role.name
+        form.fields['permission_flags'].initial = [ flag.name for flag in role.permission_flags.all() ]
+    
+    return render_to_response( 'sphene/community/admin/permission/role_edit.html',
+                               { 'form': form,
+                                 },
+                               context_instance = RequestContext(request) )
+
+def admin_permission_role_member_list(request, group, role_id):
+    role = get_object_or_404(Role, pk = role_id)
+    members = role.rolemember_set.all()
+    if 'cmd' in request.GET and request.GET['cmd'] == 'remove':
+        memberid = request.GET['id']
+        role_member = RoleMember.objects.get( pk = memberid )
+        role_member.delete()
+
+        request.user.message_set.create( message = "Successfully deleted role member." )
+
+        return HttpResponseRedirect( role.get_absolute_memberlisturl() )
+    return render_to_response( 'sphene/community/admin/permission/role_member_list.html',
+                               { 'members': members,
+                                 'role': role,
+                                 },
+                               context_instance = RequestContext(request) )
+
+from forms import EditRoleMemberForm
+
+def admin_permission_role_member_add(request, group, role_id):
+    role = get_object_or_404(Role, pk = role_id)
+
+    if request.method == 'POST':
+        form = EditRoleMemberForm(group, request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            role_member = RoleMember( role = role,
+                                      user = data['user'],
+                                      has_limitations = data['has_limitations'], )
+            role_member.save()
+            if data['has_limitations']:
+                limitation = RoleMemberLimitation( role_member = role_member,
+                                                   object_type = data['object_type'],
+                                                   object_id = data['object'], )
+                limitation.save()
+                
+            request.user.message_set.create( message = "Successfully added member." )
+            return HttpResponseRedirect( role.get_absolute_memberlisturl() )
+    else:
+        form = EditRoleMemberForm(group = group)
+    
+    return render_to_response( 'sphene/community/admin/permission/role_member_add.html',
+                               { 'form': form,
+                                 'role': role,
+                                 },
+                               context_instance = RequestContext(request) )

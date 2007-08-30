@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
 import logging
 
 logger = logging.getLogger('sphene.community.models')
@@ -138,6 +141,10 @@ class CommunityUserProfileFieldValue(models.Model):
         unique_together = (("user_profile", "profile_field"),)
 
 class GroupTemplate(models.Model):
+    """
+    Represents a group specific template which can be used to overload
+    any django template from the filesystem.
+    """
     group = models.ForeignKey(Group)
     template_name = models.CharField( maxlength = 250, db_index = True )
     source = models.TextField()
@@ -148,6 +155,105 @@ class GroupTemplate(models.Model):
     class Admin:
         pass
 
+
+class PermissionFlag(models.Model):
+    """
+    Permission flags are predefined (in the code) flags of user rights.
+    Very similar to django's permissions.
+
+    (I decided against using django's permissions for the sake of simplicity..
+    i don't like the idea of auto generating permissions which aren't used
+    in the application code (but only within the django administration))
+    """
+    name = models.CharField( maxlength = 250, unique = True )
+
+
+    sph_permission_flags = { 'group_administrator':
+                             'Users with this permission flag have all permissions.',
+
+                             'community_manage_roles':
+                             'User have permission to create, edit and assign roles.',
+                             }
+
+
+    def __unicode__(self):
+        return self.name
+
+class Role(models.Model):
+    """
+    A role is a user defined collection of so called permission flags.
+    """
+    name = models.CharField( maxlength = 250 )
+    group = models.ForeignKey( Group )
+
+    permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles' )
+
+
+    def get_permission_flag_string(self):
+        return ", ".join( [flag.name for flag in self.permission_flags.all()] )
+
+    def __unicode__(self):
+        return '%s - %s' % (self.group.name, self.name)
+
+    def get_absolute_editurl(self):
+        return ('sphene.community.views.admin_permission_role_edit', (), { 'groupName': self.group.name, 'role_id': self.id, } )
+    get_absolute_editurl = permalink(get_absolute_editurl, get_urlconf)
+
+    def get_absolute_memberlisturl(self):
+        return ('sphene.community.views.admin_permission_role_member_list', (), { 'groupName': self.group.name, 'role_id': self.id, } )
+    get_absolute_memberlisturl = permalink(get_absolute_memberlisturl, get_urlconf)
+
+    def get_absolute_memberaddurl(self):
+        return ('sphene.community.views.admin_permission_role_member_add', (), { 'groupName': self.group.name, 'role_id': self.id, } )
+    get_absolute_memberaddurl = permalink(get_absolute_memberaddurl, get_urlconf)
+
+    class Meta:
+        unique_together = (('name', 'group'),)
+
+    class Admin:
+        ordering = ('group', 'name')
+
+
+class RoleMember(models.Model):
+    """
+    A role member is the relation between a given role and a user.
+    This relation might has additional limitations - e.g. for the board
+    it might only be active within one given category -
+    see RoleMemberLimitation.
+
+    If there are no limitations (has_limitations = False) then the role
+    is active for the user globally within the role's group.
+    """
+    role = models.ForeignKey( Role )
+    user = models.ForeignKey( User )
+
+    has_limitations = models.BooleanField()
+
+
+    def get_limitations_string(self):
+        if not self.has_limitations:
+            return "None"
+        limitation = self.rolememberlimitation_set.get()
+        return "%s: %s" % (limitation.object_type.model_class()._meta.object_name, unicode(limitation.content_object))
+
+    class Admin:
+        pass
+
+
+class RoleMemberLimitation(models.Model):
+    """
+    Limits the membership of a user to a role by only applying to a
+    specific object.
+    """
+    role_member = models.ForeignKey( RoleMember )
+
+    object_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField(db_index = True)
+
+    content_object = generic.GenericForeignKey(ct_field = 'object_type')
+
+    class Meta:
+        unique_together = (('role_member', 'object_type', 'object_id'),)
 
 from django.dispatch import dispatcher
 from django import newforms as forms

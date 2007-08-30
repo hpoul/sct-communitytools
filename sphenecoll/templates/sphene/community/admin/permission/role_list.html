@@ -1,0 +1,38 @@
+{% extends "sphene/community/admin/permission/base.html" %}
+
+{% load sph_extras %}
+
+{% block head %}
+  {{ block.super }}
+  <style>
+  .sph_options a:before { content: " [ "; }
+  .sph_options a:after { content: " ] "; }
+
+  .sph_options { white-space: nowrap; }
+  .sph_rolename { white-space: nowrap; }
+  }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<table>
+  <tr>
+    <th>Options</th>
+    <th>Name</th>
+    <th>Flags</th>
+    <th>Members</th>
+  </tr>
+  {% for role in roles %}
+    <tr>
+      <td class="sph_options"><a href="{{ role.get_absolute_editurl }}">Edit</a> <a href="{{ role.get_absolute_memberlisturl }}">Manage Members</a></td>
+      <td class="sph_rolename">{{ role.name }}</td>
+      <td>{{ role.get_permission_flag_string }}</td>
+      <td>{{ role.rolemember_set.count }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<a href="{% sph_url 'admin_permission_role_create' %}">Create Role</a>
+
+{% endblock %}

@@ -44,6 +44,7 @@ def init_data(app, created_models, verbosity, **kwargs):
         
 
 from django.db import backend, connection, transaction
+from sphene.community.models import PermissionFlag, Role, Group
 from sphene.community.models import ApplicationChangelog
 from datetime import datetime
 
@@ -95,6 +96,8 @@ def do_changelog(app, created_models, verbosity, **kwargs):
                 sqlstmt = 'UPDATE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
+            elif changetype == 'comment':
+                print "%s: !!! Important Comment: %s" % (date, stmt)
             else:
                 print "Unknown changetype: %s - %s" % (changetype, str(change))
 
@@ -116,3 +119,57 @@ def do_changelog(app, created_models, verbosity, **kwargs):
 dispatcher.connect(init_data, sender=models, signal=signals.post_syncdb)
 dispatcher.connect(do_changelog, signal=signals.post_syncdb)
 
+
+def create_permission_flags(app, created_models, verbosity):
+    """
+    Creates permission flags by looking at the Meta class of all models.
+
+    These Meta classes can have a 'sph_permission_flags' attribute containing
+    a dictionary with 'flagname': 'some verbose userfriendly description.'
+
+    Permission flags are not necessarily bound to a given model. It just needs
+    to be assigned to one so it can be found, but it can be used in any
+    context.
+    """
+    
+    for myapp in get_apps():
+        app_models = get_models(myapp)
+        if not app_models:
+            continue
+        
+        for klass in app_models:
+            if hasattr(klass, 'sph_permission_flags'):
+                sph_permission_flags = klass.sph_permission_flags
+                
+                # permission flags can either be a dictionary with keys beeing
+                # flag names, values beeing the description
+                # or lists in the form: ( ( 'flagname', 'description' ), ... )
+                if isinstance(sph_permission_flags, dict):
+                    sph_permission_flags = sph_permission_flags.iteritems()
+                
+                for (flag, description) in sph_permission_flags:
+                    flag, created = PermissionFlag.objects.get_or_create(name = flag)
+                    if created and verbosity >= 2:
+                        print "Added sph permission flag '%s'" % flag.name
+
+    if Role in created_models:
+        # Create a 'Group Admin' role for all groups.
+        rolename = 'Group Admin'
+        permissionflag = PermissionFlag.objects.get(name = 'group_administrator')
+        groups = Group.objects.all()
+        for group in groups:
+            role, created = Role.objects.get_or_create( name = rolename, group = group )
+            if not created:
+                continue
+            
+            role.save()
+            role.permission_flags.add(permissionflag)
+            role.save()
+
+            if verbosity >= 2:
+                print "Created new role '%s' for group '%s' and assigned permission '%s'" % (rolename, group.name, permissionflag.name)
+
+            
+
+
+dispatcher.connect(create_permission_flags ,signal=signals.post_syncdb)
