@@ -89,11 +89,11 @@ def do_changelog(app, created_models, verbosity, **kwargs):
                 continue
             
             if changetype == 'alter':
-                sqlstmt = 'ALTER TABLE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
+                sqlstmt = 'ALTER TABLE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
             elif changetype == 'update':
-                sqlstmt = 'UPDATE %s %s' % (backend.quote_name(clazz._meta.db_table), stmt)
+                sqlstmt = 'UPDATE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
             elif changetype == 'comment':

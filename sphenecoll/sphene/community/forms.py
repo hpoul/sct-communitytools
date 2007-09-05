@@ -99,7 +99,7 @@ autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.su
 class EditRoleMemberForm(forms.Form):
     username = forms.CharField()
     has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = 'Allows you to limit the given permission to only one specific object.' )
-    auto_submit = forms.BooleanField(widget = forms.HiddenInput)
+    auto_submit = forms.BooleanField(widget = forms.HiddenInput, required = False)
 
     def __init__(self, group, *args, **kwargs):
         super(EditRoleMemberForm, self).__init__( *args, **kwargs )
