@@ -647,9 +647,9 @@ class Post(models.Model):
             return monitor
 
     def save(self):
-        if category_type is None:
+        if self.category_type is None:
             # Reset the default category_type -> it is a not null value.
-            category_type = ''
+            self.category_type = ''
             
         isnew = not self.id
         ret = super(Post, self).save()
