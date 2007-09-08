@@ -1,4 +1,4 @@
 {% load sph_extras %}
 {{ post.author|sph_fullusername }} just posted in a thread or forum you are monitoring:
 
-visit http://{{ baseurl }}{{ post.get_absolute_url }} to view the post.
+visit http://{{ baseurl }}{{ post.get_absolute_url }}?page={{ latestPost.get_threadinformation.get_page_count }} to view the post.
