@@ -68,7 +68,7 @@
           {% if thread.is_moved %}
             <td colspan="4"><small>Thread was moved: <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> into <a href="{{ thread.category.get_absolute_url }}">{{ thread.root_post.category.name }}</a>.</small></td>
           {% else %}
-          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a><br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>{% if thread.has_paging %} ( {% sphboard_pagination thread.get_page_count -1 thread.get_absolute_url %} ){% endif %}<br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
           {% if sph_settings.board_count_views %}
             <td class="sphboard_viewcount">{{ thread.view_count }}</td>
           {% endif %}

@@ -65,9 +65,12 @@ def sphboard_displayUserName( user ):
     return { 'user': user }
 
 @register.inclusion_tag('sphene/sphboard/_pagination.html')
-def sphboard_pagination( pages, page ):
+def sphboard_pagination( pages, page, url = '' ):
     has_next = page < pages
     has_prev = page > 1
+    if page == -1:
+        has_next = has_prev = False
+        
     return { 'page_range': range( 1, pages+1 ),
              'page': page,
              'pages': pages,
@@ -75,6 +78,7 @@ def sphboard_pagination( pages, page ):
              'has_prev': has_prev,
              'next': page + 1,
              'prev': page - 1,
+             'url': url,
              }
 
 ### sphboard_displayPostForm is deprecated, there is a view function for this !!

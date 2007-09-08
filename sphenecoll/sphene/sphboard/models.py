@@ -97,7 +97,7 @@ class AccessCategoryManager(models.Manager):
         return self.filter( group = group )
 
 
-# Create your models here.
+
 class Category(models.Model):
     name = models.CharField(maxlength = 250)
     group = models.ForeignKey(Group, null = True, blank = True)
@@ -108,6 +108,8 @@ class Category(models.Model):
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     sortorder = models.IntegerField( default = 0, null = False )
 
+    category_type = models.CharField(maxlength = 250, blank = True, db_index = True)
+
     objects = AccessCategoryManager()#models.Manager()
     sph_objects = AccessCategoryManager()
 
@@ -115,6 +117,10 @@ class Category(models.Model):
     changelog = ( ( '2007-04-14 00', 'alter', 'ADD sortorder INTEGER' ),
                   ( '2007-04-14 01', 'update', 'SET sortorder = 0' ),
                   ( '2007-04-14 02', 'alter', 'ALTER sortorder SET NOT NULL' ),
+                  
+                  ( '2007-09-03 00', 'alter', 'ADD category_type varchar(250)' ),
+                  ( '2007-09-03 01', 'update', "SET category_type = ''" ),
+                  ( '2007-09-03 02', 'alter', 'ALTER category_type SET NOT NULL' ),
                   )
 
     sph_permission_flags = { 'sphboard_editallposts':
@@ -641,6 +647,10 @@ class Post(models.Model):
             return monitor
 
     def save(self):
+        if category_type is None:
+            # Reset the default category_type -> it is a not null value.
+            category_type = ''
+            
         isnew = not self.id
         ret = super(Post, self).save()
 
@@ -856,6 +866,15 @@ class ThreadInformation(models.Model):
         into another category. """
         return self.thread_type == THREAD_TYPE_MOVED
 
+
+    def get_page_count(self):
+        """ Returns the number of pages this thread has. """
+        import math
+        # No idea why ceil wouldn't return a integer value ..
+        return int(math.ceil(self.root_post.postCount() / get_sph_setting( 'board_post_paging' )))
+
+    def has_paging(self):
+        return self.root_post.postCount() > get_sph_setting( 'board_post_paging' )
 
     #################################
     ## Some proxy methods which will simply forward

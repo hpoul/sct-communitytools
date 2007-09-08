@@ -18,4 +18,7 @@ add_setting_defaults( {
     # See http://code.djangoproject.com/ticket/4789
     # When activating this setting, select_related() will not be used.
     'workaround_select_related_bug': False,
+
+
+    'board_post_paging': 10.,
     })

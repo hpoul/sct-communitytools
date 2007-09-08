@@ -12,7 +12,7 @@ from datetime import datetime
 from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
-from sphene.community.sphutils import get_fullusername, format_date
+from sphene.community.sphutils import get_fullusername, format_date, get_sph_setting
 from sphene.sphboard import boardforms
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT
 from sphene.sphboard.renderers import describe_render_choices
@@ -117,6 +117,7 @@ def showThread(request, thread_id, group = None):
                                           'postSubject': 'Re: ' + thread.subject,
                                           },
                         template_object_name = 'post',
+                        paginate_by = get_sph_setting( 'board_post_paging' ),
                         )
 
     res.sph_lastmodified = thread.get_latest_post().postdate

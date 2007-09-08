@@ -60,6 +60,7 @@
     {% endif %}
     <br/><br/>
   {% endif %}
+  {% sphboard_pagination pages page %}<br/><br/>
   <table class="sphboard_post_list">
     {% for post in post_list %}
       <tr>
@@ -146,6 +147,8 @@
       {% endifequal %}
     {% endfor %}
   </table>
+  <br/><br/>
+  {% sphboard_pagination pages page %}<br/><br/>
   <br/><br/>
   
   {% if allowPosting %}
