@@ -247,3 +247,8 @@ def sph_showavatar(user):
         
     return '<img src="%s" width="%dpx" height="%dpx" alt="Users avatar" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height)
 
+@register.inclusion_tag('sphene/community/templatetags/_form.html')
+def sph_form(form, submit = 'Submit' ):
+    return { 'form': form,
+             'submit': submit, }
+

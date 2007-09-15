@@ -1,6 +1,7 @@
 
     .sphform input[type="text"],
-    .sphform input[type="password"] {
+    .sphform input[type="password"],
+    .sphform select {
       width: 100%;
       border: 1px solid black;
       padding: 3px;
