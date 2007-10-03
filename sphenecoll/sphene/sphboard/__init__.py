@@ -9,6 +9,14 @@ add_setting_defaults( {
     'board_heat_view_threshold': 100,
     'board_heat_calculator': 'sphene.sphboard.models.calculate_heat',
 
+    # Defines if the 'Notify Me' checkbox should be selected by default.
+    'board_default_notifyme': True,
+
+    # How long a user is allowed to edit his post in seconds.
+    # -1: forever,
+    # 0: never
+    'board_edit_timeout': -1, #30 * 60,
+
     # Timeout for the rendered body in the cache
     # Default 6 hours
     'board_body_cache_timeout': 6 * 3600,

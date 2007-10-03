@@ -122,7 +122,7 @@ def sphboard_default_notify_me(user):
             return False
     except BoardUserProfile.DoesNotExist:
         pass
-    return True
+    return get_sph_setting( 'board_default_notifyme' )
 
 
 

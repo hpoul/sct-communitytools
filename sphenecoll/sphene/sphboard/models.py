@@ -490,8 +490,39 @@ class Post(models.Model):
         if not user or not user.is_authenticated():
             return False
         
-        return user == self.author or user.is_superuser \
-               or has_permission_flag( user, 'sphboard_editallposts', self.category )
+        if user.is_superuser \
+               or has_permission_flag( user, 'sphboard_editallposts', self.category ):
+            return True
+
+        if user == self.author:
+            # Check edit timeout
+            remaining = self.remaining_edit_seconds(user)
+            if remaining == -1 or remaining > 0:
+                return True
+
+        return False
+
+    def remaining_edit_seconds(self, user = None):
+        """
+        Returns the number of seconds the user is allowed to edit the post
+        returns -1 for unlimited (Not checking user permissions !!)
+        """
+        if user is None: user = get_current_user()
+        
+        timeout = get_sph_setting( 'board_edit_timeout' )
+
+        if timeout < 0:
+            return timeout
+
+        delta = (datetime.today() - self.postdate)
+        totalseconds = delta.days * 24 * 60 * 60 + delta.seconds
+
+        if timeout >= totalseconds:
+            return timeout - totalseconds
+
+        # Timed out ....
+        return 0
+
     allowEditing = allow_editing
 
     def _allow_adminfunctionality(self, flag, user = None):
@@ -887,6 +918,9 @@ class ThreadInformation(models.Model):
 
     def is_closed(self):
         return self.root_post.is_closed()
+
+    def has_new_posts(self):
+        return self.root_post.has_new_posts()
 
     ##
     ###################################
