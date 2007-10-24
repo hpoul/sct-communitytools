@@ -23,6 +23,11 @@ def sphpermalink(func, get_urlconf_func = None):
         
         bits = func(*args, **kwargs)
         viewname = bits[0]
+
+        if not hasattr( urlconf, '__iter__' ):
+            # If urlconf is not a list / tuple set it to None.
+            urlconf = None
+
         return reverse(bits[0], urlconf, *bits[1:3])
     return inner
 
