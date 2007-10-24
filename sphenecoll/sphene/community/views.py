@@ -251,7 +251,7 @@ def profile(request, group, user_id):
             additionalprofile += listener[1]
     
     return render_to_response( 'sphene/community/profile.html',
-                               { 'user': user,
+                               { 'profile_user': user,
                                  'has_edit_permission': has_edit_permission,
                                  'profile_edit_url': profile_edit_url,
                                  'additionalprofile': additionalprofile,
