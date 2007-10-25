@@ -986,6 +986,17 @@ dispatcher.connect(update_thread_information,
                    sender = Post,
                    signal = signals.post_save)
 
+def ensure_thread_information():
+    """
+    Iterates through all threads and verifies that there is a corresponding
+    ThreadInformation object. (Useful for updates)
+    """
+    allthreads = Post.objects.filter( thread__isnull = True )
+    print "Validating Thread information ..."
+    for thread in allthreads:
+        update_thread_information( thread )
+    print "Done."
+
 
 class Monitor(models.Model):
     """Monitors allow user to get notified by email on new posts in a
