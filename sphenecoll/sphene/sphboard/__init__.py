@@ -28,5 +28,5 @@ add_setting_defaults( {
     'workaround_select_related_bug': False,
 
 
-    'board_post_paging': 10.,
+    'board_post_paging': 10,
     })
