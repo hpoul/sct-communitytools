@@ -214,7 +214,11 @@ def sph_dictget(value, param):
 def sph_url(view):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
-    return reverse(view, urlconf)
+    try:
+        return reverse(view, urlconf)
+    except:
+        return 'NOT FOUND'
+
 
 
 @register.simple_tag

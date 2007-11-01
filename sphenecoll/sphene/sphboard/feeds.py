@@ -10,8 +10,9 @@ class LatestThreads(Feed):
     description_template = "sphene/sphboard/feeds/latestpost_description.html"
 
     def get_object(self, bits):
-        if len(bits) < 1:
+        if len(bits) < 1 or bits[0] == '':
             raise ObjectDoesNotExist
+        
         category = Category.objects.get( pk = bits[0] )
         if not category.has_view_permission():
             raise PermissionDenied
@@ -24,6 +25,8 @@ class LatestThreads(Feed):
         return "Latest threads in %s" % obj.name
 
     def link(self, obj):
+        if obj is None:
+            return '/'
         return obj.get_absolute_url()
 
     def items(self, obj):

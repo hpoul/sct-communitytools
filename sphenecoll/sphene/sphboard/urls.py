@@ -8,7 +8,7 @@ feeds = {
 
 urlpatterns = patterns('',
                        (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/0/'}),
-                       url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
+                       url(r'^feeds/(?P<url>.+)/$', 'django.contrib.syndication.views.feed',
                            { 'feed_dict': feeds,
                              'noGroup': True, },
                            'sphboard-feeds'),
