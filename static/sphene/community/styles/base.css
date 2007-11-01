@@ -42,3 +42,16 @@
 
   .sph_options { white-space: nowrap; }
   .sph_rolename { white-space: nowrap; }
+
+
+
+/* wiki links - need to be here because the board also makes use of wikilinks */
+/* This should be cleaned up one day to do the same as with jsincludes        */
+    .sph_nonexistent {
+      color: #cc0000;
+    }
+    .sph_nonexistent:after {
+      vertical-align: super;
+      font-size: xx-small;
+      content: "?";
+    }

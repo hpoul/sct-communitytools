@@ -2,15 +2,6 @@
 
     .wiki_secured { font-size:x-small; }
 
-    .sph_nonexistent {
-      color: #cc0000;
-    }
-    .sph_nonexistent:after {
-      vertical-align: super;
-      font-size: xx-small;
-      content: "?";
-    }
-
     #sphwiki_toc h2 {
       font-size: 1em;
     }
