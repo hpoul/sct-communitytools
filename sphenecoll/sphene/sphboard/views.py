@@ -279,8 +279,11 @@ def post(request, group = None, category_id = None, post_id = None):
     if 'createpoll' in request.REQUEST:
         context['createpoll'] = request.REQUEST['createpoll']
 
-    return render_to_response( "sphene/sphboard/post.html", context,
-                               context_instance = RequestContext(request) )
+    res = render_to_response( "sphene/sphboard/post.html", context,
+                              context_instance = RequestContext(request) )
+    # Maybe the user is in the 'edit' form, which should not be cached.
+    res.sph_lastmodified = True
+    return res
 
 
 class AnnotateForm(forms.Form):
