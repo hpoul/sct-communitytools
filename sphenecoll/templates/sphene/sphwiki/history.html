@@ -1,8 +1,7 @@
 {% extends "sphene/sphwiki/base.html" %}
 
-{% load sphboard_extras %}
 {% load sph_extras %}
-
+{% load sph_pagination %}
 
 {% block content %}
 
@@ -18,15 +17,15 @@
 
     {% for change in object_list %}
        <tr>
-         <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
-         <td style="white-space: nowrap">{% sphboard_displayUserName change.editor %}</td>
+         <td class="history_changedate"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+         <td class="history_editor">{% sph_html_user change.editor %}</td>
          <td>{{ change.message }}</td>
        </tr>
     {% endfor %}
   </table>
 
   {% if is_paginated %}
-    {{ hits }} Changes. {% sphboard_pagination pages page %}
+    {{ hits }} Changes. {% sph_pagination pages page %}
   {% else %}
     {{ object_list.count }} Changes.
   {% endif %}

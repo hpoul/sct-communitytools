@@ -1,6 +1,5 @@
 {% extends "sphene/sphwiki/base.html" %}
 
-{% load sphboard_extras %}
 {% load sph_extras %}
 
 {% block head %}
@@ -13,7 +12,7 @@
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
   {% if redirects %}
-    <ul style="sphwiki redirects">
+    <ul class="sphwiki redirects">
     {% for redirect in redirects %}
       <li>Redirected from <a href="{{ redirect.get_absolute_url }}?redirect=no">{{ redirect.get_title }}</a></li>
     {% endfor %}

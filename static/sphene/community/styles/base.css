@@ -34,3 +34,11 @@
     .signature {
       display: none;
     }
+
+
+  /* administration */
+  .sph_options a:before { content: " [ "; }
+  .sph_options a:after { content: " ] "; }
+
+  .sph_options { white-space: nowrap; }
+  .sph_rolename { white-space: nowrap; }

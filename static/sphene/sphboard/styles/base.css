@@ -95,3 +95,51 @@
         font-size: smaller;
         border-bottom: 1px solid gray;
     }
+
+
+  .sphboard { width: 100%; }
+  .sphboard textarea { width: 100%; }
+  .sphboard input { width: 100%; }
+
+
+.board_previewarea {
+  /* it must be invisible in thebeginning */
+  display:none;
+  visibility:hidden;
+  border: 2px solid gray;
+  overflow:scroll;
+  max-height: 500px;
+  padding: 5px;
+}
+
+
+.board_threadcount {
+  float:left;
+}
+.board_pagination {
+  display:block;
+  float:right;
+}
+.board_postdate {
+  float:left;
+}
+
+.board_controls {
+  float:right;
+}
+
+.polls_percent {
+  white-space:nowrap;
+}
+
+.polls_percentbar {
+  background-color:#cccccc;
+  font-size:5px;
+  height:10px;
+}
+
+.polls_choices {
+  style="list-style: none";
+}
+
+

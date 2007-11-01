@@ -1,7 +1,7 @@
-{% extends "sphene/sphboard/base.html" %}
+{% extends "sphene/sphwiki/base.html" %}
 
-{% load sphboard_extras %}
 {% load sph_extras %}
+{% load sph_pagination %}
 
 {% block content %}
 <script language="JavaScript" type="text/javascript">
@@ -31,12 +31,12 @@
         <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.get_fileupload_filename|sph_basename }}')"><img src="/static/sphene/sphwiki/icons/edit-delete.png" alt="Delete" title="Delete" border="0" /></a></td>
         <td><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></td>
         <td>{{ attachment.uploaded|sph_date }}</td>
-        <td>{% sphboard_displayUserName attachment.uploader %}</td>
+        <td>{% sph_html_user attachment.uploader %}</td>
       </tr>
     {% endfor %}
   </table>
   {% if is_paginated %}
-    {{ hits }} Attachments. {% sphboard_pagination pages page %}
+    {{ hits }} Attachments. {% sph_pagination pages page %}
   {% else %}
     {{ object_list.count }} Attachments.
   {% endif %}

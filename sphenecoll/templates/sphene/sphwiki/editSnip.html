@@ -1,4 +1,4 @@
-{% extends "sphene/sphboard/base.html" %}
+{% extends "sphene/sphwiki/base.html" %}
 
 {% block content %}
   <script language="JavaScript" type="text/javascript" src="/static/sphene/community/xmlhttp.js"></script>
@@ -12,7 +12,7 @@
 
   {% include "sphene/sphwiki/_snip_header.html" %}
   <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
-  <div id="previewarea" style="display:none; visibility:hidden; border: 2px solid gray; overflow:scroll; max-height: 500px; padding: 5px;"></div>
+  <div id="previewarea" class="wiki_previewarea"></div>
 
   <form action="." method="post" name="snipedit" class="sphform">
     <table class="form">

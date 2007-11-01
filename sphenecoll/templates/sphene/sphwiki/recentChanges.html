@@ -1,7 +1,7 @@
 {% extends "sphene/sphwiki/base.html" %}
 
-{% load sphboard_extras %}
 {% load sph_extras %}
+{% load sph_pagination %}
 
 {% block head %}
   {{ block.super }}
@@ -26,19 +26,19 @@
       <tr{% if not change.snip.has_view_permission %} class="nopermission" title="Not enough permissions to view this wiki snip."{% endif %}>
         {% if change.snip.has_view_permission %}
           <td><a href="{{ change.snip.get_absolute_url }}">{{ change.snip.name }}</a></td>
-          <td style="white-space: nowrap"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
+          <td class="recentchanges_changedate"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
         {% else %}
           <td>{{ change.snip.name }}</td>
-          <td style="white-space: nowrap">{{ change.edited|sph_date }}</td>
+          <td class="recentchanges_changedate">{{ change.edited|sph_date }}</td>
         {% endif %}
-        <td style="white-space: nowrap">{% sphboard_displayUserName change.editor %}</td>
+        <td class="recentchanges_editor">{% sph_html_user change.editor %}</td>
         <td>{{ change.message }}</td>
       </tr>
     {% endfor %}
   </table>
 
   {% if is_paginated %}
-    {{ hits }} Changes. {% sphboard_pagination pages page %}
+    {{ hits }} Changes. {% sph_pagination pages page %}
   {% else %}
     {{ object_list.count }} Changes.
   {% endif %}

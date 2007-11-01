@@ -1,9 +1,4 @@
 {% load sphboard_extras %}
-<style>
-  .sphboard { width: 100%; }
-  textarea { width: 100%; }
-  .sphboard input { width: 100%; }
-</style>
   <script language="JavaScript" type="text/javascript" src="/static/sphene/community/xmlhttp.js"></script>
   <script language="JavaScript" type="text/javascript">
   <!--
@@ -17,7 +12,7 @@
   //-->
   </script>
 
-<div id="previewarea" style="display:none; visibility:hidden; border: 2px solid gray; overflow:scroll; max-height: 500px; padding: 5px;"></div>
+<div id="previewarea" class="board_previewarea"></div>
 <form method="post" action="." name="postform">
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}

@@ -1,6 +1,7 @@
 {% extends "sphene/sphboard/base.html" %}
 
 {% load sphboard_extras %}
+{% load sph_pagination %}
 
 {% block head %}
   {{ block.super }}
@@ -60,7 +61,7 @@
     {% endif %}
     <br/><br/>
   {% endif %}
-  {% sphboard_pagination pages page %}<br/><br/>
+  {% sph_pagination pages page %}<br/><br/>
   <table class="sphboard_post_list">
     {% for post in post_list %}
       <tr>
@@ -68,8 +69,8 @@
           {% sphboard_post_authorinfo post.author_id %}
         </td>
         <td class="sphboard_post_subject">
-          <div style="float:left"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
-          <div style="float:right">
+          <div class="board_postdate"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
+          <div class="board_controls">
             {% if post.allow_annotating %}
               [ <a href="{{ post.get_absolute_annotate_url }}">Annotate/Hide</a> ]
             {% endif %}
@@ -108,8 +109,8 @@
                 <table class="sphboard polls_results">
                   {% for choice in post.poll.choices %}
                     <tr>
-                      <td align="right" style="white-space:nowrap;">{% widthratio choice.count post.poll.total_votes 100 %}%</td>
-                      <td width="100%"><span style="background-color:#cccccc;font-size:5px;height:10px;padding-right:{% widthratio choice.count post.poll.total_votes 500 %}px;">&nbsp;</span><br/>{{ choice.choice }}</td>
+                      <td align="right" class="polls_percent">{% widthratio choice.count post.poll.total_votes 100 %}%</td>
+                      <td width="100%"><span class="polls_percentbar" style="padding-right:{% widthratio choice.count post.poll.total_votes 500 %}px;">&nbsp;</span><br/>{{ choice.choice }}</td>
                     </tr>
                   {% endfor %}
                 </table>
@@ -120,14 +121,14 @@
                 {% endif %}
                 {% if post.poll.multiplechoice %}
                   You may select up to {{ post.poll.choices_per_user }} answers:
-                  <ul style="list-style: none">
+                  <ul class="polls_choices">
                     {% for choice in post.poll.choices %}
                       <li><input type="checkbox" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
                     {% endfor %}
                     <li><input type="checkbox" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">Show Results (You won't be able to vote.)</label></li>
                   </ul>
                 {% else %}
-                  <ul style="list-style: none">
+                  <ul class="polls_choices">
                     {% for choice in post.poll.choices %}
                       <li><input type="radio" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
                     {% endfor %}
@@ -148,7 +149,7 @@
     {% endfor %}
   </table>
   <br/><br/>
-  {% sphboard_pagination pages page %}<br/><br/>
+  {% sph_pagination pages page %}<br/><br/>
   <br/><br/>
   
   {% if allowPosting %}

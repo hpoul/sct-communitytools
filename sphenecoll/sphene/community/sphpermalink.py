@@ -24,7 +24,8 @@ def sphpermalink(func, get_urlconf_func = None):
         bits = func(*args, **kwargs)
         viewname = bits[0]
 
-        if not hasattr( urlconf, '__iter__' ):
+        if not hasattr( urlconf, '__iter__' ) \
+                and not isinstance( urlconf, str ):
             # If urlconf is not a list / tuple set it to None.
             urlconf = None
 

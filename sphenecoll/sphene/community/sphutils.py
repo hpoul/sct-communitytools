@@ -114,7 +114,14 @@ class CaptchaField(forms.fields.MultiValueField):
 
     def clean(self, value):
         super(CaptchaField, self).clean(value)
-        if not validate_captcha(value[0], int(value[1])):
+        intval = None
+        try:
+            intval = int(value[1])
+        except ValueError:
+            # Input was no valid integer value
+            pass
+
+        if intval is None or not validate_captcha(value[0], int(value[1])):
             raise forms.ValidationError(u'Invalid Captcha response.')
         
     def compress(self, data_list):
