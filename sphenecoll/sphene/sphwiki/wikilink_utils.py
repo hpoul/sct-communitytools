@@ -21,19 +21,30 @@ def handle_wikilinks_match(matchgroups):
     if matchgroups.get('escape'): return { 'label': matchgroups.get('wholeexpression') }
     snipname = matchgroups.get('camelcase') or matchgroups.get('snipname')
     label = matchgroups.get('sniplabel') or snipname.replace('_', ' ')
+
+    cssclass = 'sph_wikilink'
+
     try:
         snip = WikiSnip.objects.get( group = get_current_group(),
                                      name = snipname, )
         href = snip.get_absolute_url()
     except WikiSnip.DoesNotExist:
+        
         snip = WikiSnip( group = get_current_group(),
                          name = snipname, )
+
+        if not snip.has_edit_permission() \
+                and get_sph_setting('wiki_links_nonexistent_show_only_privileged'):
+            return { 'label': label, }
+
         href = snip.get_absolute_editurl()
-        label = "create:"+label
+        cssclass += ' sph_nonexistent'
+        if get_sph_setting( 'wiki_links_nonexistent_prefix' ):
+            label = "create:"+label
     
     return { 'href': href,
              'label': label,
-             'class': 'sph_wikilink',
+             'class': cssclass,
              }
 
 def render_wikilinks_match(match):
