@@ -898,7 +898,7 @@ class ThreadInformation(models.Model):
         """ Returns the number of pages this thread has. """
         import math
         # No idea why ceil wouldn't return a integer value ..
-        return int(math.ceil(self.root_post.postCount() / get_sph_setting( 'board_post_paging' )))
+        return int(math.ceil(self.root_post.postCount() / float(get_sph_setting( 'board_post_paging' ))))
 
     def has_paging(self):
         return self.root_post.postCount() > get_sph_setting( 'board_post_paging' )
