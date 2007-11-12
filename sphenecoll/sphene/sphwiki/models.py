@@ -237,7 +237,10 @@ class WikiSnip(models.Model):
         if user == None or not user.is_authenticated():
             return False
 
-        if user.is_superuser: return True
+        # Noone has permission ..
+        if permission >= 3: return False
+
+        if user.is_superuser or user.is_staff: return True
 
         if permission == 0: return True
 
