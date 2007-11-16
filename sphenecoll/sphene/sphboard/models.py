@@ -8,6 +8,7 @@ from sphene.community.models import Group, Role, PermissionFlag, RoleMember
 from django.utils import html
 from django.conf import settings
 from datetime import datetime, timedelta
+from django.utils.safestring import mark_safe
 
 #from django.db.models import permalink
 from django.dispatch import dispatcher
@@ -577,7 +578,7 @@ class Post(models.Model):
             signature = get_rendered_signature( self.author_id )
             if signature:
                 bodyhtml += '<div class="signature">%s</div>' % signature
-        return bodyhtml
+        return mark_safe(bodyhtml)
 
     def viewed(self, session, user):
         if get_sph_setting( 'board_count_views' ):

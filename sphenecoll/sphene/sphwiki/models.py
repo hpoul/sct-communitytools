@@ -5,6 +5,7 @@ from django.conf import settings
 from sphene.community.templatetags.sph_extras import sph_markdown
 #from django.db.models import permalink
 from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
+from django.utils.safestring import mark_safe
 
 from sphene.community.models import Group
 
@@ -53,12 +54,12 @@ class WikiSnip(models.Model):
 
     def render(self):
         from sphene.sphwiki import wikimacros
-        return sph_markdown(self.body,
+        return mark_safe(sph_markdown(self.body,
                             extra_macros = { 'attachmentlist': wikimacros.AttachmentListMacro( snip = self, ),
                                              'attachment': wikimacros.AttachmentMacro( snip = self, ),
                                              'img': wikimacros.ImageMacro( ),
                                              'redirect': wikimacros.RedirectMacro( ),
-                                             })
+                                             }))
 
     def get_title(self):
         return self.title or self.name

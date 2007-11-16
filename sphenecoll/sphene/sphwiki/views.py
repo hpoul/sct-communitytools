@@ -254,7 +254,7 @@ def editSnip(request, group, snipName):
 
     if request.method == 'POST':
         if 'type' in request.POST and request.POST['type'] == 'preview':
-            return HttpResponse( WikiSnip(body = request.POST['body']).render() )
+            return HttpResponse( unicode(WikiSnip(body = request.POST['body']).render() ))
         form = SnipForm(request.POST)
         if form.is_valid():
             snip = form.save(commit=False)

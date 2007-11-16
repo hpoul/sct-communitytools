@@ -171,7 +171,7 @@ def post(request, group = None, category_id = None, post_id = None):
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
         previewpost = Post( body = request.REQUEST['body'],
                             markup = request.REQUEST.get('markup', None), )
-        return HttpResponse( previewpost.body_escaped() )
+        return HttpResponse( unicode(previewpost.body_escaped()) )
 
     
     post = None
