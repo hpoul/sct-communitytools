@@ -12,17 +12,10 @@
 >>> testuser2.save()
 
 >>> from django import http
->>> from django.contrib.sessions.middleware import SessionWrapper
->>> from sphene.community.middleware import ThreadLocals, get_current_user
+>>> from sphene.community.testutils import setup_threadlocals
+>>> from sphene.community.middleware import get_current_user
 
-# Initialize thread locals ...
->>> req = http.HttpRequest()
->>> req.session = SessionWrapper(None)
-
-# Store the test user as current user ...
->>> req.user = testuser
->>> ThreadLocals().process_request( req )
-
+>>> req = setup_threadlocals(testuser, set_group=False)
 >>> get_current_user().username
 'sometestuser'
 
@@ -157,7 +150,7 @@ True
 >>> from sphene.community.models import Role, RoleMember, PermissionFlag, RoleMemberLimitation
 >>> from django.contrib.contenttypes.models import ContentType
 >>> group = testutils.get_testgroup()
->>> testutils.setup_threadlocals(testuser, group)
+>>> req = testutils.setup_threadlocals(testuser, group)
 
 # Verify that we don't have permission ...
 >>> c.allowview = 3

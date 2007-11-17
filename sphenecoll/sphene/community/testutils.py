@@ -6,10 +6,16 @@
 
 from django import http
 from django.contrib.auth.models import User
-from django.contrib.sessions.middleware import SessionWrapper
 from sphene.community.models import Group, Role
 from sphene.community.middleware import ThreadLocals, get_current_user, set_current_group
-
+try:
+    # Django < 63xx
+    from django.contrib.sessions.middleware import SessionWrapper
+except ImportError:
+    # Current Django
+    from django.conf import settings
+    engine = __import__(settings.SESSION_ENGINE, {}, {}, ['']) 
+    SessionWrapper = engine.SessionStore
 
 def get_testgroup():
     try:
@@ -45,7 +51,7 @@ def get_testrole():
         r.save()
         return r
 
-def setup_threadlocals(testuser, group):
+def setup_threadlocals(testuser, group=None, set_group=True):
     # Initialize thread locals ...
     req = http.HttpRequest()
     req.session = SessionWrapper(None)
@@ -54,4 +60,8 @@ def setup_threadlocals(testuser, group):
     req.user = testuser
     ThreadLocals().process_request( req )
 
-    set_current_group( group )
+    if set_group:
+        set_current_group( group )
+
+    return req
+    
