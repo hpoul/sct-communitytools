@@ -19,7 +19,7 @@
 >>> has_permission_flag( testuser, 'community_manage_roles' )
 False
 
->>> testutils.setup_threadlocals( testuser, testutils.get_testgroup() )
+>>> req = testutils.setup_threadlocals( testuser, testutils.get_testgroup() )
 
 >>> has_permission_flag( testuser, 'community_manage_roles' )
 False
