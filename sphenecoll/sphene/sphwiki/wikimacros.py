@@ -65,6 +65,15 @@ class ImageMacro (object):
             for paramName in [ 'width', 'height', 'alt', 'align' ]:
                 if params.has_key( paramName ):
                     el.setAttribute( paramName, params[paramName] )
+
+            # Create a link to view the image maximized.
+            if not 'nolink' in params or not params['nolink']:
+                el.setAttribute( 'border', '0' )
+                a = doc.createElement( 'a' )
+                a.setAttribute( 'href', attachment.get_fileupload_url() )
+                a.appendChild(el)
+                el = a
+
             return el
         return doc.createTextNode("Error, no 'id' given for img macro.")
 
