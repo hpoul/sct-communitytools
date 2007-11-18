@@ -213,6 +213,27 @@ class WikiSnip(models.Model):
         
         return None
 
+    def get_snip_path(self):
+        path = self.name.split( '/' )
+        snip_path = []
+        lastsnip = None
+        for element in path:
+            if lastsnip is not None:
+                snipname = lastsnip + '/' + element;
+            else:
+                snipname = element
+
+            try:
+                snip = WikiSnip.objects.get( group = self.group,
+                                             name__exact = snipname, )
+            except WikiSnip.DoesNotExist:
+                snip = None
+            snip_path.append( { 'name': element, 'snip': snip, } )
+
+            lastsnip = snipname
+
+        return snip_path
+
     def is_secured(self):
         pref = self.get_wiki_preference()
         return pref != None and pref.view > -1
