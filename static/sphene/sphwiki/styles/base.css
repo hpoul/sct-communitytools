@@ -1,4 +1,7 @@
-    .wiki_title { border-bottom: 1px solid black; }
+    .wiki_title {
+      border-bottom: 1px solid black;
+      margin-bottom: 1px;
+    }
 
     .wiki_secured { font-size:x-small; }
 
@@ -48,3 +51,16 @@
         .diff_sub {background-color:#ffaaaa}
         .diff_backtosnip { float: left; }
         .diff_prevnext { float: right; }
+
+
+.sphwiki_breadcrumbs {
+  display:block;
+  text-align:left;
+  float:left;
+}
+
+.sphwiki_actions {
+  text-align: right;
+  display:block;
+  float:right;
+}

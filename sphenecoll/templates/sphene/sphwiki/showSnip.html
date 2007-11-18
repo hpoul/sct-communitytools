@@ -26,6 +26,8 @@
     <div class="sphwiki_body">
       {{ snip_rendered_body }}
     </div>
+
+    <br/><br/><small>Last Modified: {{ snip.changed|sph_date }} by {% sph_html_user snip.editor %} - [ <a href="{{ snip.get_absolute_historyurl }}">Snip Changes</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">Wiki History</a> ]</small>
   {% else %}
     Snip <strong>{{ snipName }}</strong> does not yet exist. {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">Create It.</a>{% endif %}
   {% endif %}
