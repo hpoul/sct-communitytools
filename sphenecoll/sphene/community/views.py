@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from django.dispatch import dispatcher
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 from sphene.community import PermissionDenied
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag
@@ -254,7 +255,7 @@ def profile(request, group, user_id):
                                { 'profile_user': user,
                                  'has_edit_permission': has_edit_permission,
                                  'profile_edit_url': profile_edit_url,
-                                 'additionalprofile': additionalprofile,
+                                 'additionalprofile': mark_safe( additionalprofile ),
                                  },
                                context_instance = RequestContext( request ))
 
