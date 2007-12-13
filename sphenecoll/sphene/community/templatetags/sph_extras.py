@@ -9,6 +9,8 @@ from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request
 from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
+
     
 register = template.Library()
 
@@ -161,7 +163,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
         ret = md.toString()
         if hasattr(md, 'tocDiv'):
             sphdata = get_current_sphdata()
-            sphdata['toc'] = md.tocDiv.toxml()
+            sphdata['toc'] = mark_safe( md.tocDiv.toxml() )
         return ret
 
 from sphene.community.sphutils import get_fullusername, format_date
