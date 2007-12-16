@@ -944,8 +944,12 @@ def calculate_heat(thread, postcount, viewcount, age):
     view_threshold = get_sph_setting( 'board_heat_view_threshold' )
 
     # It is enough to fulfill one threshold to make a hot thread.
-    postheat = (100. / post_threshold * postcount)
-    viewheat = (100. / view_threshold * (viewcount/age))
+    postheat = 0
+    viewheat = 0
+    if postcount > 0:
+        postheat = (100. / post_threshold * postcount)
+    if viewcount > 0:
+        viewheat = (100. / view_threshold * (float(viewcount)/age))
 
     # Subtract 100 to have non-hot topic <0
     heat = (postheat + viewheat) - 100
