@@ -5,7 +5,7 @@
   <script language="JavaScript" type="text/javascript">
   <!--
    function doPreview() {
-     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview&body=" + escape( document.snipedit.body.value ) );
+     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview&body=" + encodeURIComponent( document.snipedit.body.value ) );
    }
   //-->
   </script>
