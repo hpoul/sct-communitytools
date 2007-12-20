@@ -8,6 +8,7 @@ from django import newforms as forms
 from django.newforms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 from datetime import datetime
 from difflib import ndiff, HtmlDiff
@@ -149,7 +150,7 @@ def diff(request, group, snipName, changeId = None):
                                          todesc = sph_date( changeEnd.edited ) + ' by ' + sph_fullusername( changeEnd.editor ),
                                          context = True, )
 
-    args['diffTable'] = diffTable
+    args['diffTable'] = mark_safe(diffTable)
     return render_to_response( 'sphene/sphwiki/diff.html',
                                args,
                                context_instance = RequestContext(request) )
