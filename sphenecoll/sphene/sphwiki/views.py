@@ -287,6 +287,7 @@ def editSnip(request, group, snipName, versionId = None):
     else:
         form = SnipForm()
 
+    if version:
         from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
         changemessage = 'Reverted to revision of %s' % (sph_date( version.edited ))
 
