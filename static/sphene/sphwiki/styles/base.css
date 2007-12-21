@@ -36,6 +36,11 @@
 
 .history_changedate { white-space: nowrap; }
 .history_editor { white-space: nowrap; }
+.history_edit { white-space: nowrap; }
+.sphwiki_versionwarning {
+  padding-bottom: 1.5em;
+}
+
 .recentchanges_changedate, .recentchanges_editor {
   white-space: nowrap;
 }

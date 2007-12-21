@@ -1,11 +1,12 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 from sphene.community.templatetags.sph_extras import sph_markdown
 #from django.db.models import permalink
 from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
-from django.utils.safestring import mark_safe
 
 from sphene.community.models import Group
 
@@ -306,6 +307,13 @@ class WikiSnipChange(models.Model):
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.diff', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'changeId': self.id})
     get_absolute_url = permalink(get_absolute_url, get_current_request)
+
+    def get_absolute_editurl(self):
+        return reverse( 'sphwiki_editversion', 
+                        urlconf = get_current_request().urlconf, 
+                        kwargs = { 'groupName': self.snip.group.name,
+                                   'snipName': self.snip.name,
+                                   'versionId': self.id } );
 
 
 class WikiPreference(models.Model):

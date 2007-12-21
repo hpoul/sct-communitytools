@@ -1,5 +1,7 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load sph_extras %}
+
 {% block content %}
   <script language="JavaScript" type="text/javascript" src="/static/sphene/community/xmlhttp.js"></script>
   <script language="JavaScript" type="text/javascript">
@@ -14,11 +16,14 @@
   <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
   <div id="previewarea" class="wiki_previewarea"></div>
 
+  {% if version %}
+    <div class="sphwiki_versionwarning"><strong>Warning:</strong> You are editing an old version: By {% sph_html_user version.editor %} at {{ version.edited|sph_date }}</div>
+  {% endif %}
   <form action="." method="post" name="snipedit" class="sphform">
     <table class="form">
       {{ form }}
       <tr>
-        <td><label for="message_id">Change Message:</label></td><td><input type="text" name="message" id="message_id" /></td>
+        <td><label for="message_id">Change Message:</label></td><td><input type="text" name="message" id="message_id" value="{{ changemessage }}" /></td>
       </tr>
    </table>
    <input type="submit" value="Save" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />

@@ -13,6 +13,9 @@
       <th>Date</th>
       <th>Editor</th>
       <th width="80%">Change Message</th>
+      {% if snip.has_edit_permission %}
+        <th>Edit</th>
+      {% endif %}
     </tr>
 
     {% for change in object_list %}
@@ -20,6 +23,9 @@
          <td class="history_changedate"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
          <td class="history_editor">{% sph_html_user change.editor %}</td>
          <td>{{ change.message }}</td>
+	 {% if snip.has_edit_permission %}
+	   <td class="history_edit"><a href="{{ change.get_absolute_editurl }}">Edit this version</a></td>
+	 {% endif %}
        </tr>
     {% endfor %}
   </table>

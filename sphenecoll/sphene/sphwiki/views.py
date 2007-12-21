@@ -234,13 +234,20 @@ class CaptchaEditBaseForm(forms.BaseForm):
                                                            )
 
 
-def editSnip(request, group, snipName):
-    original_body = None
+def editSnip(request, group, snipName, versionId = None):
+    version = None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
-        original_body = snip.body
+        if versionId is not None:
+            version = WikiSnipChange.objects.get( pk = versionId )
+            if not version or version.snip != snip:
+                # TODO: raise a 404 instead
+                raise PermissionDenied()
+            snip.body = version.body
+
         SnipForm = forms.models.form_for_instance(snip, form = CaptchaEditBaseForm)
+
     except WikiSnip.DoesNotExist:
         SnipForm = forms.models.form_for_model(WikiSnip, form = CaptchaEditBaseForm)
         snip = WikiSnip( name = snipName, group = group )
@@ -252,11 +259,14 @@ def editSnip(request, group, snipName):
     SnipForm.base_fields['body'].widget.attrs['cols'] = 80
     SnipForm.base_fields['body'].widget.attrs['rows'] = 30
 
+    changemessage = ""
 
     if request.method == 'POST':
         if 'type' in request.POST and request.POST['type'] == 'preview':
             return HttpResponse( unicode(WikiSnip(body = request.POST['body']).render() ))
+        changemessage = request.POST['message']
         form = SnipForm(request.POST)
+
         if form.is_valid():
             snip = form.save(commit=False)
             snip.group = group
@@ -277,5 +287,12 @@ def editSnip(request, group, snipName):
     else:
         form = SnipForm()
 
+        from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
+        changemessage = 'Reverted to revision of %s' % (sph_date( version.edited ))
+
     t = loader.get_template( 'sphene/sphwiki/editSnip.html' )
-    return HttpResponse( t.render( RequestContext( request, { 'form': form, 'snip': snip } ) ) )
+    return HttpResponse( t.render( RequestContext( request, 
+                                                   { 'form': form,
+                                                     'snip': snip,
+                                                     'version': version,
+                                                     'changemessage': changemessage } ) ) )
