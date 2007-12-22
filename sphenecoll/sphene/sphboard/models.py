@@ -100,7 +100,7 @@ class AccessCategoryManager(models.Manager):
 
 
 class Category(models.Model):
-    name = models.CharField(maxlength = 250)
+    name = models.CharField(max_length = 250)
     group = models.ForeignKey(Group, null = True, blank = True)
     parent = models.ForeignKey('self', related_name = '_childs', null = True, blank = True)
     description = models.TextField(blank = True)
@@ -109,7 +109,7 @@ class Category(models.Model):
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     sortorder = models.IntegerField( default = 0, null = False )
 
-    category_type = models.CharField(maxlength = 250, blank = True, db_index = True)
+    category_type = models.CharField(max_length = 250, blank = True, db_index = True)
 
     objects = AccessCategoryManager()#models.Manager()
     sph_objects = AccessCategoryManager()
@@ -409,12 +409,12 @@ from django.contrib.auth.models import AnonymousUser
 class Post(models.Model):
     status = models.IntegerField(default = 0, editable = False )
     category = models.ForeignKey(Category, related_name = 'posts', editable = False )
-    subject = models.CharField(maxlength = 250)
+    subject = models.CharField(max_length = 250)
     body = models.TextField()
     thread = models.ForeignKey('self', null = True, editable = False )
     postdate = models.DateTimeField( auto_now_add = True, editable = False )
     author = models.ForeignKey(User, editable = False, null = True, blank = True )
-    markup = models.CharField(maxlength = 250,
+    markup = models.CharField(max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 
@@ -773,7 +773,7 @@ class PostAnnotation(models.Model):
     author = models.ForeignKey(User)
     created = models.DateTimeField( )
     hide_post = models.BooleanField()
-    markup = models.CharField(maxlength = 250,
+    markup = models.CharField(max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 
@@ -1019,7 +1019,7 @@ class Monitor(models.Model):
 
 class Poll(models.Model):
     post = models.ForeignKey(Post, editable = False)
-    question = models.CharField( maxlength = 250 )
+    question = models.CharField( max_length = 250 )
     choices_per_user = models.IntegerField( )
 
     def multiplechoice(self):
@@ -1052,7 +1052,7 @@ class Poll(models.Model):
 
 class PollChoice(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
-    choice = models.CharField( maxlength = 250 )
+    choice = models.CharField( max_length = 250 )
     count = models.IntegerField()
 
     class Admin:
@@ -1069,7 +1069,7 @@ class BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     signature = models.TextField()
     
-    markup = models.CharField(maxlength = 250,
+    markup = models.CharField(max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 

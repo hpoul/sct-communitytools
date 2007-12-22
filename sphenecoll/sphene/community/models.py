@@ -10,11 +10,11 @@ logger = logging.getLogger('sphene.community.models')
 # Create your models here.
 
 class Group(models.Model):
-    name = models.CharField(maxlength = 250)
-    longname = models.CharField(maxlength = 250)
+    name = models.CharField(max_length = 250)
+    longname = models.CharField(max_length = 250)
     default_theme = models.ForeignKey('Theme', null = True, blank = True)
     parent = models.ForeignKey('Group', null = True, blank = True)
-    baseurl = models.CharField(maxlength = 250)
+    baseurl = models.CharField(max_length = 250)
 
     def get_name(self):
         return self.longname or self.name
@@ -47,8 +47,8 @@ class GroupMember(models.Model):
                 list_filter = ('group',)
 
 class Theme(models.Model):
-        name = models.CharField(maxlength = 250)
-        path = models.CharField(maxlength = 250)
+        name = models.CharField(max_length = 250)
+        path = models.CharField(max_length = 250)
 
         def __str__(self):
                 return self.name;
@@ -68,8 +68,8 @@ NAVIGATION_TYPES = (
 
 class Navigation(models.Model):
         group = models.ForeignKey(Group)
-        label = models.CharField(maxlength = 250)
-        href  = models.CharField(maxlength = 250)
+        label = models.CharField(max_length = 250)
+        href  = models.CharField(max_length = 250)
         urltype = models.IntegerField( default = 0, choices = NAVIGATION_URL_TYPES )
         sortorder = models.IntegerField( default = 100 )
         navigationType = models.IntegerField( default = 0, choices = NAVIGATION_TYPES )
@@ -88,9 +88,9 @@ class Navigation(models.Model):
         
 
 class ApplicationChangelog(models.Model):
-        app_label = models.CharField(maxlength = 250)
-        model = models.CharField(maxlength = 250)
-        version = models.CharField(maxlength = 250)
+        app_label = models.CharField(max_length = 250)
+        model = models.CharField(max_length = 250)
+        version = models.CharField(max_length = 250)
         applied = models.DateTimeField()
 
         class Meta:
@@ -102,7 +102,7 @@ from sphene.community.sphsettings import get_sph_setting
 
 class CommunityUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
-    public_emailaddress = models.CharField(maxlength = 250)
+    public_emailaddress = models.CharField(max_length = 250)
 
     avatar = models.ImageField( height_field = 'avatar_height',
                                 width_field = 'avatar_width',
@@ -119,10 +119,10 @@ class CommunityUserProfile(models.Model):
 class CommunityUserProfileField(models.Model):
     """ User profile fields, configurable through the django admin
     interface. """
-    name = models.CharField(maxlength = 250)
-    help_text = models.CharField(maxlength = 250, blank = True, help_text = 'An optional help text displayed to the user.' )
-    regex = models.CharField(maxlength = 250, blank = True, help_text = 'An optional regular expression to validate user input.', )
-    renderstring = models.CharField(maxlength = 250, blank = True, help_text = 'An optional render string how the value should be displayed in the profile (e.g. &lt;a href="%(value)s"&gt;%(value)s&lt;/a&gt; - default: %(value)s' )
+    name = models.CharField(max_length = 250)
+    help_text = models.CharField(max_length = 250, blank = True, help_text = 'An optional help text displayed to the user.' )
+    regex = models.CharField(max_length = 250, blank = True, help_text = 'An optional regular expression to validate user input.', )
+    renderstring = models.CharField(max_length = 250, blank = True, help_text = 'An optional render string how the value should be displayed in the profile (e.g. &lt;a href="%(value)s"&gt;%(value)s&lt;/a&gt; - default: %(value)s' )
     sortorder = models.IntegerField()
 
     class Meta:
@@ -135,7 +135,7 @@ class CommunityUserProfileFieldValue(models.Model):
     user_profile = models.ForeignKey( CommunityUserProfile )
     profile_field = models.ForeignKey( CommunityUserProfileField )
 
-    value = models.CharField( maxlength = 250 )
+    value = models.CharField( max_length = 250 )
 
     class Meta:
         unique_together = (("user_profile", "profile_field"),)
@@ -146,7 +146,7 @@ class GroupTemplate(models.Model):
     any django template from the filesystem.
     """
     group = models.ForeignKey(Group)
-    template_name = models.CharField( maxlength = 250, db_index = True )
+    template_name = models.CharField( max_length = 250, db_index = True )
     source = models.TextField()
     
     class Meta:
@@ -165,7 +165,7 @@ class PermissionFlag(models.Model):
     i don't like the idea of auto generating permissions which aren't used
     in the application code (but only within the django administration))
     """
-    name = models.CharField( maxlength = 250, unique = True )
+    name = models.CharField( max_length = 250, unique = True )
 
 
     sph_permission_flags = { 'group_administrator':
@@ -183,7 +183,7 @@ class Role(models.Model):
     """
     A role is a user defined collection of so called permission flags.
     """
-    name = models.CharField( maxlength = 250 )
+    name = models.CharField( max_length = 250 )
     group = models.ForeignKey( Group )
 
     permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles' )
