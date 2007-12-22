@@ -146,8 +146,8 @@ def diff(request, group, snipName, changeId = None):
         from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
         diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
                                          changeEnd.body.splitlines(1),
-                                         fromdesc = sph_date( changeStart.edited ) + ' by ' + sph_fullusername( changeStart.editor ),
-                                         todesc = sph_date( changeEnd.edited ) + ' by ' + sph_fullusername( changeEnd.editor ),
+                                         fromdesc = '%s by %s / <a href="%s">Edit this version</a>' % (sph_date( changeStart.edited ), sph_fullusername( changeStart.editor ), changeStart.get_absolute_editurl()),
+                                         todesc = '%s by %s / <a href="%s">Edit this version</a>' % (sph_date( changeEnd.edited ), sph_fullusername( changeEnd.editor ), changeEnd.get_absolute_editurl() ),
                                          context = True, )
 
     args['diffTable'] = mark_safe(diffTable)

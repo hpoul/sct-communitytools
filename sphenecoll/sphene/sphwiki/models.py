@@ -310,7 +310,7 @@ class WikiSnipChange(models.Model):
 
     def get_absolute_editurl(self):
         return reverse( 'sphwiki_editversion', 
-                        urlconf = get_current_request().urlconf, 
+                        urlconf = getattr( get_current_request(), 'urlconf' ), 
                         kwargs = { 'groupName': self.snip.group.name,
                                    'snipName': self.snip.name,
                                    'versionId': self.id } );
