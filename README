@@ -54,11 +54,11 @@ static/ needs to be served from your django installation.
 To recaulcate heat for forum threads and similar, you should add the following
 cronjob to run once a day (or similar)
 
-echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
+    echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 
 ### Cache
 
-SCT makes use of djang caching framework - it is therefore advised to 
+SCT makes use of django caching framework - it is therefore advised to 
 configure CACHE_BACKEND django setting & co.
 look at the [django caching documentation](http://www.djangoproject.com/documentation/cache/)
 
