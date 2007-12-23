@@ -1,6 +1,6 @@
 {% if category %}
     {% if allowPostThread %}
-      <a href="../../post/{{ category.id }}/">Post New Thread</a>
+      <a href="../../post/{{ category.id }}/">{% block linktext %}Post New Thread{% endblock %}</a>
       {# sphboard_displayPostForm #}
     {% else %}
       {% if user.is_authenticated %}

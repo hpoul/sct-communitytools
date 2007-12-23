@@ -50,7 +50,9 @@
   {% endif %}
 
   {% if isShowLatest or category.canContainPosts %}
-    {% include "sphene/sphboard/_new_thread_link.html" %}
+    {% block above_thread_list %}
+    {% endblock %}
+    {% include category.get_category_type.get_new_thread_link_template %}
     <table class="sphboard_thread_list">
       <tr>
         <th class="sphboard_mainhead" colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}">Threads</th>
@@ -69,7 +71,7 @@
           {% if thread.is_moved %}
             <td colspan="4"><small>Thread was moved: <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> into <a href="{{ thread.category.get_absolute_url }}">{{ thread.root_post.category.name }}</a>.</small></td>
           {% else %}
-          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>{% if thread.has_paging %} ( {% sph_pagination thread.get_page_count -1 thread.get_absolute_url %} ){% endif %}<br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}{% block thread_list_subject %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>{% endblock %}{% if thread.has_paging %} ( {% sph_pagination thread.get_page_count -1 thread.get_absolute_url %} ){% endif %}<br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
           {% if sph_settings.board_count_views %}
             <td class="sphboard_viewcount">{{ thread.view_count }}</td>
           {% endif %}
@@ -83,7 +85,7 @@
       </tr>
     </table>
     <br/><br/>
-    {% include "sphene/sphboard/_new_thread_link.html" %}
+    {% include category.get_category_type.get_new_thread_link_template %}
     {% if user.is_authenticated and category.has_new_posts %}
       - <a href="../../catchup/{{ category.id }}/" title="Mark all Posts in this Category as read.">Catch Up</a>
     {% endif %}

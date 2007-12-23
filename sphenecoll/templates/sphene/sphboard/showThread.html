@@ -61,7 +61,9 @@
     {% endif %}
     <br/><br/>
   {% endif %}
-  {% sph_pagination pages page %}<br/><br/>
+  {% block above_post_list %}
+  {% endblock %}
+  <p>{% sph_pagination pages page %}</p>
   <table class="sphboard_post_list">
     {% for post in post_list %}
       <tr>

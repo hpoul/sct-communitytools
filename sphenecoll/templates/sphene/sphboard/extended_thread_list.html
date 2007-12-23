@@ -1,0 +1,5 @@
+{% extends "sphene/sphboard/listCategories.html" %}
+
+{% block above_thread_list %}
+  {{ category.get_category_type.get_above_thread_list_block }}
+{% endblock %}

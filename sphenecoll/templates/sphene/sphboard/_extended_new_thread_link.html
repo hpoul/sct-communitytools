@@ -1,0 +1,9 @@
+{% extends "sphene/sphboard/_new_thread_link.html" %}
+
+{% block linktext %}
+  {% if category.get_category_type.get_post_new_thread_label %}
+    {{ category.get_category_type.get_post_new_thread_label }}
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}

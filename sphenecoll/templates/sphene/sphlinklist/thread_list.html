@@ -1,0 +1,11 @@
+{% extends "sphene/sphboard/extended_thread_list.html" %}
+
+{% load sph_extras %}
+{% load i18n %}
+
+{% block thread_list_subject %}
+<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> - 
+  {% blocktrans with thread.root_post.linklistpostextension_set.get.link as link %}
+    <small>(<a href="{{ link }}">Open URL: {{ link }}</a>)</small>
+  {% endblocktrans %}
+{% endblock %}

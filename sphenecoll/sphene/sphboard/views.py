@@ -57,6 +57,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
                 'category': categoryObject,
                 'allowPostThread': categoryObject and categoryObject.allowPostThread( request.user ),
                 'category_id': category_id, }
+
     templateName = 'sphene/sphboard/listCategories.html'
     if categoryObject == None:
         if showType != 'threads':
@@ -77,6 +78,8 @@ def showCategory(request, group = None, category_id = None, showType = None):
         context['isShowLatest'] = True
         thread_list = ThreadInformation.objects.filter( **thread_args )
     else:
+        category_type = categoryObject.get_category_type()
+        templateName = category_type.get_threadlist_template()
         thread_list = categoryObject.get_thread_list()
 
     #thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
@@ -106,15 +109,19 @@ def showThread(request, thread_id, group = None):
 
     sphdata = get_current_sphdata()
     if sphdata != None: sphdata['subtitle'] = thread.subject
+
+    category_type = thread.category.get_category_type()
+    template_name = category_type.get_show_thread_template()
     
     res =  object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
                         queryset = thread.get_all_posts().order_by('postdate'),
                         allow_empty = True,
-                        template_name = 'sphene/sphboard/showThread.html',
+                        template_name = template_name,
                         extra_context = { 'thread': thread,
                                           'allowPosting': thread.allowPosting( request.user ),
                                           'postSubject': 'Re: ' + thread.subject,
+                                          'category_type': category_type,
                                           },
                         template_object_name = 'post',
                         paginate_by = get_sph_setting( 'board_post_paging' ),
@@ -156,6 +163,16 @@ class PostForm(forms.Form):
         if len( POST_MARKUP_CHOICES ) == 1:
             del self.fields['markup']
 
+    def init_for_category_type(self, category_type, post):
+        """
+        Called after initialization with the category type instance.
+
+        Arguments:
+        category_type: the category_type instance of the category.
+        post: the post which is edited (if any)
+        """
+        pass
+
 class PostPollForm(forms.Form):
     question = forms.CharField()
     answers = forms.CharField( label = 'Answers (1 per line)',
@@ -175,15 +192,16 @@ def post(request, group = None, category_id = None, post_id = None):
 
     
     post = None
+    thread = None
+    category = None
+    context = { }
 
     if post_id:
         post = get_object_or_404(Post, pk = post_id)
         if not post.allowEditing():
             raise PermissionDenied()
+        thread = post.thread
     
-    thread = None
-    category = None
-    context = { }
     if 'thread' in request.REQUEST:
         thread = get_object_or_404(Post, pk = request.REQUEST['thread'])
         category = thread.category
@@ -193,8 +211,14 @@ def post(request, group = None, category_id = None, post_id = None):
     if not category.allowPostThread( request.user ): raise Http404;
     context['category'] = category
 
+    category_type = category.get_category_type()
+    MyPostForm = PostForm
+    if category_type is not None:
+        MyPostForm = category_type.get_post_form_class(thread, post)
+
     if request.method == 'POST':
-        postForm = PostForm(request.POST)
+        postForm = MyPostForm(request.POST)
+        postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm(request.POST)
         if postForm.is_valid() and 'createpoll' not in request.POST or pollForm.is_valid():
             data = postForm.cleaned_data
@@ -218,6 +242,8 @@ def post(request, group = None, category_id = None, post_id = None):
                 newpost.markup = POST_MARKUP_CHOICES[0][0]
                 
             newpost.save()
+
+            category_type.save_post( newpost, data )
 
 
             # Creating monitor
@@ -254,7 +280,8 @@ def post(request, group = None, category_id = None, post_id = None):
             return HttpResponseRedirect( thread.get_absolute_url() )
 
     else:
-        postForm = PostForm( )
+        postForm = MyPostForm( )
+        postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm()
 
     if post:

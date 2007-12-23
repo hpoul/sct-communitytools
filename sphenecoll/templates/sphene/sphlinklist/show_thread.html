@@ -1,0 +1,14 @@
+{% extends "sphene/sphboard/showThread.html" %}
+
+{% block above_post_list %}
+<p>
+<table>
+<tr>
+  <td><strong>Project:</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.subject }}</a></td>
+</tr>
+<tr>
+  <td><strong>URL:</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.linklistpostextension_set.get.link }}</a></td>
+</tr>
+</table>
+</p><br/>
+{% endblock %}

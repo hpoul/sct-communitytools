@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from sphene.community.permissionutils import has_permission_flag
 from sphene.community.models import Group, Role, PermissionFlag, RoleMember
 
+from sphene.sphboard import categorytyperegistry
+
 from django.utils import html
 from django.conf import settings
 from datetime import datetime, timedelta
@@ -99,6 +101,17 @@ class AccessCategoryManager(models.Manager):
 
 
 
+def get_category_type_choices():
+    """
+    This method generates the choices for the 'category_type'
+    field of Category entity - this should probably be improved
+    to make sure that this method is fully dynamic..
+    """
+    choices = ()
+    for ct in categorytyperegistry.get_category_type_list():
+        choices += ((ct.name, ct.label),)
+    return choices
+
 class Category(models.Model):
     name = models.CharField(max_length = 250)
     group = models.ForeignKey(Group, null = True, blank = True)
@@ -109,7 +122,7 @@ class Category(models.Model):
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     sortorder = models.IntegerField( default = 0, null = False )
 
-    category_type = models.CharField(max_length = 250, blank = True, db_index = True)
+    category_type = models.CharField(max_length = 250, blank = True, db_index = True, choices = get_category_type_choices())
 
     objects = AccessCategoryManager()#models.Manager()
     sph_objects = AccessCategoryManager()
@@ -148,6 +161,12 @@ class Category(models.Model):
                              'sphboard_view':
                              'Allows viewing of threads.',
                              }
+
+    def get_category_type(self):
+        if not self.category_type:
+            from sphene.sphboard.categorytypes import DefaultCategoryType
+            return DefaultCategoryType( self )
+        return categorytyperegistry.get_category_type( self.category_type )(self)
 
     def get_rolemember_limitation_objects(group):
         """
@@ -807,7 +826,6 @@ class ThreadInformationManager(models.Manager):
     def type_default(self):
         return self.filter( thread_type = THREAD_TYPE_DEFAULT )
 
-
 class ThreadInformation(models.Model):
     """ A object which holds information about threads and caches
     a couple of things which are redundant. """
@@ -925,6 +943,9 @@ class ThreadInformation(models.Model):
 
     ##
     ###################################
+
+    def get_threadlist_subject(self):
+        return self.category.get_category_type().get_threadlist_subject( self )
 
     def get_absolute_url(self):
         return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.root_post.id })
@@ -1078,6 +1099,20 @@ class BoardUserProfile(models.Model):
     def render_signature(self):
         return render_body(self.signature, self.markup)
 
+
+class ExtendedCategoryConfig(models.Model):
+    category = models.ForeignKey( Category, unique = True )
+
+    subject_label = models.CharField( max_length = 250, blank = True )
+    body_label = models.CharField( max_length = 250, blank = True )
+    body_initial = models.TextField(blank = True)
+    body_help_text = models.TextField(blank = True)
+    
+    post_new_thread_label = models.CharField( max_length = 250, blank = True)
+    above_thread_list_block = models.TextField(blank = True, help_text = 'HTML which will be displayed above the thread list.')
+
+    class Admin:
+        pass
 
 
 from django import newforms as forms
