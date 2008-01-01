@@ -54,6 +54,7 @@
     {% endblock %}
     {% include category.get_category_type.get_new_thread_link_template %}
     <table class="sphboard_thread_list">
+      {% block thread_list_header %}
       <tr>
         <th class="sphboard_mainhead" colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}">Threads</th>
       </tr>
@@ -65,6 +66,7 @@
         <th>Posts</th>
         <th>Last Post</th>
       </tr>
+      {% endblock thread_list_header %}
       {% for thread in thread_list %}
         <tr>
           <td width="20px"><img src="/static/sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td>
@@ -72,11 +74,13 @@
             <td colspan="4"><small>Thread was moved: <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> into <a href="{{ thread.category.get_absolute_url }}">{{ thread.root_post.category.name }}</a>.</small></td>
           {% else %}
           <td>{% if thread.is_sticky %}<b>Sticky:</b> {% endif %}{% if thread.is_hot %}<b>Hot:</b> {% endif %}{% if thread.is_poll %}Poll: {% endif %}{% if thread.is_closed %}Locked: {% endif %}{% block thread_list_subject %}<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>{% endblock %}{% if thread.has_paging %} ( {% sph_pagination thread.get_page_count -1 thread.get_absolute_url %} ){% endif %}<br/><small>{% if isShowLatest %}{% sphboard_displayBreadcrumbsForCategory thread.category 1 %} - {% endif %}by {% sphboard_displayUserName thread.author %}</small></td>
+          {% block thread_list_info %}
           {% if sph_settings.board_count_views %}
             <td class="sphboard_viewcount">{{ thread.view_count }}</td>
           {% endif %}
           <td class="sphboard_postcount">{{ thread.post_count }}</td>
-          <td class="sphboard_latestpost">{% sphboard_latestPost thread.latest_post 0 %}
+          <td class="sphboard_latestpost">{% sphboard_latestPost thread.latest_post 0 %}</td>
+          {% endblock %}
           {% endif %}
         </tr>
       {% endfor %}
