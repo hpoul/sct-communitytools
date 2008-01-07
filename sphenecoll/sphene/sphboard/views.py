@@ -14,7 +14,7 @@ from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata
 from sphene.community.sphutils import get_fullusername, format_date, get_sph_setting
 from sphene.sphboard import boardforms
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
 from sphene.sphboard.renderers import describe_render_choices
 
         
@@ -183,6 +183,10 @@ class PostPollForm(forms.Form):
                                          max_value = 100,
                                          initial = 1, )
 
+class PostAttachmentForm(forms.ModelForm):
+    class Meta:
+        model = PostAttachment
+        fields = ('fileupload',)
 
 def post(request, group = None, category_id = None, post_id = None):
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
@@ -195,15 +199,27 @@ def post(request, group = None, category_id = None, post_id = None):
     thread = None
     category = None
     context = { }
+    
+    if post_id is None and 'post_id' in request.REQUEST:
+        # if no post_id is given take it from the request.
+        post_id = request.REQUEST['post_id']
 
     if post_id:
-        post = get_object_or_404(Post, pk = post_id)
+        try:
+            post = Post.allobjects.get( pk = post_id )
+        except Post.DoesNotExist:
+            raise Http404
+
         if not post.allowEditing():
             raise PermissionDenied()
         thread = post.thread
     
     if 'thread' in request.REQUEST:
-        thread = get_object_or_404(Post, pk = request.REQUEST['thread'])
+        try:
+            thread = Post.allobjects.get( pk = request.REQUEST['thread'] )
+        except Post.DoesNotExist:
+            raise Http404
+
         category = thread.category
         context['thread'] = thread
     else:
@@ -216,18 +232,56 @@ def post(request, group = None, category_id = None, post_id = None):
     if category_type is not None:
         MyPostForm = category_type.get_post_form_class(thread, post)
 
+    attachmentForm = None
+    allow_attachments = get_sph_setting('board_allow_attachments')
     if request.method == 'POST':
         postForm = MyPostForm(request.POST)
         postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm(request.POST)
-        if postForm.is_valid() and 'createpoll' not in request.POST or pollForm.is_valid():
+
+        create_post = True
+
+        if allow_attachments:
+            attachmentForm = PostAttachmentForm(request.POST,
+                                                request.FILES,
+                                                prefix = 'attachment')
+
+            if 'cmd_addfile' in request.POST:
+                create_post = False
+
+            if attachmentForm.is_valid():
+                # If the form is valid, store the attachment
+                if not post:
+                    # if there is no post yet.. we need to create a draft
+                    post = Post( category = category,
+                                 author = request.user,
+                                 thread = thread,
+                                 is_hidden = 1,
+                                 )
+                    post.set_new( True )
+                    post.save()
+
+                attachment = attachmentForm.save(commit = False)
+                if attachment.fileupload:
+                    # We only save it if any file was uploaded.
+                    attachment.post = post
+                    attachment.save()
+
+
+        if create_post \
+                and postForm.is_valid() \
+                and ('createpoll' not in request.POST \
+                         or pollForm.is_valid()):
             data = postForm.cleaned_data
 
             if post:
                 newpost = post
                 newpost.subject = data['subject']
                 newpost.body = data['body']
-                newpost.body += "\n\n--- Last Edited by %s at %s ---" % ( get_fullusername( request.user ), format_date( datetime.today()) )
+                # make post visible
+                newpost.is_hidden = 0
+                if not post.is_new():
+                    newpost.body += "\n\n--- Last Edited by %s at %s ---" % ( get_fullusername( request.user ), format_date( datetime.today()) )
             else:
                 newpost = Post( category = category,
                                 subject = data['subject'],
@@ -284,6 +338,9 @@ def post(request, group = None, category_id = None, post_id = None):
         postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm()
 
+        if allow_attachments:
+            attachmentForm = PostAttachmentForm(prefix = 'attachment')
+
     if post:
         postForm.fields['subject'].initial = post.subject
         postForm.fields['body'].initial = post.body
@@ -302,7 +359,9 @@ def post(request, group = None, category_id = None, post_id = None):
     elif thread:
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
     context['form'] = postForm
-    context['pollform'] = pollForm
+    if (not thread and not post) or (post and post.is_new() and post.id == thread.id):
+        context['pollform'] = pollForm
+    context['attachmentForm'] = attachmentForm
     if 'createpoll' in request.REQUEST:
         context['createpoll'] = request.REQUEST['createpoll']
 

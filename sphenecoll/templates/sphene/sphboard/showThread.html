@@ -1,5 +1,6 @@
 {% extends "sphene/sphboard/base.html" %}
 
+{% load sph_extras %}
 {% load sphboard_extras %}
 {% load sph_pagination %}
 
@@ -99,6 +100,19 @@
           {% else %}
             {{ post.body_escaped }}
           {% endif %}
+          {% with post.attachments.all as allattachments %}
+            {% if allattachments|length %}
+              <div class="attachments">
+                <strong>Attachments</strong>
+                <ul>
+		{% for attachment in allattachments %}
+		  <li><a href="{{ attachment.get_fileupload_url }}" target="_blank">{{ attachment.get_fileupload_filename|sph_basename }}</a> ({{ attachment.get_fileupload_size|filesizeformat }})</li>
+		{% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          {% endwith %}
+
         </td>
       </tr>
       {% ifequal post thread %}

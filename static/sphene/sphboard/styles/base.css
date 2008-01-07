@@ -96,6 +96,16 @@
         border-bottom: 1px solid gray;
     }
 
+    .sphboard_post_body .attachments {
+      font-size: smaller;
+      border-top: 1px solid black;
+      margin-top: 20px;
+      padding-left: 10px;
+    }
+    .sphboard_post_body .attachments:before {
+      content: attr(title);
+    }
+
 
   .sphboard { width: 100%; }
   .sphboard textarea { width: 100%; }

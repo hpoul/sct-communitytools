@@ -29,4 +29,9 @@ add_setting_defaults( {
 
 
     'board_post_paging': 10,
+
+    # Allow users to attach files to their posts ?
+    'board_allow_attachments': True,
+
+    'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
     })

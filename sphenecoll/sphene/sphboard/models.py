@@ -408,11 +408,23 @@ class CategoryLastVisit(models.Model):
         list_filter = ('user',)
         pass
 
+
+class PostManager(models.Manager):
+    """
+    This custom manager makes sure that only visible posts are selected 
+    (ie is_hidden has to be 0)
+    """
+    def get_query_set(self):
+        return super(PostManager, self).get_query_set().filter(is_hidden = 0)
+
+
+
 POST_STATUS_DEFAULT = 0
 POST_STATUS_STICKY = 1
 POST_STATUS_CLOSED = 2
 POST_STATUS_POLL = 4
 POST_STATUS_ANNOTATED = 8
+POST_STATUS_NEW = 16
 
 POST_STATUSES = {
     'default': 0,
@@ -421,11 +433,25 @@ POST_STATUSES = {
 
     'poll': 4,
     'annotated': 8,
+    # the 'new' status is used in combination with the 'is_hidden'.
+    # the first time a post is saved, the save() method sets this status if 'is_hidden'
+    # is non-0 - the first time the save() method is called with is_hidden = 0 this status
+    # is removed again (this is required to know when the Post is actually 'new' and email
+    # notifications can be sent out).
+    'new': 16,
     }
 
 from django.contrib.auth.models import AnonymousUser
 
+
 class Post(models.Model):
+    """
+    A Post object can either represent a new thread (in this case 
+    thread is None and there exists a ThreadInformation model) or a reply within a thread.
+
+    if anything has to be done when a new post is created it is important to make sure that
+    'is_hidden' is 0 - if it is non-0 it is not really created right now.
+    """
     status = models.IntegerField(default = 0, editable = False )
     category = models.ForeignKey(Category, related_name = 'posts', editable = False )
     subject = models.CharField(max_length = 250)
@@ -436,9 +462,22 @@ class Post(models.Model):
     markup = models.CharField(max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
+    # is_hidden allows basic CMS functionality as well as uploads to posts because
+    # basically you can create a Post object without any influence..
+    # (if something is hidden, it is ALWAYS hidden, not even shown to an administrator.
+    #  a custom category type might change this behavior tough by adding a 
+    #  administration interface for hidden posts.)
+    is_hidden = models.IntegerField(default = 0, editable = False, db_index = True )
+
+    objects = PostManager()
+    # allobjects also contain hidden posts.
+    allobjects = models.Manager()
 
     changelog = ( ( '2007-04-07 00', 'alter', 'ALTER author_id DROP NOT NULL', ),
                   ( '2007-06-16 00', 'alter', 'ADD markup varchar(250) NULL', ),
+                  ( '2008-01-06 00', 'alter', 'ADD is_hidden INTEGER', ),
+                  ( '2008-01-06 01', 'update', 'SET is_hidden = 0', ),
+                  ( '2008-01-06 02', 'alter', 'ALTER is_hidden SET NOT NULL', ),
                   )
 
     def is_sticky(self):
@@ -449,6 +488,8 @@ class Post(models.Model):
         return self.status & POST_STATUS_POLL
     def is_annotated(self):
         return self.status & POST_STATUS_ANNOTATED
+    def is_new(self):
+        return self.status & POST_STATUS_NEW
 
     def set_sticky(self, sticky):
         if sticky: self.status = self.status | POST_STATUS_STICKY
@@ -465,6 +506,10 @@ class Post(models.Model):
     def set_annotated(self, annotated):
         if annotated: self.status = self.status | POST_STATUS_ANNOTATED
         else: self.status = self.status ^ POST_STATUS_ANNOTATED
+
+    def set_new(self, new):
+        if new: self.status = self.status | POST_STATUS_NEW
+        else: self.status = self.status ^ POST_STATUS_NEW
 
     def get_thread(self):
         if self.thread == None: return self;
@@ -699,6 +744,13 @@ class Post(models.Model):
 
     def save(self):
         isnew = not self.id
+
+        if isnew and self.is_hidden != 0:
+            self.set_new( True )
+        if not isnew and self.is_new() and self.is_hidden == 0:
+            self.set_new( False)
+            isnew = True
+
         ret = super(Post, self).save()
 
         # Clear cache
@@ -776,6 +828,13 @@ class Post(models.Model):
 
     class Admin:
         pass
+
+
+class PostAttachment(models.Model):
+    post = models.ForeignKey(Post, related_name = 'attachments')
+    # This is only blank so the form does not throw errors when it was not entered !
+    fileupload = models.FileField( upload_to = get_sph_setting( 'board_attachments_upload_to' ),
+                                   blank = True )
 
 
 class PostAnnotation(models.Model):
@@ -1000,6 +1059,10 @@ def update_thread_information(instance):
     threadinfos = ThreadInformation.objects.filter( root_post = thread )
     
     if len(threadinfos) < 1:
+        if thread.is_hidden != 0:
+            # If thread is still hidden, don't bother creating a 
+            # ThreadInformation object.
+            return
         threadinfos = ( ThreadInformation( root_post = instance,
                                            category = instance.category,
                                            thread_type = THREAD_TYPE_DEFAULT, ),  )

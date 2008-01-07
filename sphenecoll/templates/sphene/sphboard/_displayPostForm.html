@@ -1,3 +1,4 @@
+{% load sph_extras %}
 {% load sphboard_extras %}
   <script language="JavaScript" type="text/javascript" src="/static/sphene/community/xmlhttp.js"></script>
   <script language="JavaScript" type="text/javascript">
@@ -13,10 +14,13 @@
   </script>
 
 <div id="previewarea" class="board_previewarea"></div>
-<form method="post" action="." name="postform">
+<form enctype="multipart/form-data" method="post" action="." name="postform">
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}
     <input type="hidden" name="thread" value="{{ thread.id }}" />
+  {% endif %}
+  {% if post %}
+    <input type="hidden" name="post_id" value="{{ post.id }}" />
   {% endif %}
   <table class="sphboard form">
     {{ form }}
@@ -31,7 +35,7 @@
           <br/><br/>
     {% endif %}
 
-  {% if not thread and not post %}
+  {% if pollform %}
   <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">Add a poll to this thread</label><br/><br/>
 
   <div id="poll" style="display: none">
@@ -47,6 +51,24 @@
     document.getElementById( 'poll' ).style.display = (document.postform.createpoll.checked ? 'block' : 'none');
   //-->
   </script>
+  {% endif %}
+  {% if attachmentForm %}
+  <table class="sphboard form attachment">
+    <tr>
+      <th colspan="2">Upload Attachment</th>
+    </tr>
+    {% if post %}
+      {% for attachment in post.attachments.all %}
+        <tr>
+	  <td><a href="{{ attachment.get_fileupload_url }}" target="_blank">{{ attachment.get_fileupload_filename|sph_basename }}</a> ({{ attachment.get_fileupload_size|filesizeformat }})</td>
+	</tr>
+      {% endfor %}
+    {% endif %}
+    {{ attachmentForm }}
+    <tr>
+      <td colspan="2"><input type="submit" name="cmd_addfile" value="Upload File" style="width: auto;" /></td>
+    </tr>
+  </table>
   {% endif %}
 
   <input type="submit" value="Post" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />

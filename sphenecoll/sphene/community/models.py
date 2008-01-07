@@ -255,6 +255,64 @@ class RoleMemberLimitation(models.Model):
     class Meta:
         unique_together = (('role_member', 'object_type', 'object_id'),)
 
+
+
+#########################################################
+###
+### tagging
+###
+### Tagging is in part inspired by django-tagging: 
+###    http://code.google.com/p/django-tagging/
+### (but because of various reasons - e.g. that i want tags separated by group - 
+###  i decided to implement tagging from scratch)
+
+class Tag(models.Model):
+    """
+    A tag is the internal representation which is always linked to a specific group.
+
+    A tag name only allows alpha numeric characters without spaces, etc. and only stores
+    lower case letters !
+    """
+    group = models.ForeignKey( Group )
+    name = models.CharField( max_length = 250, )
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        unique_together = (("group", "name"))
+
+class TagLabel(models.Model):
+    """
+    A tag label represents the user entered value for the tag. Including uppercase/lowercase,
+    and all characters usually not allowed within a tag.
+    """
+    tag = models.ForeignKey(Tag, related_name = 'labels')
+    label = models.CharField( max_length = 250, )
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        unique_together = (("tag", "label"))
+
+class TaggedItem(models.Model):
+    """
+    Relationship between a tag label and an item.
+    """
+    tag_label = models.ForeignKey(TagLabel, related_name = 'items')
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField(db_index=True)
+    object = generic.GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        unique_together = (('tag_label', 'content_type', 'object_id'))
+
+#########################################################
+###
+### hooks
+###
+
 from django.dispatch import dispatcher
 from django import newforms as forms
 from sphene.community.forms import EditProfileForm, Separator
