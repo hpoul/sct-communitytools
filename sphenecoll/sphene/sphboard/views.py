@@ -250,20 +250,21 @@ def post(request, group = None, category_id = None, post_id = None):
                 create_post = False
 
             if attachmentForm.is_valid():
-                # If the form is valid, store the attachment
-                if not post:
-                    # if there is no post yet.. we need to create a draft
-                    post = Post( category = category,
-                                 author = request.user,
-                                 thread = thread,
-                                 is_hidden = 1,
-                                 )
-                    post.set_new( True )
-                    post.save()
-
                 attachment = attachmentForm.save(commit = False)
                 if attachment.fileupload:
-                    # We only save it if any file was uploaded.
+                    # Only save attachments if there was an upload...
+                    # If the form is valid, store the attachment
+                    if not post:
+                        # if there is no post yet.. we need to create a draft
+                        post = Post( category = category,
+                                     author = request.user,
+                                     thread = thread,
+                                     is_hidden = 1,
+                                     )
+                        post.set_new( True )
+                        post.save()
+
+                    # Reference the post and save the attachment
                     attachment.post = post
                     attachment.save()
 
