@@ -553,6 +553,9 @@ class Post(models.Model):
         if user == None: user = get_current_user()
         
         if not user or not user.is_authenticated():
+            # Quick hack to make anonymous uploading of attachments possible
+            if self.is_hidden != 0 and self.is_new():
+                return True
             return False
         
         if user.is_superuser \
