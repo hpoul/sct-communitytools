@@ -747,7 +747,7 @@ class Post(models.Model):
 
         if isnew and self.is_hidden != 0:
             self.set_new( True )
-            isnew = false
+            isnew = False
         elif not isnew and self.is_new() and self.is_hidden == 0:
             self.set_new( False)
             isnew = True
