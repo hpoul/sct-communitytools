@@ -301,7 +301,7 @@ class TaggedItem(models.Model):
     Relationship between a tag label and an item.
     """
     tag_label = models.ForeignKey(TagLabel, related_name = 'items')
-    content_type = models.ForeignKey(ContentType, related_name = 'sph_taggeditem')
+    content_type = models.ForeignKey(ContentType, related_name = 'sph_taggeditem_set')
     object_id = models.PositiveIntegerField(db_index=True)
     object = generic.GenericForeignKey('content_type', 'object_id')
 
