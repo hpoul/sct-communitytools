@@ -469,7 +469,7 @@ class Post(models.Model):
     body = models.TextField()
     thread = models.ForeignKey('self', null = True, editable = False )
     postdate = models.DateTimeField( auto_now_add = True, editable = False )
-    author = models.ForeignKey(User, editable = False, null = True, blank = True )
+    author = models.ForeignKey(User, editable = False, null = True, blank = True, related_name = 'sphboard_post_author_set' )
     markup = models.CharField(max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
