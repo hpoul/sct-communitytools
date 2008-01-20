@@ -20,7 +20,6 @@ class LatestBlogPosts(Feed):
         group = get_current_group()
         categories = get_board_categories(group)
         threads = get_posts_queryset(group, categories )
-        print "blah"
         return threads
 
 
