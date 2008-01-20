@@ -1,0 +1,33 @@
+{% extends "sphene/sphblog/base.html" %}
+
+{% load sph_extras %}
+
+{% block content %}
+  {% if allowpostcategories %}
+    <form method="POST" name="postthread" action="{% sph_url 'sphblog_postthread' %}">
+      <select name="category">
+	{% for category in allowpostcategories %}
+	  <option value="{{ category.id }}">{{ category.name }}</option>
+	{% endfor %}
+      </select>
+      <input type="submit" value="Submit new Post" />
+    </form>
+  {% endif %}
+
+  {% for thread in threads %}
+    {% with thread.blogpostextension_set.get as blogpost %}
+      <div class="entrytitle">
+	<h2><a href="{{ blogpost.get_absolute_url }}">{{ thread.subject }}</a></h2>
+	<h3>{{ thread.postdate|sph_date }}</h3>
+      </div>
+      <div class="entrybody">
+	{{ thread.body_escaped }}
+      </div>
+      <div class="entrydetails">
+	<a href="{{ blogpost.get_absolute_url }}">{{ thread.threadinformation_set.get.post_count|add:"-1" }} Comments</a>
+      </div>
+    {% endwith %}
+  {% endfor %}
+  <br/><br/><br/>
+  <a href="{{ blog_feed_url }}">RSS Feed</a>
+{% endblock %}

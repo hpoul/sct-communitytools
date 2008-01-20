@@ -3,4 +3,9 @@
 {% block head %}
   {{ block.super }}
   <link rel="stylesheet" href="/static/sphene/community/styles/base.css" />
+  {% if sph.rss %}
+    {% for rss in sph.rss %}
+      <link rel="alternate" title="{{ rss.label }}" href="{{ rss.url }}" type="application/rss+xml">
+    {% endfor %}
+  {% endif %}
 {% endblock %}

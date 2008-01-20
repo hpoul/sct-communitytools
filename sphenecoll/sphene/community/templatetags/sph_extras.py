@@ -221,6 +221,13 @@ def sph_url(view):
     except:
         return 'NOT FOUND'
 
+@register.filter
+def sph_minus(value, arg = 0):
+    return value-arg
+
+@register.filter
+def sph_plus(value, arg = 0):
+    return value-arg
 
 
 @register.simple_tag

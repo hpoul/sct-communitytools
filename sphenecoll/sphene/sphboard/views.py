@@ -372,7 +372,6 @@ def post(request, group = None, category_id = None, post_id = None):
     res.sph_lastmodified = True
     return res
 
-
 class AnnotateForm(forms.Form):
     body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10,
                                                                'cols': 80, }, ),

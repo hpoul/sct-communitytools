@@ -100,6 +100,13 @@ class AccessCategoryManager(models.Manager):
         return self.filter( group = group )
 
 
+class CategoryTypeChoices(object):
+    def __iter__(self):
+        choices = ()
+        for ct in categorytyperegistry.get_category_type_list():
+            choices += ((ct.name, "%s (%s)" % (ct.label, ct.name)),)
+        return choices.__iter__()
+        
 
 def get_category_type_choices():
     """
@@ -107,10 +114,7 @@ def get_category_type_choices():
     field of Category entity - this should probably be improved
     to make sure that this method is fully dynamic..
     """
-    choices = ()
-    for ct in categorytyperegistry.get_category_type_list():
-        choices += ((ct.name, ct.label),)
-    return choices
+    return CategoryTypeChoices()
 
 class Category(models.Model):
     name = models.CharField(max_length = 250)
@@ -201,9 +205,12 @@ class Category(models.Model):
     # For backward compatibility ...
     latestPost = get_latest_post
 
-    def allowPostThread(self, user):
+    def has_post_thread_permission(self, user = None):
+        if not user:
+            user = get_current_user()
         return self.testAllowance(user, self.allowthreads) \
                or has_permission_flag(user, 'sphboard_post_threads', self)
+    allowPostThread = has_post_thread_permission
 
     def has_view_permission(self, user = None):
         if not user:
@@ -360,6 +367,10 @@ class Category(models.Model):
     def get_absolute_url(self):
         return ('sphene.sphboard.views.showCategory', (), { 'groupName': self.group.name, 'category_id': self.id })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
+
+    def get_absolute_post_thread_url(self):
+        return ('sphboard_post_thread', (), { 'groupName': self.group.name, 'category_id': self.id })
+    get_absolute_post_thread_url = permalink(get_absolute_post_thread_url, get_current_request)
 
     def get_absolute_url_rss_latest_threads(self):
         """ Returns the absolute url to the RSS feed displaying the latest threads.

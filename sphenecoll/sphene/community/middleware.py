@@ -118,6 +118,9 @@ _thread_locals = local()
 def get_current_request():
     return getattr(_thread_locals, 'request', None)
 
+def get_current_urlconf():
+    return getattr(get_current_request(), 'urlconf', None)
+
 def get_current_session():
     req = get_current_request()
     if req == None: return None
