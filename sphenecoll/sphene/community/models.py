@@ -148,12 +148,16 @@ class GroupTemplate(models.Model):
     group = models.ForeignKey(Group)
     template_name = models.CharField( max_length = 250, db_index = True )
     source = models.TextField()
+
+    def __unicode__(self):
+        return self.template_name
     
     class Meta:
         unique_together = (("group", "template_name"),)
 
     class Admin:
-        pass
+        list_display = ('template_name', 'group')
+        list_filter = ( 'group', 'template_name' )
 
 
 class PermissionFlag(models.Model):

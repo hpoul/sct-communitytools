@@ -1,6 +1,8 @@
 from django import newforms as forms
 from django.utils.safestring import mark_safe
 
+from sphene.community.fields import TagField
+from sphene.community.widgets import TagWidget
 
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
@@ -12,6 +14,7 @@ class BlogPostForm(PostForm):
                            help_text = "Optionally define a slug for this blog post. Otherwise it will be filled automatically.")
     status = forms.ChoiceField(choices = BLOG_POST_STATUS_CHOICES,
                                initial = 2)
+    tags = TagField()
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']

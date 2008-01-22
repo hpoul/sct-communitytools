@@ -3,7 +3,7 @@ import re
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
-from sphene.community.middleware import get_current_request
+from sphene.community.middleware import get_current_request, get_current_sphdata
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
 import logging
 
@@ -201,3 +201,16 @@ def get_method_by_name(methodname):
 
     return named_method
 
+
+
+
+
+
+def add_rss_feed(url, label):
+    sphdata = get_current_sphdata()
+    if not 'rss' in sphdata:
+        sphdata['rss'] = []
+
+    sphdata['rss'].append( { 'url': url,
+                             'label': label, } )
+    

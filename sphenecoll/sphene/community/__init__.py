@@ -12,7 +12,13 @@ from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
+from sphene.community import sphsettings
 
+
+jsincludes = get_sph_setting( 'community_jsincludes', [])
+jsincludes.append('/static/sphene/community/jquery.pack.js')
+jsincludes.append('/static/sphene/community/jquery.autocomplete.js')
+sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
 
 
 ####

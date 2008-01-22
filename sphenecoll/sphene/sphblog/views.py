@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 
 from sphene.community.middleware import get_current_urlconf
-from sphene.community.utils import add_rss_feed
+from sphene.community.sphutils import add_rss_feed
 from sphene.sphboard.views import showThread as sphboard_show_thread
 from sphene.sphboard.models import Category, ThreadInformation, Post
 from sphene.sphblog.models import BlogPostExtension
