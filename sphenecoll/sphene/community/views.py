@@ -5,7 +5,7 @@ from django import newforms as forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseGone
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template import loader, Context
@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
-from sphene.community import PermissionDenied
+from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
@@ -426,3 +426,17 @@ def admin_permission_role_member_add(request, group, role_id):
                                  'role': role,
                                  },
                                context_instance = RequestContext(request) )
+
+def groupaware_redirect_to(request, url, group, **kwargs):
+    """
+    Redirects either to the url given as 'url' or to a mapping defined in
+    the SPH_SETTINGS variable 'community_groupaware_startpage'
+    """
+    group_name = group.name
+    startpages = sphsettings.get_sph_setting('community_groupaware_startpage', None)
+    if startpages is not None:
+        if group_name in startpages:
+            return HttpResponsePermanentRedirect(startpages[group_name] % kwargs)
+
+    return HttpResponsePermanentRedirect(url % kwargs)
+

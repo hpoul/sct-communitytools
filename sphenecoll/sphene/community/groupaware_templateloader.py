@@ -1,3 +1,4 @@
+import os
 
 from django.conf import settings
 from django.db.models import signals
@@ -6,6 +7,9 @@ from django.template import TemplateDoesNotExist
 
 from sphene.community.models import GroupTemplate, Group
 from sphene.community.middleware import get_current_group
+from sphene.community import sphsettings
+
+from django.utils._os import safe_join
 
 from django.core.cache import cache
 
@@ -26,6 +30,14 @@ def load_template_source(template_name, template_dirs=None):
     if group is None:
         # If there is no current group .. we have nothing to do ..
         raise TemplateDoesNotExist(template_name)
+
+    template_dir = sphsettings.get_sph_setting('community_groupaware_template_dir', None)
+    if template_dir is not None:
+        try:
+            template_path = safe_join(os.path.join(template_dir, group.name), template_name)
+            return (open(template_path).read().decode(settings.FILE_CHARSET), template_path)
+        except:
+            pass
 
     # Look in the cache . .so we don't have to make unnecessary database
     # queries

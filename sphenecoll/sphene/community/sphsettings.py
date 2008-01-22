@@ -17,6 +17,15 @@ sph_settings_defaults = {
     'community_avatar_max_height': 150,
     'community_avatar_max_size': 20*1024,
     'community_avatar_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
+
+    # Can either be 'None' so we only look into the database,
+    # or can point to a directory.. if it points to a directory it tries to load
+    # $(dir)/$(groupName)/$(templateName)
+    'community_groupaware_template_dir': None,
+
+    # used by sphene.community.views.groupaware_redirect_to which looks up this variable
+    # expecting a dictionary containing { 'groupname': '/redirect/url/' }
+    'community_groupaware_startpage': None,
     }
 
 
