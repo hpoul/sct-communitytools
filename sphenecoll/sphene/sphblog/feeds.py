@@ -7,14 +7,17 @@ from sphene.sphblog.views import get_board_categories, get_posts_queryset
 from sphene.sphboard.models import Post
 
 class LatestBlogPosts(Feed):
-    title = 'Latest Blog Posts'
 
-    description = 'Just a test'
+    description = 'Latest Blog Posts'
 
     link = '/blog/'
 
     title_template = 'sphene/sphblog/feeds/latestposts_title.html'
     description_template = 'sphene/sphblog/feeds/latestposts_description.html'
+
+    def title(self):
+        group = get_current_group()
+        return group.get_name()
 
     def items(self):
         group = get_current_group()
