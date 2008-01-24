@@ -8,6 +8,7 @@ from sphene.community.sphutils import HTML, get_sph_setting
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request
+from sphene.community.sphutils import add_rss_feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
@@ -126,6 +127,7 @@ class NewsRSSLinkMacro (object):
             return HTML( 'Category %d does not exist.' % category )
 
         url = categoryObj.get_absolute_url_rss_latest_threads()
+        add_rss_feed( url, 'RSS Feed of latest threads' )
         return HTML( '<a href="%s"><img src="/static/sphene/community/icons/feed-icon-14x14.png" border="0" alt="RSS Feed of latest threads" title="RSS Feed of latest threads" /></a>' % url )
 
 from sphene.community.middleware import get_current_sphdata, get_current_group
