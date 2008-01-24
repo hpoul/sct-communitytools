@@ -169,7 +169,7 @@
   <br/><br/>
   
   {% if allowPosting %}
-    <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}">Post Reply</a>
+    <a href="{{ thread.get_absolute_postreplyurl }}">Post Reply</a>
     {# sphboard_displayPostForm thread #}
   {% else %}
     {% if thread.is_closed %}

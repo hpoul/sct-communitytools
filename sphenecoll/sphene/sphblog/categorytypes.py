@@ -14,17 +14,18 @@ class BlogPostForm(PostForm):
                            help_text = "Optionally define a slug for this blog post. Otherwise it will be filled automatically.")
     status = forms.ChoiceField(choices = BLOG_POST_STATUS_CHOICES,
                                initial = 2)
-    tags = TagField()
+    tags = TagField(required = False)
 
     def clean_slug(self):
+        if not 'subject' in self.cleaned_data:
+            raise forms.ValidationError( 'No subject to generate slug.' )
         slug = self.cleaned_data['slug']
         if slug == '':
-            print str(self.cleaned_data)
             slug = slugify(self.cleaned_data['subject'])
         else:
             try:
                 BlogPostExtension.objects.get( slug__exact = slug )
-                raise ValidationError( 'Slug is already in use.' )
+                raise forms.ValidationError( 'Slug is already in use.' )
             except BlogPostExtension.DoesNotExist:
                 # Everything all-right
                 pass
@@ -55,6 +56,9 @@ class BlogCategoryType(CategoryType):
         ext.slug = data['slug']
         ext.status = data['status']
         ext.save()
+
+    def get_absolute_url_for_post(self, post):
+        return post.blogpostextension_set.get().get_absolute_url()
 
 
 def doinit():

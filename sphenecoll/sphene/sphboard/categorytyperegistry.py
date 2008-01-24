@@ -63,6 +63,11 @@ class CategoryType(object):
         """
         pass
 
+    def get_absolute_url_for_post(self, post):
+        """
+        Allows implementors to hook into the get_absolute_url() method of a Post
+        """
+        return None
 
 
 category_type_registry = { }

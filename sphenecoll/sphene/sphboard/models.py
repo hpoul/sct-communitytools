@@ -830,12 +830,22 @@ class Post(models.Model):
         return self.subject
 
     def get_absolute_url(self):
+        cturl = self.category.get_category_type().get_absolute_url_for_post( self )
+        if cturl:
+            return cturl
+        return self._get_absolute_url()
+
+    def _get_absolute_url(self):
         return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.thread and self.thread.id or self.id })
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
     
     def get_absolute_editurl(self):
         return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
     get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+
+    def get_absolute_postreplyurl(self):
+        return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })
+    get_absolute_postreplyurl = permalink(get_absolute_postreplyurl, get_current_request)
 
     def get_absolute_annotate_url(self):
         return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
@@ -1022,8 +1032,14 @@ class ThreadInformation(models.Model):
         return self.category.get_category_type().get_threadlist_subject( self )
 
     def get_absolute_url(self):
+        cturl = self.category.get_category_type().get_absolute_url_for_post( self.root_post )
+        if cturl:
+            return cturl
+        return self._get_absolute_url()
+
+    def _get_absolute_url(self):
         return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.root_post.id })
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
     
 
 def calculate_heat(thread, postcount, viewcount, age):

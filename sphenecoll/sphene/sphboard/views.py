@@ -188,7 +188,10 @@ class PostAttachmentForm(forms.ModelForm):
         model = PostAttachment
         fields = ('fileupload',)
 
-def post(request, group = None, category_id = None, post_id = None):
+def reply(*args, **kwargs):
+    return post(*args, **kwargs)
+
+def post(request, group = None, category_id = None, post_id = None, thread_id = None):
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
         previewpost = Post( body = request.REQUEST['body'],
                             markup = request.REQUEST.get('markup', None), )
@@ -215,8 +218,11 @@ def post(request, group = None, category_id = None, post_id = None):
         thread = post.thread
     
     if 'thread' in request.REQUEST:
+        thread_id = request.REQUEST['thread']
+
+    if thread_id:
         try:
-            thread = Post.allobjects.get( pk = request.REQUEST['thread'] )
+            thread = Post.allobjects.get( pk = thread_id )
         except Post.DoesNotExist:
             raise Http404
 
@@ -371,6 +377,7 @@ def post(request, group = None, category_id = None, post_id = None):
     # Maybe the user is in the 'edit' form, which should not be cached.
     res.sph_lastmodified = True
     return res
+
 
 class AnnotateForm(forms.Form):
     body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10,
