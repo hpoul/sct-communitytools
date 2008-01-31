@@ -366,7 +366,9 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     elif thread:
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
     context['form'] = postForm
-    if (not thread and not post) or (post and post.is_new() and post.id == thread.id):
+
+    # Only allow polls if this is a new _thread_ (not a reply)
+    if (not thread and not post) or (post and post.is_new() and post.thread is None):
         context['pollform'] = pollForm
     context['attachmentForm'] = attachmentForm
     if 'createpoll' in request.REQUEST:
