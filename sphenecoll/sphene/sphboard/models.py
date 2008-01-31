@@ -766,6 +766,10 @@ class Post(models.Model):
             self.set_new( False)
             isnew = True
 
+        # set a 'is_new_post' attribute which can be checked by post_save
+        # signal handler if this is really a new post (to send out email notifications
+        # or similar)
+        self.is_new_post = isnew
         ret = super(Post, self).save()
 
         # Clear cache
