@@ -191,7 +191,7 @@ class ImgTag(BBTag):
             return ''
         imgurl = node.children[0].text   # child is always a BBTextNode
         if node.parent.allows('img'):
-            return '<img src="' + imgurl + '"/>'
+            return '<img src="' + imgurl + '" border="0"/>'
         else:
             return imgurl
             
@@ -619,7 +619,7 @@ class BBCodeParser:
                 '[emoticon]' + emoticon + '[/emoticon]')
 
         # Replace URLs with [url=...]
-        bbcode = re.sub( r'(?<!url=|url\])(?:<?)((http|ftp|shttp)://[^\s\]>\)]+)(>?)', r'[url]\1[/url]', bbcode )
+        bbcode = re.sub( r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|shttp)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode )
         
         return bbcode
 
