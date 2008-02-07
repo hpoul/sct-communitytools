@@ -62,7 +62,7 @@ class ImageMacro (object):
                 return HTML( '<b>Attachment for image does not exist: %s</b>' % params['id'] )
             el = doc.createElement( 'img' )
             el.setAttribute( 'src', attachment.get_fileupload_url() )
-            for paramName in [ 'width', 'height', 'alt', 'align' ]:
+            for paramName in [ 'class', 'width', 'height', 'alt', 'align' ]:
                 if params.has_key( paramName ):
                     el.setAttribute( paramName, params[paramName] )
 
