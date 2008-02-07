@@ -419,6 +419,9 @@ class CategoryLastVisit(models.Model):
         list_filter = ('user',)
         pass
 
+    class Meta:
+        unique_together = ('user', 'category')
+
 
 class PostManager(models.Manager):
     """
