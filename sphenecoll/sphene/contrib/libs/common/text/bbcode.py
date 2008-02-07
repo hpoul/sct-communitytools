@@ -619,7 +619,7 @@ class BBCodeParser:
                 '[emoticon]' + emoticon + '[/emoticon]')
 
         # Replace URLs with [url=...]
-        bbcode = re.sub( r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|shttp)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode )
+        bbcode = re.sub( r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|https)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode )
         
         return bbcode
 
