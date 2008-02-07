@@ -899,7 +899,7 @@ class PostAnnotation(models.Model):
         markup = self.markup
         if not markup:
             markup = POST_MARKUP_CHOICES[0][0]
-        return render_body( body, markup )
+        return mark_safe( render_body( body, markup ) )
 
 THREAD_TYPE_DEFAULT = 1
 THREAD_TYPE_MOVED = 2
