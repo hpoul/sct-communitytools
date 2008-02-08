@@ -102,7 +102,8 @@ class WikiSnip(models.Model):
         sctpath = hasattr(settings,'LIB_PATH') and settings.LIB_PATH or '.'
         static_filepath = get_sph_setting( 'wiki_pdf_generation_static_filepath', os.path.join(sctpath, '..', 'static', 'sphene') )
         snip_rendered_body = snip_rendered_body.replace( '<img src="/static/sphene/', '<img src="%s/' % static_filepath )
-        xmlout = open(xmlfile, 'w')
+        import codecs
+        xmlout = codecs.open(xmlfile, mode='w', encoding='utf-8')
 
         xmlout.write('''
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
