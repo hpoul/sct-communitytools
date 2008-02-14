@@ -27,13 +27,15 @@ def sphminus(value, arg):
 def sphrange(value):
     return range( value )
 
-@register.inclusion_tag('sphene/sphboard/_displayCategories.html')
-def sphboard_displayCategories( categories, maxDepth = 5, level = -1 ):
+@register.inclusion_tag('sphene/sphboard/_displayCategories.html', takes_context=True)
+def sphboard_displayCategories(context, categories, maxDepth = 5, level = -1 ):
     if maxDepth < level:
         return { }
-    return {'categories': categories,
-            'level'     : level + 1,
-            'maxDepth'  : maxDepth}
+    ret = {'categories': categories,
+           'level'     : level + 1,
+           'maxDepth'  : maxDepth}
+    context.update(ret)
+    return context
 
 @register.inclusion_tag('sphene/sphboard/_displayLatestPost.html')
 def sphboard_latestPost( latestPost, showSubject = 1 ):
