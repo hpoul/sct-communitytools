@@ -1,7 +1,7 @@
-
-
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.syndication.feeds import Feed
+from django.utils.translation import ugettext as _
+
 from sphene.sphboard.models import Category, Post
 
 
@@ -19,10 +19,10 @@ class LatestThreads(Feed):
         return category
 
     def title(self, obj):
-        return "Latest threads in %s" % obj.name
+        return _(u'Latest threads in %(obj_name)s') % {'obj_name':obj.name}
 
     def description(self, obj):
-        return "Latest threads in %s" % obj.name
+        return _(u'Latest threads in %(obj_name)s') % {'obj_name':obj.name}
 
     def link(self, obj):
         if obj is None:

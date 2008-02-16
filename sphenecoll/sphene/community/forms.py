@@ -1,5 +1,6 @@
 from django import newforms as forms
 from django.dispatch import dispatcher
+from django.utils.translation import ugettext_lazy as _
 
 from sphene.community.signals import profile_edit_init_form
 
@@ -15,11 +16,11 @@ class EditProfileForm(forms.Form):
     last_name = forms.CharField()
     email_address = forms.CharField()
 
-    change_password = Separator( help_text = 'To modify your password fill out the following three fields.' )
+    change_password = Separator( help_text = _(u'To modify your password fill out the following three fields.') )
     current_password = forms.CharField( widget = forms.PasswordInput(), required = False )
     new_password = forms.CharField( widget = forms.PasswordInput(), required = False )
     repassword = forms.CharField( widget = forms.PasswordInput(),
-                                  label = "Retype your new password",
+                                  label = _(u'Retype your new password'),
                                   required = False )
 
     def __init__(self, user, *args, **kwargs):
@@ -31,14 +32,14 @@ class EditProfileForm(forms.Form):
         current_password = self.cleaned_data['current_password']
         if current_password and \
            not self.user.check_password(current_password):
-            raise forms.ValidationError("Invalid password.")
+            raise forms.ValidationError(_(u'Invalid password.'))
         return self.cleaned_data
 
     def clean_repassword(self):
         password = self.cleaned_data['new_password']
         repassword = self.cleaned_data['repassword']
         if not password == repassword:
-            raise forms.ValidationError("Passwords do not match.")
+            raise forms.ValidationError(('Passwords do not match.'))
         return self.cleaned_data
     
 
@@ -48,7 +49,7 @@ from django.contrib.contenttypes.models import ContentType
 
 def get_object_type_choices():
     ret = list()
-    ret.append( ('', '-- Select Object Type --') )
+    ret.append( ('', _(u'-- Select Object Type --')) )
     apps = get_apps()
     for app in apps:
         ms = get_models(app)
@@ -98,7 +99,7 @@ autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.su
 
 class EditRoleMemberForm(forms.Form):
     username = forms.CharField()
-    has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = 'Allows you to limit the given permission to only one specific object.' )
+    has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = _(u'Allows you to limit the given permission to only one specific object.') )
     auto_submit = forms.BooleanField(widget = forms.HiddenInput, required = False)
 
     def __init__(self, group, *args, **kwargs):
@@ -115,11 +116,11 @@ class EditRoleMemberForm(forms.Form):
             user = User.objects.get( username = self.cleaned_data['username'] )
             self.cleaned_data['user'] = user
         except User.DoesNotExist:
-            raise forms.ValidationError("User does not exist.")
+            raise forms.ValidationError(_(u'User does not exist.'))
         return self.cleaned_data['username']
 
     def clean_object_type(self):
         try:
             return ContentType.objects.get( pk = self.cleaned_data['object_type'] )
         except ContentType.DoesNotExist:
-            raise forms.ValidationError("Invalid Object Type")
+            raise forms.ValidationError(_(u'Invalid Object Type'))

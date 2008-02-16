@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: communitytools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-15 11:02+0100\n"
+"PO-Revision-Date: 2008-02-15 23:15+0100\n"
+"Last-Translator: Jakub Wiśniowski\n"
+"Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: forms.py:19
+msgid "To modify your password fill out the following three fields."
+msgstr "Aby zmienić hasło wypełnij następne trzy pola."
+
+#: forms.py:23
+msgid "Retype your new password"
+msgstr "Wpisz ponownie nowe hasło"
+
+#: forms.py:35
+msgid "Invalid password."
+msgstr "Niewłaściwe hasło."
+
+#: forms.py:52
+msgid "-- Select Object Type --"
+msgstr "-- Wybierz Typ Obiektu --"
+
+#: forms.py:102
+msgid "Allows you to limit the given permission to only one specific object."
+msgstr "Umożliwia ograniczenie nadanych uprawnień do jednego wybranego obiektu."
+
+#: forms.py:119
+msgid "User does not exist."
+msgstr "Użytkownik nie istnieje."
+
+#: forms.py:126
+msgid "Invalid Object Type"
+msgstr "Niewłaściwy typ obiektu"
+
+#: fields.py:10
+msgid "Comma separated list of tags."
+msgstr "Lista tagów rozdzielonych przecinkami."
+
+#: views.py:35
+#: views.py:159
+#, python-format
+msgid "Another user is already registered with the email address %(email)s."
+msgstr "Inny użytkownik jest już zarejestrowany z adresem email %(email)s."
+
+#: views.py:59
+msgid "No user found with that email address."
+msgstr "Nie znaleziono użytkownika z podanym adresem email."
+
+#: views.py:82
+msgid "Your requested username / password"
+msgstr "Nazwa użytkownika / hasło, o które prosiłeś"
+
+#: views.py:84
+#, python-format
+msgid "Your requested username / password for site %(site_name)s"
+msgstr "Nazwa użytkownika / hasło, o które prosiłeś dla witryny  %(site_name)s"
+
+#: views.py:111
+msgid "Email verification required"
+msgstr "Wymagana weryfikacja adresu email"
+
+#: views.py:113
+#, python-format
+msgid "Email verification required for site %(site_name)s"
+msgstr "Wymagana weryfikacja adresu email dla witryny %(site_name)s"
+
+#: views.py:141
+msgid "Verify Password"
+msgstr "Potwierdź Hasło"
+
+#: views.py:148
+msgid "Passwords do not match."
+msgstr "Hasła nie pasują."
+
+#: views.py:154
+#, python-format
+msgid "The username %(username)s is already taken."
+msgstr "Nazwa użytkownika %(username)s jest już zajęta."
+
+#: views.py:310
+msgid "Successfully changed user profile."
+msgstr "Profil użytkownika został pomyślnie zaktualizowany."
+
+#: views.py:368
+msgid "Successfully saved role."
+msgstr "Rola została pomyślnie zapisana."
+
+#: views.py:391
+msgid "Successfully deleted role member."
+msgstr "Pomyślnie usunięto rolę użytkownika."
+
+#: views.py:419
+msgid "Successfully added member."
+msgstr "Pomyślnie dodano użytkownika."
+
+#: community/_pagination.html:2
+msgid "Page:"
+msgstr "Strona:"
+
+#: community/_pagination.html:4
+msgid "Previous"
+msgstr "Poprzednia"
+
+#: community/_pagination.html:14
+msgid "Next"
+msgstr "Następna"
+
+#: community/register_emailsent.html:5
+#, python-format
+msgid ""
+"An email containing the required validation code has been sent to <b>%(email)s</b>.<br/>\n"
+"  Please check your emails to continue registration process."
+msgstr ""
+"Email z kodem walidacyjnym został wysłany na adres <b>%(email)s</b>.<br/>\n"
+"  Sprawdź konto pocztowe aby kontynuować proces rejestracji."
+
+#: community/register_hash.html:5
+#: community/register_hash_success.html:5
+msgid "User Registration"
+msgstr "Rejestracja Użytkownika"
+
+#: community/register_hash.html:11
+msgid "Register"
+msgstr "Zarejestruj się"
+
+#: community/permissiondenied.html:5
+msgid "Permission Denied"
+msgstr "Brak uprawnień"
+
+#: community/permissiondenied.html:7
+msgid "You do not have permission to view this page."
+msgstr "Nie masz uprawnień aby oglądać tę stronę."
+
+#: community/_display_username.html:12
+msgid "Anonymous"
+msgstr "Anonim"
+
+#: community/register.html:5
+msgid "Please Enter your email address. You will then receive a URL to continue registration."
+msgstr "Podaj swój adres email. Zostanie na niego wysłany URL, który pozwoli na kontynuowanie procesu rejestracji."
+
+#: community/register.html:11
+msgid "Send Email Validation Code"
+msgstr "Wyślij Kod Walidacyjny"
+
+#: community/register_hash_success.html:7
+msgid "Successfully registered user and logged in."
+msgstr "Użytkownik został pomyślnie zarejestrowany i zalogowany w systemie."
+
+#: community/profile_edit.html:6
+msgid "Modifying user profile for"
+msgstr "Edycja profilu użytkownika"
+
+#: community/profile_edit.html:10
+msgid "Username:"
+msgstr "Nazwa użytkownika:"
+
+#: community/profile_edit.html:31
+msgid "Save"
+msgstr "Zapisz"
+
+#: templatetags/sph_extras.py:263
+msgid "Users avatar"
+msgstr "Avatar użytkownika"
+

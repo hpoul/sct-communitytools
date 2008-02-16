@@ -3,6 +3,8 @@
 
 from django.conf import settings
 from django.core import exceptions
+from django.utils.translation import ugettext as _
+
 from sphene.community.sphutils import get_sph_setting, get_method_by_name
 from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.contrib.libs.common.text import bbcode
@@ -89,9 +91,9 @@ class HtmlRenderer(BaseRenderer):
 
 class MarkdownRenderer(BaseRenderer):
     
-    label = 'Markdown'
+    label = _(u'Markdown')
     
-    reference = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
+    reference = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">%s</a>' % (_(u'Markdown'))
 
     def render(self, text):
         return sph_markdown(text)
@@ -117,8 +119,9 @@ def _get_markup_choices():
                 renderer = custom_markup[en]
             except KeyError:
                 raise exceptions.ImproperlyConfigured(
-                    "Custom renderer '%s' needs a matching Render Class entry in your "
-                     % en + "sphene settings 'board_custom_markup'")
+                    _(u"Custom renderer '%(renderer)s' needs a matching Render \
+Class entry in your sphene settings 'board_custom_markup'")\
+                     % {'renderer': en})
             renderclass = get_method_by_name(renderer)
 
         classes[en] = renderclass
@@ -138,10 +141,9 @@ def render_body(body, markup = None):
             return renderer.render(body)
         except KeyError:
             raise exceptions.ImproperlyConfigured(
-                "Can't render markup '%s'" % markup)
+                _(u"Can't render markup '%(markup)s'") % {'markup':markup})
     else:
         return body
-
 
 def describe_render_choices():
     choices = []
@@ -149,9 +151,8 @@ def describe_render_choices():
         choices.append(RENDER_CLASSES[renderer].reference)
 
     if len(choices) > 1:
-        desc = "%s or %s" % (", ".join(choices[:-1]), choices[-1])
+        desc = u"%s or %s" % (", ".join(choices[:-1]), choices[-1])
     else:
         desc = choices[0]
 
-    return "You can use %s in your posts" % desc
-
+    return _('You can use %(description)s in your posts') % {'description':desc}

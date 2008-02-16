@@ -1,6 +1,6 @@
-
 from django.dispatch import dispatcher
 from django.db.models import signals
+
 from sphene.sphboard import models
 
 def init_data(app, created_models, verbosity, **kwargs):

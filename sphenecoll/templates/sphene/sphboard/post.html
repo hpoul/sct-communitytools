@@ -1,5 +1,5 @@
 {% extends "sphene/sphboard/base.html" %}
-
+{% load i18n %}
 {% load sphboard_extras %}
 
 {% block content %}
@@ -11,12 +11,12 @@
   {% endif %}<br/><br/>
 
   {% if post %}
-    <b>Editing post</b>
+    <b>{% trans "Editing post" %}</b>
   {% else %}
     {% if thread %}
-      <b>Posting reply to thread {{ thread.subject }}.</b>
+      <b>{% blocktrans with thread.subject as subject %}Posting reply to thread {{ subject }}.{% endblocktrans %}</b>
     {% else %}
-      <b>Posting new thread.</b>
+      <b>{% trans "Posting new thread." %}</b>
     {% endif %}
   {% endif %}<br/><br/>
 

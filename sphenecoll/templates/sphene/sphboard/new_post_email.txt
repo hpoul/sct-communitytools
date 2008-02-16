@@ -1,4 +1,7 @@
 {% load sph_extras %}
-{{ post.author|sph_fullusername }} just posted in a thread or forum you are monitoring:
+{% load i18n %}
+{% blocktrans with post.author|sph_fullusername as full_name and post.get_absolute_url as abs_url and post.get_threadinformation.get_page_count as page_count %}
+{{ full_name }} just posted in a thread or forum you are monitoring:
 
-visit http://{{ baseurl }}{{ post.get_absolute_url }}?page={{ post.get_threadinformation.get_page_count }} to view the post.
+visit http://{{ baseurl }}{{ abs_url }}?page={{ page_count }} to view the post.
+{% endblocktrans %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load sph_extras %}
 {% if user %}
   <a href="{{ user|sph_user_profile_link }}">
@@ -8,5 +9,5 @@
   {% endif %}
   </a>
 {% else %}
-Anonymous
+{% trans "Anonymous" %}
 {% endif %}

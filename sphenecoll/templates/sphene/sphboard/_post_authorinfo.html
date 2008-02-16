@@ -1,8 +1,9 @@
+{% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
-Posted by<br/>
+{% trans "Posted by" %}<br/>
 {% sphboard_displayUserName author %}<br/><br/><br/>
 {% sph_showavatar author %}<br/><br/>
 {% if author %}
-  <small>Registered at {{ author.date_joined|sph_date }}</small>
+  <small>{% blocktrans with author.date_joined|sph_date as author_joined %}Registered at {{ author_joined }}{% endblocktrans %}</small>
 {% endif %}

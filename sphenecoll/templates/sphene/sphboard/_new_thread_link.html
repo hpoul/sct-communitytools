@@ -1,12 +1,13 @@
+{% load i18n %}
 {% if category %}
     {% if allowPostThread %}
-      <a href="{{ category.get_absolute_post_thread_url }}">{% block linktext %}Post New Thread{% endblock %}</a>
+      <a href="{{ category.get_absolute_post_thread_url }}">{% block linktext %}{% trans "Post New Thread" %}{% endblock %}</a>
       {# sphboard_displayPostForm #}
     {% else %}
       {% if user.is_authenticated %}
-        You have no permission to create a new thread.
+        {% trans "You have no permission to create a new thread." %}
       {% else %}
-        Please login to create a new thread.
+        {% trans "Please login to create a new thread." %}
       {% endif %}
     {% endif %}
 {% endif %}

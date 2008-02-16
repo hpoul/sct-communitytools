@@ -10,6 +10,10 @@ the Sphene Community Tools.
 Thanks to the following contributors:
 (This list might not be complete)
 
+Jakub Wiśniowski <restless.being@gmail.com> - for contributing patches 
+(Using MEDIA_URL instead of hard coded links, i18n translation strings
+as well as polish translations)
+
 Bruce Kroeze <bkroeze@gmail.com> - for contributing patches 
 ('Modular post rendering')
 

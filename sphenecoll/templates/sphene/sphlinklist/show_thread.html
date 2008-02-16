@@ -1,13 +1,13 @@
 {% extends "sphene/sphboard/showThread.html" %}
-
+{% load i18n %}
 {% block above_post_list %}
 <p>
 <table>
 <tr>
-  <td><strong>Project:</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.subject }}</a></td>
+  <td><strong>{% trans "Project:" %}</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.subject }}</a></td>
 </tr>
 <tr>
-  <td><strong>URL:</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.linklistpostextension_set.get.link }}</a></td>
+  <td><strong>{% trans "URL:" %}</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.linklistpostextension_set.get.link }}</a></td>
 </tr>
 </table>
 </p><br/>

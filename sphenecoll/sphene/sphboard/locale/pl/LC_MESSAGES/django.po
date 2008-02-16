@@ -1,0 +1,437 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: communitytools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-15 14:51+0100\n"
+"PO-Revision-Date: 2008-02-15 15:01+0100\n"
+"Last-Translator: Jakub Wiśniowski\n"
+"Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\n"
+
+#: renderers.py:94
+#: renderers.py:96
+msgid "Markdown"
+msgstr ""
+
+#: renderers.py:122
+#, python-format
+msgid "Custom renderer '%(renderer)s' needs a matching Render Class entry in your sphene settings 'board_custom_markup'"
+msgstr ""
+
+#: renderers.py:144
+#, python-format
+msgid "Can't render markup '%(markup)s'"
+msgstr "Can't render markup '%(markup)s'"
+
+#: renderers.py:158
+#, python-format
+msgid "You can use %(description)s in your posts"
+msgstr "Możesz używać %(description)s w swoich wiadomościach"
+
+#: models.py:869
+msgid "File"
+msgstr "Plik"
+
+#: boardforms.py:19
+msgid "-- Select Category --"
+msgstr "-- Wybierz Kategorię --"
+
+#: feeds.py:22
+#: feeds.py:25
+#, python-format
+msgid "Latest threads in %(obj_name)s"
+msgstr "Ostatnie wątki w %(obj_name)s"
+
+#: views.py:159
+msgid "Please enter the result of the above calculation."
+msgstr "Wprowadź wynik powyższych obliczeń."
+
+#: views.py:183
+msgid "Allowed Choices per User"
+msgstr "Dopuszczalne Wybory dla Użytkownika"
+
+#: views.py:184
+msgid "Enter how many answers a user can select."
+msgstr "Wpisz ile odpowiedzi użytkownik może zaznaczyć."
+
+#: views.py:294
+#, python-format
+msgid "--- Last Edited by %(username)s at %(edit_date)s ---"
+msgstr "--- Ostatnio edytowane %(edit_date)s przez %(username)s ---"
+
+#: views.py:336
+msgid "Vote created successfully."
+msgstr "Głos został oddany pomyślnie."
+
+#: views.py:340
+msgid "Post edited successfully."
+msgstr "Wiadomość została zmieniona."
+
+#: views.py:342
+msgid "Post created successfully."
+msgstr "Wiadomość została pomyślnie opublikowana."
+
+#: views.py:430
+msgid "Annotated a users post."
+msgstr "Skomentowano wiadomość użytkownika."
+
+#: views.py:459
+msgid "Select target category"
+msgstr "Wybierz kategorię docelową"
+
+#: views.py:470
+msgid "Please describe why this thread had to be moved. "
+msgstr "Opisz dlaczego ten wątek musiał zostać przeniesiony."
+
+#: views.py:519
+msgid "Moved thread into new category."
+msgstr "Przeniesiono wątek do nowej kategorii."
+
+#: views.py:530
+#, python-format
+msgid "This thread was moved from the category %(category_name)s"
+msgstr "Ten wątek został przeniesiony z kategorii %(category_name)s"
+
+#: views.py:544
+msgid "You have already voted."
+msgstr "Już głosowałeś."
+
+#: views.py:548
+msgid "Please select at least one answer."
+msgstr "Wybierz co najmniej jedną odpowiedź."
+
+#: views.py:554
+#, python-format
+msgid "Please only select %(choices)d answers."
+msgstr "Wybierz %(choices)d odpowiedzi."
+
+#: views.py:558
+msgid "You cannot abstain from voting and at the same time select a valid answer."
+msgstr "Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć właściwą odpowiedź."
+
+#: views.py:567
+msgid "You've selected an invalid choice."
+msgstr "Wybrałeś niewłaściwą opcję."
+
+#: views.py:575
+#, python-format
+msgid "Voted for '%(choice)s'."
+msgstr "Zagłosowałeś na '%(choice)s'."
+
+#: views.py:575
+msgid "You selected to abstain from voting"
+msgstr "Zaznaczyłeś, że nie będziesz głosować"
+
+#: views.py:593
+msgid "Successfully created email notification monitor."
+msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
+
+#: views.py:595
+msgid "Removed email notification monitor."
+msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
+
+#: sphboard/showThread.html:27
+msgid "Thread Options:"
+msgstr "Opcje Wątku"
+
+#: sphboard/showThread.html:30
+msgid "Remove Sticky"
+msgstr "Odklej"
+
+#: sphboard/showThread.html:32
+msgid "Make Sticky"
+msgstr "Przyklej"
+
+#: sphboard/showThread.html:37
+msgid "Unlock Thread"
+msgstr "Odblokuj Wątek"
+
+#: sphboard/showThread.html:37
+msgid "Lock Thread"
+msgstr "Zablokuj Wątek"
+
+#: sphboard/showThread.html:41
+#: sphboard/move.html:17
+msgid "Move Thread"
+msgstr "Przenieś Wątek"
+
+#: sphboard/showThread.html:48
+msgid "Store"
+msgstr "Zachowaj"
+
+#: sphboard/showThread.html:56
+#: sphboard/listCategories.html:14
+#: sphboard/listCategories.html.py:23
+msgid "You are currently receiving email notifications on new posts."
+msgstr "Obecnie otrzymujesz powiadomienia emailowe o nowych wiadomościach."
+
+#: sphboard/showThread.html:56
+#: sphboard/listCategories.html:14
+#: sphboard/listCategories.html.py:23
+msgid "Stop notifications"
+msgstr "Zakończ powiadamianie"
+
+#: sphboard/showThread.html:58
+#: sphboard/listCategories.html:16
+msgid "You are currently receiving email notifications on new posts because you subscribed to a parent category."
+msgstr "Otrzymujesz obecnie powiadomienia mailowe o nowych wiadomościach ponieważ zasubskrybowałeś nadrzędną kategorię."
+
+#: sphboard/showThread.html:61
+#: sphboard/listCategories.html:19
+#: sphboard/listCategories.html.py:26
+msgid "Notify me by email on new posts."
+msgstr "Powiadamiaj mnie emailem o nowych wiadomościach."
+
+#: sphboard/showThread.html:78
+msgid "Annotate/Hide"
+msgstr "Skomentuj/Ukryj"
+
+#: sphboard/showThread.html:81
+msgid "Edit"
+msgstr "Edytuj"
+
+#: sphboard/showThread.html:84
+msgid "Quote"
+msgstr "Cytuj"
+
+#: sphboard/showThread.html:94
+msgid "Post hidden by"
+msgstr "Wiadomość ukryta przez"
+
+#: sphboard/showThread.html:97
+msgid "Post annotated by"
+msgstr "Wiadomość skomentowana przez"
+
+#: sphboard/showThread.html:106
+msgid "Attachments"
+msgstr "Załączniki"
+
+#: sphboard/showThread.html:122
+#: sphboard/listCategories.html:78
+msgid "Poll:"
+msgstr "Ankieta:"
+
+#: sphboard/showThread.html:124
+msgid "You already voted. Here are the results"
+msgstr "Już głosowałeś. Wyniki są następujące"
+
+#: sphboard/showThread.html:124
+msgid "votes total"
+msgstr "głosów łącznie"
+
+#: sphboard/showThread.html:124
+msgid "did not answer"
+msgstr "nie udzieliło odpowiedzi"
+
+#: sphboard/showThread.html:136
+msgid "Error:"
+msgstr "Błąd:"
+
+#: sphboard/showThread.html:139
+#, python-format
+msgid "You may select up to %(choices_per_user)s answers: "
+msgstr "Możesz zaznaczyć %(choices_per_user)s odpowiedzi: "
+
+#: sphboard/showThread.html:144
+#: sphboard/showThread.html.py:151
+msgid "Show Results (You won't be able to vote.)"
+msgstr "Pokaż Wyniki (nie będziesz już mógł zagłosować)."
+
+#: sphboard/showThread.html:157
+msgid "You need to be logged in to vote."
+msgstr "Musisz być zalogowany aby móc głosować."
+
+#: sphboard/showThread.html:172
+msgid "Post Reply"
+msgstr "Odpowiedz"
+
+#: sphboard/showThread.html:176
+msgid "Thread is locked."
+msgstr "Wątek jest zablokowany."
+
+#: sphboard/showThread.html:179
+msgid "You have no permission to post a reply."
+msgstr "Nie masz uprawnień aby napisać odpowiedź."
+
+#: sphboard/showThread.html:181
+msgid "Please login to post a reply."
+msgstr "Zaloguj się aby napisać odpowiedź."
+
+#: sphboard/_displayBreadcrumbs.html:2
+msgid "Board"
+msgstr "Forum"
+
+#: sphboard/listCategories.html:8
+msgid "Latest"
+msgstr "Ostatnie"
+
+#: sphboard/listCategories.html:36
+msgid "Title"
+msgstr "Tytuł"
+
+#: sphboard/listCategories.html:37
+#: sphboard/listCategories.html.py:59
+msgid "Threads"
+msgstr "Wątki"
+
+#: sphboard/listCategories.html:38
+#: sphboard/listCategories.html.py:66
+msgid "Posts"
+msgstr "Wiadomości"
+
+#: sphboard/listCategories.html:39
+#: sphboard/listCategories.html.py:67
+msgid "Last Post"
+msgstr "Ostatnia Wiadomość"
+
+#: sphboard/listCategories.html:47
+msgid "There are currently no categories. (Or you have no permission to see them.)"
+msgstr "Nie ma obecnie żadnych kategorii. (Lub nie masz uprawnień by je zobaczyć.)"
+
+#: sphboard/listCategories.html:62
+msgid "Subject / Author"
+msgstr "Temat / Autor"
+
+#: sphboard/listCategories.html:64
+msgid "Views"
+msgstr "Spojrzeń"
+
+#: sphboard/listCategories.html:75
+#, python-format
+msgid "Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%(cat_url)s\">%(cat_name)s</a>."
+msgstr "Wątek został przeniesiony: <a href=\"%(th_url)s\">%(th_subject)s</a> do <a href=\"%(cat_url)s\">%(cat_name)s</a>."
+
+#: sphboard/listCategories.html:78
+msgid "Sticky:"
+msgstr "Przyklejony:"
+
+#: sphboard/listCategories.html:78
+msgid "Hot:"
+msgstr "Gorący:"
+
+#: sphboard/listCategories.html:78
+msgid "Locked:"
+msgstr "Zamknięty:"
+
+#: sphboard/listCategories.html:90
+#, python-format
+msgid "%(hits)s Threads in this category."
+msgstr "Wątków w tej kategorii: %(hits)s."
+
+#: sphboard/listCategories.html:96
+msgid "Mark all Posts in this Category as read."
+msgstr "Zaznacz wszystkie wiadomości w tej kategorii jako przeczytane."
+
+#: sphboard/listCategories.html:96
+msgid "Catch Up"
+msgstr "Catch Up"
+
+#: sphboard/move.html:10
+#, python-format
+msgid "Move Thread: %(subject)s by "
+msgstr "Przenieś Wątek: %(subject)s założony przez "
+
+#: sphboard/annotate.html:10
+#, python-format
+msgid "Annotate post: %(subject)s by "
+msgstr "Skomentuj wiadomość: %(subject)s napisany przez "
+
+#: sphboard/annotate.html:17
+msgid "Annotate"
+msgstr "Skomentuj"
+
+#: sphboard/post.html:14
+msgid "Editing post"
+msgstr "Edycja wiadomości"
+
+#: sphboard/post.html:17
+#, python-format
+msgid "Posting reply to thread %(subject)s."
+msgstr "Piszesz odpowiedź w wątku %(subject)s."
+
+#: sphboard/post.html:19
+msgid "Posting new thread."
+msgstr "Zakładanie nowego watku."
+
+#: sphboard/_new_thread_link.html:4
+msgid "Post New Thread"
+msgstr "Rozpocznij Nowy Wątek"
+
+#: sphboard/_new_thread_link.html:8
+msgid "You have no permission to create a new thread."
+msgstr "Nie masz uprawnień aby założyć nowy wątek."
+
+#: sphboard/_new_thread_link.html:10
+msgid "Please login to create a new thread."
+msgstr "Zaloguj się aby stworzyć nowy wątek."
+
+#: sphboard/_post_authorinfo.html:4
+msgid "Posted by"
+msgstr "Napisany przez"
+
+#: sphboard/_post_authorinfo.html:8
+#, python-format
+msgid "Registered at %(author_joined)s"
+msgstr "Zarejestrowany %(author_joined)s"
+
+#: sphboard/_displayLatestPost.html:7
+#, python-format
+msgid "at %(latest_post)s"
+msgstr "z %(latest_post)s"
+
+#: sphboard/_displayLatestPost.html:10
+#, python-format
+msgid "At <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)s</a>"
+msgstr "Z <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)s</a>"
+
+#: sphboard/_displayLatestPost.html:13
+msgid "By"
+msgstr "Przez"
+
+#: sphboard/_displayLatestPost.html:15
+msgid "No Posts Yet."
+msgstr "Nie ma jeszcze żadnych wiadomości."
+
+#: sphboard/_displayPostForm.html:32
+msgid "You are already receiving email notifications for this thread or category."
+msgstr "Obecnie otrzymujesz powiadomienia emailowe dla tego wątku lub kategorii."
+
+#: sphboard/_displayPostForm.html:34
+msgid "Notify me by email on new posts in this thread."
+msgstr "Powiadamiaj mnie emailem o nowych wiadomościach w tym wątku."
+
+#: sphboard/_displayPostForm.html:40
+msgid "Add a poll to this thread"
+msgstr "Dodaj ankietę do tego wątku"
+
+#: sphboard/_displayPostForm.html:45
+msgid "Poll"
+msgstr "Ankieta"
+
+#: sphboard/_displayPostForm.html:59
+msgid "Upload Attachment"
+msgstr "Dołącz Załącznik"
+
+#: sphboard/_displayPostForm.html:70
+msgid "Upload File"
+msgstr "Wczytaj plik"
+
+#: sphboard/_displayPostForm.html:75
+msgid "Post"
+msgstr "Opublikuj"
+
+#: sphboard/_displayPostForm.html:75
+msgid "Preview"
+msgstr "Podgląd"
+

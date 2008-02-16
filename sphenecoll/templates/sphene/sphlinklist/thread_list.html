@@ -5,7 +5,5 @@
 
 {% block thread_list_subject %}
 <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> - 
-  {% blocktrans with thread.root_post.linklistpostextension_set.get.link as link %}
-    <small>(<a href="{{ link }}">Open URL: {{ link }}</a>)</small>
-  {% endblocktrans %}
+    <small>(<a href="{{ thread.root_post.linklistpostextension_set.get.link }}">{% trans "Open URL:" %} {{ link }}</a>)</small>
 {% endblock %}

@@ -6,6 +6,9 @@ from django.db.models import Q
 from django.template.context import RequestContext
 from django import newforms as forms
 from django.dispatch import dispatcher
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
+
 
 from datetime import datetime
 
@@ -153,7 +156,7 @@ class PostForm(forms.Form):
                             help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
-                                    help_text = 'Please enter the result of the above calculation.',
+                                    help_text = _(u'Please enter the result of the above calculation.'),
                                     )
 
     def __init__(self, *args, **kwargs):
@@ -177,8 +180,8 @@ class PostPollForm(forms.Form):
     question = forms.CharField()
     answers = forms.CharField( label = 'Answers (1 per line)',
                                widget = forms.Textarea( attrs = { 'rows': 5, 'cols': 80 } ) )
-    choicesPerUser = forms.IntegerField( label = 'Allowed Choices per User',
-                                         help_text = 'Enter how many answers a user can select.',
+    choicesPerUser = forms.IntegerField( label = _(u'Allowed Choices per User'),
+                                         help_text = _(u'Enter how many answers a user can select.'),
                                          min_value = 1,
                                          max_value = 100,
                                          initial = 1, )
@@ -288,7 +291,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 # make post visible
                 newpost.is_hidden = 0
                 if not post.is_new():
-                    newpost.body += "\n\n--- Last Edited by %s at %s ---" % ( get_fullusername( request.user ), format_date( datetime.today()) )
+                    newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_fullusername( request.user ), 'edit_date':format_date( datetime.today())}
             else:
                 newpost = Post( category = category,
                                 subject = data['subject'],
@@ -330,13 +333,13 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                                              count = 0, )
                     pollchoice.save()
                 if request.user.is_authenticated():
-                    request.user.message_set.create( message = "Vote created successfully." )
+                    request.user.message_set.create( message = ugettext(u'Vote created successfully.') )
 
             if request.user.is_authenticated():
                 if post:
-                    request.user.message_set.create( message = "Post edited successfully." )
+                    request.user.message_set.create( message = ugettext(u'Post edited successfully.') )
                 else:
-                    request.user.message_set.create( message = "Post created successfully." )
+                    request.user.message_set.create( message = ugettext(u'Post created successfully.') )
             if thread == None: thread = newpost
             return HttpResponseRedirect( thread.get_absolute_url() )
 
@@ -424,7 +427,7 @@ def annotate(request, group, post_id):
             annotation.hide_post = data['hide_post']
             annotation.markup = data['markup']
             annotation.save()
-            request.user.message_set.create( message = "Annotated a users post." )
+            request.user.message_set.create( message = ugettext(u'Annotated a users post.') )
             return HttpResponseRedirect( post.get_absolute_url() )
         
     else:
@@ -453,7 +456,7 @@ class MoveForm(forms.Form):
     This should not be used allown, but in stead use
     MoveAndAnnotateForm
     """
-    category = boardforms.SelectCategoryField(help_text = u'Select target category')
+    category = boardforms.SelectCategoryField(help_text = _(u'Select target category'))
 
 
 class MoveAndAnnotateForm(MoveForm, AnnotateForm):
@@ -464,7 +467,7 @@ class MoveAndAnnotateForm(MoveForm, AnnotateForm):
 
         del self.fields['hide_post']
 
-        self.fields['body'].help_text = 'Please describe why this thread had to be moved. ' + self.fields['body'].help_text
+        self.fields['body'].help_text = _(u'Please describe why this thread had to be moved. ') + self.fields['body'].help_text
 
 
 def move(request, group, thread_id):
@@ -513,7 +516,7 @@ def move(request, group, thread_id):
             thread.category = newcategory
             thread.save()
 
-            request.user.message_set.create( message = "Moved thread into new category." )
+            request.user.message_set.create( message = ugettext(u'Moved thread into new category.') )
 
             return HttpResponseRedirect( thread.get_absolute_url() )
         
@@ -524,7 +527,7 @@ def move(request, group, thread_id):
         category_name = '[url=%s]%s[/url].' % (thread.category.get_absolute_url(), thread.category.name)
     else:
         category_name = thread.category.name
-    form.fields['body'].initial = 'This thread was moved from the category %s' % category_name
+    form.fields['body'].initial = _(u'This thread was moved from the category %(category_name)s') % {'category_name':category_name}
 
     return render_to_response( "sphene/sphboard/move.html",
                                { 'thread': thread,
@@ -538,21 +541,21 @@ def vote(request, group = None, thread_id = None):
 
     poll = thread.poll()
     if poll.has_voted(request.user):
-        request.attributes['voteerror'] = "You have already voted."
+        request.attributes['voteerror'] = _(u'You have already voted.')
         return showThread(request, thread_id, group)
 
     if not 'pollchoice' in request.REQUEST or len( request.REQUEST['pollchoice'] ) < 1:
-        request.attributes['voteerror'] = "Please select at least one answer."
+        request.attributes['voteerror'] = _(u'Please select at least one answer.')
         return showThread(request, thread_id, group)
 
     pollchoices = request.REQUEST.getlist('pollchoice')
     
     if poll.choices_per_user < len( pollchoices ):
-        request.attributes['voteerror'] = "Please only select %d answers." % poll.choices_per_user
+        request.attributes['voteerror'] = _(u'Please only select %(choices)d answers.') % {'choices':poll.choices_per_user}
         return showThread(request, thread_id, group)
 
     if len( pollchoices ) > 1 and '0' in pollchoices:
-        request.attributes['voteerror'] = "You cannot abstain from voting and at the same time select a valid answer."
+        request.attributes['voteerror'] = _(u'You cannot abstain from voting and at the same time select a valid answer.')
         return showThread(request, thread_id, group)
 
     for pollchoice in pollchoices:
@@ -561,7 +564,7 @@ def vote(request, group = None, thread_id = None):
             try:
                 choice = poll.pollchoice_set.get( pk = pollchoice )
             except PollChoice.DoesNotExist:
-                request.attributes['voteerror'] = "You've selected an invalid choice."
+                request.attributes['voteerror'] = _(u"You've selected an invalid choice.")
                 return showThread(request, thread_id, group)
             choice.count = choice.count + 1
             choice.save()
@@ -569,7 +572,7 @@ def vote(request, group = None, thread_id = None):
                             choice = choice,
                             user = request.user, )
         voter.save()
-        request.user.message_set.create( message = choice and "Voted for '%s'." % choice.choice or "You selected to abstain from voting" )
+        request.user.message_set.create( message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
     
 
     return HttpResponseRedirect( '../../thread/%s/' % thread.id )
@@ -587,9 +590,9 @@ def toggle_monitor(request, group, monitortype, object_id):
         redirectview = 'thread'
 
     if obj.toggle_monitor():
-        request.user.message_set.create( message = "Successfully created email notification monitor." )
+        request.user.message_set.create( message = ugettext(u'Successfully created email notification monitor.') )
     else:
-        request.user.message_set.create( message = "Removed email notification monitor." )
+        request.user.message_set.create( message = ugettext(u'Removed email notification monitor.') )
 
     return HttpResponseRedirect( '../../%s/%s/' % (redirectview, object_id) )
 

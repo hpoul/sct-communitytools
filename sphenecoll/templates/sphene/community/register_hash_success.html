@@ -1,9 +1,9 @@
 {% extends "sphene/sphboard/base.html" %}
-
+{% load i18n %}
 {% block content %}
 
-  <b>User Registration</b><br/>
+  <b>{% trans "User Registration" %}</b><br/>
 
-  Successfully registered user and logged in.
+  {% trans "Successfully registered user and logged in." %}
 
 {% endblock %}

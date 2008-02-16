@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
   <script language="JavaScript" type="text/javascript" src="{{ MEDIA_URL }}sphene/community/xmlhttp.js"></script>
@@ -8,7 +9,7 @@
      if(document.postform.markup) {
        markup = "&markup=" + encodeURIComponent( document.postform.markup.value );
      }
-     showResponseInElement( 'previewarea', 'Loading Preview ....', "type=preview" + markup + "&body=" + encodeURIComponent( document.postform.body.value ) );
+     showResponseInElement( 'previewarea', gettext('Loading Preview ....'), "type=preview" + markup + "&body=" + encodeURIComponent( document.postform.body.value ) );
    }
   //-->
   </script>
@@ -28,20 +29,20 @@
   </script>
     {% if user.is_authenticated %}
           {% if thread.has_monitor or category.has_monitor %}
-            <small>You are already receiving email notifications for this thread or category.</small>
+            <small>{% trans "You are already receiving email notifications for this thread or category." %}</small>
           {% else %}
-            <input type="checkbox" name="addmonitor" value="1" id="addmonitor_id" {% if user|sphboard_default_notify_me %}checked="checked"{% endif %} /> <label for="addmonitor_id">Notify me by email on new posts in this thread.</label>
+            <input type="checkbox" name="addmonitor" value="1" id="addmonitor_id" {% if user|sphboard_default_notify_me %}checked="checked"{% endif %} /> <label for="addmonitor_id">{% trans "Notify me by email on new posts in this thread." %}</label>
           {% endif %}
           <br/><br/>
     {% endif %}
 
   {% if pollform %}
-  <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">Add a poll to this thread</label><br/><br/>
+  <input type="checkbox" name="createpoll" value="1" onchange="javascript:document.getElementById( 'poll' ).style.display = (this.checked ? 'block' : 'none' )" id="createpoll_id"{% if createpoll %} checked="checked"{% endif %} /> <label for="createpoll_id">{% trans "Add a poll to this thread" %}</label><br/><br/>
 
   <div id="poll" style="display: none">
     <table class="sphboard form">
       <tr>
-        <th colspan="2">Poll</th>
+        <th colspan="2">{% trans "Poll" %}</th>
       </tr>
       {{ pollform }}
     </table>
@@ -55,7 +56,7 @@
   {% if attachmentForm %}
   <table class="sphboard form attachment">
     <tr>
-      <th colspan="2">Upload Attachment</th>
+      <th colspan="2">{% trans "Upload Attachment" %}</th>
     </tr>
     {% if post %}
       {% for attachment in post.attachments.all %}
@@ -66,11 +67,11 @@
     {% endif %}
     {{ attachmentForm }}
     <tr>
-      <td colspan="2"><input type="submit" name="cmd_addfile" value="Upload File" style="width: auto;" /></td>
+      <td colspan="2"><input type="submit" name="cmd_addfile" value="{% trans "Upload File" %}" style="width: auto;" /></td>
     </tr>
   </table>
   {% endif %}
 
-  <input type="submit" value="Post" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />
+  <input type="submit" value="{% trans "Post" %}" /> * <input type="button" value="{% trans "Preview" %}" onclick="javascript:doPreview()" />
 
 </form>

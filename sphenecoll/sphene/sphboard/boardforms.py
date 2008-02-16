@@ -1,5 +1,6 @@
-
 from django import newforms as forms
+from django.utils.translation import ugettext_lazy as _
+
 from sphene.sphboard.models import Category
 from sphene.community.middleware import get_current_group, get_current_user
 
@@ -15,7 +16,7 @@ class SelectCategoryWidget(forms.Widget):
 
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs, name=name)
-        output = [u'<select%s><option value="">-- Select Category --</option>' % forms.util.flatatt(final_attrs)]
+        output = [u'<select%s><option value="">%s</option>' % (forms.util.flatatt(final_attrs), _(u'-- Select Category --'))]
 
         # Load all root categories and iterate them...
         group = get_current_group()

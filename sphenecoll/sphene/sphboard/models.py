@@ -25,6 +25,7 @@ from django.template import loader, Context
 from django.core.cache import cache
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 from renderers import POST_MARKUP_CHOICES, render_body
+from django.utils.translation import ugettext_lazy as _
 import logging
 
 logger = logging.getLogger('sphene.sphboard.models')
@@ -865,7 +866,8 @@ class Post(models.Model):
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
     # This is only blank so the form does not throw errors when it was not entered !
-    fileupload = models.FileField( upload_to = get_sph_setting( 'board_attachments_upload_to' ),
+    fileupload = models.FileField( _('File'),
+                                   upload_to = get_sph_setting( 'board_attachments_upload_to' ),
                                    blank = True )
 
 

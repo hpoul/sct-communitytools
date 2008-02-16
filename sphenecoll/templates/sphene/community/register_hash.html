@@ -1,14 +1,14 @@
 {% extends "sphene/sphboard/base.html" %}
-
+{% load i18n %}
 {% block content %}
 
-  <b>User Registration</b><br/>
+  <b>{% trans "User Registration" %}</b><br/>
 
   <form method="post" action=".">
     <table>
       {{ form }}
     </table>
-    <input type="submit" value="Register" />
+    <input type="submit" value="{% trans "Register" %}" />
   </form>
 
 {% endblock %}

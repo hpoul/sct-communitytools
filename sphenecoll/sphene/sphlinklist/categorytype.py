@@ -2,6 +2,7 @@
 
 from django import newforms as forms
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from sphene.community.templatetags.sph_extras import sph_truncate
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
@@ -12,7 +13,7 @@ from sphene.sphlinklist.models import LinkListPostExtension
 
 class LinkListPostForm(ExtendedPostForm):
     link = forms.URLField(initial = 'http://', 
-                          help_text = 'Enter your link here')
+                          help_text = _(u'Enter your link here'))
 
     def __init__(self, *args, **kwargs):
         super(LinkListPostForm, self).__init__(*args, **kwargs)

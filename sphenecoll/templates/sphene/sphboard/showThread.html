@@ -1,5 +1,5 @@
 {% extends "sphene/sphboard/base.html" %}
-
+{% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
 {% load sph_pagination %}
@@ -24,28 +24,28 @@
   {% sphboard_displayBreadcrumbsForThread thread %}
   <br/>
   {% if perms.post.change_post %}
-    Thread Options: 
+    {% trans "Thread Options:" %} 
       {% if thread.allow_sticking %}
         {% if thread.is_sticky %}
-          [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">Remove Sticky</a> ]
+          [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">{% trans "Remove Sticky" %}</a> ]
         {% else %}
-          [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">Make Sticky</a> ]
+          [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">{% trans "Make Sticky" %}</a> ]
         {% endif %}
       {% endif %}
       {% if thread.allow_locking %}
         [ <a href="../../options/{{ thread.id }}/?cmd=toggleClosed">
-            {% if thread.is_closed %}Unlock Thread{% else %}Lock Thread{% endif %}
+            {% if thread.is_closed %}{% trans "Unlock Thread" %}{% else %}{% trans "Lock Thread" %}{% endif %}
           </a> ]
       {% endif %}
       {% if thread.allow_moving %}
-        [ <a href="../../move/{{ thread.id }}/">Move Thread</a> ]
+        [ <a href="../../move/{{ thread.id }}/">{% trans "Move Thread" %}</a> ]
       {% endif %}
       <!-- [ <a href="#" id="modifythreadtags">Modify Thread Tags</a> ] -->
       <br/>
       <div id="threadtagsfield" style="display:none;">
         <form method="POST" action="../../options/{{ thread.id }}/?cmd=modifytags">
           <input type="text" name="tags" size="30" />
-          <input type="submit" value="Store" />
+          <input type="submit" value="{% trans "Store" %}" />
         </form>
       </div>
   {% endif %}
@@ -53,12 +53,12 @@
   {% if user.is_authenticated %}
     {% if thread.has_monitor %}
       {% if thread.has_direct_monitor %}
-        You are currently receiving email notifications on new posts. - <a href="../../togglemonitor_thread/{{ thread.id }}/">Stop notifications</a>
+        {% trans "You are currently receiving email notifications on new posts." %} - <a href="../../togglemonitor_thread/{{ thread.id }}/">{% trans "Stop notifications" %}</a>
       {% else %}
-        You are currently receiving email notifications on new posts because you subscribed to a parent category.
+        {% trans "You are currently receiving email notifications on new posts because you subscribed to a parent category." %}
       {% endif %}
     {% else %}
-      <a href="../../togglemonitor_thread/{{ thread.id }}/">Notify me by email on new posts.</a>
+      <a href="../../togglemonitor_thread/{{ thread.id }}/">{% trans "Notify me by email on new posts." %}</a>
     {% endif %}
     <br/><br/>
   {% endif %}
@@ -75,13 +75,13 @@
           <div class="board_postdate"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
           <div class="board_controls">
             {% if post.allow_annotating %}
-              [ <a href="{{ post.get_absolute_annotate_url }}">Annotate/Hide</a> ]
+              [ <a href="{{ post.get_absolute_annotate_url }}">{% trans "Annotate/Hide" %}</a> ]
             {% endif %}
             {% if post.allowEditing %}
-              [ <a href="{{ post.get_absolute_editurl }}">Edit</a> ]
+              [ <a href="{{ post.get_absolute_editurl }}">{% trans "Edit" %}</a> ]
             {% endif %}
             {% if allowPosting %}
-              [ <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}&amp;quote={{ post.id }}">Quote</a> ]
+              [ <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}&amp;quote={{ post.id }}">{% trans "Quote" %}</a> ]
             {% endif %}
           </div>
         </td>
@@ -91,10 +91,10 @@
           {% if post.is_annotated %}
             {% if post.annotation.get.hide_post %}
               <div class="annotation annotation_post_hidden">
-              <strong>Post hidden by {% sphboard_displayUserName post.annotation.get.author %}:</strong><br/>{{ post.annotation.get.body_escaped }}
+              <strong>{% trans "Post hidden by" %} {% sphboard_displayUserName post.annotation.get.author %}:</strong><br/>{{ post.annotation.get.body_escaped }}
               </div>
             {% else %}
-              <div class="annotation annotation_not_hidden"><strong>Post annotated by {% sphboard_displayUserName post.annotation.get.author %}:</strong> {{ post.annotation.get.body_escaped }}</small></div>
+              <div class="annotation annotation_not_hidden"><strong>{% trans "Post annotated by" %} {% sphboard_displayUserName post.annotation.get.author %}:</strong> {{ post.annotation.get.body_escaped }}</small></div>
               {{ post.body_escaped }}
             {% endif %}
           {% else %}
@@ -103,7 +103,7 @@
           {% with post.attachments.all as allattachments %}
             {% if allattachments|length %}
               <div class="attachments">
-                <strong>Attachments</strong>
+                <strong>{% trans "Attachments" %}</strong>
                 <ul>
 		{% for attachment in allattachments %}
 		  <li><a href="{{ attachment.get_fileupload_url }}" target="_blank">{{ attachment.get_fileupload_filename|sph_basename }}</a> ({{ attachment.get_fileupload_size|filesizeformat }})</li>
@@ -119,9 +119,9 @@
         {% if post.poll %}
           <tr>
             <td colspan='2'>
-              <b>Poll: {{ post.poll.question }}</b><br/><br/>
+              <b>{% trans "Poll:" %} {{ post.poll.question }}</b><br/><br/>
               {% if post.poll.has_voted %}
-                You already voted. Here are the results ({{ post.poll.total_voters }} votes total - {% widthratio post.poll.null_votes post.poll.total_votes 100 %}% did not answer):
+                {% trans "You already voted. Here are the results" %} ({{ post.poll.total_voters }} {% trans "votes total" %} - {% widthratio post.poll.null_votes post.poll.total_votes 100 %}% {% trans "did not answer" %}):
                 <table class="sphboard polls_results">
                   {% for choice in post.poll.choices %}
                     <tr>
@@ -133,28 +133,28 @@
               {% else %}
                 <form method="post" action="../../vote/{{ thread.id }}/">
                 {% if request.attributes.voteerror %}
-                  <strong class="sphboard error">Error: {{ request.attributes.voteerror }}</strong><br/>
+                  <strong class="sphboard error">{% trans "Error:" %} {{ request.attributes.voteerror }}</strong><br/>
                 {% endif %}
                 {% if post.poll.multiplechoice %}
-                  You may select up to {{ post.poll.choices_per_user }} answers:
+                  {% blocktrans with post.poll.choices_per_user as choices_per_user %}You may select up to {{ choices_per_user }} answers: {% endblocktrans %}
                   <ul class="polls_choices">
                     {% for choice in post.poll.choices %}
                       <li><input type="checkbox" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
                     {% endfor %}
-                    <li><input type="checkbox" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">Show Results (You won't be able to vote.)</label></li>
+                    <li><input type="checkbox" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">{% trans "Show Results (You won't be able to vote.)" %}</label></li>
                   </ul>
                 {% else %}
                   <ul class="polls_choices">
                     {% for choice in post.poll.choices %}
                       <li><input type="radio" name="pollchoice" value="{{ choice.id }}" id="pollchoice_{{ choice.id }}" /> <label for="pollchoice_{{ choice.id }}">{{ choice.choice }}</label></li>
                     {% endfor %}
-                    <li><input type="radio" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">Show Results (You won't be able to vote.)</label></li>
+                    <li><input type="radio" name="pollchoice" value="0" id="pollchoice_0" /> <label for="pollchoice_0">{% trans "Show Results (You won't be able to vote.)" %}</label></li>
                   </ul>
                 {% endif %}
                 {% if user.is_authenticated %}
                   <input type="submit" value="Vote" />
                 {% else %}
-                  You need to be logged in to vote.
+                  {% trans "You need to be logged in to vote." %}
                 {% endif %}
                 </form>
               {% endif %}
@@ -169,16 +169,16 @@
   <br/><br/>
   
   {% if allowPosting %}
-    <a href="{{ thread.get_absolute_postreplyurl }}">Post Reply</a>
+    <a href="{{ thread.get_absolute_postreplyurl }}">{% trans "Post Reply" %}</a>
     {# sphboard_displayPostForm thread #}
   {% else %}
     {% if thread.is_closed %}
-      Thread is locked.
+      {% trans "Thread is locked." %}
     {% else %}
       {% if user.is_authenticated %}
-        You have no permission to post a reply.
+        {% trans "You have no permission to post a reply." %}
       {% else %}
-        Please login to post a reply.
+        {% trans "Please login to post a reply." %}
       {% endif %}
     {% endif %}
   {% endif %}

@@ -1,15 +1,18 @@
+{% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
 {% if latestPost %}
   {% ifequal showSubject 1 %}
     <a href="../../thread/{{ latestPost.get_thread.id }}/?page={{ latestPost.get_threadinformation.get_page_count }}">{% sph_truncate latestPost.subject 30 "..." %}</a>
-    at {{ latestPost.postdate|date:"Y-m-d H:i:s" }}<br/>
+    {% blocktrans with latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}at {{ latest_post }}{% endblocktrans %}
+    <br/>
   {% else %}
-    At <a href="../../thread/{{ latestPost.get_thread.id }}/?page={{ latestPost.get_threadinformation.get_page_count }}">{{ latestPost.postdate|date:"Y-m-d H:i:s" }}</a><br/>
+  {% blocktrans with latestPost.get_thread.id as thread_id and latestPost.get_threadinformation.get_page_count as page_count and latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}At <a href="../../thread/{{ thread_id }}/?page={{ page_count }}">{{ latest_post }}</a>{% endblocktrans %}
+  <br/>
   {% endifequal %}
-  By {% sphboard_displayUserName latestPost.author %}
+  {% trans "By" %} {% sphboard_displayUserName latestPost.author %}
 {% else %}
-  No Posts Yet.
+  {% trans "No Posts Yet." %}
 {% endif %}
 
 

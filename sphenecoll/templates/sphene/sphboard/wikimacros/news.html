@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load sph_extras %}
 
 <ul class="news">
@@ -6,7 +7,7 @@
       <div class="subject">{{ thread.postdate|sph_date }}: {{ thread.subject }}</div>
       <div class="body">{{ thread.body_escaped }}</div>
       {% if baseURL %}
-        <div class="comments"><a href="{{ baseURL }}/thread/{{ thread.id }}/">{{ thread.replyCount }} Comments</a></div>
+        <div class="comments"><a href="{{ baseURL }}/thread/{{ thread.id }}/">{{ thread.replyCount }} {% trans "Comments" %}</a></div>
       {% endif %}
     </li>
   {% endfor %}

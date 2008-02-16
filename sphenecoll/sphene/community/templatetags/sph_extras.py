@@ -11,7 +11,7 @@ from sphene.community.middleware import get_current_request
 from sphene.community.sphutils import add_rss_feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-
+from django.utils.translation import ugettext as _
     
 register = template.Library()
 
@@ -260,7 +260,7 @@ def sph_showavatar(user):
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
         
-    return '<img src="%s" width="%dpx" height="%dpx" alt="Users avatar" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height)
+    return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height, _(u'Users avatar'))
 
 @register.inclusion_tag('sphene/community/templatetags/_form.html')
 def sph_form(form, submit = 'Submit' ):
