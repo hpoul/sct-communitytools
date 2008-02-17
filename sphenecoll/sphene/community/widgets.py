@@ -1,5 +1,5 @@
 from django import newforms as forms
-
+from django.conf import settings
 
 class TagWidget(forms.TextInput):
     def render(self, name, value, attrs=None):
@@ -7,7 +7,7 @@ class TagWidget(forms.TextInput):
         attrs['onfocus'] = "%s_init(this);" % ( name )
         widget = super(TagWidget, self).render(name, value, attrs)
         js = """
-<link rel="stylesheet" href="/static/sphene/community/jqac.css" />
+<link rel="stylesheet" href="%(media_url)ssphene/community/jqac.css" />
 <script language="JavaScript">
 <!--
   function %(name)s_get_autocomplete(string, callback) {
@@ -20,5 +20,5 @@ TODO this needs to be finished !! ;)
 */
   }
 //-->
-</script>""" % { 'name': name };
+</script>""" % { 'name': name, 'media_url': settings.MEDIA_URL };
         return "%s%s" % (js, widget)

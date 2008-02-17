@@ -8,6 +8,7 @@ class PermissionDenied(Exception):
 from django.dispatch import dispatcher
 # We can't import it as 'forms' because we've got a package called 'forms' .. how smart.
 from django import newforms as djangoforms
+from django.conf import settings
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphutils import get_sph_setting
@@ -16,8 +17,8 @@ from sphene.community import sphsettings
 
 
 jsincludes = get_sph_setting( 'community_jsincludes', [])
-jsincludes.append('/static/sphene/community/jquery.pack.js')
-jsincludes.append('/static/sphene/community/jquery.autocomplete.js')
+jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery.pack.js')
+jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery.autocomplete.js')
 sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
 
 
