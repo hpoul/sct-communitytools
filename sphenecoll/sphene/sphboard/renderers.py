@@ -3,7 +3,7 @@
 
 from django.conf import settings
 from django.core import exceptions
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from sphene.community.sphutils import get_sph_setting, get_method_by_name
 from sphene.community.templatetags.sph_extras import sph_markdown
@@ -91,9 +91,9 @@ class HtmlRenderer(BaseRenderer):
 
 class MarkdownRenderer(BaseRenderer):
     
-    label = _(u'Markdown')
+    label = ugettext_lazy(u'Markdown')
     
-    reference = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">%s</a>' % (_(u'Markdown'))
+    reference = '<a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">%s</a>' % (ugettext_lazy(u'Markdown'))
 
     def render(self, text):
         return sph_markdown(text)
@@ -155,4 +155,4 @@ def describe_render_choices():
     else:
         desc = choices[0]
 
-    return _('You can use %(description)s in your posts') % {'description':desc}
+    return ugettext_lazy('You can use %(description)s in your posts') % {'description':desc}
