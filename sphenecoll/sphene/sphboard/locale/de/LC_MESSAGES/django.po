@@ -3,14 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-17 02:15+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2008-02-17 02:16+0100\n"
+"Last-Translator: Herbert Poul <herbert.poul@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,26 +17,26 @@ msgstr ""
 
 #: boardforms.py:19
 msgid "-- Select Category --"
-msgstr ""
+msgstr "-- Wähle eine Kategorie --"
 
-#: feeds.py:22 feeds.py:25
+#: feeds.py:22
+#: feeds.py:25
 #, python-format
 msgid "Latest threads in %(obj_name)s"
-msgstr ""
+msgstr "Aktuelle Threads in %(obj_name)s"
 
 #: models.py:869
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
-#: renderers.py:94 renderers.py:96
+#: renderers.py:94
+#: renderers.py:96
 msgid "Markdown"
-msgstr ""
+msgstr "Markdown"
 
 #: renderers.py:122
 #, python-format
-msgid ""
-"Custom renderer '%(renderer)s' needs a matching Render Class entry in your "
-"sphene settings 'board_custom_markup'"
+msgid "Custom renderer '%(renderer)s' needs a matching Render Class entry in your sphene settings 'board_custom_markup'"
 msgstr ""
 
 #: renderers.py:144
@@ -48,35 +47,35 @@ msgstr ""
 #: renderers.py:158
 #, python-format
 msgid "You can use %(description)s in your posts"
-msgstr ""
+msgstr "Sie können %(description)s in Ihrem Post verwenden"
 
 #: views.py:154
 msgid "Subject"
-msgstr ""
+msgstr "Betreff"
 
 #: views.py:155
 msgid "Body"
-msgstr ""
+msgstr "Inhalt"
 
 #: views.py:160
 msgid "Please enter the result of the above calculation."
-msgstr ""
+msgstr "Bitte geben Sie das Ergebnis der obigen Rechnung ein."
 
 #: views.py:181
 msgid "Question"
-msgstr ""
+msgstr "Abstimmungs-Frage"
 
 #: views.py:182
 msgid "Answers (1 per line)"
-msgstr ""
+msgstr "Antworten (1 pro Zeile)"
 
 #: views.py:184
 msgid "Allowed Choices per User"
-msgstr ""
+msgstr "Anzahl der Wahlmöglichkeiten pro Benutzer"
 
 #: views.py:185
 msgid "Enter how many answers a user can select."
-msgstr ""
+msgstr "Geben Sie die Anzahl der Auswahlmöglichkeiten ein die ein Benutzer selektieren kann."
 
 #: views.py:295
 #, python-format
@@ -85,31 +84,31 @@ msgstr ""
 
 #: views.py:337
 msgid "Vote created successfully."
-msgstr ""
+msgstr "Abstimmung wurder erfolgreich erstellt."
 
 #: views.py:341
 msgid "Post edited successfully."
-msgstr ""
+msgstr "Post wurde erfolgreich editiert."
 
 #: views.py:343
 msgid "Post created successfully."
-msgstr ""
+msgstr "Post wurde erfolgreich gespeichert."
 
 #: views.py:431
 msgid "Annotated a users post."
-msgstr ""
+msgstr "Annotation wurde erfolgreich zum Post hinzugefügt."
 
 #: views.py:460
 msgid "Select target category"
-msgstr ""
+msgstr "Wählen Sie die Zielkategorie"
 
 #: views.py:471
 msgid "Please describe why this thread had to be moved. "
-msgstr ""
+msgstr "Bitte erklären Sie, warum thiser Thread verschoben werden muss."
 
 #: views.py:520
 msgid "Moved thread into new category."
-msgstr ""
+msgstr "Thread wurde in die neue Kategorie verschoben."
 
 #: views.py:531
 #, python-format
@@ -130,8 +129,7 @@ msgid "Please only select %(choices)d answers."
 msgstr ""
 
 #: views.py:559
-msgid ""
-"You cannot abstain from voting and at the same time select a valid answer."
+msgid "You cannot abstain from voting and at the same time select a valid answer."
 msgstr ""
 
 #: views.py:568
@@ -166,9 +164,7 @@ msgstr ""
 
 #: templates/sphene/sphboard/_displayLatestPost.html:10
 #, python-format
-msgid ""
-"At <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)"
-"s</a>"
+msgid "At <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)s</a>"
 msgstr ""
 
 #: templates/sphene/sphboard/_displayLatestPost.html:13
@@ -180,8 +176,7 @@ msgid "No Posts Yet."
 msgstr ""
 
 #: templates/sphene/sphboard/_displayPostForm.html:32
-msgid ""
-"You are already receiving email notifications for this thread or category."
+msgid "You are already receiving email notifications for this thread or category."
 msgstr ""
 
 #: templates/sphene/sphboard/_displayPostForm.html:34
@@ -190,35 +185,35 @@ msgstr ""
 
 #: templates/sphene/sphboard/_displayPostForm.html:40
 msgid "Add a poll to this thread"
-msgstr ""
+msgstr "Füge eine Abstimmung zu diesem Thread hinzu"
 
 #: templates/sphene/sphboard/_displayPostForm.html:45
 msgid "Poll"
-msgstr ""
+msgstr "Abstimmung"
 
 #: templates/sphene/sphboard/_displayPostForm.html:59
 msgid "Upload Attachment"
-msgstr ""
+msgstr "Datei an den Post anhängen"
 
 #: templates/sphene/sphboard/_displayPostForm.html:70
 msgid "Upload File"
-msgstr ""
+msgstr "Datei hinzufügen"
 
 #: templates/sphene/sphboard/_displayPostForm.html:75
 msgid "Post"
-msgstr ""
+msgstr "Post"
 
 #: templates/sphene/sphboard/_displayPostForm.html:75
 msgid "Preview"
-msgstr ""
+msgstr "Vorschau"
 
 #: templates/sphene/sphboard/_new_thread_link.html:4
 msgid "Post New Thread"
-msgstr ""
+msgstr "Neuen Thread erstellen"
 
 #: templates/sphene/sphboard/_new_thread_link.html:8
 msgid "You have no permission to create a new thread."
-msgstr ""
+msgstr "Sie haben keine Berechtigung einen neuen Thread zu erstellen."
 
 #: templates/sphene/sphboard/_new_thread_link.html:10
 msgid "Please login to create a new thread."
@@ -226,12 +221,12 @@ msgstr ""
 
 #: templates/sphene/sphboard/_post_authorinfo.html:4
 msgid "Posted by"
-msgstr ""
+msgstr "Geschrieben von"
 
 #: templates/sphene/sphboard/_post_authorinfo.html:8
 #, python-format
 msgid "Registered at %(author_joined)s"
-msgstr ""
+msgstr "Registriert am %(author_joined)s"
 
 #: templates/sphene/sphboard/annotate.html:10
 #, python-format
@@ -260,9 +255,7 @@ msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:16
 #: templates/sphene/sphboard/showThread.html:58
-msgid ""
-"You are currently receiving email notifications on new posts because you "
-"subscribed to a parent category."
+msgid "You are currently receiving email notifications on new posts because you subscribed to a parent category."
 msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:19
@@ -291,8 +284,7 @@ msgid "Last Post"
 msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:47
-msgid ""
-"There are currently no categories. (Or you have no permission to see them.)"
+msgid "There are currently no categories. (Or you have no permission to see them.)"
 msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:62
@@ -305,9 +297,7 @@ msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:75
 #, python-format
-msgid ""
-"Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%"
-"(cat_url)s\">%(cat_name)s</a>."
+msgid "Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%(cat_url)s\">%(cat_name)s</a>."
 msgstr ""
 
 #: templates/sphene/sphboard/listCategories.html:78
@@ -393,11 +383,11 @@ msgstr ""
 
 #: templates/sphene/sphboard/showThread.html:81
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: templates/sphene/sphboard/showThread.html:84
 msgid "Quote"
-msgstr ""
+msgstr "Zitieren"
 
 #: templates/sphene/sphboard/showThread.html:94
 msgid "Post hidden by"
@@ -443,7 +433,7 @@ msgstr ""
 
 #: templates/sphene/sphboard/showThread.html:172
 msgid "Post Reply"
-msgstr ""
+msgstr "Antwort verfassen"
 
 #: templates/sphene/sphboard/showThread.html:176
 msgid "Thread is locked."
@@ -459,4 +449,5 @@ msgstr ""
 
 #: templates/sphene/sphboard/wikimacros/news.html:10
 msgid "Comments"
-msgstr ""
+msgstr "Kommentare"
+

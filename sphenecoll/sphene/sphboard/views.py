@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.template.context import RequestContext
 from django import newforms as forms
 from django.dispatch import dispatcher
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.utils.translation import ugettext
 
 
@@ -151,8 +151,9 @@ def options(request, thread_id, group = None):
     return HttpResponseRedirect( '../../thread/%s/' % thread.id )
 
 class PostForm(forms.Form):
-    subject = forms.CharField()
-    body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
+    subject = forms.CharField( label = ugettext_lazy(u"Subject" ) )
+    body = forms.CharField( label = ugettext_lazy(u"Body"),
+                            widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
                             help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
@@ -177,8 +178,8 @@ class PostForm(forms.Form):
         pass
 
 class PostPollForm(forms.Form):
-    question = forms.CharField()
-    answers = forms.CharField( label = 'Answers (1 per line)',
+    question = forms.CharField( label = ugettext_lazy( u'Question' ) )
+    answers = forms.CharField( label = ugettext_lazy( u'Answers (1 per line)' ),
                                widget = forms.Textarea( attrs = { 'rows': 5, 'cols': 80 } ) )
     choicesPerUser = forms.IntegerField( label = _(u'Allowed Choices per User'),
                                          help_text = _(u'Enter how many answers a user can select.'),
