@@ -1,3 +1,5 @@
+from django.db.models import signals, get_apps, get_models
+
 
 class CategoryType(object):
     """
@@ -92,3 +94,9 @@ def get_category_type_list():
     Returns a list of all known category types.
     """
     return category_type_registry.values()
+
+
+#def __init_category_types():
+#    apps = get_apps()
+#    for app in apps:
+#        mod = __import__(app

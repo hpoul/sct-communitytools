@@ -1,7 +1,6 @@
 
 from django.utils.safestring import mark_safe
 
-
 from sphene.sphboard.models import ExtendedCategoryConfig
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytyperegistry import CategoryType

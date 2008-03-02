@@ -9,7 +9,6 @@ from sphene.sphboard.categorytyperegistry import CategoryType, register_category
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytypes import ExtendedCategoryType, ExtendedPostForm
 #from sphene.sphlinklist.models import LinkListCategoryConfig
-from sphene.sphlinklist.models import LinkListPostExtension
 
 class LinkListPostForm(ExtendedPostForm):
     link = forms.URLField(initial = 'http://', 
@@ -55,6 +54,8 @@ class LinkListCategoryType(ExtendedCategoryType):
     '''
 
     def save_post(self, newpost, data):
+        from sphene.sphlinklist.models import LinkListPostExtension
+
         super(LinkListCategoryType, self).save_post(newpost, data)
         if newpost.thread is not None:
             return

@@ -96,6 +96,14 @@ def do_changelog(app, created_models, verbosity, **kwargs):
                 sqlstmt = 'UPDATE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
+            elif changetype == 'sqltable':
+                sqlstmt = stmt % { 'tablename': connection.ops.quote_name(clazz._meta.db_table), }
+                sql += (sqlstmt,)
+                print "%s: SQL Statement: %s" % (date, sqlstmt)
+            elif changetype == 'sql':
+                sqlstmt = stmt
+                sql += (sqlstmt,)
+                print "%s: SQL Statement: %s" % (date, sqlstmt)
             elif changetype == 'comment':
                 print "%s: !!! Important Comment: %s" % (date, stmt)
             else:
