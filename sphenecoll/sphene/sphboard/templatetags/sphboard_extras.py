@@ -9,6 +9,7 @@ from sphene.community.sphutils import get_sph_setting
 from sphene.sphboard.models import Post, BoardUserProfile
 from sphene.sphboard.views import PostForm
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
+from django.template.context import Context
 
 register = template.Library()
 
@@ -34,8 +35,9 @@ def sphboard_displayCategories(context, categories, maxDepth = 5, level = -1 ):
     ret = {'categories': categories,
            'level'     : level + 1,
            'maxDepth'  : maxDepth}
-    context.update(ret)
-    return context
+    retctx = Context(context)
+    retctx.update(ret)
+    return retctx
 
 @register.inclusion_tag('sphene/sphboard/_displayLatestPost.html')
 def sphboard_latestPost( latestPost, showSubject = 1 ):
