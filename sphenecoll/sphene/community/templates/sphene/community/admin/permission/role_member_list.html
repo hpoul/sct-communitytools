@@ -1,27 +1,27 @@
 {% extends "sphene/community/admin/permission/base.html" %}
-
+{% load i18n %}
 {% load sph_extras %}
 
 {% block content %}
   {{ block.super }}
 
-Members of the role '{{ role.name }}'.<br/><br/>
+{% blocktrans %}Members of the role '{{ role.name }}'.{% endblocktrans %}<br/><br/>
 
 <table>
   <tr>
     <th>&nbsp;</th>
-    <th>User</th>
-    <th>Limitations</th>
+    <th>{% trans "User" %}</th>
+    <th>{% trans "Limitations" %}</th>
   </tr>
   {% for member in members %}
     <tr>
-      <td class="sph_options">[ <a href="?cmd=remove&amp;id={{ member.id }}">Remove</a> ]</td>
+      <td class="sph_options">[ <a href="?cmd=remove&amp;id={{ member.id }}">{% trans "Remove" %}</a> ]</td>
       <td>{% sph_html_user member.user %}</td>
       <td>{{ member.get_limitations_string }}</td>
     </tr>
   {% endfor %}
 </table><br/><br/>
 
-<a href="{{ role.get_absolute_memberaddurl }}">Add Member</a>
+<a href="{{ role.get_absolute_memberaddurl }}">{% trans "Add Member" %}</a>
 
 {% endblock %}

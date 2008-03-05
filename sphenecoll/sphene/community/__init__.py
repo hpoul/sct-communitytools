@@ -1,8 +1,5 @@
-
 class PermissionDenied(Exception):
     pass
-
-
 
 
 from django.dispatch import dispatcher
@@ -14,7 +11,8 @@ from sphene.community.signals import profile_edit_init_form, profile_edit_save_f
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
 from sphene.community import sphsettings
-
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 jsincludes = get_sph_setting( 'community_jsincludes', [])
 jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery.pack.js')
@@ -36,7 +34,7 @@ def clean_community_advprofile_avatar(self):
     size = len(self.cleaned_data['community_advprofile_avatar'].content)
     max_size = get_sph_setting( 'community_avatar_max_size' )
     if size > max_size:
-        raise djangoforms.ValidationError( "Max upload filesize of %d bytes exceeded. (Your file had %d bytes)" % (max_size, size) )
+        raise djangoforms.ValidationError( _(u"Max upload filesize of %{max_size}d bytes exceeded. (Your file had %{size}d bytes)") % {'max_size':max_size, 'size':size} )
 
     from PIL import Image
     from cStringIO import StringIO
@@ -54,7 +52,7 @@ def clean_community_advprofile_avatar(self):
             raise djangoforms.ValidationError( "Max size of %dx%d exceeded (Your upload was %dx%d)" % (max_width, max_height, width, height) )
         
     except IOError:
-        raise ValidationError( "Uploaded an invalid image." )
+        raise ValidationError( _(u"Uploaded an invalid image.") )
     
     return f
 
@@ -66,9 +64,9 @@ def community_advprofile_edit_init_form(sender, instance, signal, *args, **kwarg
         profile = CommunityUserProfile( user = user, )
 
     if profile.avatar:
-        instance.fields['community_advprofile_avatar_remove'] = djangoforms.BooleanField( label = 'Delete avatar', required = False )
+        instance.fields['community_advprofile_avatar_remove'] = djangoforms.BooleanField( label = _(u'Delete avatar'), required = False )
 
-    instance.fields['community_advprofile_avatar'] = djangoforms.ImageField( label = 'Avatar', required = False, )
+    instance.fields['community_advprofile_avatar'] = djangoforms.ImageField( label = _(u'Avatar'), required = False, )
     instance.clean_community_advprofile_avatar = lambda : clean_community_advprofile_avatar(instance)
 
 def community_advprofile_edit_save_form(sender, instance, signal, request):
@@ -115,7 +113,7 @@ def community_advprofile_display(sender, signal, request, user):
     
     ret = ''
 
-    ret = '<tr><th>Avatar</th><td><img src="%s" width="%dpx" height="%dpx" alt="Users avatar"></img></td></tr>' % (avatar, avatar_width, avatar_height)
+    ret = '<tr><th>%s</th><td><img src="%s" width="%dpx" height="%dpx" alt="%s"></img></td></tr>' % (_(u'Avatar'), avatar, avatar_width, avatar_height, _(u'Users avatar'))
     
     return ret
 

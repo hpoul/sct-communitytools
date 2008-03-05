@@ -5,6 +5,7 @@ from django.core import exceptions
 from django.core.urlresolvers import reverse
 from sphene.community.middleware import get_current_request, get_current_sphdata
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
+from django.utils.translation import ugettext as _
 import logging
 
 logger = logging.getLogger('sphene.community.sphutils')
@@ -20,7 +21,7 @@ def get_urlconf():
 def get_fullusername(value):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
-    if not value: return "Anonymous"
+    if not value: return _(u"Anonymous")
     if not value.first_name or not value.last_name:
         return value.username
     return "%s %s" % (value.first_name, value.last_name)
@@ -92,7 +93,7 @@ from django import newforms as forms
 class CaptchaInputWidget(forms.widgets.TextInput):
 
     def render(self, name, value, attrs=None):
-        return u'<span class="sph_captcha"><img src="%s" alt="Captcha Input" /> %s</span>' % (value, super(CaptchaInputWidget, self).render(name, None, attrs))
+        return u'<span class="sph_captcha"><img src="%s" alt="%s" /> %s</span>' % (value, _(u'Captcha input'), super(CaptchaInputWidget, self).render(name, None, attrs))
 
 class CaptchaWidget(forms.widgets.MultiWidget):
     def __init__(self, attrs=None):
@@ -122,7 +123,7 @@ class CaptchaField(forms.fields.MultiValueField):
             pass
 
         if intval is None or not validate_captcha(value[0], int(value[1])):
-            raise forms.ValidationError(u'Invalid Captcha response.')
+            raise forms.ValidationError(_(u'Invalid Captcha response.'))
         
     def compress(self, data_list):
         return None

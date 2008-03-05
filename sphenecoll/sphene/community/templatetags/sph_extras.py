@@ -12,6 +12,7 @@ from sphene.community.sphutils import add_rss_feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
     
 register = template.Library()
 
@@ -263,7 +264,7 @@ def sph_showavatar(user):
     return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height, _(u'Users avatar'))
 
 @register.inclusion_tag('sphene/community/templatetags/_form.html')
-def sph_form(form, submit = 'Submit' ):
+def sph_form(form, submit = ugettext_lazy(u'Submit') ):
     return { 'form': form,
              'submit': submit, }
 

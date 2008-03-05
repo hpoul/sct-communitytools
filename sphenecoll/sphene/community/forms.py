@@ -12,13 +12,18 @@ class Separator(forms.Field):
         return True
 
 class EditProfileForm(forms.Form):
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-    email_address = forms.CharField()
+    first_name = forms.CharField(label=_(u'First name'))
+    last_name = forms.CharField(label=_(u'Last name'))
+    email_address = forms.CharField(label=_(u'Email address'))
 
-    change_password = Separator( help_text = _(u'To modify your password fill out the following three fields.') )
-    current_password = forms.CharField( widget = forms.PasswordInput(), required = False )
-    new_password = forms.CharField( widget = forms.PasswordInput(), required = False )
+    change_password = Separator(label=_(u'Change password'),
+                                help_text = _(u'To modify your password fill out the following three fields.') )
+    current_password = forms.CharField(widget = forms.PasswordInput(), 
+                                       label=_(u'Current password'),
+                                       required = False)
+    new_password = forms.CharField(widget = forms.PasswordInput(), 
+                                   label=_(u'New password'),
+                                   required = False )
     repassword = forms.CharField( widget = forms.PasswordInput(),
                                   label = _(u'Retype your new password'),
                                   required = False )
@@ -39,7 +44,7 @@ class EditProfileForm(forms.Form):
         password = self.cleaned_data['new_password']
         repassword = self.cleaned_data['repassword']
         if not password == repassword:
-            raise forms.ValidationError(('Passwords do not match.'))
+            raise forms.ValidationError(_(u'Passwords do not match.'))
         return self.cleaned_data
     
 

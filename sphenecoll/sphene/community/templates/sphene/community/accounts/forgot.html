@@ -1,13 +1,14 @@
 {% extends "sphene/community/base.html" %}
+{% load i18n %}
 
 {% block content %}
-If you have forgotten your username or password, you can enter your
+{% blocktrans %}If you have forgotten your username or password, you can enter your
 email address here. You will then receive your username and a newly
-generated password by email.<br/><br/>
+generated password by email.{% endblocktrans %}<br/><br/>
 <form method="POST" action=".">
   <table>
     {{ form }}
   </table>
-  <input type="submit" value="Send" />
+  <input type="submit" value="{% trans "Send" %}" />
 </form>
 {% endblock %}

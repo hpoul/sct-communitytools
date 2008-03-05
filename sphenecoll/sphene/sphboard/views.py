@@ -604,6 +604,3 @@ def catchup(request, group, category_id):
     req = HttpResponseRedirect( '../../show/%s/' % category_id )
     req.sph_lastmodified = True
     return req
-
-
-

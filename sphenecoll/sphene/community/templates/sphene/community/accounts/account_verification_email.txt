@@ -1,16 +1,16 @@
-You have requested to register with the email address:
+{% load i18n %}
+{% blocktrans %}You have requested to register with the email address:
       {{ email }} 
-on the {{ group.get_name }} website.
-
+on the {{ group.get_name }} website.{% endblocktrans %}
+{% blocktrans %}
 To continue registration visit the following link:
-http://{{ baseurl }}/accounts/register/{{ validationcode }}/
+http://{{ baseurl }}/accounts/register/{{ validationcode }}/{% endblocktrans %}
 
 
-
+{% blocktrans %}
 Thanks for your interest,
   Your {{ group.get_name }} Team.
+{% endblocktrans %}
 
 
-
-
-If you did not make this request you can safely ignore this email.
+{% blocktrans %}If you did not make this request you can safely ignore this email.{% endblocktrans %}

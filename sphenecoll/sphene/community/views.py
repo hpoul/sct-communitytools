@@ -25,7 +25,7 @@ from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 
 class RegisterEmailAddress(forms.Form):
-    email_address = forms.EmailField()
+    email_address = forms.EmailField(label=_(u'Email address'))
     
     def clean(self):
         if 'email_address' not in self.cleaned_data:
@@ -49,7 +49,7 @@ def accounts_logout(request, group = None):
 
 
 class ForgotUsernamePassword(forms.Form):
-    email_address = forms.EmailField()
+    email_address = forms.EmailField(label=_(u'Email address'))
 
     def clean_email_address(self):
         try:
@@ -135,10 +135,13 @@ def register(request, group = None):
 username_re = r'^\w+$'
 
 class RegisterForm(forms.Form):
-    username = forms.RegexField( username_re )
-    email_address = forms.CharField( widget = forms.TextInput( attrs = { 'disabled': 'disabled' } ) )
-    password = forms.CharField( widget = forms.PasswordInput )
-    repassword = forms.CharField( label = _(u'Verify Password'), widget = forms.PasswordInput )
+    username = forms.RegexField( username_re, label=_(u'Username'))
+    email_address = forms.CharField(label=_(u'Email address'),
+                                    widget = forms.TextInput(attrs={'disabled': 'disabled'}))
+    password = forms.CharField(label=_(u'Password'),
+                               widget = forms.PasswordInput )
+    repassword = forms.CharField(label=_(u'Verify Password'),
+                                 widget = forms.PasswordInput )
 
     def clean(self):
         if not 'password' in self.cleaned_data or not 'repassword' in self.cleaned_data:

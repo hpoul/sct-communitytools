@@ -1,12 +1,12 @@
 {% extends "sphene/community/admin/base.html" %}
-
+{% load i18n %}
 {% load sph_extras %}
 
 {% block content %}
 
-<a href="{% sph_url 'community_admin_permission_role_list' %}">Role List</a>
+<a href="{% sph_url 'community_admin_permission_role_list' %}">{% trans "Role List" %}</a>
 {% if role %}
-  &gt;&gt; <a href="{{ role.get_absolute_rolememberlist }}">Members</a>
+  &gt;&gt; <a href="{{ role.get_absolute_rolememberlist }}">{% trans "Members" %}</a>
 {% endif %}<br/><br/>
 
 {% endblock %}

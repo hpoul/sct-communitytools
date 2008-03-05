@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
+from django.utils.translation import ugettext as _
 import logging
 
 logger = logging.getLogger('sphene.community.models')
@@ -331,8 +332,9 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
     except CommunityUserProfile.DoesNotExist:
         profile = CommunityUserProfile( user = user, )
         
-    instance.fields['community_settings'] = Separator()
-    instance.fields['public_emailaddress'] = forms.CharField( required = False,
+    instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
+    instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),
+                                                              required = False,
                                                               initial = profile.public_emailaddress )
 
     fields = CommunityUserProfileField.objects.all()
@@ -380,7 +382,7 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
         else:
             if value.id: value.delete()
     
-    request.user.message_set.create( message = "Successfully saved community profile." )
+    request.user.message_set.create( message = _("Successfully saved community profile.") )
 
 def community_profile_display(sender, signal, request, user):
     try:

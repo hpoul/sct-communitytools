@@ -25,7 +25,7 @@ from django.template import loader, Context
 from django.core.cache import cache
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 from renderers import POST_MARKUP_CHOICES, render_body
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 import logging
 
 logger = logging.getLogger('sphene.sphboard.models')
@@ -866,7 +866,7 @@ class Post(models.Model):
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
     # This is only blank so the form does not throw errors when it was not entered !
-    fileupload = models.FileField( _('File'),
+    fileupload = models.FileField( _(u'File'),
                                    upload_to = get_sph_setting( 'board_attachments_upload_to' ),
                                    blank = True )
 
@@ -1260,15 +1260,16 @@ def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
     except:
         profile = BoardUserProfile( user = user )
 
-    instance.fields['board_settings'] = Separator()
-    instance.fields['signature'] = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 3, 'cols': 40 } ),
-                                                    required = False,
-                                                    initial = profile.signature, )
+    instance.fields['board_settings'] = Separator(label=_(u'Board settings'))
+    instance.fields['signature'] = forms.CharField(label=_(u'Signature'), 
+                                                   widget = forms.Textarea( attrs = { 'rows': 3, 'cols': 40 } ),
+                                                   required = False,
+                                                   initial = profile.signature, )
     if len( POST_MARKUP_CHOICES ) != 1:
-        instance.fields['markup'] = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ),
-                                                     required = False,
-                                                     initial = profile.markup, )
-    instance.fields['default_notifyme_value'] = forms.NullBooleanField( label = 'Default Notify Me - Value',
+        instance.fields['markup'] = forms.CharField(widget = forms.Select( choices = POST_MARKUP_CHOICES, ),
+                                                    required = False,
+                                                    initial = profile.markup, )
+    instance.fields['default_notifyme_value'] = forms.NullBooleanField( label = _(u'Default Notify Me - Value'),
                                                                         required = False,
                                                                         initial = profile.default_notifyme_value, )
 
@@ -1288,7 +1289,7 @@ def board_profile_edit_save_form(sender, instance, signal, request):
     profile.default_notifyme_value = data['default_notifyme_value']
 
     profile.save()
-    request.user.message_set.create( message = "Successfully saved board profile." )
+    request.user.message_set.create( message = ugettext_lazy(u"Successfully saved board profile.") )
 
 def board_profile_display(sender, signal, request, user):
     try:
@@ -1297,7 +1298,7 @@ def board_profile_display(sender, signal, request, user):
         return None
 
     if profile.signature:
-        return '<tr><th colspan="2">Board Signature</th></tr><tr><td colspan="2">%s</td></tr>' % profile.render_signature()
+        return '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (_('Board Signature'), profile.render_signature())
     return None
 
 dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)

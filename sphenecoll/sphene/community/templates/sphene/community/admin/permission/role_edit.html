@@ -1,5 +1,5 @@
 {% extends "sphene/community/admin/permission/base.html" %}
-
+{% load i18n %}
 
 {% block content %}
 {{ block.super }}
@@ -8,7 +8,7 @@
     {{ form }}
 
     <tr>
-      <td colspan="2"><input type="submit" value="Store" /></td>
+      <td colspan="2"><input type="submit" value="{% trans "Store" %}" /></td>
     </tr>
   </table>
 </form>
