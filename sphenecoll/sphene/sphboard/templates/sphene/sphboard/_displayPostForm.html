@@ -9,7 +9,7 @@
      if(document.postform.markup) {
        markup = "&markup=" + encodeURIComponent( document.postform.markup.value );
      }
-     showResponseInElement( 'previewarea', gettext('Loading Preview ....'), "type=preview" + markup + "&body=" + encodeURIComponent( document.postform.body.value ) );
+     showResponseInElement( 'previewarea', '{% trans "Loading Preview ..." %}', "type=preview" + markup + "&body=" + encodeURIComponent( document.postform.body.value ) );
    }
   //-->
   </script>
