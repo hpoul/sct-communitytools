@@ -33,7 +33,7 @@ class Group(models.Model):
         except GroupMember.DoesNotExist:
             return None
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name;
 
     class Admin:
@@ -51,7 +51,7 @@ class Theme(models.Model):
         name = models.CharField(max_length = 250)
         path = models.CharField(max_length = 250)
 
-        def __str__(self):
+        def __unicode__(self):
                 return self.name;
 
         class Admin:
@@ -76,7 +76,7 @@ class Navigation(models.Model):
         navigationType = models.IntegerField( default = 0, choices = NAVIGATION_TYPES )
 
 
-        def __str__(self):
+        def __unicode__(self):
                 return self.label
 
         class Meta:

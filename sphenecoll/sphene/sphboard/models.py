@@ -381,7 +381,7 @@ class Category(models.Model):
                         kwargs = { 'groupName': self.group.name,
                                    'url': 'latest/%d' % self.id } )
     
-    def __str__(self):
+    def __unicode__(self):
         return self.name;
 
     class Meta:
@@ -834,7 +834,7 @@ class Post(models.Model):
         
         return ret
 
-    def __str__(self):
+    def __unicode__(self):
         return self.subject
 
     def get_absolute_url(self):

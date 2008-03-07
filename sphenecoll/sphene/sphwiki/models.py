@@ -165,7 +165,7 @@ class WikiSnip(models.Model):
         self.changed = datetime.today()
         super(WikiSnip, self).save()
 
-    def __str__(self):
+    def __unicode__(self):
         if not self.group: return self.name;
         return '%s (%s)' % (self.name, self.group.name)
 
@@ -340,7 +340,7 @@ class WikiAttachment(models.Model):
         self.uploaded = datetime.today()
         super(WikiAttachment, self).save()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.fileupload
 
     class Admin:
