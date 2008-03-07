@@ -83,7 +83,7 @@ class Navigation(models.Model):
                 ordering = ['sortorder']
 
         class Admin:
-                list_display = ( 'label', 'group', 'href', 'navigationType' )
+                list_display = ( 'label', 'group', 'href', 'navigationType', sortorder )
                 list_filter = ( 'group', 'navigationType' )
                 ordering = ['group', 'navigationType', 'sortorder']
         
