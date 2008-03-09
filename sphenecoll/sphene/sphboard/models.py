@@ -635,7 +635,7 @@ class Post(models.Model):
         return self._allow_adminfunctionality( 'sphboard_stick', user )
 
     def __get_render_cachekey(self):
-        return 'sphboard_rendered_body_%d' % self.id
+        return 'sphboard_rendered_body_%s' % str(self.id)
 
     def body_escaped(self):
         """ returns the rendered body. """
