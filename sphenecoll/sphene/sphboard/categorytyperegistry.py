@@ -93,6 +93,13 @@ class CategoryType(object):
         return None
 
 
+    def append_edit_message_to_post(self, post):
+        """
+        Determines if an 'edit message' should be appended to a post the user has just 
+        modified.
+        """
+        return True
+
 category_type_registry = { }
 initialized = False
 

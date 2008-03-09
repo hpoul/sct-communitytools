@@ -77,4 +77,6 @@ class BlogCategoryType(CategoryType):
     def get_absolute_url_for_post(self, post):
         return post.blogpostextension_set.get().get_absolute_url()
 
+    def append_edit_message_to_post(self, post):
+        return post.thread is not None
 

@@ -291,7 +291,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 newpost.body = data['body']
                 # make post visible
                 newpost.is_hidden = 0
-                if not post.is_new():
+                if not post.is_new() and category_type.append_edit_message_to_post(post):
                     newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_fullusername( request.user ), 'edit_date':format_date( datetime.today())}
             else:
                 newpost = Post( category = category,
