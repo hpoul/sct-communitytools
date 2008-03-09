@@ -76,6 +76,5 @@ class LinkListCategoryType(ExtendedCategoryType):
 
 def doinit():
     """ This method is called from __init__.py """
-    print "initializing linklist category type ..."
     register_category_type(LinkListCategoryType)
 
