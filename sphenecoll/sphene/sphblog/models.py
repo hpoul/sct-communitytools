@@ -3,6 +3,7 @@
 
 from django.db import models
 
+from sphene.community.models import tag_get_labels
 from sphene.community.sphutils import sphpermalink as permalink
 from sphene.community.middleware import get_current_request
 from sphene.sphboard.models import Post
@@ -23,6 +24,9 @@ class BlogPostExtension(models.Model):
     # It is just important that this info gets populated to the Posts 'is_hidden' attribute.
     status = models.IntegerField( choices = BLOG_POST_STATUS_CHOICES )
     slug = models.CharField( max_length = 250, unique = True, db_index = True)
+
+    def get_tag_labels(self):
+        return tag_get_labels(self.post)
 
     def get_absolute_url(self):
         post = self.post

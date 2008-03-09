@@ -1,17 +1,31 @@
 {% extends "sphene/sphblog/base.html" %}
 
 {% load sph_extras %}
+{% load i18n %}
+
+{% block subtitle %}
+  {% if tag %}
+    {{ tag.name }}
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
 
 {% block content %}
+
   {% if allowpostcategories %}
-    <form method="POST" name="postthread" action="{% sph_url 'sphblog_postthread' %}">
+    <form method="post" name="postthread" action="{% sph_url 'sphblog_postthread' %}">
       <select name="category">
 	{% for category in allowpostcategories %}
 	  <option value="{{ category.id }}">{{ category.name }}</option>
 	{% endfor %}
       </select>
-      <input type="submit" value="Submit new Post" />
+      <input type="submit" value="{% trans "Submit new Post" %}" />
     </form>
+  {% endif %}
+
+  {% if tag %}
+    <p class="sphtagheader">{% trans "Tag" %}: {{ tag.name }} / <a href="{% sph_url2 sphblog_index %}">{% trans "Back" %}</a></p>
   {% endif %}
 
   {% for thread in threads %}
@@ -24,10 +38,23 @@
 	{{ thread.body_escaped }}
       </div>
       <div class="entrydetails">
-	<a href="{{ blogpost.get_absolute_url }}">{{ thread.threadinformation_set.get.post_count|add:"-1" }} Comments</a>
+        <p class="sphtags">{% trans "Assigned Tags:" %} {% for tag_label in blogpost.get_tag_labels %}<a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag_label.tag.name %}" class="sphtag">{{ tag_label.label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with thread.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>
       </div>
     {% endwith %}
   {% endfor %}
-  <br/><br/><br/>
-  <a href="{{ blog_feed_url }}">RSS Feed</a>
+
+  {% if all_tags %}
+    <div class="sph_all_tags">
+      <strong>{% trans "All used Tags:" %}</strong>
+      <ul>
+      {% for tag in all_tags %}
+        <li><a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag.name%}">{{ tag.name }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  <p>
+    <a href="{% sph_url2 sphblog-feeds "latestposts" %}">{% trans "RSS Feed" %}</a>
+  </p>
 {% endblock %}

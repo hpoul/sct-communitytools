@@ -51,7 +51,7 @@ class MultiHostMiddleware:
                         urlconf_params[key] = value
                     break
             if not urlconf:
-                print "Unable to find urlconf !!!"
+                print "Unable to find urlconf for %s / map: %s !!!" % (host, str(settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP))
                 return
             while 'alias' in urlconf:
                 urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[urlconf['alias']]

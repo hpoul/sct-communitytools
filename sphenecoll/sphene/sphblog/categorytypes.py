@@ -1,6 +1,7 @@
 from django import newforms as forms
 from django.utils.safestring import mark_safe
 
+from sphene.community.models import Tag, TagLabel, TaggedItem, tag_set_labels, tag_get_labels
 from sphene.community.fields import TagField
 from sphene.community.widgets import TagWidget
 
@@ -8,6 +9,7 @@ from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
 from sphene.sphblog.models import BlogPostExtension, BLOG_POST_STATUS_CHOICES
 from sphene.sphblog.utils import slugify
+
 
 class BlogPostForm(PostForm):
     slug = forms.CharField(required = False,
@@ -24,12 +26,23 @@ class BlogPostForm(PostForm):
             slug = slugify(self.cleaned_data['subject'])
         else:
             try:
-                BlogPostExtension.objects.get( slug__exact = slug )
-                raise forms.ValidationError( 'Slug is already in use.' )
+                ext = BlogPostExtension.objects.get( slug__exact = slug )
+                if ext.id != self.__ext_id:
+                    raise forms.ValidationError( 'Slug is already in use.' )
             except BlogPostExtension.DoesNotExist:
                 # Everything all-right
                 pass
         return slug
+
+    def init_for_category_type(self, category_type, post):
+        self.__ext_id = None
+        super(BlogPostForm, self).init_for_category_type(category_type, post)
+        if post:
+            ext = post.blogpostextension_set.get()
+            self.__ext_id = ext.id
+            self.fields['tags'].initial = tag_get_labels(post)
+            self.fields['slug'].initial = ext.slug
+            self.fields['status'].initial = ext.status
 
 
 class BlogCategoryType(CategoryType):
@@ -53,16 +66,15 @@ class BlogCategoryType(CategoryType):
         except BlogPostExtension.DoesNotExist:
             ext = BlogPostExtension( post = newpost, )
 
+
         ext.slug = data['slug']
         ext.status = data['status']
         ext.save()
 
+        tag_set_labels( newpost, data['tags'] )
+
+
     def get_absolute_url_for_post(self, post):
         return post.blogpostextension_set.get().get_absolute_url()
 
-
-def doinit():
-    """ This method is called from __init__.py """
-    print "initializing linklist category type ..."
-    register_category_type(BlogCategoryType)
 

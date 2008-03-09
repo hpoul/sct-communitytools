@@ -4,7 +4,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
 from django.utils.translation import ugettext as _
+from django.db import connection
 import logging
+import re
 
 logger = logging.getLogger('sphene.community.models')
 
@@ -270,6 +272,74 @@ class RoleMemberLimitation(models.Model):
 ###    http://code.google.com/p/django-tagging/
 ### (but because of various reasons - e.g. that i want tags separated by group - 
 ###  i decided to implement tagging from scratch)
+
+tag_sanitize_regex = re.compile(r'[^\w]+', re.S | re.U)
+
+def tag_sanitize(tag_label):
+    return tag_sanitize_regex.sub('', tag_label).lower()
+
+def tag_set_labels(model_instance, tag_labels):
+    """
+    sets the tags of the given model_instance (which must exists already!)
+    to the given tag labels (which must be TagLabel models.)
+    - removes all existing tags.
+    """
+
+    # First remove existing tag labels
+    model_type = ContentType.objects.get_for_model(model_instance)
+    TaggedItem.objects.filter( content_type__pk = model_type.id,
+                               object_id = model_instance.id, ).delete()
+
+    for tag_label in tag_labels:
+        t = TaggedItem( object = model_instance,
+                        tag_label = tag_label )
+        t.save()
+
+
+def tag_get_labels(model_instance):
+    """
+    returns all TagLabel objects for the given model_instance.
+    """
+    model_type = ContentType.objects.get_for_model(model_instance)
+    tagged_items = TaggedItem.objects.filter( content_type__pk = model_type.id,
+                                              object_id = model_instance.id, )
+
+    tag_labels = list()
+    for tagged_item in tagged_items:
+        tag_labels.append( tagged_item.tag_label )
+
+    return tag_labels
+
+qn = connection.ops.quote_name
+
+def get_queryset_and_model(queryset_or_model):
+    try:
+        return queryset_or_model, queryset_or_model.model
+    except AttributeError:
+        return queryset_or_model._default_manager.all(), queryset_or_model
+
+def tag_get_models_by_tag(queryset_or_model, tag):
+    # pretty much copied from django-tagging
+    queryset, model = get_queryset_and_model(queryset_or_model)
+    content_type = ContentType.objects.get_for_model(model)
+    opts = TaggedItem._meta
+    tagged_item_table = qn(opts.db_table)
+    tag_label_table = qn(TagLabel._meta.db_table)
+    return queryset.extra(
+        tables=[TaggedItem._meta.db_table,
+               TagLabel._meta.db_table, ],
+        where=[
+            '%s.content_type_id = %%s' % tagged_item_table,
+            '%s.tag_id = %%s' % tag_label_table,
+            '%s.tag_label_id = %s.%s' % (tagged_item_table,
+                                         tag_label_table,
+                                         TagLabel._meta.pk.column),
+            '%s.%s = %s.object_id' % (qn(model._meta.db_table),
+                                      qn(model._meta.pk.column),
+                                      tagged_item_table)
+            ],
+        params=[content_type.pk, tag.pk],
+        )
 
 class Tag(models.Model):
     """

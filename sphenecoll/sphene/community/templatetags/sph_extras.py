@@ -7,7 +7,7 @@ from sphene.community.sphutils import HTML, get_sph_setting
 
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
-from sphene.community.middleware import get_current_request
+from sphene.community.middleware import get_current_request, get_current_sphdata
 from sphene.community.sphutils import add_rss_feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
@@ -214,6 +214,47 @@ def sph_basename(value):
 @register.filter
 def sph_dictget(value, param):
     return value.get(param, '')
+
+
+from django.template import defaulttags, Node
+from django.utils.encoding import smart_str
+
+class SphURLNode(Node):
+    " copied from django.template.defaulttags "
+    def __init__(self, view_name, args, kwargs):
+        self.view_name = view_name
+        self.args = args
+        self.kwargs = kwargs
+
+    def render(self, context):
+        from django.core.urlresolvers import reverse, NoReverseMatch
+        args = [arg.resolve(context) for arg in self.args]
+        kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
+                       for k, v in self.kwargs.items()])
+
+        if not 'groupName' in kwargs:
+            kwargs['groupName'] = get_current_group().name
+
+        req = get_current_request()
+        urlconf = getattr(req, 'urlconf', None)
+
+        try:
+            return reverse(self.view_name, urlconf=urlconf,
+                           args=args, kwargs=kwargs)
+        except NoReverseMatch:
+            try:
+                project_name = settings.SETTINGS_MODULE.split('.')[0]
+                return reverse(project_name + '.' + self.view_name,
+                               urlconf=urlconf,
+                               args=args, kwargs=kwargs)
+            except NoReverseMatch:
+                return ''
+
+def sph_url2(*args, **kwargs):
+    node = defaulttags.url(*args, **kwargs)
+    return SphURLNode(node.view_name, node.args, node.kwargs)
+sph_url2 = register.tag(sph_url2)
+
 
 @register.simple_tag
 def sph_url(view):

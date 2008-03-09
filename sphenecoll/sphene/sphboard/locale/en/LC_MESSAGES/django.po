@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-17 02:15+0100\n"
+"POT-Creation-Date: 2008-03-09 14:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,28 @@ msgstr ""
 msgid "Latest threads in %(obj_name)s"
 msgstr ""
 
-#: models.py:869
+#: models.py:909
 msgid "File"
+msgstr ""
+
+#: models.py:1303
+msgid "Board settings"
+msgstr ""
+
+#: models.py:1304
+msgid "Signature"
+msgstr ""
+
+#: models.py:1312
+msgid "Default Notify Me - Value"
+msgstr ""
+
+#: models.py:1332
+msgid "Successfully saved board profile."
+msgstr ""
+
+#: models.py:1341
+msgid "Board Signature"
 msgstr ""
 
 #: renderers.py:94 renderers.py:96
@@ -177,6 +197,10 @@ msgstr ""
 
 #: templates/sphene/sphboard/_displayLatestPost.html:15
 msgid "No Posts Yet."
+msgstr ""
+
+#: templates/sphene/sphboard/_displayPostForm.html:12
+msgid "Loading Preview ..."
 msgstr ""
 
 #: templates/sphene/sphboard/_displayPostForm.html:32

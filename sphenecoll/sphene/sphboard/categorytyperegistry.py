@@ -1,10 +1,31 @@
 from django.db.models import signals, get_apps, get_models
+from django.conf import settings
+
+
+class CategoryTypeBase(type):
+    "Metaclass for all category types"
+    def __new__(cls, name, bases, attrs):
+        # If this isn't a subclass of Model, don't do anything special.
+        new_class = super(CategoryTypeBase, cls).__new__(cls, name, bases, attrs)
+        try:
+            parents = [b for b in bases if issubclass(b, CategoryType)]
+            if not parents:
+                return new_class
+        except NameError:
+            # 'Model' isn't defined yet, meaning we're looking at Django's own
+            # Model class, defined below.
+            return new_class
+
+        register_category_type(new_class)
+        return new_class
 
 
 class CategoryType(object):
     """
     Base class for all category types.
     """
+
+    __metaclass__ = CategoryTypeBase
 
     # The name uniqueley identifies this category type.
     name = None
@@ -73,6 +94,7 @@ class CategoryType(object):
 
 
 category_type_registry = { }
+initialized = False
 
 
 def register_category_type(category_type):
@@ -87,16 +109,37 @@ def get_category_type(category_type_name):
     Returns the CategoryType instance for the given type name,
     or None if it is not known.
     """
+    __assure_initialized();
     return category_type_registry.get(category_type_name, None)
 
 def get_category_type_list():
     """
     Returns a list of all known category types.
     """
+    __assure_initialized();
     return category_type_registry.values()
 
+def __assure_initialized():
+    if not initialized: #category_type_registry:
+        __init_category_types()
 
-#def __init_category_types():
+def __init_category_types():
+    # for now use settings.INSTALLED_APPS
+    # but in the end we should better use get_apps() ?
+
+    for app_name in settings.INSTALLED_APPS:
+        mod = __import__(app_name, {}, {}, ['categorytypes'])
+        if hasattr(mod, 'categorytypes'):
+            initialized = True
+            #print "We found categorytypes in %s" % app_name
+
+
 #    apps = get_apps()
 #    for app in apps:
+#        try:
+#            app.categorytypes
+#            print "Wanting to search in %s - %s" % (type(app),str(app))
+#        except AttributeError:
+#            pass
+
 #        mod = __import__(app

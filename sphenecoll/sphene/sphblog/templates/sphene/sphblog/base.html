@@ -1,2 +1,6 @@
 {% extends "sphene/base.html" %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/sphblog/styles/base.css" />
+{% endblock %}

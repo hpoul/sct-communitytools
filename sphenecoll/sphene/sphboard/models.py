@@ -117,6 +117,46 @@ def get_category_type_choices():
     """
     return CategoryTypeChoices()
 
+def get_tags_for_categories(categories):
+    from django.contrib.contenttypes.models import ContentType
+    from sphene.community.models import Tag, TagLabel, TaggedItem
+    from django.db import connection
+
+    group_ids = list()
+    category_ids = list()
+    for category in categories:
+        group = category.group
+        if not group.id in group_ids:
+            group_ids.append(group.id)
+        category_ids.append(category.id)
+
+    tags = Tag.objects.all()
+
+    qn = connection.ops.quote_name
+
+    content_type = ContentType.objects.get_for_model(Post)
+    
+    tags = tags.extra(
+        tables=[TagLabel._meta.db_table,
+                TaggedItem._meta.db_table,
+                Post._meta.db_table, ],
+        where=[
+            '%s.tag_id = %s.%s' % (qn(TagLabel._meta.db_table),
+                                   qn(Tag._meta.db_table),
+                                   Tag._meta.pk.column),
+            '%s.tag_label_id = %s.%s' % (qn(TaggedItem._meta.db_table),
+                                         qn(TagLabel._meta.db_table),
+                                         TagLabel._meta.pk.column),
+            '%s.content_type_id = %%s' % (qn(TaggedItem._meta.db_table)),
+            ],
+        params=[content_type.pk],).order_by('name').distinct()
+    
+    print str(tags._get_sql_clause())
+
+    return tags
+
+
+
 class Category(models.Model):
     name = models.CharField(max_length = 250)
     group = models.ForeignKey(Group, null = True, blank = True)

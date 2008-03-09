@@ -1,10 +1,14 @@
 from django import newforms as forms
 from django.conf import settings
 
+from sphene.community.models import TagLabel
+
 class TagWidget(forms.TextInput):
     def render(self, name, value, attrs=None):
         if not attrs: attrs = { }
         attrs['onfocus'] = "%s_init(this);" % ( name )
+        if isinstance(value, list):
+            value = ', '.join([ tag_label.label for tag_label in value ])
         widget = super(TagWidget, self).render(name, value, attrs)
         js = """
 <link rel="stylesheet" href="%(media_url)ssphene/community/jqac.css" />
