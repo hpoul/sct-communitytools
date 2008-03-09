@@ -1,0 +1,15 @@
+{% load sph_extras %}
+{% load i18n %}
+
+      <div class="entrytitle">
+	<h2><a href="{{ blogpost.get_absolute_url }}">{{ post.subject }}</a></h2>
+	<h3>{{ post.postdate|sph_date }}</h3>
+      </div>
+      <div class="entrybody">
+	{{ post.body_escaped }}
+      </div>
+      <div class="entrydetails">
+	<p class="sphuser">{% trans "Posted by" %} {% sph_html_user post.author %}</p>
+        <p class="sphtags">{% trans "Assigned Tags:" %} {% for tag_label in blogpost.get_tag_labels %}<a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag_label.tag.name %}" class="sphtag">{{ tag_label.label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with post.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>
+      </div>

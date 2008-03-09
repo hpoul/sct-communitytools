@@ -80,3 +80,6 @@ class BlogCategoryType(CategoryType):
     def append_edit_message_to_post(self, post):
         return post.thread is not None
 
+    def get_show_thread_template(self):
+        return 'sphene/sphblog/show_blogentry.html'
+

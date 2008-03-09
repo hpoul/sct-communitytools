@@ -18,3 +18,18 @@
 .sph_all_tags li:after {
   content:', ';
 }
+
+.entrydetails, .entrydetails p {
+  font-size: 10px;
+  line-height: inherit;
+  font-family:Georgia,"Times New Roman",Times,serif;
+}
+
+.sphboard_post_list td.sphblog_post {
+  border: none;
+}
+.sphboard_post_list th.sphblog_comments_heading {
+  border: none;
+}
+
+

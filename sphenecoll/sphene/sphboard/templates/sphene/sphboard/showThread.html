@@ -21,7 +21,9 @@
 {% endblock %}
 
 {% block content %}
-  {% sphboard_displayBreadcrumbsForThread thread %}
+  {% block sphboard_breadcrumb %}
+    {% sphboard_displayBreadcrumbsForThread thread %}
+  {% endblock %}
   <br/>
   {% if perms.post.change_post %}
     {% trans "Thread Options:" %} 
@@ -63,10 +65,11 @@
     <br/><br/>
   {% endif %}
   {% block above_post_list %}
+    <p>{% sph_pagination pages page %}</p>
   {% endblock %}
-  <p>{% sph_pagination pages page %}</p>
   <table class="sphboard_post_list">
     {% for post in post_list %}
+      {% block post_list_element %}
       <tr>
         <td rowspan="2" class="sphboard_post_authorinfo">
           {% sphboard_post_authorinfo post.author_id %}
@@ -162,6 +165,7 @@
           </tr>
         {% endif %}
       {% endifequal %}
+      {% endblock %}
     {% endfor %}
   </table>
   <br/><br/>

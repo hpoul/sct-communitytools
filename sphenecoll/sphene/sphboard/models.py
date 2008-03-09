@@ -151,7 +151,6 @@ def get_tags_for_categories(categories):
             ],
         params=[content_type.pk],).order_by('name').distinct()
     
-    print str(tags._get_sql_clause())
 
     return tags
 

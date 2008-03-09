@@ -1,6 +1,7 @@
 {% extends "sphene/sphblog/base.html" %}
 
 {% load sph_extras %}
+{% load sphblog_extras %}
 {% load i18n %}
 
 {% block subtitle %}
@@ -29,19 +30,7 @@
   {% endif %}
 
   {% for thread in threads %}
-    {% with thread.blogpostextension_set.get as blogpost %}
-      <div class="entrytitle">
-	<h2><a href="{{ blogpost.get_absolute_url }}">{{ thread.subject }}</a></h2>
-	<h3>{{ thread.postdate|sph_date }}</h3>
-      </div>
-      <div class="entrybody">
-	{{ thread.body_escaped }}
-      </div>
-      <div class="entrydetails">
-        <p class="sphtags">{% trans "Assigned Tags:" %} {% for tag_label in blogpost.get_tag_labels %}<a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag_label.tag.name %}" class="sphtag">{{ tag_label.label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with thread.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>
-      </div>
-    {% endwith %}
+    {% sphblog_showblogpost thread %}
   {% endfor %}
 
   {% if all_tags %}

@@ -1,5 +1,8 @@
+{% load sph_extras %}
 {% load i18n %}
-<a href="../../show/0/">{% trans "Board" %}</a>
+{% if show_board_link %}
+<a href="{% sph_url2 sphboard_show_category category_id=0 %}">{% trans "Board" %}</a>
+{% endif %}
 {% if categories %}
   {% for category in categories %}
     &gt;&gt; 

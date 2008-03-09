@@ -1,0 +1,32 @@
+{% extends "sphene/sphboard/showThread.html" %}
+
+{% load sph_extras %}
+{% load sphboard_extras %}
+{% load sphblog_extras %}
+{% load i18n %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/sphblog/styles/base.css" />
+{% endblock %}
+
+{% block sphboard_breadcrumb %}
+  <a href="{% sph_url2 sphblog_index %}">Blog</a>{% sphboard_displayBreadcrumbsForThread thread 0 0 %}
+{% endblock %}
+
+
+{% block above_post_list %}
+{% endblock %}
+
+{% block post_list_element %}
+  {% if post.thread %}
+    {{ block.super }}
+  {% else %}
+    <tr>
+      <td colspan="2" class="sphblog_post">{% sphblog_showblogpost post %}</td>
+    </tr>
+    <tr>
+      <th colspan="2" class="sphblog_comments_heading">{% trans "Comments" %}:</th>
+    </tr>
+  {% endif %}
+{% endblock %}

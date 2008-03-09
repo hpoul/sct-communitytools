@@ -1,4 +1,5 @@
 from django import template
+from django.template.context import RequestContext
 from django.conf import settings
 from time import strftime
 import re
@@ -7,7 +8,7 @@ from sphene.community.sphutils import HTML, get_sph_setting
 
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
-from sphene.community.middleware import get_current_request, get_current_sphdata
+from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 from sphene.community.sphutils import add_rss_feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
@@ -131,8 +132,6 @@ class NewsRSSLinkMacro (object):
         add_rss_feed( url, 'RSS Feed of latest threads' )
         return HTML( '<a href="%(url)s"><img src="%(media_url)ssphene/community/icons/feed-icon-14x14.png" border="0" alt="RSS Feed of latest threads" title="RSS Feed of latest threads" /></a>' % { 'url': url, 'media_url': settings.MEDIA_URL } )
 
-from sphene.community.middleware import get_current_sphdata, get_current_group
-
 
 @register.filter
 def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
@@ -195,6 +194,15 @@ def sph_html_user(user):
     """ Displays the full username of a given user including a link to
     his profile. """
     return { 'user': user }
+
+@register.filter
+def sph_html_user(value):
+    str = template.loader \
+        .render_to_string( 'sphene/community/_display_username.html',
+                           { 'user': value, },
+                           context_instance = RequestContext(get_current_request()) )
+    return str
+
 
 @register.filter
 def sph_user_profile_link(value):

@@ -43,9 +43,9 @@ def sphboard_displayCategories(context, categories, maxDepth = 5, level = -1 ):
 def sphboard_latestPost( latestPost, showSubject = 1 ):
     return { 'latestPost' : latestPost, 'showSubject': showSubject }
 
-def sphboard_displayBreadcrumbs( category = None, post = None, linkall = False ):
+def sphboard_displayBreadcrumbs( category = None, post = None, linkall = False, show_board_link = True ):
     if category == None:
-        if post == None: return { }
+        if post == None: return { 'show_board_link': show_board_link, }
         category = post.category
         current = post
     else:
@@ -54,15 +54,15 @@ def sphboard_displayBreadcrumbs( category = None, post = None, linkall = False )
     while category != None:
         breadcrumbs.insert(0, category)
         category = category.parent
-    return { 'thread': post, 'categories': breadcrumbs, 'current': not linkall and current, 'linkall': linkall }
+    return { 'thread': post, 'categories': breadcrumbs, 'current': not linkall and current, 'linkall': linkall, 'show_board_link': show_board_link }
 
 @register.inclusion_tag('sphene/sphboard/_displayBreadcrumbs.html')
-def sphboard_displayBreadcrumbsForThread( post, linkall = False ):
-    return sphboard_displayBreadcrumbs( post = post, linkall = linkall )
+def sphboard_displayBreadcrumbsForThread( post, linkall = False, show_board_link = True ):
+    return sphboard_displayBreadcrumbs( post = post, linkall = linkall, show_board_link = show_board_link )
 
 @register.inclusion_tag('sphene/sphboard/_displayBreadcrumbs.html')
-def sphboard_displayBreadcrumbsForCategory( category, linkall = False ):
-    return sphboard_displayBreadcrumbs( category = category, linkall = linkall )
+def sphboard_displayBreadcrumbsForCategory( category, linkall = False, show_board_link = True ):
+    return sphboard_displayBreadcrumbs( category = category, linkall = linkall, show_board_link = show_board_link )
 
 @register.inclusion_tag('sphene/sphboard/_displayUserName.html')
 def sphboard_displayUserName( user ):

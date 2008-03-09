@@ -5,7 +5,7 @@
 
 {% block content %}
 
-  <a href="../../latest/{{ category_id }}/">{% trans "Latest" %}</a> | {% sphboard_displayBreadcrumbsForCategory category %}<br/><br/>
+  <a href="../../latest/{{ category_id }}/">{% trans "Latest" %}</a> | {% sphboard_displayBreadcrumbsForCategory category 0 1 %}<br/><br/>
 
   {% if user.is_authenticated %}
     {% if category %}
