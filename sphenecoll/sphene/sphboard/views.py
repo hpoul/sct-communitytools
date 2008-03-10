@@ -7,7 +7,7 @@ from django.template.context import RequestContext
 from django import newforms as forms
 from django.dispatch import dispatcher
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
-from django.utils.translation import ugettext
+from django.utils.translation import ugettext, string_concat
 
 
 from datetime import datetime
@@ -468,7 +468,7 @@ class MoveAndAnnotateForm(MoveForm, AnnotateForm):
 
         del self.fields['hide_post']
 
-        self.fields['body'].help_text = _(u'Please describe why this thread had to be moved. ') + self.fields['body'].help_text
+        self.fields['body'].help_text = string_concat(ugettext_lazy(u'Please describe why this thread had to be moved.'), ' ', self.fields['body'].help_text)
 
 
 def move(request, group, thread_id):
