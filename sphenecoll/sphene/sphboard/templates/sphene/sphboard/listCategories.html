@@ -71,7 +71,7 @@
         <tr>
           <td width="20px"><img src="{{ MEDIA_URL }}sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td>
           {% if thread.is_moved %}
-            <td colspan="4"><small>Thread was moved: <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> into <a href="{{ thread.category.get_absolute_url }}">{{ thread.root_post.category.name }}</a>.
+            <td colspan="4"><small>
             {% blocktrans with thread.get_absolute_url as th_url and thread.subject as th_subject and thread.category.get_absolute_url as cat_url and thread.root_post.category.name as cat_name %}Thread was moved: <a href="{{ th_url }}">{{ th_subject }}</a> into <a href="{{ cat_url }}">{{ cat_name }}</a>.{% endblocktrans %}
             </small></td>
           {% else %}

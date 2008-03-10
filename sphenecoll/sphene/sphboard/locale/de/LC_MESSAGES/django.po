@@ -334,6 +334,8 @@ msgid ""
 "Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%"
 "(cat_url)s\">%(cat_name)s</a>."
 msgstr ""
+"Der Thread \"<a href=\"%(th_url)s\">%(th_subject)s</a>\" wurde in die "
+"Kategorie \"<a href=\"%(cat_url)s\">%(cat_name)s</a>\" verschoben."
 
 #: templates/sphene/sphboard/listCategories.html:78
 msgid "Sticky:"
