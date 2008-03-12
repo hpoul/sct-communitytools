@@ -25,7 +25,7 @@ from django.template import loader, Context
 from django.core.cache import cache
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 from renderers import POST_MARKUP_CHOICES, render_body
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 import logging
 
 logger = logging.getLogger('sphene.sphboard.models')
