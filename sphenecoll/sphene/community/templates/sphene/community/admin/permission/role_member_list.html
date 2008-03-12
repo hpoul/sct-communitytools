@@ -5,7 +5,7 @@
 {% block content %}
   {{ block.super }}
 
-{% blocktrans %}Members of the role '{{ role.name }}'.{% endblocktrans %}<br/><br/>
+{% blocktrans with role.name as role_name %}Members of the role '{{ role_name }}'.{% endblocktrans %}<br/><br/>
 
 <table>
   <tr>
