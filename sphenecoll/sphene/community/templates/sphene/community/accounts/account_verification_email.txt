@@ -4,7 +4,7 @@
 on the {{ group_name }} website.{% endblocktrans %}
 {% blocktrans %}
 To continue registration visit the following link:
-http://{{ baseurl }}/accounts/register/{{ validationcode }}/{% endblocktrans %}
+http://{{ baseurl }}{{ path }}{% endblocktrans %}
 
 
 {% blocktrans with group.get_name as group_name %}

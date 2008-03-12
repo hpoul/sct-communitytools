@@ -116,6 +116,7 @@ def register(request, group = None):
             c = {
                 'email': email_address,
                 'baseurl': group.baseurl,
+                'path': sph_reverse( 'sphene.community.views.register_hash', (), { 'emailHash': validationcode, } ),
                 'validationcode': validationcode,
                 'group': group,
                 }

@@ -23,4 +23,6 @@ urlpatterns += patterns( 'sphene.community.views',
                          url(r'admin/permission/role/create/$', 'admin_permission_role_edit', name = 'admin_permission_role_create'),
                          url(r'admin/permission/role/member/(?P<role_id>\d+)/list/$', 'admin_permission_role_member_list'),
                          url(r'admin/permission/role/member/(?P<role_id>\d+)/add/$', 'admin_permission_role_member_add'),
+                         url(r'^accounts/register/$', 'register', name = 'sph_register'),
+                         url(r'^accounts/register/(?P<emailHash>[a-zA-Z/\+0-9=]+)/$', 'register_hash', name = 'sph_register_hash'),
                          )
