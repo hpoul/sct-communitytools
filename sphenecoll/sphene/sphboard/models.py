@@ -427,7 +427,7 @@ class Category(models.Model):
         ordering = ['sortorder']
     
     class Admin:
-        list_display = ('name', 'group', 'parent', 'allowview', )
+        list_display = ('name', 'group', 'parent', 'allowview', 'category_type' )
         list_filter = ('group', 'parent', )
         search_fields = ('name')
 
