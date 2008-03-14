@@ -1217,6 +1217,15 @@ class PollChoice(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
     choice = models.CharField( max_length = 250 )
     count = models.IntegerField()
+    sortorder = models.IntegerField( default = 0, null = False )
+
+    changelog = ( ( '2008-03-14 00', 'alter', 'ADD sortorder INTEGER' ),
+                  ( '2008-03-14 01', 'update', 'SET sortorder = 0' ),
+                  ( '2008-03-14 02', 'alter', 'ALTER sortorder SET NOT NULL' ),
+                  )
+
+    class Meta:
+        ordering = [ 'sortorder' ]
 
     class Admin:
         pass

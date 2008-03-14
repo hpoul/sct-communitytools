@@ -328,10 +328,13 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 newpoll.save()
 
                 choices = polldata['answers'].splitlines()
+                i=0
                 for choice in choices:
                     pollchoice = PollChoice( poll = newpoll,
                                              choice = choice,
-                                             count = 0, )
+                                             count = 0,
+                                             sortorder = i)
+                    i+=1
                     pollchoice.save()
                 if request.user.is_authenticated():
                     request.user.message_set.create( message = ugettext(u'Vote created successfully.') )
