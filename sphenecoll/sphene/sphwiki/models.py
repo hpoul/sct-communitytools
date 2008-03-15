@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext, ugettext_lazy
+
 
 from sphene.community.templatetags.sph_extras import sph_markdown
 #from django.db.models import permalink
@@ -40,10 +42,10 @@ WIKI_PERMISSIONS_ALLOWED_CHOICES = (
 
 
 class WikiSnip(models.Model):
-    name = models.CharField(max_length = 250, editable = False)
-    title = models.CharField(max_length = 250, blank = True)
+    name = models.CharField(ugettext_lazy('name'), max_length = 250, editable = False)
+    title = models.CharField(ugettext_lazy('title'), max_length = 250, blank = True)
     group = models.ForeignKey(Group, editable = False)
-    body = models.TextField()
+    body = models.TextField(ugettext_lazy('body'))
     creator = models.ForeignKey(User, related_name = 'wikisnip_created', editable = False, null = True, blank = True)
     created = models.DateTimeField(editable = False)
     editor  = models.ForeignKey(User, related_name = 'wikisnip_edited', editable = False, null = True, blank = True)
@@ -329,8 +331,10 @@ class WikiAttachment(models.Model):
     snip = models.ForeignKey(WikiSnip, editable = False)
     uploader = models.ForeignKey(User, editable = False)
     uploaded = models.DateTimeField(editable = False)
-    fileupload = models.FileField( upload_to = get_sph_setting( 'wiki_attachments_upload_to' ) )
-    description = models.TextField(blank=True)
+    fileupload = models.FileField( ugettext_lazy('fileupload'),
+                                   upload_to = get_sph_setting( 'wiki_attachments_upload_to' ) )
+    description = models.TextField( ugettext_lazy('description'),
+                                    blank=True)
 
     def get_absolute_editurl(self):
         return ('sphene.sphwiki.views.attachmentEdit', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'attachmentId': self.id } )

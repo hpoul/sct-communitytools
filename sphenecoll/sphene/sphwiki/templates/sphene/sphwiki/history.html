@@ -1,20 +1,21 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 {% load sph_pagination %}
 
 {% block content %}
 
   {% include "sphene/sphwiki/_snip_header.html" %}
-  <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
+  <a href="{{ snip.get_absolute_url }}">{% trans "Back to Snip" %}</a><br/><br/>
 
   <table class="sph_object_list">
     <tr>
-      <th>Date</th>
-      <th>Editor</th>
-      <th width="80%">Change Message</th>
+      <th>{% trans "Date" %}</th>
+      <th>{% trans "Editor" %}</th>
+      <th width="80%">{% trans "Change Message" %}</th>
       {% if snip.has_edit_permission %}
-        <th>Edit</th>
+        <th>{% trans "Edit" %}</th>
       {% endif %}
     </tr>
 
@@ -24,16 +25,16 @@
          <td class="history_editor">{% sph_html_user change.editor %}</td>
          <td>{{ change.message }}</td>
 	 {% if snip.has_edit_permission %}
-	   <td class="history_edit"><a href="{{ change.get_absolute_editurl }}">Edit this version</a></td>
+	   <td class="history_edit"><a href="{{ change.get_absolute_editurl }}">{% trans "Edit this version" %}</a></td>
 	 {% endif %}
        </tr>
     {% endfor %}
   </table>
 
   {% if is_paginated %}
-    {{ hits }} Changes. {% sph_pagination pages page %}
+    {% blocktrans with hits as changecount %}{{ changecount }} Changes.{% endblocktrans %} {% sph_pagination pages page %}
   {% else %}
-    {{ object_list.count }} Changes.
+    {% blocktrans with object_list.count as changecount %}{{ changecount }} Changes.{% endblocktrans %}
   {% endif %}
 
 

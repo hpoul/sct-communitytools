@@ -9,6 +9,7 @@ from django.newforms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext, ugettext_lazy
 
 from datetime import datetime
 from difflib import ndiff, HtmlDiff
@@ -51,7 +52,7 @@ def showSnip(request, group, snipName):
             if snip_rendered_body:
                 if snip in redirects:
                     if request.user.is_authenticated():
-                        request.user.message_set.create( message = "Detected redirect loop." )
+                        request.user.message_set.create( message = ugettext("Detected redirect loop.") )
                     break
                 redirects += (snip,)
                 snip = sphdata['sphwiki_redirect_to_snip']
@@ -74,7 +75,7 @@ def showSnip(request, group, snipName):
 
 def generatePDF(request, group, snipName):
     if not hasattr(settings, 'SPH_SETTINGS'):
-        return HttpResponse( 'Not configured.' )
+        return HttpResponse( ugettext('Not configured.') )
 
     snip = get_object_or_404( WikiSnip,
                               group = group,
@@ -86,7 +87,8 @@ def generatePDF(request, group, snipName):
     try:
         contents = open(snip.pdf_get(), 'rb').read()
     except Exception, e:
-        return HttpResponse('Error while generating PDF file. %s' % str(e))
+        return HttpResponse(ugettext('Error while generating PDF file. %(error)s') % \
+                                { 'error': str(e) })
 
     response = HttpResponse(contents, mimetype='application/pdf')
     
@@ -133,7 +135,7 @@ def diff(request, group, snipName, changeId = None):
         args['prev_change'] = changeStart
     except IndexError:
         changeStart = None
-        diffTable = "This is the first change."
+        diffTable = ugettext("This is the first change.")
 
     try:
         next_change = snip.wikisnipchange_set.filter( edited__gt = changeEnd.edited, ).order_by('edited')[0]
@@ -144,9 +146,9 @@ def diff(request, group, snipName, changeId = None):
     if changeStart:
         htmlDiff = HtmlDiff(wrapcolumn = 50,)
         from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
-        desc = '%(date)s by %(editor)s'
+        desc = ugettext('%(date)s by %(editor)s')
         if snip.has_edit_permission():
-            desc += ' / <a href="%(editversionlink)s">Edit this version</a>'
+            desc += ' / <a href="%(editversionlink)s">'+ugettext('Edit this version')+'</a>'
         diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
                                          changeEnd.body.splitlines(1),
                                          fromdesc = desc % {
@@ -195,7 +197,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             raise PermissionDenied()
     if 'delete' in request.GET and request.GET['delete'] == '1':
         attachment.delete()
-        request.user.message_set.create( message = "Successfully deleted attachment." )
+        request.user.message_set.create( message = ugettext("Successfully deleted attachment.") )
         return HttpResponseRedirect( attachment.snip.get_absolute_attachmenturl() )
 
     AttachmentForm.base_fields['fileupload'].widget = widgets.FileInput()
@@ -239,7 +241,7 @@ class CaptchaEditBaseForm(forms.BaseForm):
         
         if sphutils.has_captcha_support() and not get_current_user().is_authenticated():
             self.fields['captcha'] = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
-                                                           help_text = 'Please enter the result of the above calculation.',
+                                                           help_text = ugettext('Please enter the result of the above calculation.'),
                                                            )
 
 
@@ -298,7 +300,8 @@ def editSnip(request, group, snipName, versionId = None):
 
     if version:
         from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
-        changemessage = 'Reverted to revision of %s' % (sph_date( version.edited ))
+        changemessage = ugettext('Reverted to revision of %(editdate)s') % \
+            { 'editdate': sph_date( version.edited ) }
 
     t = loader.get_template( 'sphene/sphwiki/editSnip.html' )
     return HttpResponse( t.render( RequestContext( request, 

@@ -1,5 +1,6 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 
 {% block head %}
@@ -27,9 +28,9 @@
       {{ snip_rendered_body }}
     </div>
 
-    <br/><br/><small>Last Modified: {{ snip.changed|sph_date }} by {% sph_html_user snip.editor %} - [ <a href="{{ snip.get_absolute_historyurl }}">Snip Changes</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">Wiki History</a> ]</small>
+    <br/><br/><small>{% blocktrans with snip.changed|sph_date as snip_changedate and snip.editor|sph_html_user as snip_editor %}Last Modified: {{ snip_changedate }} by {{ snip_editor }}{% endblocktrans %} - [ <a href="{{ snip.get_absolute_historyurl }}">{% trans "Snip Changes" %}</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">{% trans "Wiki History" %}</a> ]</small>
   {% else %}
-    Snip <strong>{{ snipName }}</strong> does not yet exist. {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">Create It.</a>{% endif %}
+    {% blocktrans with snipName as snip_name and "<strong>" as snip_prefix and "</strong>" as snip_postfix %}Snip {{ snip_prefix }}{{ snip_name }}{{ snip_postfix }} does not yet exist.{% endblocktrans %} {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">{% trans "Create It." %}</a>{% endif %}
   {% endif %}
 
 {% endblock %}

@@ -1,20 +1,21 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 
 
 {% block content %}
   {% include "sphene/sphwiki/_snip_header.html" %}
 
-  <a href="{{ snip.get_absolute_url }}" class="diff_backtosnip">Back to Snip</a>
+  <a href="{{ snip.get_absolute_url }}" class="diff_backtosnip">{% trans "Back to Snip" %}</a>
   {% if next_change or prev_change %}
     <span class="diff_prevnext">
       {% if prev_change %}
-        <a href="{{ prev_change.get_absolute_url }}">&lt;-- Previous Change</a>
+        <a href="{{ prev_change.get_absolute_url }}">&lt;-- {% trans "Previous Change" %}</a>
       {% endif %}
       {% if prev_change and next_change %} | {% endif %}
       {% if next_change %}
-        <a href="{{ next_change.get_absolute_url }}">Next Change --&gt;</a>
+        <a href="{{ next_change.get_absolute_url }}">{% trans "Next Change" %} --&gt;</a>
       {% endif %}
     </span><br/><br/>
   {% endif %}

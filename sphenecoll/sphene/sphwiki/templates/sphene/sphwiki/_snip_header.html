@@ -1,6 +1,7 @@
+{% load i18n %}
 {% load sph_extras %}
   {% if snip.is_secured %}
-    <strong class="wiki_secured">This snip is secured - View only allowed by: {{ snip.get_wiki_preference.get_view_display }}</strong><br/>
+    <strong class="wiki_secured">{% blocktrans with snip.get_wiki_preference.get_view_display as allowed_users %}This snip is secured - View only allowed by: {{ allowed_users }}{% endblocktrans %}</strong><br/>
   {% endif %}
   {% if snip.id %}
     {% if snip.title %}
@@ -18,7 +19,7 @@
         {% endfor %}
       </strong>
       <div class="sphwiki_actions">
-        {% if snip.has_edit_permission %} [ <a href="{{ snip.get_absolute_editurl }}" >Edit</a> ]{% if user.is_authenticated %} [ <a href="{{ snip.get_absolute_attachmenturl }}">Attachments</a> ]{% endif %}{% endif %}{% if snip.pdf_enabled %} [ <a href="{{ snip.get_absolute_pdfurl }}" rel="nofollow">Download PDF</a> ]{% endif %}
+        {% if snip.has_edit_permission %} [ <a href="{{ snip.get_absolute_editurl }}" >{% trans "Edit" %}</a> ]{% if user.is_authenticated %} [ <a href="{{ snip.get_absolute_attachmenturl }}">{% trans "Attachments" %}</a> ]{% endif %}{% endif %}{% if snip.pdf_enabled %} [ <a href="{{ snip.get_absolute_pdfurl }}" rel="nofollow">{% trans "Download PDF" %}</a> ]{% endif %}
       </div>
       </small><br/>
   {% endif %}

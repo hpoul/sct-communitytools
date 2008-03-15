@@ -1,5 +1,6 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 
 {% block content %}
@@ -8,7 +9,7 @@
     <table class="form">
       {{ form }}
     </table>
-    <input type="submit" value="Save" />
+    <input type="submit" value="{% trans 'Save' %}" />
   </form>
 
 {% endblock %}

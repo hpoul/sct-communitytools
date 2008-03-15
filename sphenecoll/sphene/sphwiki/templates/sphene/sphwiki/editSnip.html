@@ -1,5 +1,6 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 
 {% block content %}
@@ -13,20 +14,20 @@
   </script>
 
   {% include "sphene/sphwiki/_snip_header.html" %}
-  <a href="{{ snip.get_absolute_url }}">Back to Snip</a><br/><br/>
+  <a href="{{ snip.get_absolute_url }}">{% trans "Back to Snip" %}</a><br/><br/>
   <div id="previewarea" class="wiki_previewarea"></div>
 
   {% if version %}
-    <div class="sphwiki_versionwarning"><strong>Warning:</strong> You are editing an old version: By {% sph_html_user version.editor %} at {{ version.edited|sph_date }}</div>
+    <div class="sphwiki_versionwarning"><strong>{% trans "Warning" %}:</strong> {% blocktrans with version.editor|sph_html_user as version_editor and version.edited|sph_date as version_editdate %}You are editing an old version: By {{ version_editor }} at {{ version_editdate }}{% endblocktrans %}</div>
   {% endif %}
   <form action="." method="post" name="snipedit" class="sphform">
     <table class="form">
       {{ form }}
       <tr>
-        <td><label for="message_id">Change Message:</label></td><td><input type="text" name="message" id="message_id" value="{{ changemessage }}" /></td>
+        <td><label for="message_id">{% trans "Change Message" %}:</label></td><td><input type="text" name="message" id="message_id" value="{{ changemessage }}" /></td>
       </tr>
    </table>
-   <input type="submit" value="Save" /> * <input type="button" value="Preview" onclick="javascript:doPreview()" />
+   <input type="submit" value="{% trans 'Save' %}" /> * <input type="button" value="{% trans 'Preview' %}" onclick="javascript:doPreview()" />
   </form>
   <br/>
   See <a href="http://sct.sphene.net/wiki/show/WikiDocumentation/" target="_blank">WikiDocumentation</a> on how to format your input.

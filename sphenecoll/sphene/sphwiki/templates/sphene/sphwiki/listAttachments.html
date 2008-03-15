@@ -1,5 +1,6 @@
 {% extends "sphene/sphwiki/base.html" %}
 
+{% load i18n %}
 {% load sph_extras %}
 {% load sph_pagination %}
 
@@ -15,20 +16,20 @@
 
 
   {% include "sphene/sphwiki/_snip_header.html" %}
-  <a href="{{ snip.get_absolute_url }}">Back to Snip</a> - <a href="{{ snip.get_absolute_create_attachmenturl }}">Create New Attachment</a>
+  <a href="{{ snip.get_absolute_url }}">{% trans "Back to Snip" %}</a> - <a href="{{ snip.get_absolute_create_attachmenturl }}">{% trans "Create New Attachment" %}</a>
   <br/><br/>
   <table border="0" class="sphwiki attachments">
     <tr>
-      <th>Id</th>
-      <th>Action</th>
-      <th>Attachment</th>
-      <th>Upload Date</th>
-      <th>Uploader</th>
+      <th>{% trans "Id" %}</th>
+      <th>{% trans "Action" %}</th>
+      <th>{% trans "Attachment" %}</th>
+      <th>{% trans "Upload Date" %}</th>
+      <th>{% trans "Uploader" %}</th>
     </tr>
     {% for attachment in object_list %}
       <tr>
         <td>{{ attachment.id }}</td>
-        <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.get_fileupload_filename|sph_basename }}')"><img src="{{ MEDIA_URL}}sphene/sphwiki/icons/edit-delete.png" alt="Delete" title="Delete" border="0" /></a></td>
+        <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.get_fileupload_filename|sph_basename }}')"><img src="{{ MEDIA_URL}}sphene/sphwiki/icons/edit-delete.png" alt="{% trans 'Delete'%}" title="{% trans 'Delete' %}" border="0" /></a></td>
         <td><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></td>
         <td>{{ attachment.uploaded|sph_date }}</td>
         <td>{% sph_html_user attachment.uploader %}</td>
@@ -36,9 +37,9 @@
     {% endfor %}
   </table>
   {% if is_paginated %}
-    {{ hits }} Attachments. {% sph_pagination pages page %}
+    {% blocktrans with hits as attachment_count %}{{ attachment_count }} Attachments.{% endblocktrans %} {% sph_pagination pages page %}
   {% else %}
-    {{ object_list.count }} Attachments.
+    {% blocktrans with object_list.count as attachment_count %}{{ attachment_count }} Attachments.{% endblocktrans %}
   {% endif %}
 
 {% endblock %}

@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Herbert Poul <herbert.poul@gmail.com>, 2008.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-03-15 11:44+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Herbert Poul <herbert.poul@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:45
+msgid "name"
+msgstr "name"
+
+#: models.py:46
+msgid "title"
+msgstr "titel"
+
+#: models.py:48
+msgid "body"
+msgstr "inhalt"
+
+#: models.py:334
+msgid "fileupload"
+msgstr "Datei Upload"
+
+#: models.py:336
+msgid "description"
+msgstr "Beschreibung"
+
+#: views.py:55
+msgid "Detected redirect loop."
+msgstr "Endlose Schleife in Weiterleitung."
+
+#: views.py:78
+msgid "Not configured."
+msgstr "Nicht konfiguriert."
+
+#: views.py:90
+#, python-format
+msgid "Error while generating PDF file. %(error)s"
+msgstr "Fehler während dem generierender PDF Datei. %(error)s"
+
+#: views.py:138
+msgid "This is the first change."
+msgstr "Dies ist die erste Version."
+
+#: views.py:149
+#, python-format
+msgid "%(date)s by %(editor)s"
+msgstr "%(date)s von %(editor)s"
+
+#: views.py:151 templates/sphene/sphwiki/history.html:28
+msgid "Edit this version"
+msgstr "Diese Version bearbeiten"
+
+#: views.py:200
+msgid "Successfully deleted attachment."
+msgstr "Datei erfolgreich gelösch."
+
+#: views.py:244
+msgid "Please enter the result of the above calculation."
+msgstr "Bitte geben Sie das Ergebnis der obigen Rechnung ein."
+
+#: views.py:303
+#, python-format
+msgid "Reverted to revision of %(editdate)s"
+msgstr "Revision vom %(editdate)s wiederhergestellt."
+
+#: templates/sphene/sphwiki/_snip_header.html:4
+#, python-format
+msgid "This snip is secured - View only allowed by: %(allowed_users)s"
+msgstr ""
+"Dieser snip ist abgesichert - Er darf nur angesehen werden von: %"
+"(allowed_users)s"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+#: templates/sphene/sphwiki/history.html:18
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Attachments"
+msgstr "Angehängte Dateien"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Download PDF"
+msgstr "Als PDF herunterladen"
+
+#: templates/sphene/sphwiki/diff.html:10
+#: templates/sphene/sphwiki/editSnip.html:17
+#: templates/sphene/sphwiki/history.html:10
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Back to Snip"
+msgstr "Zurück zum Snip"
+
+#: templates/sphene/sphwiki/diff.html:14
+msgid "Previous Change"
+msgstr "Vorherige Version"
+
+#: templates/sphene/sphwiki/diff.html:18
+msgid "Next Change"
+msgstr "Nächste Version."
+
+#: templates/sphene/sphwiki/editAttachment.html:12
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Save"
+msgstr "Speichern"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+msgid "Warning"
+msgstr "Warnung"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+#, python-format
+msgid ""
+"You are editing an old version: By %(version_editor)s at %(version_editdate)s"
+msgstr ""
+"Sie bearbeiten gerade eine alte Version: Erstellt von %(version_editor)s am %"
+"(version_editdate)s"
+
+#: templates/sphene/sphwiki/editSnip.html:27
+#: templates/sphene/sphwiki/history.html:16
+msgid "Change Message"
+msgstr "Log Meldung"
+
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Preview"
+msgstr "Vorschau"
+
+#: templates/sphene/sphwiki/history.html:14
+msgid "Date"
+msgstr "Datum"
+
+#: templates/sphene/sphwiki/history.html:15
+msgid "Editor"
+msgstr "Bearbeiter"
+
+#: templates/sphene/sphwiki/history.html:35
+#: templates/sphene/sphwiki/history.html:37
+#, python-format
+msgid "%(changecount)s Changes."
+msgstr "%(changecount)s Versionen."
+
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Create New Attachment"
+msgstr "Neue Datei hochladen"
+
+#: templates/sphene/sphwiki/listAttachments.html:23
+msgid "Id"
+msgstr "Id"
+
+#: templates/sphene/sphwiki/listAttachments.html:24
+msgid "Action"
+msgstr "Aktion"
+
+#: templates/sphene/sphwiki/listAttachments.html:25
+msgid "Attachment"
+msgstr "Angehängte Dateien"
+
+#: templates/sphene/sphwiki/listAttachments.html:26
+msgid "Upload Date"
+msgstr "Erstellungsdatum"
+
+#: templates/sphene/sphwiki/listAttachments.html:27
+msgid "Uploader"
+msgstr "Ersteller"
+
+#: templates/sphene/sphwiki/listAttachments.html:32
+msgid "Delete"
+msgstr "Löschen"
+
+#: templates/sphene/sphwiki/listAttachments.html:40
+#: templates/sphene/sphwiki/listAttachments.html:42
+#, python-format
+msgid "%(attachment_count)s Attachments."
+msgstr "%(attachment_count)s angehängte Dateie."
+
+#: templates/sphene/sphwiki/showSnip.html:31
+#, python-format
+msgid "Last Modified: %(snip_changedate)s by %(snip_editor)s"
+msgstr "Zuletzt bearbeitet am %(snip_changedate)s von %(snip_editor)s"
+
+#: templates/sphene/sphwiki/showSnip.html:31
+msgid "Snip Changes"
+msgstr "Snip Versionen"
+
+#: templates/sphene/sphwiki/showSnip.html:31
+msgid "Wiki History"
+msgstr "Wiki Historie"
+
+#: templates/sphene/sphwiki/showSnip.html:33
+#, python-format
+msgid "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s does not yet exist."
+msgstr ""
+"Der Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s wurde noch nicht "
+"erstellt."
+
+#: templates/sphene/sphwiki/showSnip.html:33
+msgid "Create It."
+msgstr "Erstelle diesen Snip."
