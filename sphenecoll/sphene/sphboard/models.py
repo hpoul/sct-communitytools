@@ -25,7 +25,7 @@ from django.template import loader, Context
 from django.core.cache import cache
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
 from renderers import POST_MARKUP_CHOICES, render_body
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext
 import logging
 
 logger = logging.getLogger('sphene.sphboard.models')
@@ -1337,7 +1337,8 @@ def board_profile_edit_save_form(sender, instance, signal, request):
     profile.default_notifyme_value = data['default_notifyme_value']
 
     profile.save()
-    request.user.message_set.create( message = ugettext_lazy(u"Successfully saved board profile.") )
+    request.user.message_set.create( message = ugettext(u"Successfully saved board profile.") )
+
 
 def board_profile_display(sender, signal, request, user):
     try:
