@@ -1,15 +1,23 @@
 {% extends "sphene/sphboard/showThread.html" %}
 {% load i18n %}
 {% block above_post_list %}
+   {% with thread.linklistpostextension_set.get as link %}
 <p>
 <table>
 <tr>
-  <td><strong>{% trans "Project:" %}</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.subject }}</a></td>
+  <td colspan="2">
+    {% with "large" as thumbnailsize %}
+      {% include "sphene/sphlinklist/_show_thumbnail_of_link.html" %}
+    {% endwith %}
+  </td>
+<tr>
+  <td><strong>{% trans "Project:" %}</strong></td><td><a href="{{ link.link }}" target="_blank">{{ thread.subject }}</a></td>
 </tr>
 <tr>
-  <td><strong>{% trans "URL:" %}</strong></td><td><a href="{{ thread.linklistpostextension_set.get.link }}" target="_blank">{{ thread.linklistpostextension_set.get.link }}</a></td>
+  <td><strong>{% trans "URL:" %}</strong></td><td><a href="{{ link.link }}" target="_blank">{{ link.link }}</a></td>
 </tr>
 </table>
+  {% endwith %}
 </p><br/>
 {{ block.super }}
 {% endblock %}

@@ -1,0 +1,8 @@
+<a href="{{ thread.get_absolute_url }}" border="0">
+{% ifequal thumbnailsize "large" %}
+  <!--img src="http://images.websnapr.com/?size=M&amp;key={{ sph_setting.websnapr_key }}&amp;url={{ link.link }}" width="400px" height="300px" align="left" border="0" style="padding-right:5px"></img-->
+  <img src="http://images.websnapr.com/?size=S&amp;key={{ sph_setting.websnapr_key }}&amp;url={{ link.link }}" width="202px" height="152px" align="left" border="0" style="padding-right:5px"></img>
+{% else %}
+  <img src="http://images.websnapr.com/?size=T&amp;key={{ sph_setting.websnapr_key }}&amp;url={{ link.link }}" width="92px" height="70px" align="left" border="0" style="padding-right:5px"></img>
+{% endifequal %}
+</a>

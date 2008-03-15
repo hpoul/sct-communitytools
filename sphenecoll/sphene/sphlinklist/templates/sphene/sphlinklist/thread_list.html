@@ -1,9 +1,31 @@
 {% extends "sphene/sphboard/extended_thread_list.html" %}
 
 {% load sph_extras %}
+{% load sphboard_extras %}
 {% load i18n %}
 
-{% block thread_list_subject %}
-<a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a> - 
-    <small>(<a href="{{ thread.root_post.linklistpostextension_set.get.link }}">{% trans "Open URL:" %} {{ link }}</a>)</small>
+{% block thread_list_header %}
+      <tr>
+        <th class="sphboard_mainhead" colspan="3">Threads</th>
+      </tr>
+      <tr>
+        <th colspan="2">Subject / Author</th>
+        <th>Information</th>
+      </tr>
 {% endblock %}
+
+{% block thread_list_subject %}
+ {% with thread.root_post.linklistpostextension_set.get as link %}
+   {% include "sphene/sphlinklist/_show_thumbnail_of_link.html" %}
+   <strong><a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a></strong><br/>
+  {% blocktrans with link.link as link %}
+    <small><a href="{{ link }}">Open URL: {{ link }}</a></small>
+  {% endblocktrans %}
+  <br/>
+  {% endwith %}
+{% endblock %}
+
+{% block thread_list_info %}
+  <td><small><strong>Views</strong>: {{ thread.view_count }}<br/><strong>Posts</strong>: {{ thread.post_count }}<br/><strong>Last Post</strong>:<br/>{% sphboard_latestPost thread.latest_post 0 %}</small></td>
+{% endblock %}
+
