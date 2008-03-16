@@ -53,6 +53,7 @@ def do_changelog(app, created_models, verbosity, **kwargs):
     if app_models == None: return
 
     sql = ()
+    invokes = ()
     for clazz in app_models:
         changelog = getattr(clazz, 'changelog', None)
         if not changelog: continue
@@ -106,6 +107,9 @@ def do_changelog(app, created_models, verbosity, **kwargs):
                 print "%s: SQL Statement: %s" % (date, sqlstmt)
             elif changetype == 'comment':
                 print "%s: !!! Important Comment: %s" % (date, stmt)
+            elif changetype == 'invoke':
+                print "%s: Invoke function %s" % (date, stmt.__name__)
+                invokes += (stmt,)
             else:
                 print "Unknown changetype: %s - %s" % (changetype, str(change))
 
@@ -120,6 +124,10 @@ def do_changelog(app, created_models, verbosity, **kwargs):
             curs = connection.cursor()
             for sqlstmt in sql:
                 curs.execute( sqlstmt )
+
+            for invoke in invokes:
+                print "Invoking %s ..." % invoke.__name__
+                invoke()
             transaction.commit_unless_managed()
         else:
             print "Not updating database. You have to do this by hand !"

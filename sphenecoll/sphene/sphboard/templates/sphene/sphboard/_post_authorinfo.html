@@ -5,5 +5,13 @@
 {% sphboard_displayUserName author %}<br/><br/><br/>
 {% sph_showavatar author %}<br/><br/>
 {% if author %}
-  <small>{% blocktrans with author.date_joined|sph_date as author_joined %}Registered at {{ author_joined }}{% endblocktrans %}</small>
+  <small>
+    <dl class="sphboard_post_authorinfo_details">
+      <dt>{% trans "Posts" %}</dt>
+      <dd>{{ post_count }}</dd>
+
+      <dt>{% trans "Registered at" %}</dt>
+      <dd>{{ author.date_joined|sph_date }}</dd>
+    </dl>
+  </small>
 {% endif %}

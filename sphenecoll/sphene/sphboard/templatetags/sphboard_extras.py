@@ -5,8 +5,9 @@ from django.core.cache import cache
 from django.db.models import signals
 from django.dispatch import dispatcher
 from django.newforms import widgets
+from sphene.community.middleware import get_current_group
 from sphene.community.sphutils import get_sph_setting
-from sphene.sphboard.models import Post, BoardUserProfile
+from sphene.sphboard.models import Post, BoardUserProfile, UserPostCount
 from sphene.sphboard.views import PostForm
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 from django.template.context import Context
@@ -114,8 +115,10 @@ def sphboard_default_notify_me(user):
 
 
 
-def authorinfo_cachekey(user_id):
-    return 'sphboard_authorinfo_%s' % user_id
+def authorinfo_cachekey(user_id, group_id = None):
+    if group_id is None:
+        group_id = get_current_group().id
+    return 'sphboard_authorinfo_%s_%s' % (str(group_id),str(user_id))
 
 @cache_inclusion_tag(register,
                      'sphene/sphboard/_post_authorinfo.html',
@@ -126,12 +129,22 @@ def sphboard_post_authorinfo(user_id):
         user = None
     else:
         user = User.objects.get(pk = user_id)
-    return { 'author': user, }
+
+    return { 'author': user,
+             'post_count': UserPostCount.objects.get_post_count(user, get_current_group()) }
 
 
 def clear_authorinfo_cache(instance):
-    cache.delete( authorinfo_cachekey( instance.id ) )
+    for group in Group.objects.all():
+        cache.delete( authorinfo_cachekey( instance.id, group.id ) )
+
+def clear_authorinfo_cache_postcount(instance):
+    cache.delete( authorinfo_cachekey( instance.user.id, instance.group.id ) )
 
 dispatcher.connect(clear_authorinfo_cache,
                    sender = User,
+                   signal = signals.post_save)
+
+dispatcher.connect(clear_authorinfo_cache_postcount,
+                   sender = UserPostCount,
                    signal = signals.post_save)

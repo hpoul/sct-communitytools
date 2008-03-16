@@ -68,6 +68,21 @@
       width: 150px;
     }
 
+    dl.sphboard_post_authorinfo_details dt {
+      margin:0px;
+      padding:0px;
+      font-weight: bold;
+    }
+    dl.sphboard_post_authorinfo_details dt:after {
+      content: ': ';
+    }
+
+    dl.sphboard_post_authorinfo_details dd {
+      margin:0px;
+      margin-left: 1em;
+      padding:0px;
+    }
+
     .sphboard_thread_list {
       width: 100%;
       border-collapse: collapse;

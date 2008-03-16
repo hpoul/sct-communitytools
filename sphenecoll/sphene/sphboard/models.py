@@ -1239,7 +1239,7 @@ class PollVoters(models.Model):
 
 class BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
-    signature = models.TextField()
+    signature = models.TextField(default = '')
     
     markup = models.CharField(max_length = 250,
                               null = True,
@@ -1247,8 +1247,50 @@ class BoardUserProfile(models.Model):
 
     default_notifyme_value = models.BooleanField(null = True, )
 
+
     def render_signature(self):
+        if self.signature == '':
+            return ''
         return render_body(self.signature, self.markup)
+
+class UserPostCountManager(models.Manager):
+    def get_post_count(self, user, group):
+        try:
+            return self.get(user = user, group = group ).post_count
+        except UserPostCount.DoesNotExist:
+            return self.update_post_count(user, group)
+
+    def update_post_count(self, user, group):
+        try:
+            upc = self.get(user = user, group = group)
+        except UserPostCount.DoesNotExist:
+            upc = UserPostCount(user = user, group = group)
+        upc.update_post_count()
+        upc.save()
+        return upc.post_count
+
+
+class UserPostCount(models.Model):
+    user = models.ForeignKey( User )
+    group = models.ForeignKey( Group )
+    post_count = models.IntegerField()
+
+    objects = UserPostCountManager()
+
+    def update_post_count(self):
+        self.post_count = self.user.sphboard_post_author_set. \
+            filter( category__group = self.group ).count()
+
+
+    class Meta:
+        unique_together = ( 'user', 'group' )
+
+def update_post_count(instance):
+    UserPostCount.objects.update_post_count( instance.author, instance.category.group )
+
+dispatcher.connect(update_post_count,
+                   sender = Post,
+                   signal = signals.post_save)
 
 
 class ExtendedCategoryConfig(models.Model):
@@ -1347,7 +1389,10 @@ def board_profile_display(sender, signal, request, user):
         return None
 
     if profile.signature:
-        return '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (_('Board Signature'), profile.render_signature())
+        return '<tr><th>%s</th><td>%d</td></tr><tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
+            _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()),
+            _('Board Signature'), profile.render_signature(),
+            )
     return None
 
 dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
