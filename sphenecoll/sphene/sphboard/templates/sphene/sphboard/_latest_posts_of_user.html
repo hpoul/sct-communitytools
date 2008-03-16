@@ -1,0 +1,14 @@
+{% load sph_extras %}
+{% load sphboard_extras %}
+<ul class="sphboard_post_summary">
+  {% for post in post_list %}
+    <li>
+      <dl>
+	<dt class="postdate">{{ post.postdate|sph_date }}</dt>
+	<dd class="subject"><a href="{{ post.get_absolute_url }}">{{ post.subject }}</a></dd>
+        <dd class="category">{% sphboard_displayBreadcrumbsForCategory post.category 1 %}</dd>
+	<dd class="body">{{ post.body_escaped }}</dd>
+      </dl>
+    </li>
+  {% endfor %}
+</ul>
