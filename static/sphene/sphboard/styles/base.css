@@ -63,6 +63,8 @@
     }
 
     .sphboard_post_list td.sphboard_post_authorinfo {
+      vertical-align: top;
+      padding-top: 2em;
       width: 150px;
     }
 
