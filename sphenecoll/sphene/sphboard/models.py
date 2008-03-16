@@ -1383,17 +1383,18 @@ def board_profile_edit_save_form(sender, instance, signal, request):
 
 
 def board_profile_display(sender, signal, request, user):
+    ret = '<tr><th>%s</th><td>%d</td></tr>' % (
+            _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()), )
     try:
         profile = BoardUserProfile.objects.get( user = user, )
     except BoardUserProfile.DoesNotExist:
-        return None
+        return ret
 
     if profile.signature:
-        return '<tr><th>%s</th><td>%d</td></tr><tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
-            _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()),
+        ret += '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
             _('Board Signature'), profile.render_signature(),
             )
-    return None
+    return ret
 
 dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
 dispatcher.connect(board_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
