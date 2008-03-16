@@ -251,12 +251,20 @@ def profile(request, group, user_id):
                           user = user, )
 
     additionalprofile = ''
+    blocks = list()
     for listener in ret:
         if listener[1]:
-            additionalprofile += listener[1]
+            response = listener[1]
+
+            if isinstance( response, dict ):
+                blocks.append(response['block'])
+                response = response['additionalprofile']
+
+            additionalprofile += response
     
     return render_to_response( 'sphene/community/profile.html',
                                { 'profile_user': user,
+                                 'profile_blocks': blocks,
                                  'has_edit_permission': has_edit_permission,
                                  'profile_edit_url': profile_edit_url,
                                  'additionalprofile': mark_safe( additionalprofile ),

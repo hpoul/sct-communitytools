@@ -1,10 +1,10 @@
 # Create your views here.
+from django import newforms as forms, template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.db.models import Q
 from django.template.context import RequestContext
-from django import newforms as forms
 from django.dispatch import dispatcher
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.utils.translation import ugettext, string_concat
@@ -20,7 +20,15 @@ from sphene.sphboard import boardforms
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
 from sphene.sphboard.renderers import describe_render_choices
 
-        
+
+def get_all_viewable_categories(group, user):
+    all_categories = Category.objects.filter( group = group )
+    allowed_categories = list()
+    for category in all_categories:
+        if category.has_view_permission( user ):
+            allowed_categories.append(category.id)
+    return allowed_categories
+
 
 def showCategory(request, group = None, category_id = None, showType = None):
     args = {
@@ -68,11 +76,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
                                        context_instance = RequestContext(request) )
         
         ## Show the latest threads from all categories.
-        all_categories = Category.objects.filter( group = group )
-        allowed_categories = ()
-        for category in all_categories:
-            if category.has_view_permission( request.user ):
-                allowed_categories += (category.id,)
+        allowed_categories = get_all_viewable_categories( group, request.user )
         
         if group != None: thread_args = { 'category__group': group }
         else: thread_args = { 'category__group__isnull': True }
@@ -607,3 +611,25 @@ def catchup(request, group, category_id):
     req = HttpResponseRedirect( '../../show/%s/' % category_id )
     req.sph_lastmodified = True
     return req
+
+
+def latest_posts_of_user_context(request, group, user):
+    allowed_categories = get_all_viewable_categories( group, request.user )
+    post_list = Post.objects.filter( category__id__in = allowed_categories,
+                                     author = user )
+    post_list = post_list.order_by( '-postdate' )
+
+    return { 'post_list': post_list,
+             'post_user': user,
+             }
+
+
+def render_latest_posts_of_user(request, group, user):
+    ctx = latest_posts_of_user_context(request,group,user)
+    ctx['post_list'] = ctx['post_list'][0:10]
+    str = template.loader.render_to_string( 'sphene/sphboard/_latest_posts_of_user.html',
+                                            ctx,
+                                            context_instance = RequestContext(request))
+
+    return str
+

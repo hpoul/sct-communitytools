@@ -55,3 +55,14 @@
       font-size: xx-small;
       content: "?";
     }
+
+.sph_community_profile {
+  float: left;
+}
+
+.sph_community_blocks {
+  float:left;
+  border-left: 1px solid gray;
+  padding-left: 2em;
+  margin-left: 2em;
+}

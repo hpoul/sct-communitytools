@@ -1255,12 +1255,16 @@ class BoardUserProfile(models.Model):
 
 class UserPostCountManager(models.Manager):
     def get_post_count(self, user, group):
+        if user is None:
+            return None
         try:
             return self.get(user = user, group = group ).post_count
         except UserPostCount.DoesNotExist:
             return self.update_post_count(user, group)
 
     def update_post_count(self, user, group):
+        if user is None:
+            return None
         try:
             upc = self.get(user = user, group = group)
         except UserPostCount.DoesNotExist:
@@ -1387,14 +1391,18 @@ def board_profile_display(sender, signal, request, user):
             _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()), )
     try:
         profile = BoardUserProfile.objects.get( user = user, )
-    except BoardUserProfile.DoesNotExist:
-        return ret
 
-    if profile.signature:
-        ret += '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
-            _('Board Signature'), profile.render_signature(),
-            )
-    return ret
+        if profile.signature:
+            ret += '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
+                _('Board Signature'), profile.render_signature(), )
+
+    except BoardUserProfile.DoesNotExist:
+        pass
+
+    from sphene.sphboard.views import render_latest_posts_of_user
+    blocks = '<div>%s</div>' % render_latest_posts_of_user(request, get_current_group(), user)
+    return { 'additionalprofile': ret,
+             'block': mark_safe(blocks), }
 
 dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
 dispatcher.connect(board_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)

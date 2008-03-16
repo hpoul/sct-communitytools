@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.db.models import signals
 from django.dispatch import dispatcher
 from django.newforms import widgets
+from sphene.community.models import Group
 from sphene.community.middleware import get_current_group
 from sphene.community.sphutils import get_sph_setting
 from sphene.sphboard.models import Post, BoardUserProfile, UserPostCount

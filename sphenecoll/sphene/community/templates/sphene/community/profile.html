@@ -4,7 +4,7 @@
 
 {% block content %}
   {% trans "Profile for" %} {% sph_html_user profile_user %}{% if has_edit_permission %} [ <a href="{{ profile_edit_url }}">{% trans "Edit" %}</a> ]{% endif %}<br/><br/>
-  <table border="0">
+  <table class="sph_community_profile" border="0">
     <tr>
       <th>{% trans "Name" %}</th>
       <td>{{ profile_user|sph_fullusername }}</td>
@@ -15,4 +15,10 @@
     </tr>
     {{ additionalprofile }}
   </table>
+
+  {% for block in profile_blocks %}
+    <div class="sph_community_blocks">
+      {{ block }}
+    </div>
+  {% endfor %}
 {% endblock %}

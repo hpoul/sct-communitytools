@@ -170,3 +170,39 @@
 }
 
 
+ul.sphboard_post_summary {
+  padding:0px;margin:0px;
+  list-style-type: none;
+  display:block;
+}
+
+.sphboard_post_summary li {
+  border-bottom: 1px dotted gray;
+  display:block;
+  margin: 0px;
+  padding: 1em;
+}
+.sphboard_post_summary li:hover {
+  background-color: #ddf
+}
+
+.sphboard_post_summary dt {
+  padding: 0px;
+}
+.sphboard_post_summary dd.category {
+  display:none;
+}
+.sphboard_post_summary .postdate {
+  font-size: x-small;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+.sphboard_post_summary .subject {
+}
+.sphboard_post_summary .body {
+  max-height:4em;
+  overflow:hidden;
+}
+.sphboard_post_summary li:hover .body {
+  max-height:20em;
+}

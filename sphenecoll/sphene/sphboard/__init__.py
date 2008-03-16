@@ -1,5 +1,6 @@
+from sphene.community import sphsettings
 from sphene.community.sphutils import add_setting_defaults
-
+from django.conf import settings
 
 
 add_setting_defaults( {
@@ -35,3 +36,8 @@ add_setting_defaults( {
 
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
     })
+
+
+styleincludes = sphsettings.get_sph_setting( 'community_styleincludes', [])
+styleincludes.append(settings.MEDIA_URL + 'sphene/sphboard/styles/base.css')
+sphsettings.set_sph_setting( 'community_styleincludes', styleincludes )
