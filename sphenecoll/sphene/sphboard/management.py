@@ -42,5 +42,6 @@ def synchronize_threadinformation(verbosity = -1):
         thread_info.save()
 
 
-
+from sphene.community.management import do_changelog
+dispatcher.connect(do_changelog, sender=models, signal=signals.post_syncdb)
 dispatcher.connect(init_data, sender=models, signal=signals.post_syncdb)
