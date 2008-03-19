@@ -349,7 +349,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 else:
                     request.user.message_set.create( message = ugettext(u'Post created successfully.') )
             if thread == None: thread = newpost
-            return HttpResponseRedirect( thread.get_absolute_url() )
+            return HttpResponseRedirect( newpost.get_absolute_url() )
 
     else:
         postForm = MyPostForm( )

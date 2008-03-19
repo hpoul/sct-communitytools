@@ -876,11 +876,28 @@ class Post(models.Model):
     def __unicode__(self):
         return self.subject
 
+    def get_page(self):
+        if self.thread is None:
+            return 1
+        threadinfo = self.get_threadinformation()
+        if threadinfo.latest_post == self:
+            return threadinfo.get_page_count()
+
+        i = 0
+        for post in self.thread.get_all_posts():
+            i+=1
+            if post == self:
+                break
+        import math
+        return int(math.ceil(i / float(get_sph_setting( 'board_post_paging' ))))
+
     def get_absolute_url(self):
         cturl = self.category.get_category_type().get_absolute_url_for_post( self )
         if cturl:
             return cturl
-        return self._get_absolute_url()
+        return "%s?page=%d#post-%d" % (self._get_absolute_url(),
+                                       self.get_page(),
+                                       self.id)
 
     def _get_absolute_url(self):
         return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.thread and self.thread.id or self.id })
@@ -1080,6 +1097,13 @@ class ThreadInformation(models.Model):
         return self.category.get_category_type().get_threadlist_subject( self )
 
     def get_absolute_url(self):
+        cturl = self.category.get_category_type().get_absolute_url_for_post( self.root_post )
+        if cturl:
+            return cturl
+        #return self._get_absolute_url()
+        return self.root_post.get_absolute_url()
+
+    def get_absolute_url_nopaging(self):
         cturl = self.category.get_category_type().get_absolute_url_for_post( self.root_post )
         if cturl:
             return cturl

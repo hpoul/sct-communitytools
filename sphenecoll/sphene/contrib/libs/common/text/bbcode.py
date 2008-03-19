@@ -264,7 +264,7 @@ class QuoteTag(BBTag):
                 try:
                     post = sphboard.models.Post.objects.get( pk = match.group('post_id') )
                     # TODO check if we are currently on this page ...
-                    url = post.get_absolute_url() + "#" + match.group('post_id')
+                    url = post.get_absolute_url()
                     ret += ' <a href="%s">said @ %s</a>:' % (url, format_date(post.postdate))
                 except sphboard.models.Post.DoesNotExist:
                     ret += ' said: '

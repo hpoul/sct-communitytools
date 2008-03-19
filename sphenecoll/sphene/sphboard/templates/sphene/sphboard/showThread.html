@@ -75,7 +75,7 @@
           {% sphboard_post_authorinfo post.author_id %}
         </td>
         <td class="sphboard_post_subject">
-          <div class="board_postdate"><a name="{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
+          <div class="board_postdate"><a name="post-{{ post.id }}"></a>{{ post.postdate|date:"Y-m-d H:i:s" }} - <strong>{{ post.subject|escape }}</strong></div>
           <div class="board_controls">
             {% if post.allow_annotating %}
               [ <a href="{{ post.get_absolute_annotate_url }}">{% trans "Annotate/Hide" %}</a> ]

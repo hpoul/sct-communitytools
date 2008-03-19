@@ -7,7 +7,7 @@
     {% blocktrans with latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}at {{ latest_post }}{% endblocktrans %}
     <br/>
   {% else %}
-  {% blocktrans with latestPost.get_thread.id as thread_id and latestPost.get_threadinformation.get_page_count as page_count and latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}At <a href="../../thread/{{ thread_id }}/?page={{ page_count }}">{{ latest_post }}</a>{% endblocktrans %}
+  {% blocktrans with latestPost.get_absolute_url as post_url and latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}At <a href="{{ post_url }}">{{ latest_post }}</a>{% endblocktrans %}
   <br/>
   {% endifequal %}
   {% trans "By" %} {% sphboard_displayUserName latestPost.author %}
