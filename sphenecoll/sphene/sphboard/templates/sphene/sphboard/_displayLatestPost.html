@@ -3,7 +3,7 @@
 {% load sphboard_extras %}
 {% if latestPost %}
   {% ifequal showSubject 1 %}
-    <a href="../../thread/{{ latestPost.get_thread.id }}/?page={{ latestPost.get_threadinformation.get_page_count }}">{% sph_truncate latestPost.subject 30 "..." %}</a>
+    <a href="{{ latestPost.get_absolute_url }}">{% sph_truncate latestPost.subject 30 "..." %}</a>
     {% blocktrans with latestPost.postdate|date:"Y-m-d H:i:s" as latest_post %}at {{ latest_post }}{% endblocktrans %}
     <br/>
   {% else %}
