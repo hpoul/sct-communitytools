@@ -207,10 +207,13 @@ class Category(models.Model):
                              }
 
     def get_category_type(self):
-        if not self.category_type:
+        if not self.category_type or self.category_type == 'None':
             from sphene.sphboard.categorytypes import DefaultCategoryType
             return DefaultCategoryType( self )
-        return categorytyperegistry.get_category_type( self.category_type )(self)
+        ct = categorytyperegistry.get_category_type( self.category_type )
+        if ct is None:
+            raise Exception( 'Invalid category type "%s"' % (self.category_type))
+        return ct(self)
 
     def get_rolemember_limitation_objects(group):
         """

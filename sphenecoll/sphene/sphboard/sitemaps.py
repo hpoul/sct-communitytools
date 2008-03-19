@@ -20,3 +20,6 @@ class ThreadsSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.get_latest_post().postdate
+
+    def location(self, obj):
+        return obj.get_threadinformation().get_absolute_url_nopaging()
