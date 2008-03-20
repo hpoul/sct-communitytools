@@ -467,7 +467,7 @@ def tags_json_autocompletion(request, group):
             '%s.tag_label_id = %s.%s' % ( qn( TaggedItem._meta.db_table ),
                                           qn( TagLabel._meta.db_table ),
                                           qn( TagLabel._meta.pk.column ) ) ],
-        params = [ content_type_id ], )[:10]
+        params = [ content_type_id ], ).distinct()[:10]
     ret = ''
     for taglabel in taglabels:
         ret += '<taglabel><id>%d</id><label>%s</label><tag>%s</tag></taglabel>' % ( taglabel.id,
