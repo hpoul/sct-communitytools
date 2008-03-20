@@ -15,7 +15,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from sphene.community import PermissionDenied, sphsettings
-from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag
+from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphutils import sph_reverse
@@ -451,4 +451,31 @@ def groupaware_redirect_to(request, url, group, **kwargs):
             return HttpResponsePermanentRedirect(startpages[group_name] % kwargs)
 
     return HttpResponsePermanentRedirect(url % kwargs)
+
+def tags_json_autocompletion(request, group):
+    content_type_id = request.GET['content_type_id']
+    tagstr = request.GET['string']
+
+    from django.db import connection
+    qn = connection.ops.quote_name
+    taglabels = TagLabel.objects.filter( label__istartswith = tagstr,
+                                         tag__group = group,
+                                         ).extra(
+        tables = [ TaggedItem._meta.db_table, ],
+        where = [
+            '%s.content_type_id = %%s' % qn( TaggedItem._meta.db_table ),
+            '%s.tag_label_id = %s.%s' % ( qn( TaggedItem._meta.db_table ),
+                                          qn( TagLabel._meta.db_table ),
+                                          qn( TagLabel._meta.pk.column ) ) ],
+        params = [ content_type_id ], )[:10]
+    ret = ''
+    for taglabel in taglabels:
+        ret += '<taglabel><id>%d</id><label>%s</label><tag>%s</tag></taglabel>' % ( taglabel.id,
+                                                                                    taglabel.label,
+                                                                                    taglabel.tag.name )
+
+    return HttpResponse("<taglabels>%s</taglabels>" % ret,
+                        mimetype = 'text/xml', )
+
+
 

@@ -19,4 +19,6 @@ urlpatterns += patterns('sphene.sphwiki.views',
                         (r'^attachments/edit/'   + snip + r'/(?P<attachmentId>\d+)/$', 'attachmentEdit'),
                         (r'^attachments/create/'   + snip + r'/$', 'attachmentCreate'),
                         (r'^attachments/list/'   + snip + r'/$', 'attachment'),
+
+                        url(r'^tag/(?P<tag_name>\w+)/$', 'show_tag_snips', name = 'sphwiki_show_tag_snips'),
                         )

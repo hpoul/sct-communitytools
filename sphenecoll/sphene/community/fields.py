@@ -1,4 +1,5 @@
 from django import newforms as forms
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from sphene.community.widgets import TagWidget
 from sphene.community.models import Tag, TagLabel, tag_sanitize
@@ -7,10 +8,16 @@ from sphene.community.middleware import get_current_group
 class TagField(forms.CharField):
     widget = TagWidget
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model = None, *args, **kwargs):
         if not 'help_text' in kwargs:
             kwargs['help_text'] = _(u'Comma separated list of tags.')
-        super(TagField, self).__init__(*args, **kwargs)
+
+        widget = TagWidget
+        if model is not None:
+            content_type_id = ContentType.objects.get_for_model(model).id
+            widget = TagWidget(content_type_id)
+
+        super(TagField, self).__init__(widget = widget, *args, **kwargs)
 
     def clean(self, value):
         value = super(TagField, self).clean(value)

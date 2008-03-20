@@ -5,6 +5,7 @@ from sphene.community.models import Tag, TagLabel, TaggedItem, tag_set_labels, t
 from sphene.community.fields import TagField
 from sphene.community.widgets import TagWidget
 
+from sphene.sphboard.models import Post
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
 from sphene.sphblog.models import BlogPostExtension, BLOG_POST_STATUS_CHOICES
@@ -16,7 +17,7 @@ class BlogPostForm(PostForm):
                            help_text = "Optionally define a slug for this blog post. Otherwise it will be filled automatically.")
     status = forms.ChoiceField(choices = BLOG_POST_STATUS_CHOICES,
                                initial = 2)
-    tags = TagField(required = False)
+    tags = TagField(model = Post, required = False)
 
     def clean_slug(self):
         if not 'subject' in self.cleaned_data:

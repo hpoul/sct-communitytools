@@ -7,6 +7,7 @@ from django.template.context import RequestContext
 from django import newforms as forms
 from django.newforms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy
@@ -20,6 +21,9 @@ from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community import PermissionDenied, sphutils
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_sphdata, get_current_user
+from sphene.community.models import Tag, TagLabel, TaggedItem, tag_set_labels, tag_get_labels, tag_get_models_by_tag
+from sphene.community.fields import TagField
+from sphene.community.widgets import TagWidget
 
 import os
 
@@ -243,6 +247,8 @@ class CaptchaEditBaseForm(forms.BaseForm):
             self.fields['captcha'] = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
                                                            help_text = ugettext('Please enter the result of the above calculation.'),
                                                            )
+        self.fields['tags'] = TagField(model = WikiSnip, required = False)
+
 
 
 def editSnip(request, group, snipName, versionId = None):
@@ -285,6 +291,9 @@ def editSnip(request, group, snipName, versionId = None):
             snip.editor = request.user
             snip.save()
 
+            data = form.cleaned_data
+
+
             change = WikiSnipChange( snip = snip,
                                      editor = request.user,
                                      edited = datetime.today(),
@@ -292,11 +301,17 @@ def editSnip(request, group, snipName, versionId = None):
                                      body = snip.body,
                                      )
             change.save()
+
+            tag_set_labels( snip, data['tags'] )
+            tag_set_labels( change, data['tags'] )
             
             return HttpResponseRedirect( snip.get_absolute_url() )
 
     else:
         form = SnipForm()
+
+        if snip is not None:
+            form.fields['tags'].initial = tag_get_labels(snip)
 
     if version:
         from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
@@ -309,3 +324,18 @@ def editSnip(request, group, snipName, versionId = None):
                                                      'snip': snip,
                                                      'version': version,
                                                      'changemessage': changemessage } ) ) )
+
+
+def show_tag_snips(request, group, tag_name):
+    tag = Tag.objects.get( name__exact = tag_name )
+    # OK .. we need to find all wiki snips in the current group on which the 
+    # user has permission to view.
+    snips = tag_get_models_by_tag(WikiSnip.objects.all(), tag)
+
+    return object_list( request = request,
+                        queryset = snips,
+                        template_name = 'sphene/sphwiki/list_tag_snips.html',
+                        extra_context = { 'tag_name': tag_name,
+                                          },
+                        allow_empty = True,
+                        )
