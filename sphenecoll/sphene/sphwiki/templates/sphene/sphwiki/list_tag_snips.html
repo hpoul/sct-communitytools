@@ -1,0 +1,21 @@
+{% extends "sphene/sphwiki/base.html" %}
+
+{% load i18n %}
+{% load sph_extras %}
+
+{% block content %}
+
+<h2>{% blocktrans %}Snips with the tag '{{ tag_name }}'{% endblocktrans %}</h2>
+
+
+<ul>
+  {% for snip in object_list %}
+    {% if snip.has_view_permission %}
+      <li><a href="{{ snip.get_absolute_url }}">{{ snip.name }}</a></li>
+    {% else %}
+      <li class="sphwiki nopermission">{% trans "Not enough permissions to view this wiki snip." %}</li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+{% endblock %}
