@@ -3,7 +3,7 @@ from django import newforms as forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseGone
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseGone, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template import loader, Context
@@ -453,6 +453,9 @@ def groupaware_redirect_to(request, url, group, **kwargs):
     return HttpResponsePermanentRedirect(url % kwargs)
 
 def tags_json_autocompletion(request, group):
+    if 'content_type_id' not in request.GET or \
+            not request.GET.get( 'string', '' ):
+        raise Http404
     content_type_id = request.GET['content_type_id']
     tagstr = request.GET['string']
 
