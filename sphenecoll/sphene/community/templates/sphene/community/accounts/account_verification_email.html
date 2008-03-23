@@ -1,0 +1,22 @@
+{% load i18n %}
+<html>
+<head></head>
+<body>
+<pre>
+{% blocktrans with group.get_name as group_name %}You have requested to register with the email address:
+      {{ email }} 
+on the {{ group_name }} website.{% endblocktrans %}
+
+{% blocktrans %}
+<a href="http://{{ baseurl }}{{ path }}">To continue registration, please follow this link</a>.{% endblocktrans %}
+
+
+{% blocktrans with group.get_name as group_name %}
+Thanks for your interest,
+  Your {{ group_name }} Team.
+{% endblocktrans %}
+</pre>
+
+{% blocktrans %}If you did not make this request you can safely ignore this email.{% endblocktrans %}
+</body>
+</html>
