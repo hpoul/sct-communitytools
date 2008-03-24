@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 jsincludes = get_sph_setting( 'community_jsincludes', [])
-jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery.pack.js')
+jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery-1.2.3.min.js')
 jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery.autocomplete.js')
 sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
 
