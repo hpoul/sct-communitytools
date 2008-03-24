@@ -65,4 +65,5 @@
   border-left: 1px solid gray;
   padding-left: 2em;
   margin-left: 2em;
+  max-width: 50%;
 }
