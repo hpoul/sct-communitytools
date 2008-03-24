@@ -28,16 +28,20 @@
       {{ snip_rendered_body }}
     </div>
 
+    {% load sph_tagging %}
     <div class="sphwiki_snip_info sphwiki">
+      {% with snip|sph_tag_labels as tag_labels %}
+        {% if tag_labels.count %}
       <h3>{% trans "Tags:" %}</h3>
       <ul class="sph_tags">
-	{% load sph_tagging %}
-	{% for label in snip|sph_tag_labels %}
+	{% for label in tag_labels %}
 	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
 	{% endfor %}
       </ul>
+      {% endif %}
       <p>{% blocktrans with snip.changed|sph_date as snip_changedate and snip.editor|sph_html_user as snip_editor %}Last Modified: {{ snip_changedate }} by {{ snip_editor }}{% endblocktrans %} - [ <a href="{{ snip.get_absolute_historyurl }}">{% trans "Snip Changes" %}</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">{% trans "Wiki History" %}</a> ]</p>
     </div>
+    {% endwith %}
   {% else %}
     {% blocktrans with snipName as snip_name and "<strong>" as snip_prefix and "</strong>" as snip_postfix %}Snip {{ snip_prefix }}{{ snip_name }}{{ snip_postfix }} does not yet exist.{% endblocktrans %} {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">{% trans "Create It." %}</a>{% endif %}
   {% endif %}
