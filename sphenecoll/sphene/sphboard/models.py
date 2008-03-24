@@ -104,8 +104,16 @@ class AccessCategoryManager(models.Manager):
 class CategoryTypeChoices(object):
     def __iter__(self):
         choices = ()
-        for ct in categorytyperegistry.get_category_type_list():
-            choices += ((ct.name, "%s (%s)" % (ct.label, ct.name)),)
+        try:
+            for ct in categorytyperegistry.get_category_type_list():
+                choices += ((ct.name, "%s (%s)" % (ct.label, ct.name)),)
+        except:
+            # This is also called during syncdb before tables are
+            # created, so for this case catch all exceptions.
+            # see http://sct.sphene.net/board/thread/898/
+            print "Error while trying to fetch category types."
+            pass
+
         return choices.__iter__()
         
 
