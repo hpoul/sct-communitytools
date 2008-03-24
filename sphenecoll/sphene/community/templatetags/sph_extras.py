@@ -1,11 +1,15 @@
+import Image
+import os
+import re
+from time import strftime
+
+
 from django import template
 from django.template.context import RequestContext
 from django.conf import settings
-from time import strftime
-import re
+
 
 from sphene.community.sphutils import HTML, get_sph_setting
-
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
@@ -317,3 +321,45 @@ def sph_form(form, submit = ugettext_lazy(u'Submit') ):
     return { 'form': form,
              'submit': submit, }
 
+
+@register.filter
+def sph_thumbnail(file, size='200x200'):
+    return resize(file, size)[0]
+
+def resize(file, size='200x200'):
+    # copied from http://www.djangosnippets.org/snippets/192/
+    # defining the size
+    width, height = size.split('x')
+    # defining the filename and the miniature filename
+    basename, format = file.rsplit('.', 1)
+    miniature = basename + '_' + size + '.thumb.' +  format
+    miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
+    miniature_url = os.path.join(settings.MEDIA_URL, miniature)
+
+    # always calculate the width/height
+    if width == 'X' or height == 'X':
+        filename = os.path.join(settings.MEDIA_ROOT, file)
+        image = Image.open(filename)
+        ox, oy = image.size
+        
+        if width != 'X':
+            x = int(width)
+            y = int(oy / (ox / float(x)))
+        elif height != 'X':
+            y = int(height)
+            x = int(ox / (oy / float(y)))
+        else:
+            x = 200
+            y = 200
+    else:
+        x = int(width)
+        y = int(height)
+
+
+    # if the image wasn't already resized, resize it
+    if not os.path.exists(miniature_filename):
+        print '>>> debug: resizing the image to the format %s!' % size
+
+        image.thumbnail([x, y], Image.ANTIALIAS) # generate a 200x200 thumbnail
+        image.save(miniature_filename, image.format)
+    return (miniature_url, x, y)

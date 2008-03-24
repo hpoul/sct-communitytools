@@ -5,6 +5,7 @@ from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.sphsettings import get_sph_setting
 from sphene.community.sphutils import HTML
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
+from sphene.community.templatetags.sph_extras import resize
 
 from sphene.sphwiki.models import WikiAttachment, WikiSnip
 
@@ -71,6 +72,14 @@ class ImageMacro (object):
             for paramName in [ 'class', 'width', 'height', 'alt', 'align' ]:
                 if params.has_key( paramName ):
                     el.setAttribute( paramName, params[paramName] )
+
+            if params.has_key('resize'):
+                size = params['resize']
+                width, height = size.split('x')
+                src, width, height = resize(attachment.fileupload, size)
+                el.setAttribute('src', src)
+                el.setAttribute('width', '%dpx' % width)
+                el.setAttribute('height', '%dpx' % height)
 
             # Create a link to view the image maximized.
             if not 'nolink' in params or not params['nolink']:
