@@ -153,19 +153,24 @@ def diff(request, group, snipName, changeId = None):
         desc = ugettext('%(date)s by %(editor)s')
         if snip.has_edit_permission():
             desc += ' / <a href="%(editversionlink)s">'+ugettext('Edit this version')+'</a>'
+        fromdesc = desc % {
+            'date': sph_date( changeStart.edited ),
+            'editor': sph_fullusername( changeStart.editor ),
+            'editversionlink': changeStart.get_absolute_editurl() },
+        todesc = desc % {
+            'date': sph_date( changeEnd.edited ),
+            'editor': sph_fullusername( changeEnd.editor ),
+            'editversionlink': changeEnd.get_absolute_editurl() },
+
         diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
                                          changeEnd.body.splitlines(1),
-                                         fromdesc = desc % {
-                'date': sph_date( changeStart.edited ),
-                'editor': sph_fullusername( changeStart.editor ),
-                'editversionlink': changeStart.get_absolute_editurl() },
-                                         todesc = desc % {
-                'date': sph_date( changeEnd.edited ),
-                'editor': sph_fullusername( changeEnd.editor ),
-                'editversionlink': changeEnd.get_absolute_editurl() },
+                                         fromdesc = fromdesc,
+                                         todesc = todesc,
                                          context = True, )
 
     args['diffTable'] = mark_safe(diffTable)
+    args['fromchange'] = changeStart
+    args['tochange'] = changeEnd
     return render_to_response( 'sphene/sphwiki/diff.html',
                                args,
                                context_instance = RequestContext(request) )
@@ -285,24 +290,46 @@ def editSnip(request, group, snipName, versionId = None):
         form = SnipForm(request.POST)
 
         if form.is_valid():
+            old_title = None
+            old_body = None
+            change_type = 0
+            if snip.id:
+                old_title = snip.title
+                old_body = snip.body
+
             snip = form.save(commit=False)
             snip.group = group
             snip.name = snipName
             snip.editor = request.user
             snip.save()
 
+            if old_body is not None:
+                if snip.body != old_body:
+                    change_type |= 1
+
+                if snip.title != old_title:
+                    change_type |= 2
+
+            else:
+                # if a snip is new, everything has changed ..
+                change_type = 1 | 2 | 4
+
             data = form.cleaned_data
 
+            if tag_set_labels( snip, data['tags'] ):
+                change_type |= 4
+                print "it has changed ! - %d" % change_type
 
             change = WikiSnipChange( snip = snip,
                                      editor = request.user,
                                      edited = datetime.today(),
                                      message = request.POST['message'],
+                                     title = snip.title,
                                      body = snip.body,
+                                     change_type = change_type,
                                      )
             change.save()
 
-            tag_set_labels( snip, data['tags'] )
             tag_set_labels( change, data['tags'] )
             
             return HttpResponseRedirect( snip.get_absolute_url() )

@@ -7,22 +7,31 @@
 {% block content %}
 
   {% include "sphene/sphwiki/_snip_header.html" %}
-  <a href="{{ snip.get_absolute_url }}">{% trans "Back to Snip" %}</a><br/><br/>
+  <p><a href="{{ snip.get_absolute_url }}">{% trans "Back to Snip" %}</a></p>
 
   <table class="sph_object_list">
     <tr>
-      <th>{% trans "Date" %}</th>
-      <th>{% trans "Editor" %}</th>
-      <th width="80%">{% trans "Change Message" %}</th>
+      <th rowspan="2">{% trans "Date" %}</th>
+      <th rowspan="2">{% trans "Editor" %}</th>
+      <th colspan="3">{% trans "Changes" %}</th>
+      <th rowspan="2" width="80%">{% trans "Change Message" %}</th>
       {% if snip.has_edit_permission %}
-        <th>{% trans "Edit" %}</th>
+        <th rowspan="2">{% trans "Edit" %}</th>
       {% endif %}
+    </tr>
+    <tr class="sphwiki_history_changes">
+      <th>{% trans "Body" %}</th>
+      <th>{% trans "Title" %}</th>
+      <th>{% trans "Tags" %}</th>
     </tr>
 
     {% for change in object_list %}
        <tr>
          <td class="history_changedate"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
          <td class="history_editor">{% sph_html_user change.editor %}</td>
+	 <td class="sphwiki_history_change">{% if change.body_changed %}X{% endif %}</td>
+	 <td class="sphwiki_history_change">{% if change.title_changed %}X{% endif %}</td>
+	 <td class="sphwiki_history_change">{% if change.tags_changed %}X{% endif %}</td>
          <td>{{ change.message }}</td>
 	 {% if snip.has_edit_permission %}
 	   <td class="history_edit"><a href="{{ change.get_absolute_editurl }}">{% trans "Edit this version" %}</a></td>

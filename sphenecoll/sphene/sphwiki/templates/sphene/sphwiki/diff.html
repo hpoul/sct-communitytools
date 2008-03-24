@@ -20,6 +20,53 @@
     </span><br/><br/>
   {% endif %}
 
+  {% if fromchange %}
+  <table class="sphwiki_diff_summary sphwiki">
+    <tr>
+      <th colspan="3">{% trans "Diff Summary" %}</th>
+    </tr>
+    <tr>
+      <th>{% trans "Title" %}</th>
+      <td>{{ fromchange.title }}</td>
+      <td>{{ tochange.title }}</td>
+    </tr>
+    <tr>
+      <th>{% trans "Date" %}</th>
+      <td>{{ fromchange.edited|sph_date }}</td>
+      <td>{{ tochange.edited|sph_date }}</td>
+    </tr>
+    <tr>
+      <th>{% trans "Editor" %}</th>
+      <td>{% sph_html_user fromchange.editor %}</td>
+      <td>{% sph_html_user tochange.editor %}</td>
+    </tr>
+    {% if snip.has_edit_permission %}
+      <tr>
+        <th>{% trans "Edit" %}</th>
+        <td><a href="{{ fromchange.get_absolute_editurl }}">{% trans "Edit this version" %}</td>
+        <td><a href="{{ tochange.get_absolute_editurl }}">{% trans "Edit this version" %}</td>
+      </tr>
+    {% endif %}
+    {% load sph_tagging %}
+    <tr>
+      <th>Tags</th>
+      <td>
+	<ul class="sph_tags">
+	{% for label in fromchange|sph_tag_labels %}
+	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
+	{% endfor %}
+	</ul>
+      </td>
+      <td>
+	<ul class="sph_tags">
+	{% for label in tochange|sph_tag_labels %}
+	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
+	{% endfor %}
+	</ul>
+      </td>
+    </tr>
+  </tabe>
+  {% endif %}
   {{ diffTable }}
 
 {% endblock %}

@@ -283,17 +283,52 @@ def tag_set_labels(model_instance, tag_labels):
     sets the tags of the given model_instance (which must exists already!)
     to the given tag labels (which must be TagLabel models.)
     - removes all existing tags.
+
+    returns True if anything has changed, False otherwise.
     """
 
-    # First remove existing tag labels
     model_type = ContentType.objects.get_for_model(model_instance)
+
+    # Check if anything has changed
+    tag_labels = list(tag_labels)
+    old_tag_labels = TaggedItem.objects.filter( content_type__pk = model_type.id,
+                                                object_id = model_instance.id, )
+
+    if len(tag_labels) == old_tag_labels.count():
+        if len(tag_labels) == 0:
+            # Nothing has changed
+            return False
+
+        for tagged_item in old_tag_labels:
+            found = False
+            for tag_label in tag_labels:
+                if tag_label == tagged_item.tag_label:
+                    found = True
+                    tag_labels.remove(tag_label)
+                    break
+
+            if not found:
+                break
+
+        if len(tag_labels) == 0:
+            # We started with the same amount of tags and all are
+            # the same ... ie. they did not change.
+            return False
+
+
+    # First remove existing tag labels
     TaggedItem.objects.filter( content_type__pk = model_type.id,
                                object_id = model_instance.id, ).delete()
+
+    
 
     for tag_label in tag_labels:
         t = TaggedItem( object = model_instance,
                         tag_label = tag_label )
         t.save()
+
+
+    return True
 
 
 def tag_get_labels(model_instance):

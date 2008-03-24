@@ -79,17 +79,17 @@
   border: 1px solid gray;
 }
 
-.sphwiki_snip_info .sph_tags li {
+.sphwiki .sph_tags li {
   display: inline;
 }
-.sphwiki_snip_info .sph_tags li:after {
+.sphwiki .sph_tags li:after {
   content: ', ';
 }
-.sphwiki_snip_info .sph_tags li:last-child:after {
+.sphwiki .sph_tags li:last-child:after {
   content:'';
 }
 
-.sphwiki_snip_info .sph_tags {
+.sphwiki .sph_tags {
   display: inline;
   padding: 0px;
 }
@@ -103,3 +103,29 @@
   margin: 0px;
   margin-top: 3px;
 }
+
+.sphwiki_history_changes th {
+  font-size: x-small;
+  font-weight: normal;
+}
+.sphwiki_history_change {
+  text-align: center;
+}
+
+
+.sphwiki_diff_summary {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 3em;
+  border: 1px solid black;
+}
+
+.sphwiki_diff_summary td, .sphwiki_diff_summary th {
+  border: 1px dotted gray;
+  padding: 5px;
+}
+
+.sphwiki_diff_summary td {
+  width: 40%;
+}
+

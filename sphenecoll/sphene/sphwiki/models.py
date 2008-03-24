@@ -301,11 +301,35 @@ class WikiSnipChange(models.Model):
     snip = models.ForeignKey(WikiSnip)
     editor = models.ForeignKey(User, null = True, blank = True)
     edited = models.DateTimeField()
+    title = models.CharField(max_length = 250, blank = True)
     body = models.TextField()
     message = models.TextField()
 
+    # Change type is a bit flag of:
+    # 1 = body changed
+    # 2 = title changed
+    # 4 = tags changed
+    # use the the methods: body_changed(), title_changed(), tags_changed()
+    # to check what has changed.
+    change_type = models.IntegerField()
+
     changelog = ( ( '2007-04-08 00', 'alter', 'ALTER editor_id DROP NOT NULL', ),
+                  ( '2008-03-23 00', 'alter', 'ADD title VARCHAR(250)', ),
+                  ( '2008-03-23 01', 'update', "SET title = ''", ),
+                  ( '2008-03-23 02', 'alter', 'ALTER title SET NOT NULL', ),
+                  ( '2008-03-23 03', 'alter', 'ADD change_type INTEGER', ),
+                  ( '2008-03-23 04', 'update', 'SET change_type = 0', ),
+                  ( '2008-03-23 05', 'alter', 'ALTER change_type SET NOT NULL', ),
                   )
+
+    def body_changed(self):
+        return self.change_type & 1
+
+    def title_changed(self):
+        return self.change_type & 2
+
+    def tags_changed(self):
+        return self.change_type & 4
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.diff', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'changeId': self.id})
