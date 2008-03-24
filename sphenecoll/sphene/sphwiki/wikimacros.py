@@ -2,6 +2,7 @@ from django.views.generic.list_detail import object_list
 from django import template
 
 from sphene.contrib.libs.markdown import mdx_macros
+from sphene.community.sphsettings import get_sph_setting
 from sphene.community.sphutils import HTML
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 
@@ -62,6 +63,11 @@ class ImageMacro (object):
                 return HTML( '<b>Attachment for image does not exist: %s</b>' % params['id'] )
             el = doc.createElement( 'img' )
             el.setAttribute( 'src', attachment.get_fileupload_url() )
+
+            cssclass = get_sph_setting('getwiki_macros_default_image_class')
+            if cssclass is not None:
+                el.setAttribute('class', cssclass)
+
             for paramName in [ 'class', 'width', 'height', 'alt', 'align' ]:
                 if params.has_key( paramName ):
                     el.setAttribute( paramName, params[paramName] )
@@ -71,6 +77,10 @@ class ImageMacro (object):
                 el.setAttribute( 'border', '0' )
                 a = doc.createElement( 'a' )
                 a.setAttribute( 'href', attachment.get_fileupload_url() )
+
+                if cssclass is not None:
+                    a.setAttribute('class', cssclass)
+
                 a.appendChild(el)
                 el = a
 
