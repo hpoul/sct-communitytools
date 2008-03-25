@@ -1,22 +1,21 @@
 import Image
 import os
 import re
-from time import strftime
+from time import strftime, time
 
 
 from django import template
 from django.template.context import RequestContext
 from django.conf import settings
 
-
 from sphene.community.sphutils import HTML, get_sph_setting
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
-from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
-from sphene.community.sphutils import add_rss_feed
+from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group, get_current_user
+from sphene.community.sphutils import add_rss_feed, sph_reverse
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
 from django.utils.translation import ugettext_lazy
     
 register = template.Library()
@@ -187,6 +186,24 @@ def sph_fullusername(value):
 
 @register.filter
 def sph_publicemailaddress(value):
+    if get_sph_setting('community_email_anonymous_require_captcha'):
+        # as a security constraint we don't return the public email
+        # address if the user is not logged in.
+        if not get_current_user().is_authenticated():
+            validated = get_current_request().session.get('sph_email_captcha_validated', 0)
+
+            # if the timeout is reached or the captcha was never entered
+            # provide a link for the user to enter the captcha.
+            if validated < time() - get_sph_setting('community_email_anonymous_require_captcha_timeout'):
+                return mark_safe('<a href="%s">%s</a>' % (sph_reverse('sph_reveal_emailaddress', (), { 'user_id': value.id, }), ugettext( 'Reveal this emailaddress')))
+
+    if get_sph_setting('community_email_show_only_public'):
+        try:
+            return CommunityUserProfile.objects.get( user = value, ).public_emailaddress
+        except CommunityUserProfile.DoesNotExist:
+            pass
+        return ''
+
     try:
         profile = CommunityUserProfile.objects.get( user = value, )
     except CommunityUserProfile.DoesNotExist:

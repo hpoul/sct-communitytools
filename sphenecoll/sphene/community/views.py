@@ -1,4 +1,7 @@
 # Create your views here.
+
+from time import time
+
 from django import newforms as forms
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -12,12 +15,13 @@ from django.dispatch import dispatcher
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
 
 from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
+from sphene.community import sphutils
 from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
@@ -489,4 +493,25 @@ def tags_json_autocompletion(request, group):
                         mimetype = 'text/xml', )
 
 
+
+class RevealEmailAddress(forms.Form):
+    captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
+                                    help_text = ugettext('Please enter the result of the above calculation.'),
+                                    )
+    
+
+
+def reveal_emailaddress(request, group, user_id):
+    if request.method == 'POST':
+        form = RevealEmailAddress(request.POST)
+        if form.is_valid():
+            request.session['sph_email_captcha_validated'] = time()
+            user = User.objects.get( pk = user_id )
+            return HttpResponseRedirect( sph_user_profile_link( user ) )
+    else:
+        form = RevealEmailAddress()
+    return render_to_response( 'sphene/community/profile_reveal_emailaddress.html',
+                               { 'form': form,
+                                 },
+                               context_instance = RequestContext(request) )
 

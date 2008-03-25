@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
 from django.db import connection
 import logging
 import re
@@ -429,6 +429,11 @@ from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 
 
+def get_public_emailaddress_help():
+    # TODO also add a notice about wether anonymous user require to enter a captcha ?
+    if get_sph_setting( 'community_email_show_only_public' ):
+        return ugettext('This email address will be shown to all users. If you leave it black noone will see your email address.')
+    return ugettext('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
 
 def community_profile_edit_init_form(sender, instance, signal, request, *args, **kwargs):
     user = instance.user
@@ -440,7 +445,8 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
     instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
     instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),
                                                               required = False,
-                                                              initial = profile.public_emailaddress )
+                                                              initial = profile.public_emailaddress,
+                                                              help_text = get_public_emailaddress_help())
 
     fields = CommunityUserProfileField.objects.all()
     for field in fields:

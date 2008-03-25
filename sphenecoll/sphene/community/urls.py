@@ -17,6 +17,7 @@ urlpatterns += patterns( 'sphene.community.views',
                          (r'profile/(?P<user_id>\d+)/$', 'profile'),
                          (r'profile/edit/$', 'profile_edit_mine'),
                          (r'profile/edit/(?P<user_id>\d+)/$', 'profile_edit'),
+                         url(r'profile/(?P<user_id>\d+)/reveal_address/$', 'reveal_emailaddress', name = 'sph_reveal_emailaddress',),
 
                          url(r'admin/permission/role/list/$', 'admin_permission_role_list', name = 'community_admin_permission_role_list'),
                          url(r'admin/permission/role/edit/(?P<role_id>\d+)/$', 'admin_permission_role_edit'),

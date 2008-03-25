@@ -26,6 +26,20 @@ sph_settings_defaults = {
     # used by sphene.community.views.groupaware_redirect_to which looks up this variable
     # expecting a dictionary containing { 'groupname': '/redirect/url/' }
     'community_groupaware_startpage': None,
+
+    # set this option to True if you want to only show a users email address if he
+    # as entered it into the 'public email address' field - never show the
+    # validated email address.
+    'community_email_show_only_public': False,
+
+    # If this option is set to true anonymous users will have to enter
+    # a captcha before they are displayed the email address of a user.
+    # This makes only sense if captcha support is enabled !
+    'community_email_anonymous_require_captcha': False,
+
+    # The time in seconds an anonymous user is allowed to see email addresses
+    # before revalidating a captcha again.
+    'community_email_anonymous_require_captcha_timeout': 10 * 60,
     }
 
 
