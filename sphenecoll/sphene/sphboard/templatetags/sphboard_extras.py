@@ -8,7 +8,7 @@ from django.newforms import widgets
 from sphene.community.models import Group
 from sphene.community.middleware import get_current_group
 from sphene.community.sphutils import get_sph_setting
-from sphene.sphboard.models import Post, BoardUserProfile, UserPostCount
+from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
 from sphene.sphboard.views import PostForm
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 from django.template.context import Context
@@ -149,3 +149,40 @@ dispatcher.connect(clear_authorinfo_cache,
 dispatcher.connect(clear_authorinfo_cache_postcount,
                    sender = UserPostCount,
                    signal = signals.post_save)
+
+
+
+
+class LatestThreadsNode(template.Node):
+    def __init__(self, nodelist, categoryvar):
+        self.nodelist = nodelist
+        self.categoryvar = categoryvar
+
+    def render(self, context):
+        # TODO check permissions
+        category_id = self.categoryvar.resolve(context)
+        category = Category.objects.get( pk = category_id )
+        threads = Post.objects.filter(category = category,
+                                      thread__isnull = True,).order_by('-postdate')
+        context.push()
+        context['threads'] = threads
+        context['category'] = category
+        output = self.nodelist.render(context)
+        context.pop()
+        return output
+
+
+
+@register.tag(name='sphboard_latest_threads')
+def sphboard_latest_threads(parser, token):
+    bits = list(token.split_contents())
+    if len(bits) != 2:
+        raise template.TemplateSyntaxError("%r requires a category as first argument." % bits[0])
+
+    categoryvar = parser.compile_filter(bits[1])
+    nodelist = parser.parse(('endsphboard_latest_threads',))
+    parser.delete_first_token()
+    return LatestThreadsNode(nodelist, categoryvar)
+
+
+

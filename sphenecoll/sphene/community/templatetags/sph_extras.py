@@ -174,8 +174,8 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
 from sphene.community.sphutils import get_fullusername, format_date
 
 @register.filter
-def sph_date(value):
-    return format_date(value)
+def sph_date(value, format = None):
+    return format_date(value, format)
 
 
 @register.filter

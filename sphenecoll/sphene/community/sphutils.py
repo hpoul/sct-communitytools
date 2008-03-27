@@ -27,10 +27,16 @@ def get_fullusername(value):
     return "%s %s" % (value.first_name, value.last_name)
 
 
-def format_date(value):
+def format_date(value, format = None):
     if not hasattr(value, 'strftime') :
         logger.error( 'Wrong value to format date: %s' % (str(value)) )
 	return str(value)
+    if format is None:
+        format = 'FULL_DATE'
+
+    if format == 'ONLY_DATE':
+        return value.strftime( "%Y-%m-%d")
+
     return value.strftime( "%Y-%m-%d %H:%M:%S" )
 
 
