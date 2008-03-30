@@ -100,7 +100,7 @@ class WikiSnip(models.Model):
         cachefile = self.pdf_get_cachefile()
         xmlfile = cachefile + '.xhtml'
 
-        snip_rendered_body = sph_markdown(self.body) # TODO do this in the model ? like the board post body ?
+        snip_rendered_body = str(self.render()) # TODO do this in the model ? like the board post body ?
         sctpath = hasattr(settings,'LIB_PATH') and settings.LIB_PATH or '.'
         static_filepath = get_sph_setting( 'wiki_pdf_generation_static_filepath', os.path.join(sctpath, '..', 'static', 'sphene') )
         snip_rendered_body = snip_rendered_body.replace( 
