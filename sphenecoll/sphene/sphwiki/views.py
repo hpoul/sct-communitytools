@@ -91,8 +91,11 @@ def generatePDF(request, group, snipName):
     try:
         contents = open(snip.pdf_get(), 'rb').read()
     except Exception, e:
-        return HttpResponse(ugettext('Error while generating PDF file. %(error)s') % \
-                                { 'error': str(e) })
+        import logging
+        logging.exception('Error while generating PDF file.')
+        #return HttpResponse(ugettext('Error while generating PDF file. %(error)s') % \
+        #                        { 'error': str(e) })
+        raise e
 
     response = HttpResponse(contents, mimetype='application/pdf')
     
