@@ -29,6 +29,11 @@ class TagField(forms.CharField):
         tag_labels = list()
         for tag_label in tag_label_strs:
             tag_label_str = tag_label.strip()
+
+            if tag_label_str == '':
+                # Ignore empty labels
+                continue
+
             # Check if the label is already known:
             try:
                 tag_label = TagLabel.objects.get( tag__group = get_current_group(),

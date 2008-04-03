@@ -17,6 +17,7 @@ class TagWidget(forms.TextInput):
         js = ''
         if self.content_type_id is not None:
             attrs['onfocus'] = "%s_init(this);" % ( name )
+            attrs['autocomplete'] = 'off'
             js = """
 <link rel="stylesheet" href="%(media_url)ssphene/community/jqac.css" />
 <script language="JavaScript">

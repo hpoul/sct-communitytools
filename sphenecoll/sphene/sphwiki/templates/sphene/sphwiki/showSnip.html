@@ -31,7 +31,7 @@
     {% load sph_tagging %}
     <div class="sphwiki_snip_info sphwiki">
       {% with snip|sph_tag_labels as tag_labels %}
-        {% if tag_labels.count %}
+        {% if tag_labels %}
       <h3>{% trans "Tags:" %}</h3>
       <ul class="sph_tags">
 	{% for label in tag_labels %}
