@@ -8,14 +8,15 @@ from django.template.context import RequestContext
 from django.dispatch import dispatcher
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.utils.translation import ugettext, string_concat
+from django.core.urlresolvers import reverse
 
 
 from datetime import datetime
 
 from sphene.community import PermissionDenied
 from sphene.community import sphutils
-from sphene.community.middleware import get_current_user, get_current_sphdata
-from sphene.community.sphutils import get_fullusername, format_date, get_sph_setting
+from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
+from sphene.community.sphutils import get_fullusername, format_date, get_sph_setting, add_rss_feed
 from sphene.sphboard import boardforms
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
 from sphene.sphboard.renderers import describe_render_choices
@@ -46,6 +47,9 @@ def showCategory(request, group = None, category_id = None, showType = None):
         if not categoryObject.has_view_permission( request.user ):
             raise PermissionDenied()
         categoryObject.touch(request.session, request.user)
+        blog_feed_url = reverse('sphboard-feeds', urlconf=get_current_urlconf(), args = (), kwargs = { 'groupName': group.name, 'url': 'latest/2' })
+        add_rss_feed( blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name )
+
         if sphdata != None: sphdata['subtitle'] = categoryObject.name
         
     if group != None:
