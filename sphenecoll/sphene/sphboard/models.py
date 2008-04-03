@@ -126,6 +126,9 @@ def get_category_type_choices():
     return CategoryTypeChoices()
 
 def get_tags_for_categories(categories):
+    """
+    Returns a list of all used tags in the given categories.
+    """
     from django.contrib.contenttypes.models import ContentType
     from sphene.community.models import Tag, TagLabel, TaggedItem
     from django.db import connection
@@ -138,7 +141,7 @@ def get_tags_for_categories(categories):
             group_ids.append(group.id)
         category_ids.append(category.id)
 
-    tags = Tag.objects.all()
+    tags = Tag.objects.filter( group__id__in = group_ids )
 
     qn = connection.ops.quote_name
 
@@ -156,6 +159,10 @@ def get_tags_for_categories(categories):
                                          qn(TagLabel._meta.db_table),
                                          TagLabel._meta.pk.column),
             '%s.content_type_id = %%s' % (qn(TaggedItem._meta.db_table)),
+            '%s.object_id = %s.%s' % (qn(TaggedItem._meta.db_table),
+                                      qn(Post._meta.db_table),
+                                      Post._meta.pk.column),
+            '%s.category_id IN (%s)' % (qn(Post._meta.db_table), ','.join([str(cid) for cid in category_ids ])),
             ],
         params=[content_type.pk],).order_by('name').distinct()
     
