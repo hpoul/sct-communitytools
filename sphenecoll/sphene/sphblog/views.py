@@ -61,7 +61,8 @@ def show_tag_posts(request, group, tag_name):
         return render_to_response( 'sphene/sphblog/nocategory.html',{},
                                    context_instance = RequestContext(request) )
 
-    tag = Tag.objects.get( name__exact = tag_name )
+    tag = Tag.objects.get( group = group,
+                           name__exact = tag_name )
     threads = get_posts_queryset(group, categories)
     threads = tag_get_models_by_tag( threads, tag )
     select, sql, params = threads._get_sql_clause()
