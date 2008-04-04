@@ -357,7 +357,7 @@ def editSnip(request, group, snipName, versionId = None):
 
 
 def show_tag_snips(request, group, tag_name):
-    tag = Tag.objects.get( name__exact = tag_name )
+    tag = Tag.objects.get( group = group, name__exact = tag_name )
     # OK .. we need to find all wiki snips in the current group on which the 
     # user has permission to view.
     snips = tag_get_models_by_tag(WikiSnip.objects.all(), tag)
