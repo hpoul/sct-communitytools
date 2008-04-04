@@ -180,7 +180,7 @@ class SphSettings(object):
     def __getattribute__(self, name):
         return get_sph_setting(name)
 
-def sph_reverse( viewname, args, kwargs ):
+def sph_reverse( viewname, args=(), kwargs={} ):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     return reverse( viewname, urlconf, args, kwargs )

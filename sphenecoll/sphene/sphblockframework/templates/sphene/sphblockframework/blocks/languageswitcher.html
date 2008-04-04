@@ -1,0 +1,18 @@
+{% load sph_extras %}
+{% load i18n %}
+
+      <div class="languageswitcher">
+      <form action="{% sph_url2 django.views.i18n.set_language %}" method="post">
+	<!--p class="languageswitcher_link">
+	  <a href="#" onclick="javascript:$('.languageswitcher_link').hide(); $('.languageswitcher_form').show(); return false;">{% trans "Change Language" %}</a>
+	</p-->
+	<p class="languageswitcher_form" >
+	  <input name="next" type="hidden" value="{{ request.path }}" />
+	  {% trans "Change Language" %}: <select name="language" onchange="this.form.submit()">
+	    {% for lang in LANGUAGES %}
+	    <option value="{{ lang.0 }}"{% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>{{ lang.1 }}</option>
+	    {% endfor %}
+	  </select>
+	</p>
+      </form>
+      </div>

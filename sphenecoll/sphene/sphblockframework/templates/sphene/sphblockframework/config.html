@@ -1,0 +1,32 @@
+{% extends "sphene/sphblockframework/base.html" %}
+
+{% load sph_extras %}
+
+{% block content %}
+  <p>This page allows you to customize the block configurations.</p>
+
+  <p>Available block configurations:</p>
+  {% if blockconfigs %}
+    <ul>
+      {% for blockconfig in blockconfigs %}
+        <li>{{ blockconfig.get_label }} - <a href="{{ blockconfig.get_absolute_edit_url }}?delete=1">Delete</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <strong>None</strong>
+  {% endif %}
+
+
+  <h2>Create a new block configuration:</h2>
+  <form method="post" action=".">
+    <table>
+      {{ createblockform }}
+      <tr>
+        <td colspan="2">
+          <input type="submit" name="createblockconfig" value="Create" />
+        </td>
+      </tr>
+    </table>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load sph_extras %}
+{% if user.is_authenticated %}
+  <p>
+    {% trans "You are logged in as:" %}<br/>
+    {{ user|sph_html_user }}<br/>
+    <a href="{% sph_url 'sphene.community.views.profile_edit_mine' %}">{% trans "Edit Profile" %}</a><br/><br/>
+    <a href="{% sph_url 'sphene.community.views.accounts_logout' %}">{% trans "Logout" %}</a>
+  </p>
+{% else %}
+  <p>
+    {% trans "You are not logged in." %}<br/>
+    <a href="{% sph_url 'sphene.community.views.accounts_login' %}{% if not sph.is_logout %}?next={{ request.path|urlencode }}{% endif %}">{% trans "Login" %}</a><br/>
+    <a href="{% sph_url 'sphene.community.views.register' %}">{% trans "Register" %}</a><br/>
+  </p>
+{% endif %}
+
