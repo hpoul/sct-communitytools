@@ -103,6 +103,8 @@ class AccessCategoryManager(models.Manager):
 
 class CategoryTypeChoices(object):
     def __iter__(self):
+        if get_current_request() is None:
+            return [].__iter__()
         choices = ()
         try:
             for ct in categorytyperegistry.get_category_type_list():
