@@ -28,5 +28,16 @@ jQuery(document).ready(function(){
                                 document.title = oldtitle;
                             }});
                     //alert( 'updated ' + $(this).sortable('serialize') );
-                } } );
+                },
+                start: function(e,ui) {
+                    $(this).css('z-index', 5);
+                    $(ui.helper[0]).css('z-index', 8);
+                    $(ui.helper[0]).css('border', '1px solid black');
+                    $(".sphblockregion").addClass( 'whilesorting' )
+                },
+                stop: function(e,ui) {
+                    $(".sphblockregion").removeClass( 'whilesorting' )
+                },
+                zIndex: 1001,
+                    } );
     });
