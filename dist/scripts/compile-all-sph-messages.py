@@ -16,8 +16,9 @@ ROOT_PATH = os.path.join(ROOT_PATH,'../..')
 
 sphapps = ( 'community',
             'sphboard',
-            #'sphwiki',
+            'sphwiki',
             'sphlinklist',
+            'sphblog',
             )
 
 for app in sphapps:

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-09 14:09+0100\n"
-"PO-Revision-Date: 2008-02-25 09:14+0100\n"
+"POT-Creation-Date: 2008-04-02 22:16+0200\n"
+"PO-Revision-Date: 2008-04-02 22:30+0100\n"
 "Last-Translator: Jakub Wiśniowski\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,51 +17,16 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\\n\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\n"
 
-#: boardforms.py:19
-msgid "-- Select Category --"
-msgstr "-- Wybierz Kategorię --"
-
-#: feeds.py:22 feeds.py:25
-#, python-format
-msgid "Latest threads in %(obj_name)s"
-msgstr "Ostatnie wątki w %(obj_name)s"
-
-#: models.py:909
-msgid "File"
-msgstr "Plik"
-
-#: models.py:1303
-msgid "Board settings"
-msgstr "Ustawienia forum"
-
-#: models.py:1304
-msgid "Signature"
-msgstr "Sygnaturka"
-
-#: models.py:1312
-msgid "Default Notify Me - Value"
-msgstr "Powiadamianie emailowe - domyślnie"
-
-#: models.py:1332
-msgid "Successfully saved board profile."
-msgstr "Pomyślnie zapisano profil dla forum."
-
-#: models.py:1341
-msgid "Board Signature"
-msgstr "Sygnaturka dla forum"
-
-#: renderers.py:94 renderers.py:96
+#: renderers.py:94
+#: renderers.py:96
 msgid "Markdown"
 msgstr ""
 
 #: renderers.py:122
 #, python-format
-msgid ""
-"Custom renderer '%(renderer)s' needs a matching Render Class entry in your "
-"sphene settings 'board_custom_markup'"
+msgid "Custom renderer '%(renderer)s' needs a matching Render Class entry in your sphene settings 'board_custom_markup'"
 msgstr ""
 
 #: renderers.py:144
@@ -74,116 +39,393 @@ msgstr "Can't render markup '%(markup)s'"
 msgid "You can use %(description)s in your posts"
 msgstr "Możesz używać %(description)s w swoich wiadomościach"
 
-#: views.py:154
+#: models.py:936
+msgid "File"
+msgstr "Plik"
+
+#: models.py:1392
+msgid "Board settings"
+msgstr "Ustawienia forum"
+
+#: models.py:1393
+msgid "Signature"
+msgstr "Sygnaturka"
+
+#: models.py:1401
+msgid "Default Notify Me - Value"
+msgstr "Powiadamianie emailowe - domyślnie"
+
+#: models.py:1421
+msgid "Successfully saved board profile."
+msgstr "Pomyślnie zapisano profil dla forum."
+
+#: models.py:1426
+#: templates/sphene/sphboard/listCategories.html:38
+#: templates/sphene/sphboard/listCategories.html:66
+#: templates/sphene/sphboard/_post_authorinfo.html:10
+msgid "Posts"
+msgstr "Wiadomości"
+
+#: models.py:1432
+msgid "Board Signature"
+msgstr "Sygnaturka dla forum"
+
+#: boardforms.py:19
+msgid "-- Select Category --"
+msgstr "-- Wybierz Kategorię --"
+
+#: feeds.py:22
+#: feeds.py:25
+#, python-format
+msgid "Latest threads in %(obj_name)s"
+msgstr "Ostatnie wątki w %(obj_name)s"
+
+#: views.py:158
 msgid "Subject"
 msgstr "Temat"
 
-#: views.py:155
+#: views.py:159
 msgid "Body"
 msgstr "Treść"
 
-#: views.py:160
+#: views.py:164
 msgid "Please enter the result of the above calculation."
 msgstr "Wprowadź wynik powyższych obliczeń."
 
-#: views.py:181
+#: views.py:185
 msgid "Question"
 msgstr "Pytanie"
 
-#: views.py:182
+#: views.py:186
 msgid "Answers (1 per line)"
 msgstr "Odpowiedzi (1 na linię)"
 
-#: views.py:184
+#: views.py:188
 msgid "Allowed Choices per User"
 msgstr "Dopuszczalne Wybory dla Użytkownika"
 
-#: views.py:185
+#: views.py:189
 msgid "Enter how many answers a user can select."
 msgstr "Wpisz ile odpowiedzi użytkownik może zaznaczyć."
 
-#: views.py:295
+#: views.py:299
 #, python-format
 msgid "--- Last Edited by %(username)s at %(edit_date)s ---"
 msgstr "--- Ostatnio edytowane %(edit_date)s przez %(username)s ---"
 
-#: views.py:337
+#: views.py:344
 msgid "Vote created successfully."
 msgstr "Głos został oddany pomyślnie."
 
-#: views.py:341
+#: views.py:348
 msgid "Post edited successfully."
 msgstr "Wiadomość została zmieniona."
 
-#: views.py:343
+#: views.py:350
 msgid "Post created successfully."
 msgstr "Wiadomość została pomyślnie opublikowana."
 
-#: views.py:431
+#: views.py:438
 msgid "Annotated a users post."
 msgstr "Skomentowano wiadomość użytkownika."
 
-#: views.py:460
+#: views.py:467
 msgid "Select target category"
 msgstr "Wybierz kategorię docelową"
 
-#: views.py:471
-msgid "Please describe why this thread had to be moved. "
+#: views.py:478
+msgid "Please describe why this thread had to be moved."
 msgstr "Opisz dlaczego ten wątek musiał zostać przeniesiony."
 
-#: views.py:520
+#: views.py:527
 msgid "Moved thread into new category."
 msgstr "Przeniesiono wątek do nowej kategorii."
 
-#: views.py:531
+#: views.py:538
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
 msgstr "Ten wątek został przeniesiony z kategorii %(category_name)s"
 
-#: views.py:545
+#: views.py:552
 msgid "You have already voted."
 msgstr "Już głosowałeś."
 
-#: views.py:549
+#: views.py:556
 msgid "Please select at least one answer."
 msgstr "Wybierz co najmniej jedną odpowiedź."
 
-#: views.py:555
+#: views.py:562
 #, python-format
 msgid "Please only select %(choices)d answers."
 msgstr "Wybierz %(choices)d odpowiedzi."
 
-#: views.py:559
-msgid ""
-"You cannot abstain from voting and at the same time select a valid answer."
-msgstr ""
-"Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć "
-"właściwą odpowiedź."
+#: views.py:566
+msgid "You cannot abstain from voting and at the same time select a valid answer."
+msgstr "Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć właściwą odpowiedź."
 
-#: views.py:568
+#: views.py:575
 msgid "You've selected an invalid choice."
 msgstr "Wybrałeś niewłaściwą opcję."
 
-#: views.py:576
+#: views.py:583
 #, python-format
 msgid "Voted for '%(choice)s'."
 msgstr "Zagłosowałeś na '%(choice)s'."
 
-#: views.py:576
+#: views.py:583
 msgid "You selected to abstain from voting"
 msgstr "Zaznaczyłeś, że nie będziesz głosować"
 
-#: views.py:594
+#: views.py:601
 msgid "Successfully created email notification monitor."
 msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
 
-#: views.py:596
+#: views.py:603
 msgid "Removed email notification monitor."
 msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
 
-#: templates/sphene/sphboard/_displayBreadcrumbs.html:2
+#: templates/sphene/sphboard/showThread.html:28
+msgid "Thread Options:"
+msgstr "Opcje Wątku"
+
+#: templates/sphene/sphboard/showThread.html:31
+msgid "Remove Sticky"
+msgstr "Odklej"
+
+#: templates/sphene/sphboard/showThread.html:33
+msgid "Make Sticky"
+msgstr "Przyklej"
+
+#: templates/sphene/sphboard/showThread.html:38
+msgid "Unlock Thread"
+msgstr "Odblokuj Wątek"
+
+#: templates/sphene/sphboard/showThread.html:38
+msgid "Lock Thread"
+msgstr "Zablokuj Wątek"
+
+#: templates/sphene/sphboard/showThread.html:42
+#: templates/sphene/sphboard/move.html:17
+msgid "Move Thread"
+msgstr "Przenieś Wątek"
+
+#: templates/sphene/sphboard/showThread.html:49
+msgid "Store"
+msgstr "Zachowaj"
+
+#: templates/sphene/sphboard/showThread.html:57
+#: templates/sphene/sphboard/listCategories.html:14
+#: templates/sphene/sphboard/listCategories.html:23
+msgid "You are currently receiving email notifications on new posts."
+msgstr "Obecnie otrzymujesz powiadomienia emailowe o nowych wiadomościach."
+
+#: templates/sphene/sphboard/showThread.html:57
+#: templates/sphene/sphboard/listCategories.html:14
+#: templates/sphene/sphboard/listCategories.html:23
+msgid "Stop notifications"
+msgstr "Zakończ powiadamianie"
+
+#: templates/sphene/sphboard/showThread.html:59
+#: templates/sphene/sphboard/listCategories.html:16
+msgid "You are currently receiving email notifications on new posts because you subscribed to a parent category."
+msgstr "Otrzymujesz obecnie powiadomienia mailowe o nowych wiadomościach ponieważ zasubskrybowałeś nadrzędną kategorię."
+
+#: templates/sphene/sphboard/showThread.html:62
+#: templates/sphene/sphboard/listCategories.html:19
+#: templates/sphene/sphboard/listCategories.html:26
+msgid "Notify me by email on new posts."
+msgstr "Powiadamiaj mnie emailem o nowych wiadomościach."
+
+#: templates/sphene/sphboard/showThread.html:80
+msgid "Annotate/Hide"
+msgstr "Skomentuj/Ukryj"
+
+#: templates/sphene/sphboard/showThread.html:83
+msgid "Edit"
+msgstr "Edytuj"
+
+#: templates/sphene/sphboard/showThread.html:86
+msgid "Quote"
+msgstr "Cytuj"
+
+#: templates/sphene/sphboard/showThread.html:96
+msgid "Post hidden by"
+msgstr "Wiadomość ukryta przez"
+
+#: templates/sphene/sphboard/showThread.html:99
+msgid "Post annotated by"
+msgstr "Wiadomość skomentowana przez"
+
+#: templates/sphene/sphboard/showThread.html:108
+msgid "Attachments"
+msgstr "Załączniki"
+
+#: templates/sphene/sphboard/showThread.html:124
+#: templates/sphene/sphboard/listCategories.html:78
+msgid "Poll:"
+msgstr "Ankieta:"
+
+#: templates/sphene/sphboard/showThread.html:126
+msgid "You already voted. Here are the results"
+msgstr "Już głosowałeś. Wyniki są następujące"
+
+#: templates/sphene/sphboard/showThread.html:126
+msgid "votes total"
+msgstr "głosów łącznie"
+
+#: templates/sphene/sphboard/showThread.html:126
+msgid "did not answer"
+msgstr "nie udzieliło odpowiedzi"
+
+#: templates/sphene/sphboard/showThread.html:138
+msgid "Error:"
+msgstr "Błąd:"
+
+#: templates/sphene/sphboard/showThread.html:141
+#, python-format
+msgid "You may select up to %(choices_per_user)s answers: "
+msgstr "Możesz zaznaczyć %(choices_per_user)s odpowiedzi: "
+
+#: templates/sphene/sphboard/showThread.html:146
+#: templates/sphene/sphboard/showThread.html:153
+msgid "Show Results (You won't be able to vote.)"
+msgstr "Pokaż Wyniki (nie będziesz już mógł zagłosować)."
+
+#: templates/sphene/sphboard/showThread.html:159
+msgid "You need to be logged in to vote."
+msgstr "Musisz być zalogowany aby móc głosować."
+
+#: templates/sphene/sphboard/showThread.html:175
+msgid "Post Reply"
+msgstr "Odpowiedz"
+
+#: templates/sphene/sphboard/showThread.html:179
+msgid "Thread is locked."
+msgstr "Wątek jest zablokowany."
+
+#: templates/sphene/sphboard/showThread.html:182
+msgid "You have no permission to post a reply."
+msgstr "Nie masz uprawnień aby napisać odpowiedź."
+
+#: templates/sphene/sphboard/showThread.html:184
+msgid "Please login to post a reply."
+msgstr "Zaloguj się aby napisać odpowiedź."
+
+#: templates/sphene/sphboard/_displayBreadcrumbs.html:4
 msgid "Board"
 msgstr "Forum"
+
+#: templates/sphene/sphboard/listCategories.html:8
+msgid "Latest"
+msgstr "Ostatnie"
+
+#: templates/sphene/sphboard/listCategories.html:36
+msgid "Title"
+msgstr "Tytuł"
+
+#: templates/sphene/sphboard/listCategories.html:37
+#: templates/sphene/sphboard/listCategories.html:59
+msgid "Threads"
+msgstr "Wątki"
+
+#: templates/sphene/sphboard/listCategories.html:39
+#: templates/sphene/sphboard/listCategories.html:67
+msgid "Last Post"
+msgstr "Ostatnia Wiadomość"
+
+#: templates/sphene/sphboard/listCategories.html:47
+msgid "There are currently no categories. (Or you have no permission to see them.)"
+msgstr "Nie ma obecnie żadnych kategorii. (Lub nie masz uprawnień by je zobaczyć.)"
+
+#: templates/sphene/sphboard/listCategories.html:62
+msgid "Subject / Author"
+msgstr "Temat / Autor"
+
+#: templates/sphene/sphboard/listCategories.html:64
+msgid "Views"
+msgstr "Spojrzeń"
+
+#: templates/sphene/sphboard/listCategories.html:75
+#, python-format
+msgid "Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%(cat_url)s\">%(cat_name)s</a>."
+msgstr "Wątek został przeniesiony: <a href=\"%(th_url)s\">%(th_subject)s</a> do <a href=\"%(cat_url)s\">%(cat_name)s</a>."
+
+#: templates/sphene/sphboard/listCategories.html:78
+msgid "Sticky:"
+msgstr "Przyklejony:"
+
+#: templates/sphene/sphboard/listCategories.html:78
+msgid "Hot:"
+msgstr "Gorący:"
+
+#: templates/sphene/sphboard/listCategories.html:78
+msgid "Locked:"
+msgstr "Zamknięty:"
+
+#: templates/sphene/sphboard/listCategories.html:78
+#: templates/sphene/sphboard/_displayLatestPost.html:13
+msgid "By"
+msgstr "Przez"
+
+#: templates/sphene/sphboard/listCategories.html:90
+#, python-format
+msgid "%(hits)s Threads in this category."
+msgstr "Wątków w tej kategorii: %(hits)s."
+
+#: templates/sphene/sphboard/listCategories.html:96
+msgid "Mark all Posts in this Category as read."
+msgstr "Zaznacz wszystkie wiadomości w tej kategorii jako przeczytane."
+
+#: templates/sphene/sphboard/listCategories.html:96
+msgid "Catch Up"
+msgstr "Catch Up"
+
+#: templates/sphene/sphboard/move.html:10
+#, python-format
+msgid "Move Thread: %(subject)s by "
+msgstr "Przenieś Wątek: %(subject)s założony przez "
+
+#: templates/sphene/sphboard/annotate.html:10
+#, python-format
+msgid "Annotate post: %(subject)s by "
+msgstr "Skomentuj wiadomość: %(subject)s napisany przez "
+
+#: templates/sphene/sphboard/annotate.html:17
+msgid "Annotate"
+msgstr "Skomentuj"
+
+#: templates/sphene/sphboard/post.html:14
+msgid "Editing post"
+msgstr "Edycja wiadomości"
+
+#: templates/sphene/sphboard/post.html:17
+#, python-format
+msgid "Posting reply to thread %(subject)s."
+msgstr "Piszesz odpowiedź w wątku %(subject)s."
+
+#: templates/sphene/sphboard/post.html:19
+msgid "Posting new thread."
+msgstr "Zakładanie nowego watku."
+
+#: templates/sphene/sphboard/_new_thread_link.html:4
+msgid "Post New Thread"
+msgstr "Rozpocznij Nowy Wątek"
+
+#: templates/sphene/sphboard/_new_thread_link.html:8
+msgid "You have no permission to create a new thread."
+msgstr "Nie masz uprawnień aby założyć nowy wątek."
+
+#: templates/sphene/sphboard/_new_thread_link.html:10
+msgid "Please login to create a new thread."
+msgstr "Zaloguj się aby stworzyć nowy wątek."
+
+#: templates/sphene/sphboard/_post_authorinfo.html:4
+msgid "Posted by"
+msgstr "Napisany przez"
+
+#: templates/sphene/sphboard/_post_authorinfo.html:13
+msgid "Registered at"
+msgstr "Zarejestrowany"
 
 #: templates/sphene/sphboard/_displayLatestPost.html:7
 #, python-format
@@ -192,16 +434,8 @@ msgstr "z %(latest_post)s"
 
 #: templates/sphene/sphboard/_displayLatestPost.html:10
 #, python-format
-msgid ""
-"At <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)"
-"s</a>"
-msgstr ""
-"Z <a href=\"../../thread/%(thread_id)s/?page=%(page_count)s\">%(latest_post)"
-"s</a>"
-
-#: templates/sphene/sphboard/_displayLatestPost.html:13
-msgid "By"
-msgstr "Przez"
+msgid "At <a href=\"%(post_url)s\">%(latest_post)s</a>"
+msgstr "Z <a href=\"%(post_url)s\">%(latest_post)s</a>"
 
 #: templates/sphene/sphboard/_displayLatestPost.html:15
 msgid "No Posts Yet."
@@ -209,13 +443,11 @@ msgstr "Nie ma jeszcze żadnych wiadomości."
 
 #: templates/sphene/sphboard/_displayPostForm.html:12
 msgid "Loading Preview ..."
-msgstr ""
+msgstr "Ładuję podgląd..."
 
 #: templates/sphene/sphboard/_displayPostForm.html:32
-msgid ""
-"You are already receiving email notifications for this thread or category."
-msgstr ""
-"Obecnie otrzymujesz powiadomienia emailowe dla tego wątku lub kategorii."
+msgid "You are already receiving email notifications for this thread or category."
+msgstr "Obecnie otrzymujesz powiadomienia emailowe dla tego wątku lub kategorii."
 
 #: templates/sphene/sphboard/_displayPostForm.html:34
 msgid "Notify me by email on new posts in this thread."
@@ -245,256 +477,10 @@ msgstr "Opublikuj"
 msgid "Preview"
 msgstr "Podgląd"
 
-#: templates/sphene/sphboard/_new_thread_link.html:4
-msgid "Post New Thread"
-msgstr "Rozpocznij Nowy Wątek"
-
-#: templates/sphene/sphboard/_new_thread_link.html:8
-msgid "You have no permission to create a new thread."
-msgstr "Nie masz uprawnień aby założyć nowy wątek."
-
-#: templates/sphene/sphboard/_new_thread_link.html:10
-msgid "Please login to create a new thread."
-msgstr "Zaloguj się aby stworzyć nowy wątek."
-
-#: templates/sphene/sphboard/_post_authorinfo.html:4
-msgid "Posted by"
-msgstr "Napisany przez"
-
-#: templates/sphene/sphboard/_post_authorinfo.html:8
-#, python-format
-msgid "Registered at %(author_joined)s"
-msgstr "Zarejestrowany %(author_joined)s"
-
-#: templates/sphene/sphboard/annotate.html:10
-#, python-format
-msgid "Annotate post: %(subject)s by "
-msgstr "Skomentuj wiadomość: %(subject)s napisany przez "
-
-#: templates/sphene/sphboard/annotate.html:17
-msgid "Annotate"
-msgstr "Skomentuj"
-
-#: templates/sphene/sphboard/listCategories.html:8
-msgid "Latest"
-msgstr "Ostatnie"
-
-#: templates/sphene/sphboard/listCategories.html:14
-#: templates/sphene/sphboard/listCategories.html:23
-#: templates/sphene/sphboard/showThread.html:56
-msgid "You are currently receiving email notifications on new posts."
-msgstr "Obecnie otrzymujesz powiadomienia emailowe o nowych wiadomościach."
-
-#: templates/sphene/sphboard/listCategories.html:14
-#: templates/sphene/sphboard/listCategories.html:23
-#: templates/sphene/sphboard/showThread.html:56
-msgid "Stop notifications"
-msgstr "Zakończ powiadamianie"
-
-#: templates/sphene/sphboard/listCategories.html:16
-#: templates/sphene/sphboard/showThread.html:58
-msgid ""
-"You are currently receiving email notifications on new posts because you "
-"subscribed to a parent category."
-msgstr ""
-"Otrzymujesz obecnie powiadomienia mailowe o nowych wiadomościach ponieważ "
-"zasubskrybowałeś nadrzędną kategorię."
-
-#: templates/sphene/sphboard/listCategories.html:19
-#: templates/sphene/sphboard/listCategories.html:26
-#: templates/sphene/sphboard/showThread.html:61
-msgid "Notify me by email on new posts."
-msgstr "Powiadamiaj mnie emailem o nowych wiadomościach."
-
-#: templates/sphene/sphboard/listCategories.html:36
-msgid "Title"
-msgstr "Tytuł"
-
-#: templates/sphene/sphboard/listCategories.html:37
-#: templates/sphene/sphboard/listCategories.html:59
-msgid "Threads"
-msgstr "Wątki"
-
-#: templates/sphene/sphboard/listCategories.html:38
-#: templates/sphene/sphboard/listCategories.html:66
-msgid "Posts"
-msgstr "Wiadomości"
-
-#: templates/sphene/sphboard/listCategories.html:39
-#: templates/sphene/sphboard/listCategories.html:67
-msgid "Last Post"
-msgstr "Ostatnia Wiadomość"
-
-#: templates/sphene/sphboard/listCategories.html:47
-msgid ""
-"There are currently no categories. (Or you have no permission to see them.)"
-msgstr ""
-"Nie ma obecnie żadnych kategorii. (Lub nie masz uprawnień by je zobaczyć.)"
-
-#: templates/sphene/sphboard/listCategories.html:62
-msgid "Subject / Author"
-msgstr "Temat / Autor"
-
-#: templates/sphene/sphboard/listCategories.html:64
-msgid "Views"
-msgstr "Spojrzeń"
-
-#: templates/sphene/sphboard/listCategories.html:75
-#, python-format
-msgid ""
-"Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%"
-"(cat_url)s\">%(cat_name)s</a>."
-msgstr ""
-"Wątek został przeniesiony: <a href=\"%(th_url)s\">%(th_subject)s</a> do <a "
-"href=\"%(cat_url)s\">%(cat_name)s</a>."
-
-#: templates/sphene/sphboard/listCategories.html:78
-msgid "Sticky:"
-msgstr "Przyklejony:"
-
-#: templates/sphene/sphboard/listCategories.html:78
-msgid "Hot:"
-msgstr "Gorący:"
-
-#: templates/sphene/sphboard/listCategories.html:78
-#: templates/sphene/sphboard/showThread.html:122
-msgid "Poll:"
-msgstr "Ankieta:"
-
-#: templates/sphene/sphboard/listCategories.html:78
-msgid "Locked:"
-msgstr "Zamknięty:"
-
-#: templates/sphene/sphboard/listCategories.html:90
-#, python-format
-msgid "%(hits)s Threads in this category."
-msgstr "Wątków w tej kategorii: %(hits)s."
-
-#: templates/sphene/sphboard/listCategories.html:96
-msgid "Mark all Posts in this Category as read."
-msgstr "Zaznacz wszystkie wiadomości w tej kategorii jako przeczytane."
-
-#: templates/sphene/sphboard/listCategories.html:96
-msgid "Catch Up"
-msgstr "Catch Up"
-
-#: templates/sphene/sphboard/move.html:10
-#, python-format
-msgid "Move Thread: %(subject)s by "
-msgstr "Przenieś Wątek: %(subject)s założony przez "
-
-#: templates/sphene/sphboard/move.html:17
-#: templates/sphene/sphboard/showThread.html:41
-msgid "Move Thread"
-msgstr "Przenieś Wątek"
-
-#: templates/sphene/sphboard/post.html:14
-msgid "Editing post"
-msgstr "Edycja wiadomości"
-
-#: templates/sphene/sphboard/post.html:17
-#, python-format
-msgid "Posting reply to thread %(subject)s."
-msgstr "Piszesz odpowiedź w wątku %(subject)s."
-
-#: templates/sphene/sphboard/post.html:19
-msgid "Posting new thread."
-msgstr "Zakładanie nowego watku."
-
-#: templates/sphene/sphboard/showThread.html:27
-msgid "Thread Options:"
-msgstr "Opcje Wątku"
-
-#: templates/sphene/sphboard/showThread.html:30
-msgid "Remove Sticky"
-msgstr "Odklej"
-
-#: templates/sphene/sphboard/showThread.html:32
-msgid "Make Sticky"
-msgstr "Przyklej"
-
-#: templates/sphene/sphboard/showThread.html:37
-msgid "Unlock Thread"
-msgstr "Odblokuj Wątek"
-
-#: templates/sphene/sphboard/showThread.html:37
-msgid "Lock Thread"
-msgstr "Zablokuj Wątek"
-
-#: templates/sphene/sphboard/showThread.html:48
-msgid "Store"
-msgstr "Zachowaj"
-
-#: templates/sphene/sphboard/showThread.html:78
-msgid "Annotate/Hide"
-msgstr "Skomentuj/Ukryj"
-
-#: templates/sphene/sphboard/showThread.html:81
-msgid "Edit"
-msgstr "Edytuj"
-
-#: templates/sphene/sphboard/showThread.html:84
-msgid "Quote"
-msgstr "Cytuj"
-
-#: templates/sphene/sphboard/showThread.html:94
-msgid "Post hidden by"
-msgstr "Wiadomość ukryta przez"
-
-#: templates/sphene/sphboard/showThread.html:97
-msgid "Post annotated by"
-msgstr "Wiadomość skomentowana przez"
-
-#: templates/sphene/sphboard/showThread.html:106
-msgid "Attachments"
-msgstr "Załączniki"
-
-#: templates/sphene/sphboard/showThread.html:124
-msgid "You already voted. Here are the results"
-msgstr "Już głosowałeś. Wyniki są następujące"
-
-#: templates/sphene/sphboard/showThread.html:124
-msgid "votes total"
-msgstr "głosów łącznie"
-
-#: templates/sphene/sphboard/showThread.html:124
-msgid "did not answer"
-msgstr "nie udzieliło odpowiedzi"
-
-#: templates/sphene/sphboard/showThread.html:136
-msgid "Error:"
-msgstr "Błąd:"
-
-#: templates/sphene/sphboard/showThread.html:139
-#, python-format
-msgid "You may select up to %(choices_per_user)s answers: "
-msgstr "Możesz zaznaczyć %(choices_per_user)s odpowiedzi: "
-
-#: templates/sphene/sphboard/showThread.html:144
-#: templates/sphene/sphboard/showThread.html:151
-msgid "Show Results (You won't be able to vote.)"
-msgstr "Pokaż Wyniki (nie będziesz już mógł zagłosować)."
-
-#: templates/sphene/sphboard/showThread.html:157
-msgid "You need to be logged in to vote."
-msgstr "Musisz być zalogowany aby móc głosować."
-
-#: templates/sphene/sphboard/showThread.html:172
-msgid "Post Reply"
-msgstr "Odpowiedz"
-
-#: templates/sphene/sphboard/showThread.html:176
-msgid "Thread is locked."
-msgstr "Wątek jest zablokowany."
-
-#: templates/sphene/sphboard/showThread.html:179
-msgid "You have no permission to post a reply."
-msgstr "Nie masz uprawnień aby napisać odpowiedź."
-
-#: templates/sphene/sphboard/showThread.html:181
-msgid "Please login to post a reply."
-msgstr "Zaloguj się aby napisać odpowiedź."
-
 #: templates/sphene/sphboard/wikimacros/news.html:10
 msgid "Comments"
 msgstr "Komentarze"
+
+#~ msgid "Registered at %(author_joined)s"
+#~ msgstr "Zarejestrowany %(author_joined)s"
+
