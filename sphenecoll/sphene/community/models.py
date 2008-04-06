@@ -41,9 +41,21 @@ class Group(models.Model):
     class Admin:
         pass
 
+
+USERLEVEL_CHOICES = (
+    (0, 'Normal User'),
+    (5, 'Administrator'),
+    )
+
 class GroupMember(models.Model):
         group = models.ForeignKey( Group, edit_inline = models.TABULAR, core = True )
         user = models.ForeignKey( User, core = True, )
+        userlevel = models.IntegerField( choices = USERLEVEL_CHOICES )
+
+
+        changelog = ( ( '2008-04-06 00', 'alter', 'ADD userlevel integer', ),
+                      ( '2008-04-06 01', 'update', 'SET userlevel = 0', ),
+                      ( '2008-04-06 02', 'alter', 'ALTER userlevel SET NOT NULL', ), )
 
         class Admin:
                 list_display = ('group', 'user',)
