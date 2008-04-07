@@ -161,7 +161,7 @@ def options(request, thread_id, group = None):
 class PostForm(forms.Form):
     subject = forms.CharField( label = ugettext_lazy(u"Subject" ) )
     body = forms.CharField( label = ugettext_lazy(u"Body"),
-                            widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 80 } ),
+                            widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 70 } ),
                             help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,

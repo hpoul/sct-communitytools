@@ -147,10 +147,24 @@ def register(request, group = None):
 
 username_re = r'^\w+$'
 
-class RegisterForm(forms.Form):
+class UserForm(forms.Form):
     username = forms.RegexField( username_re, label=_(u'Username'))
     email_address = forms.CharField(label=_(u'Email address'),
                                     widget = forms.TextInput(attrs={'disabled': 'disabled'}))
+    
+
+    def clean_username(self):
+        if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
+            raise forms.ValidationError(_(u'The username %(username)s is already taken.') % {'username': self.cleaned_data['username']})
+        return self.cleaned_data['username']
+
+    def clean_email_address(self):
+        if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
+            raise forms.ValidationError(_(u'Another user is already registered with the email address %(email)s.')
+                                        % {'email':self.cleaned_data['email_address']} )
+        return self.cleaned_data['email_address']
+
+class RegisterForm(UserForm):
     password = forms.CharField(label=_(u'Password'),
                                widget = forms.PasswordInput )
     repassword = forms.CharField(label=_(u'Verify Password'),
@@ -165,16 +179,6 @@ class RegisterForm(forms.Form):
 
         return self.cleaned_data
 
-    def clean_username(self):
-        if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
-            raise forms.ValidationError(_(u'The username %(username)s is already taken.') % {'username': self.cleaned_data['username']})
-        return self.cleaned_data['username']
-
-    def clean_email_address(self):
-        if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
-            raise forms.ValidationError(_(u'Another user is already registered with the email address %(email)s.')
-                                        % {'email':self.cleaned_data['email_address']} )
-        return self.cleaned_data['email_address']
 
 
 def register_hash(request, emailHash, group = None):

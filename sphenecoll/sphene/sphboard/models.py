@@ -108,7 +108,7 @@ class CategoryTypeChoices(object):
         choices = ()
         try:
             for ct in categorytyperegistry.get_category_type_list():
-                choices += ((ct.name, "%s (%s)" % (ct.label, ct.name)),)
+                choices += ((ct.name, "%s (%s)" % (unicode(ct.label), ct.name)),)
         except:
             # This is also called during syncdb before tables are
             # created, so for this case catch all exceptions.

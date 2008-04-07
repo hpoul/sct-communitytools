@@ -3,9 +3,11 @@ import re
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
+from django.shortcuts import render_to_response
 from sphene.community.middleware import get_current_request, get_current_sphdata
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
 from django.utils.translation import ugettext as _
+from django.template import RequestContext
 import logging
 
 logger = logging.getLogger('sphene.community.sphutils')
@@ -221,3 +223,10 @@ def add_rss_feed(url, label):
     sphdata['rss'].append( { 'url': url,
                              'label': label, } )
     
+
+def sph_render_to_response(template_name, context = None):
+    return render_to_response(template_name,
+                              context,
+                              context_instance = RequestContext(get_current_request()))
+
+

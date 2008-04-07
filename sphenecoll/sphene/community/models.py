@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
-from django.utils.translation import ugettext as _, ugettext
+from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
 from django.db import connection
 import logging
 import re
@@ -43,8 +43,8 @@ class Group(models.Model):
 
 
 USERLEVEL_CHOICES = (
-    (0, 'Normal User'),
-    (5, 'Administrator'),
+    (0, ugettext_lazy('Normal User')),
+    (5, ugettext_lazy('Administrator')),
     )
 
 class GroupMember(models.Model):
@@ -57,9 +57,17 @@ class GroupMember(models.Model):
                       ( '2008-04-06 01', 'update', 'SET userlevel = 0', ),
                       ( '2008-04-06 02', 'alter', 'ALTER userlevel SET NOT NULL', ), )
 
+
+        def get_userlevel_str(self):
+            for value, str in USERLEVEL_CHOICES:
+                if value == self.userlevel:
+                    return str;
+
+
         class Admin:
                 list_display = ('group', 'user',)
                 list_filter = ('group',)
+        
 
 class Theme(models.Model):
         name = models.CharField(max_length = 250)
