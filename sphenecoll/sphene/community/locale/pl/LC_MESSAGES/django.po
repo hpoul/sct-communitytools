@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-02 22:16+0200\n"
-"PO-Revision-Date: 2008-04-02 22:35+0100\n"
+"PO-Revision-Date: 2008-04-09 21:48+0100\n"
 "Last-Translator: Jakub Wiśniowski\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Maksymalny rozmiar pliku wynoszący %{max_size}d bajtów został przekro
 
 #: __init__.py:55
 msgid "Uploaded an invalid image."
-msgstr "Załadowano niewłaściwy obrazek."
+msgstr "Załadowano nieprawidłowy obrazek."
 
 #: __init__.py:67
 msgid "Delete avatar"
@@ -249,7 +249,7 @@ msgstr "Rejestracja Użytkownika"
 
 #: templates/sphene/community/register_hash.html:11
 msgid "Register"
-msgstr "Zarejestruj się"
+msgstr "Rejestracja"
 
 #: templates/sphene/community/profile_reveal_emailaddress.html:12
 msgid "Reveal email address"
