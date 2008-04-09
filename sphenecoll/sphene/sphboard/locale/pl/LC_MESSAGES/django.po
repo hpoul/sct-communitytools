@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-02 22:16+0200\n"
-"PO-Revision-Date: 2008-04-02 22:30+0100\n"
+"PO-Revision-Date: 2008-04-09 21:51+0100\n"
 "Last-Translator: Jakub Wiśniowski\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -405,7 +405,7 @@ msgstr "Piszesz odpowiedź w wątku %(subject)s."
 
 #: templates/sphene/sphboard/post.html:19
 msgid "Posting new thread."
-msgstr "Zakładanie nowego watku."
+msgstr "Zakładanie nowego wątku."
 
 #: templates/sphene/sphboard/_new_thread_link.html:4
 msgid "Post New Thread"
