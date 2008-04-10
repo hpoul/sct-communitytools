@@ -1,0 +1,175 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <ygpark2@gmail.com>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-15 23:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Young Gyu Park <ygpark2@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:19
+msgid "To modify your password fill out the following three fields."
+msgstr "패스워드를 변경하기 위해서는 다음 세 칸을 입력해 채워 주십시오"
+
+#: forms.py:23
+msgid "Retype your new password"
+msgstr "암호 다시 입력"
+
+#: forms.py:35
+msgid "Invalid password."
+msgstr "유효하지 않은 암호"
+
+#: forms.py:52
+msgid "-- Select Object Type --"
+msgstr " 객체 타입 선택"
+
+#: forms.py:102
+msgid "Allows you to limit the given permission to only one specific object."
+msgstr "단지 한가지 특정 개체에 대한 제한 권한을 허락한다."
+
+#: forms.py:119
+msgid "User does not exist."
+msgstr "사용자가 존재하지 않습니다."
+
+#: forms.py:126
+msgid "Invalid Object Type"
+msgstr "유효하지 않은 객체 타입"
+
+#: fields.py:10
+msgid "Comma separated list of tags."
+msgstr "태그를 콤마로 분리 해 주세요"
+
+#: views.py:35 views.py:159
+#, python-format
+msgid "Another user is already registered with the email address %(email)s."
+msgstr "다른 사용자가 이미 %(email)s 이 메일 주소를 사용하고 있습니다."
+
+#: views.py:59
+msgid "No user found with that email address."
+msgstr "그 이 메일 주소로 사용자를 찾을 수 없습니다."
+
+#: views.py:82
+msgid "Your requested username / password"
+msgstr "사용자명 / 암호"
+
+#: views.py:84
+#, python-format
+msgid "Your requested username / password for site %(site_name)s"
+msgstr "사용자명 / 암호 %(site_name)s"
+
+#: views.py:111
+msgid "Email verification required"
+msgstr "이 메일 검증이 필요합니다."
+
+#: views.py:113
+#, python-format
+msgid "Email verification required for site %(site_name)s"
+msgstr "이 %(site_name)s 에 대한 이 메일 검증이 필요합니다."
+
+#: views.py:141
+msgid "Verify Password"
+msgstr "암호 확인"
+
+#: views.py:148
+msgid "Passwords do not match."
+msgstr "암호가 일치하지 않습니다."
+
+#: views.py:154
+#, python-format
+msgid "The username %(username)s is already taken."
+msgstr "%(username)s 사용자명은 이미 사용중입니다."
+
+#: views.py:310
+msgid "Successfully changed user profile."
+msgstr "성공적으로 사용자 프로파일이 변경 되었습니다."
+
+#: views.py:368
+msgid "Successfully saved role."
+msgstr "성공적으로 권한이 저장되었습니다."
+
+#: views.py:391
+msgid "Successfully deleted role member."
+msgstr "성공적으로 멤버 권한이 지워졌습니다."
+
+#: views.py:419
+msgid "Successfully added member."
+msgstr "성공적으로 사용자가 추가 되었습니다."
+
+#: community/_pagination.html:2
+msgid "Page:"
+msgstr "페이지:"
+
+#: community/_pagination.html:4
+msgid "Previous"
+msgstr "이전"
+
+#: community/_pagination.html:14
+msgid "Next"
+msgstr "다음"
+
+#: community/register_emailsent.html:5
+#, python-format
+msgid ""
+"An email containing the required validation code has been sent to <b>%(email)"
+"s</b>.<br/>\n"
+"  Please check your emails to continue registration process."
+msgstr "인증 코드를 포함한 이 메일이 <b>%(email)s 로</b>발송되었습니다.<br/>\n 이메일을 확인 해 주세요."
+
+#: community/register_hash.html:5 community/register_hash_success.html:5
+msgid "User Registration"
+msgstr "사용자 등록"
+
+#: community/register_hash.html:11
+msgid "Register"
+msgstr "회원 가입"
+
+#: community/permissiondenied.html:5
+msgid "Permission Denied"
+msgstr "권한 거부"
+
+#: community/permissiondenied.html:7
+msgid "You do not have permission to view this page."
+msgstr "이 페이지를 보실 권한이 없습니다."
+
+#: community/_display_username.html:12
+msgid "Anonymous"
+msgstr "익명 사용자"
+
+#: community/register.html:5
+msgid ""
+"Please Enter your email address. You will then receive a URL to continue "
+"registration."
+msgstr "이 메일 주소를 입력해 주세요. 그러면 나머지 등록 절차를 수행할 이 메일을 받으실 겁니다."
+
+#: community/register.html:11
+msgid "Send Email Validation Code"
+msgstr "이 메일 인증 코드 발송"
+
+#: community/register_hash_success.html:7
+msgid "Successfully registered user and logged in."
+msgstr "성공적 사용자 등록 로그인"
+
+#: community/profile_edit.html:6
+msgid "Modifying user profile for"
+msgstr "사용자 프로파일 수정"
+
+#: community/profile_edit.html:10
+msgid "Username:"
+msgstr "사용자명"
+
+#: community/profile_edit.html:31
+msgid "Save"
+msgstr "저장"
+
+#: templatetags/sph_extras.py:263
+msgid "Users avatar"
+msgstr "사용자 아바타"

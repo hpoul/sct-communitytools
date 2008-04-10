@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Herbert Poul <herbert.poul@gmail.com>, 2008.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-03-15 11:44+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Herbert Poul <herbert.poul@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:45
+msgid "name"
+msgstr "이름"
+
+#: models.py:46
+msgid "title"
+msgstr "제목"
+
+#: models.py:48
+msgid "body"
+msgstr "내용"
+
+#: models.py:334
+msgid "fileupload"
+msgstr "파일 업로드"
+
+#: models.py:336
+msgid "description"
+msgstr "상세 설명"
+
+#: views.py:55
+msgid "Detected redirect loop."
+msgstr "전환 페이지 발견."
+
+#: views.py:78
+msgid "Not configured."
+msgstr "설정 되지 않았습니다."
+
+#: views.py:90
+#, python-format
+msgid "Error while generating PDF file. %(error)s"
+msgstr "PDF파일 생성동안 에러가 발생되었습니다. %(error)s"
+
+#: views.py:138
+msgid "This is the first change."
+msgstr "이것은 첫번째 변경입니다."
+
+#: views.py:149
+#, python-format
+msgid "%(date)s by %(editor)s"
+msgstr "%(date)s by %(editor)s"
+
+#: views.py:151 templates/sphene/sphwiki/history.html:28
+msgid "Edit this version"
+msgstr "지금 버전을 수정"
+
+#: views.py:200
+msgid "Successfully deleted attachment."
+msgstr "성공적으로 첨부 파일이 삭제되었습니다."
+
+#: views.py:244
+msgid "Please enter the result of the above calculation."
+msgstr "위의 계산결과를 입력해 주세요."
+
+#: views.py:303
+#, python-format
+msgid "Reverted to revision of %(editdate)s"
+msgstr " %(editdate)s 리비전으로 변경."
+
+#: templates/sphene/sphwiki/_snip_header.html:4
+#, python-format
+msgid "This snip is secured - View only allowed by: %(allowed_users)s"
+msgstr ""
+"이 페이지는 비밀페이지입니다 - 이 페이지를 볼 수 있는 사용자: %"
+"(allowed_users)s"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+#: templates/sphene/sphwiki/history.html:18
+msgid "Edit"
+msgstr "수정"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Attachments"
+msgstr "첨부"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Download PDF"
+msgstr "PDF 다운로드"
+
+#: templates/sphene/sphwiki/diff.html:10
+#: templates/sphene/sphwiki/editSnip.html:17
+#: templates/sphene/sphwiki/history.html:10
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Back to Snip"
+msgstr "Snip으로 돌아가기"
+
+#: templates/sphene/sphwiki/diff.html:14
+msgid "Previous Change"
+msgstr "이전 변경"
+
+#: templates/sphene/sphwiki/diff.html:18
+msgid "Next Change"
+msgstr "다음 변경."
+
+#: templates/sphene/sphwiki/editAttachment.html:12
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Save"
+msgstr "저장"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+msgid "Warning"
+msgstr "경고"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+#, python-format
+msgid ""
+"You are editing an old version: By %(version_editor)s at %(version_editdate)s"
+msgstr ""
+"옛날 버전 수정중: 수정인 %(version_editor)s 시간 %"
+"(version_editdate)s"
+
+#: templates/sphene/sphwiki/editSnip.html:27
+#: templates/sphene/sphwiki/history.html:16
+msgid "Change Message"
+msgstr "Log Meldung"
+
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Preview"
+msgstr "이전"
+
+#: templates/sphene/sphwiki/history.html:14
+msgid "Date"
+msgstr "날짜"
+
+#: templates/sphene/sphwiki/history.html:15
+msgid "Editor"
+msgstr "편집자"
+
+#: templates/sphene/sphwiki/history.html:35
+#: templates/sphene/sphwiki/history.html:37
+#, python-format
+msgid "%(changecount)s Changes."
+msgstr "%(changecount)s 변경."
+
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Create New Attachment"
+msgstr "새 첨부 파일 생성"
+
+#: templates/sphene/sphwiki/listAttachments.html:23
+msgid "Id"
+msgstr "아이디"
+
+#: templates/sphene/sphwiki/listAttachments.html:24
+msgid "Action"
+msgstr "실행"
+
+#: templates/sphene/sphwiki/listAttachments.html:25
+msgid "Attachment"
+msgstr "첨부"
+
+#: templates/sphene/sphwiki/listAttachments.html:26
+msgid "Upload Date"
+msgstr "업로드 날짜"
+
+#: templates/sphene/sphwiki/listAttachments.html:27
+msgid "Uploader"
+msgstr "파일 올린이"
+
+#: templates/sphene/sphwiki/listAttachments.html:32
+msgid "Delete"
+msgstr "삭제"
+
+#: templates/sphene/sphwiki/listAttachments.html:40
+#: templates/sphene/sphwiki/listAttachments.html:42
+#, python-format
+msgid "%(attachment_count)s Attachments."
+msgstr "%(attachment_count)s 첨부."
+
+#: templates/sphene/sphwiki/showSnip.html:31
+#, python-format
+msgid "Last Modified: %(snip_changedate)s by %(snip_editor)s"
+msgstr "마지막 수정일 %(snip_changedate)s 수정인 %(snip_editor)s"
+
+#: templates/sphene/sphwiki/showSnip.html:31
+msgid "Snip Changes"
+msgstr "스닢 변경"
+
+#: templates/sphene/sphwiki/showSnip.html:31
+msgid "Wiki History"
+msgstr "위키 히스토리"
+
+#: templates/sphene/sphwiki/showSnip.html:33
+#, python-format
+msgid "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s does not yet exist."
+msgstr ""
+"스닢 %(snip_prefix)s%(snip_name)s%(snip_postfix)s 은 아직 존재하지 않습니다. "
+
+#: templates/sphene/sphwiki/showSnip.html:33
+msgid "Create It."
+msgstr "새 페이지 생성."
