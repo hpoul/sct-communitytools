@@ -721,6 +721,9 @@ class Post(models.Model):
                 bodyhtml += '<div class="signature">%s</div>' % signature
         return mark_safe(bodyhtml)
 
+    def clear_render_cache(self):
+        cache.delete( self.__get_render_cachekey() )
+
     def viewed(self, session, user):
         if get_sph_setting( 'board_count_views' ):
             threadinfo = self.get_threadinformation()

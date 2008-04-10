@@ -3,13 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
-from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
 import logging
 import re
-
 logger = logging.getLogger('sphene.community.models')
-
 # Create your models here.
 
 class Group(models.Model):
@@ -67,7 +65,7 @@ class GroupMember(models.Model):
         class Admin:
                 list_display = ('group', 'user',)
                 list_filter = ('group',)
-        
+
 
 class Theme(models.Model):
         name = models.CharField(max_length = 250)
@@ -125,8 +123,9 @@ from sphene.community.sphsettings import get_sph_setting
 
 class CommunityUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
+    displayname = models.CharField(max_length = 250)
     public_emailaddress = models.CharField(max_length = 250)
-
+    
     avatar = models.ImageField( height_field = 'avatar_height',
                                 width_field = 'avatar_width',
                                 upload_to = get_sph_setting('community_avatar_upload_to'),
@@ -137,7 +136,11 @@ class CommunityUserProfile(models.Model):
 
     changelog = ( ( '2007-08-10 00', 'alter', 'ADD avatar varchar(100)'   ),
                   ( '2007-08-10 01', 'alter', 'ADD avatar_height integer' ),
-                  ( '2007-08-10 02', 'alter', 'ADD avatar_width integer'  ) )
+                  ( '2007-08-10 02', 'alter', 'ADD avatar_width integer'  ),
+                  ( '2008-04-10 00', 'alter', 'ADD displayname varchar(250)' ),
+                  ( '2008-04-10 01', 'update', "SET displayname = ''" ),
+                  ( '2008-04-10 02', 'alter', 'ALTER displayname SET NOT NULL' ),
+                )
 
 class CommunityUserProfileField(models.Model):
     """ User profile fields, configurable through the django admin
@@ -452,8 +455,18 @@ from sphene.community.signals import profile_edit_init_form, profile_edit_save_f
 def get_public_emailaddress_help():
     # TODO also add a notice about wether anonymous user require to enter a captcha ?
     if get_sph_setting( 'community_email_show_only_public' ):
-        return ugettext('This email address will be shown to all users. If you leave it black noone will see your email address.')
-    return ugettext('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
+        return _('This email address will be shown to all users. If you leave it black noone will see your email address.')
+    return _('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
+
+
+def get_displayname_default(user, profile):
+    from sphene.community.sphutils import get_fullusername 
+    if get_sph_setting( 'community_displayname_filled_with_username_or_fullname' ) == 'username':
+        return user.username
+    elif get_sph_setting( 'community_displayname_filled_with_username_or_fullname' ) == 'fullname':
+        return get_fullusername(user)
+    return profile.displayname
+
 
 def community_profile_edit_init_form(sender, instance, signal, request, *args, **kwargs):
     user = instance.user
@@ -463,10 +476,18 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
         profile = CommunityUserProfile( user = user, )
         
     instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
+    instance.fields['displayname'] = forms.CharField( label = _(u'Display name'),
+                                                             required = False,
+                                                             initial = get_displayname_default(user, profile),
+                                                             help_text = _('This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown.'))
+    
     instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),
                                                               required = False,
                                                               initial = profile.public_emailaddress,
                                                               help_text = get_public_emailaddress_help())
+
+
+
 
     fields = CommunityUserProfileField.objects.all()
     for field in fields:
@@ -495,6 +516,7 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
         profile = CommunityUserProfile( user = user, )
 
     profile.public_emailaddress = data['public_emailaddress']
+    profile.displayname = data['displayname']
     profile.save()
 
     fields = CommunityUserProfileField.objects.all()

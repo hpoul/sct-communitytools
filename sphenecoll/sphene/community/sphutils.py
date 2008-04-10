@@ -24,6 +24,9 @@ def get_fullusername(value):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
     if not value: return _(u"Anonymous")
+    profile = value.communityuserprofile_set.all()
+    if profile and profile[0].displayname:
+        return profile[0].displayname
     if not value.first_name or not value.last_name:
         return value.username
     return "%s %s" % (value.first_name, value.last_name)

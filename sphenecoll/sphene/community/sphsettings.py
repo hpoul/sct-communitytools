@@ -40,6 +40,15 @@ sph_settings_defaults = {
     # The time in seconds an anonymous user is allowed to see email addresses
     # before revalidating a captcha again.
     'community_email_anonymous_require_captcha_timeout': 10 * 60,
+    
+    # Valid options for this field are 'username' and 'fullname'. Any other
+    # option won't cause any effect.
+    # If this option is set to 'username' or 'fullname' then 'displayname' field
+    # in the 'profile form' will have a default value which can be:
+    # 1. a value of user.username in case of setting the option to 'username'
+    # 2. a value of user.firstname + '' + user.lastname in case of setting the
+    #    option to 'fullname'
+    'community_displayname_filled_with_username_or_fullname': 'username',
     }
 
 

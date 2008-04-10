@@ -8,8 +8,9 @@ from django.newforms import widgets
 from sphene.community.models import Group
 from sphene.community.middleware import get_current_group, get_current_request
 from sphene.community.sphutils import get_sph_setting
+from sphene.community.models import CommunityUserProfile
 from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
-from sphene.sphboard.views import PostForm
+from sphene.sphboard.views import PostForm, get_all_viewable_categories
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 from django.template.context import Context
 
@@ -68,7 +69,12 @@ def sphboard_displayBreadcrumbsForCategory( category, linkall = False, show_boar
 
 @register.inclusion_tag('sphene/sphboard/_displayUserName.html')
 def sphboard_displayUserName( user ):
-    return { 'user': user }
+    try:
+        profile = user.communityuserprofile_set.all()[0]
+    except IndexError, e:
+        profile = None
+    return { 'user': user,
+             'profile_user': profile }
 
 
 ### sphboard_displayPostForm is deprecated, there is a view function for this !!
@@ -160,7 +166,17 @@ dispatcher.connect(clear_authorinfo_cache_postcount,
                    sender = UserPostCount,
                    signal = signals.post_save)
 
+def clear_posts_render_cache(instance):
+    for group in Group.objects.all():
+        allowed_categories = get_all_viewable_categories( group, instance.user )
+        post_list = Post.objects.filter( category__id__in = allowed_categories,
+                                         author = instance.user )
+        for post in post_list:
+            post.clear_render_cache()
 
+dispatcher.connect(clear_posts_render_cache,
+                   sender = CommunityUserProfile,
+                   signal = signals.post_save)
 
 
 class LatestThreadsNode(template.Node):

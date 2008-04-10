@@ -214,7 +214,12 @@ def sph_publicemailaddress(value):
 def sph_html_user(user):
     """ Displays the full username of a given user including a link to
     his profile. """
-    return { 'user': user }
+    try:
+        profile = user.communityuserprofile_set.all()[0]
+    except IndexError, e:
+        profile = None
+    return { 'user': user,
+             'profile_user': profile }
 
 @register.filter
 def sph_html_user(value):

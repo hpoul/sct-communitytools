@@ -2,10 +2,14 @@
 {% load sph_extras %}
 {% if user %}
   <a href="{{ user|sph_user_profile_link }}">
-  {% if user.first_name or user.last_name %}
-    {{ user.first_name }} {{ user.last_name }} ({{ user.username }})
+  {% if profile_user.displayname %}
+    {{ profile_user.displayname }}
   {% else %}
-    {{ user.username }}
+	  {% if user.first_name or user.last_name %}
+	    {{ user.first_name }} {{ user.last_name }} ({{ user.username }})
+	  {% else %}
+	    {{ user.username }}
+	  {% endif %}
   {% endif %}
   </a>
 {% else %}
