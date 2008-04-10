@@ -3,9 +3,6 @@
 {% block head %}
   {{ block.super }}
   <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/community/styles/base.css" />
-  {% for styleinclude in sph_settings.community_styleincludes %}
-    <link rel="stylesheet" href="{{ styleinclude }}" />
-  {% endfor %}
   {% if sph.rss %}
     {% for rss in sph.rss %}
       <link rel="alternate" title="{{ rss.label }}" href="{{ rss.url }}" type="application/rss+xml">

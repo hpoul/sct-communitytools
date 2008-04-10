@@ -230,3 +230,28 @@ def sph_render_to_response(template_name, context = None):
                               context_instance = RequestContext(get_current_request()))
 
 
+def include_js(jspath, prefix = None):
+    jsincludes = get_sph_setting( 'community_jsincludes', [])
+
+    if jspath in jsincludes:
+        return
+
+    if prefix is None:
+        prefix = settings.MEDIA_URL
+    jsincludes.append(prefix + jspath)
+
+    sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
+
+
+def include_css(csspath, prefix = None):
+    styleincludes = sphsettings.get_sph_setting( 'community_styleincludes', [])
+
+    if csspath in styleincludes:
+        return
+
+    if prefix is None:
+        prefix = settings.MEDIA_URL
+    styleincludes.append(prefix + csspath)
+    sphsettings.set_sph_setting( 'community_styleincludes', styleincludes )
+
+
