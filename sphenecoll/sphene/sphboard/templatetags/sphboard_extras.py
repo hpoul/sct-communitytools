@@ -6,7 +6,7 @@ from django.db.models import signals
 from django.dispatch import dispatcher
 from django.newforms import widgets
 from sphene.community.models import Group
-from sphene.community.middleware import get_current_group
+from sphene.community.middleware import get_current_group, get_current_request
 from sphene.community.sphutils import get_sph_setting
 from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
 from sphene.sphboard.views import PostForm
@@ -116,10 +116,13 @@ def sphboard_default_notify_me(user):
 
 
 
-def authorinfo_cachekey(user_id, group_id = None):
+def authorinfo_cachekey(user_id, group_id = None, language_code = None):
     if group_id is None:
         group_id = get_current_group().id
-    return 'sphboard_authorinfo_%s_%s' % (str(group_id),str(user_id))
+    if language_code is None:
+        language_code = getattr(get_current_request(), 'LANGUAGE_CODE', '')
+    return 'sphboard_authorinfo_%s_%s_%s' % \
+        (str(group_id),str(user_id), language_code)
 
 @cache_inclusion_tag(register,
                      'sphene/sphboard/_post_authorinfo.html',
@@ -135,12 +138,19 @@ def sphboard_post_authorinfo(user_id):
              'post_count': UserPostCount.objects.get_post_count(user, get_current_group()) }
 
 
+def clear_cache_all_languages(user_id, group_id):
+    from django.conf import settings
+    if not hasattr(settings, 'LANGUAGES'):
+        return
+    for code, name in settings.LANGUAGES:
+        cache.delete( authorinfo_cachekey( user_id, group_id, code ) )
+
 def clear_authorinfo_cache(instance):
     for group in Group.objects.all():
-        cache.delete( authorinfo_cachekey( instance.id, group.id ) )
+        clear_cache_all_languages(instance.id, group.id)
 
 def clear_authorinfo_cache_postcount(instance):
-    cache.delete( authorinfo_cachekey( instance.user.id, instance.group.id ) )
+    clear_cache_all_languages(instance.id, instance.group.id)
 
 dispatcher.connect(clear_authorinfo_cache,
                    sender = User,
