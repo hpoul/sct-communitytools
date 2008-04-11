@@ -458,6 +458,12 @@ def get_public_emailaddress_help():
         return _('This email address will be shown to all users. If you leave it black noone will see your email address.')
     return _('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
 
+def get_user_displayname_help():
+    if get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
+        return _('This display name will be shown to all users. If you leave it blank then your username will be shown.')
+    return _('This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown.')
+
+
 def community_profile_edit_init_form(sender, instance, signal, request, *args, **kwargs):
     user = instance.user
     try:
@@ -467,9 +473,9 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
         
     instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
     instance.fields['displayname'] = forms.CharField( label = _(u'Display name'),
-                                                             required = False,
-                                                             initial = profile.displayname,
-                                                             help_text = _('This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown.'))
+                                                      required = False,
+                                                      initial = profile.displayname,
+                                                      help_text = get_user_displayname_help())
     
     instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),
                                                               required = False,
