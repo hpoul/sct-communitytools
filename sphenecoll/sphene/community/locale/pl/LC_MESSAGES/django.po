@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-02 22:16+0200\n"
-"PO-Revision-Date: 2008-04-09 21:48+0100\n"
+"POT-Creation-Date: 2008-04-11 23:17+0200\n"
+"PO-Revision-Date: 2008-04-11 23:21+0100\n"
 "Last-Translator: Jakub Wiśniowski\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,7 @@ msgid "Avatar"
 msgstr "Avatar"
 
 #: __init__.py:116
-#: templatetags/sph_extras.py:334
+#: templatetags/sph_extras.py:335
 msgid "Users avatar"
 msgstr "Avatar użytkownika"
 
@@ -81,7 +81,7 @@ msgid "Invalid password."
 msgstr "Niewłaściwe hasło."
 
 #: forms.py:47
-#: views.py:164
+#: views.py:178
 msgid "Passwords do not match."
 msgstr "Hasła nie pasują."
 
@@ -105,41 +105,61 @@ msgstr "Niewłaściwy typ obiektu"
 msgid "Comma separated list of tags."
 msgstr "Lista tagów rozdzielonych przecinkami."
 
-#: models.py:435
+#: models.py:44
+msgid "Normal User"
+msgstr "Zwykły użytkownik"
+
+#: models.py:45
+msgid "Administrator"
+msgstr "Administrator"
+
+#: models.py:458
 msgid "This email address will be shown to all users. If you leave it black noone will see your email address."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. Jeśli jednak pozostawisz to pole zaznaczone, nikt nie będzie mógł go zobaczyć."
 
-#: models.py:436
+#: models.py:459
 msgid "This email address will be shown to all users. If you leave it blank, your verified email address will be shown."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. jeśli pozostawisz to pole puste, Twój zweryfikowany adres email nie będzie pokazywany."
 
-#: models.py:445
+#: models.py:463
+msgid "This display name will be shown to all users. If you leave it blank then your username will be shown."
+msgstr "Nazwa wyświetlana będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste, wówczas wyświetlana będzie Twoja nazwa użytkownika."
+
+#: models.py:464
+msgid "This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown."
+msgstr "Ta nazwa będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste wówczas wyświetlane będzie Twoje imię i nazwisko. Jeżeli jednak nie podałeś imienia i nazwiska, wówczas wyświetlana będzie Twoja nazwa użytkownika."
+
+#: models.py:474
 msgid "Community settings"
 msgstr "Ustawienia społecznościowe"
 
-#: models.py:446
+#: models.py:475
+msgid "Display name"
+msgstr "Nazwa wyświetlana"
+
+#: models.py:480
 msgid "Public email address"
 msgstr "Publiczny adres email"
 
-#: models.py:496
+#: models.py:534
 msgid "Successfully saved community profile."
 msgstr "Pomyślnie zapisano profil społeczny."
 
-#: sphutils.py:24
-#: templates/sphene/community/_display_username.html:12
+#: sphutils.py:27
+#: templates/sphene/community/_display_username.html:8
 msgid "Anonymous"
 msgstr "Anonim"
 
-#: sphutils.py:102
+#: sphutils.py:114
 msgid "Captcha input"
 msgstr "Wejście Captcha"
 
-#: sphutils.py:132
+#: sphutils.py:144
 msgid "Invalid Captcha response."
 msgstr "Niewłaściwy kod Captcha."
 
 #: views.py:39
-#: views.py:175
+#: views.py:163
 #, python-format
 msgid "Another user is already registered with the email address %(email)s."
 msgstr "Inny użytkownik jest już zarejestrowany z adresem email %(email)s."
@@ -170,36 +190,36 @@ msgstr "Wymagana weryfikacja adresu email dla witryny %(site_name)s"
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
-#: views.py:154
-msgid "Password"
-msgstr "Hasło"
-
-#: views.py:156
-msgid "Verify Password"
-msgstr "Potwierdź Hasło"
-
-#: views.py:170
+#: views.py:158
 #, python-format
 msgid "The username %(username)s is already taken."
 msgstr "Nazwa użytkownika %(username)s jest już zajęta."
 
-#: views.py:334
+#: views.py:168
+msgid "Password"
+msgstr "Hasło"
+
+#: views.py:170
+msgid "Verify Password"
+msgstr "Potwierdź Hasło"
+
+#: views.py:338
 msgid "Successfully changed user profile."
 msgstr "Profil użytkownika został pomyślnie zaktualizowany."
 
-#: views.py:392
+#: views.py:396
 msgid "Successfully saved role."
 msgstr "Rola została pomyślnie zapisana."
 
-#: views.py:415
+#: views.py:419
 msgid "Successfully deleted role member."
 msgstr "Pomyślnie usunięto rolę użytkownika."
 
-#: views.py:443
+#: views.py:447
 msgid "Successfully added member."
 msgstr "Pomyślnie dodano użytkownika."
 
-#: views.py:499
+#: views.py:503
 msgid "Please enter the result of the above calculation."
 msgstr "Proszę wprowadzić rezultat powyższych obliczeń."
 
@@ -285,6 +305,7 @@ msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
 #: templates/sphene/community/profile_edit.html:31
+#: templatetags/sph_form.py:15
 msgid "Save"
 msgstr "Zapisz"
 
@@ -421,11 +442,11 @@ msgstr ""
 msgid "Send"
 msgstr "Wyślij"
 
-#: templatetags/sph_extras.py:198
+#: templatetags/sph_extras.py:191
 msgid "Reveal this emailaddress"
 msgstr "Odkryj ten adres email"
 
-#: templatetags/sph_extras.py:337
+#: templatetags/sph_extras.py:338
 msgid "Submit"
 msgstr "Zatwierdź"
 
