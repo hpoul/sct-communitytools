@@ -152,17 +152,17 @@ def diff(request, group, snipName, changeId = None):
 
     if changeStart:
         htmlDiff = HtmlDiff(wrapcolumn = 50,)
-        from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
+        from sphene.community.templatetags.sph_extras import sph_date, sph_user_displayname
         desc = ugettext('%(date)s by %(editor)s')
         if snip.has_edit_permission():
             desc += ' / <a href="%(editversionlink)s">'+ugettext('Edit this version')+'</a>'
         fromdesc = desc % {
             'date': sph_date( changeStart.edited ),
-            'editor': sph_fullusername( changeStart.editor ),
+            'editor': sph_user_displayname( changeStart.editor ),
             'editversionlink': changeStart.get_absolute_editurl() },
         todesc = desc % {
             'date': sph_date( changeEnd.edited ),
-            'editor': sph_fullusername( changeEnd.editor ),
+            'editor': sph_user_displayname( changeEnd.editor ),
             'editversionlink': changeEnd.get_absolute_editurl() },
 
         diffTable = htmlDiff.make_table( changeStart.body.splitlines(1),
@@ -344,7 +344,7 @@ def editSnip(request, group, snipName, versionId = None):
             form.fields['tags'].initial = tag_get_labels(snip)
 
     if version:
-        from sphene.community.templatetags.sph_extras import sph_date, sph_fullusername
+        from sphene.community.templatetags.sph_extras import sph_date
         changemessage = ugettext('Reverted to revision of %(editdate)s') % \
             { 'editdate': sph_date( version.edited ) }
 

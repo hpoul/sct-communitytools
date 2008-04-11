@@ -171,18 +171,11 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
             sphdata['toc'] = mark_safe( md.tocDiv.toxml() )
         return ret
 
-from sphene.community.sphutils import get_fullusername, format_date
+from sphene.community.sphutils import get_user_displayname, format_date
 
 @register.filter
 def sph_date(value, format = None):
     return format_date(value, format)
-
-
-@register.filter
-def sph_fullusername(value):
-    """ returns the full username of the given user - if defined
-    (No HTML, just text) """
-    return get_fullusername(value)
 
 @register.filter
 def sph_publicemailaddress(value):
@@ -210,25 +203,28 @@ def sph_publicemailaddress(value):
         return value.email
     return profile.public_emailaddress or value.email
 
+@register.filter
+def sph_user_displayname(user):
+    """ Returns the display name of the given user
+    (No HTML, just text) """
+    return get_user_displayname(user)
+
+# This is for backwards compatibility
+sph_fullusername = sph_user_displayname
+
 @register.inclusion_tag('sphene/community/_display_username.html')
 def sph_html_user(user):
-    """ Displays the full username of a given user including a link to
+    """ Returns the display name of a given user including a link to
     his profile. """
-    try:
-        profile = user.communityuserprofile_set.all()[0]
-    except IndexError, e:
-        profile = None
-    return { 'user': user,
-             'profile_user': profile }
+    return { 'user': user }
 
 @register.filter
-def sph_html_user(value):
+def sph_html_user(user):
     str = template.loader \
         .render_to_string( 'sphene/community/_display_username.html',
-                           { 'user': value, },
+                           { 'user': user, },
                            context_instance = RequestContext(get_current_request()) )
     return str
-
 
 @register.filter
 def sph_user_profile_link(value):

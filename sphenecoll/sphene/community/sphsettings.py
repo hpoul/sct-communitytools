@@ -41,14 +41,12 @@ sph_settings_defaults = {
     # before revalidating a captcha again.
     'community_email_anonymous_require_captcha_timeout': 10 * 60,
     
-    # Valid options for this field are 'username' and 'fullname'. Any other
-    # option won't cause any effect.
-    # If this option is set to 'username' or 'fullname' then 'displayname' field
-    # in the 'profile form' will have a default value which can be:
-    # 1. a value of user.username in case of setting the option to 'username'
-    # 2. a value of user.firstname + '' + user.lastname in case of setting the
-    #    option to 'fullname'
-    'community_displayname_filled_with_username_or_fullname': 'username',
+    # Valid options for this parameter are 'username' and 'fullname'. Any other
+    # option won't cause any effect. Default value is 'fullname'.
+    # This option determines the fallback sequence for displaing the name of a user:
+    # 1. sequence for 'username': displayfield (if set) - username
+    # 2. sequence for 'fullname': displayfield (if set) - fullname (if first or last name are set) - username
+    'community_user_displayname_fallback': 'fullname',
     }
 
 
@@ -61,6 +59,7 @@ def add_setting_defaults(newdefaults):
     the settings.
     """
     sph_settings_defaults.update(newdefaults)
+
 
 def set_sph_setting(name, value):
     if not hasattr(settings, 'SPH_SETTINGS'):

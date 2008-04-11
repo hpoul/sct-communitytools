@@ -20,17 +20,24 @@ def get_urlconf():
     request = get_current_request()
     return getattr(request, 'urlconf', None)
 
-def get_fullusername(value):
+
+def get_user_displayname(user):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
-    if not value: return _(u"Anonymous")
-    profile = value.communityuserprofile_set.all()
+    if not user: return _(u"Anonymous")
+   
+    profile = user.communityuserprofile_set.all()
     if profile and profile[0].displayname:
         return profile[0].displayname
-    if not value.first_name or not value.last_name:
-        return value.username
-    return "%s %s" % (value.first_name, value.last_name)
 
+    if (not user.first_name or not user.last_name) or\
+        get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
+        return user.username
+
+    return "%s %s" % (user.first_name, user.last_name)
+
+# This is for backwards compatibility
+get_fullusername = get_user_displayname
 
 def format_date(value, format = None):
     if not hasattr(value, 'strftime') :
@@ -53,7 +60,7 @@ def get_user_link_for_username(username):
     except User.DoesNotExist:
         return username
     # TODO add a link to user profiles
-    return get_fullusername(user)
+    return get_user_displayname(user)
 
 usecaptcha = True
 try:

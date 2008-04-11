@@ -16,7 +16,7 @@ from datetime import datetime
 from sphene.community import PermissionDenied
 from sphene.community import sphutils
 from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
-from sphene.community.sphutils import get_fullusername, format_date, get_sph_setting, add_rss_feed
+from sphene.community.sphutils import get_user_displayname, format_date, get_sph_setting, add_rss_feed
 from sphene.sphboard import boardforms
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
 from sphene.sphboard.renderers import describe_render_choices
@@ -300,7 +300,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 # make post visible
                 newpost.is_hidden = 0
                 if not post.is_new() and category_type.append_edit_message_to_post(post):
-                    newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_fullusername( request.user ), 'edit_date':format_date( datetime.today())}
+                    newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_user_displayname( request.user ), 'edit_date':format_date( datetime.today())}
             else:
                 newpost = Post( category = category,
                                 subject = data['subject'],

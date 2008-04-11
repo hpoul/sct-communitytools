@@ -458,16 +458,6 @@ def get_public_emailaddress_help():
         return _('This email address will be shown to all users. If you leave it black noone will see your email address.')
     return _('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
 
-
-def get_displayname_default(user, profile):
-    from sphene.community.sphutils import get_fullusername 
-    if get_sph_setting( 'community_displayname_filled_with_username_or_fullname' ) == 'username':
-        return user.username
-    elif get_sph_setting( 'community_displayname_filled_with_username_or_fullname' ) == 'fullname':
-        return get_fullusername(user)
-    return profile.displayname
-
-
 def community_profile_edit_init_form(sender, instance, signal, request, *args, **kwargs):
     user = instance.user
     try:
@@ -478,7 +468,7 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
     instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
     instance.fields['displayname'] = forms.CharField( label = _(u'Display name'),
                                                              required = False,
-                                                             initial = get_displayname_default(user, profile),
+                                                             initial = profile.displayname,
                                                              help_text = _('This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown.'))
     
     instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),

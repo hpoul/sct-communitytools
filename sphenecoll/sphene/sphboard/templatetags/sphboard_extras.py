@@ -69,12 +69,7 @@ def sphboard_displayBreadcrumbsForCategory( category, linkall = False, show_boar
 
 @register.inclusion_tag('sphene/sphboard/_displayUserName.html')
 def sphboard_displayUserName( user ):
-    try:
-        profile = user.communityuserprofile_set.all()[0]
-    except IndexError, e:
-        profile = None
-    return { 'user': user,
-             'profile_user': profile }
+    return { 'user': user }
 
 
 ### sphboard_displayPostForm is deprecated, there is a view function for this !!
