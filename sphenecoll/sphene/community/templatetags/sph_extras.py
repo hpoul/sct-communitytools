@@ -210,7 +210,7 @@ def sph_user_displayname(user):
     return get_user_displayname(user)
 
 # This is for backwards compatibility
-sph_fullusername = sph_user_displayname
+register.filter('sph_fullusername', sph_user_displayname)
 
 @register.inclusion_tag('sphene/community/_display_username.html')
 def sph_html_user(user):
