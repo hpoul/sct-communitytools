@@ -368,6 +368,34 @@ def tag_get_labels(model_instance):
 
     return tag_labels
 
+def tag_get_or_create_label(group, tag_label_str):
+    if tag_label_str == '':
+        # ignore empty labels
+        return None
+    
+    # Check if the label is already known:
+    try:
+        tag_label = TagLabel.objects.get( tag__group = group,
+                                          label__exact = tag_label_str )
+    except TagLabel.DoesNotExist:
+        # TagLabel not found, search for an appropriate tag
+        tag_name_str = tag_sanitize(tag_label_str)
+        # Find tag
+        try:
+            tag = Tag.objects.get( group = group,
+                                   name__exact = tag_name_str )
+        except Tag.DoesNotExist:
+            tag = Tag( group = group,
+                       name = tag_name_str )
+            tag.save()
+
+        tag_label = TagLabel( tag = tag,
+                              label = tag_label_str )
+        tag_label.save()
+
+    return tag_label
+
+
 qn = connection.ops.quote_name
 
 def get_queryset_and_model(queryset_or_model):
