@@ -13,11 +13,8 @@ pluggable into any django project.
 
 ## Requirements
 
-- [Django](http://www.djangoproject.com) - I'm using the latest version from 
-  the subversion trunk.
-    - For use with Django 0.96 you need to add the following configuration to 
-      your settings.py: SPH_SETTINGS = { 'django096compatibility': True, }
-- Python >= 2.4
+- [Django](http://www.djangoproject.com) **trunk** (NOT compatible with 0.96)
+- Python >= 2.4 (Use >= 2.5 if you need wiki diffs with unicode support)
 - [PyCrypto](http://sf.net/projects/pycrypto) - (e.g. debian package python-crypto)
 
 ## Installation
@@ -35,17 +32,10 @@ See <http://code.djangoproject.com/ticket/4789> - If this patch was already
 committed or you applied it manually you can disable the workaround to
 improve performance.
 
-### Apply Patches
-
-As of 2007-05-13 no patches are needed any more. The customization of
-the permalink function is now included in sphene.community.sphutils.
-
-- permalink_with_additional_function_arg.diff - see <http://code.djangoproject.com/ticket/3530>
-
 
 ### Python library path
 
-You need to add libs/ and sphenecoll/ to your python include path and
+You need to add sphenecoll/ to your python include path and
 static/ needs to be served from your django installation.
 (static/sphene/ is enough)
 
