@@ -5,14 +5,18 @@ from django.core.cache import cache
 from django.db.models import signals
 from django.dispatch import dispatcher
 from django.newforms import widgets
+from django.template.context import Context
+from django.utils.safestring import mark_safe
+
+from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
+
 from sphene.community.models import Group
 from sphene.community.middleware import get_current_group, get_current_request
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
+
 from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
 from sphene.sphboard.views import PostForm, get_all_viewable_categories
-from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
-from django.template.context import Context
 
 register = template.Library()
 
@@ -205,5 +209,61 @@ def sphboard_latest_threads(parser, token):
     parser.delete_first_token()
     return LatestThreadsNode(nodelist, categoryvar)
 
+
+class RecursiveCategoryIteratorNode(template.Node):
+    def __init__(self, nodelist, categorytypevar):
+        self.nodelist = nodelist
+        self.categorytypevar = categorytypevar
+
+    def recursive_render(self, context, parent, depth = 0):
+        filter = Category.objects.filter(
+            group = get_current_group(),)
+
+        if self.categorytypevar is not None:
+            categorytype = self.categorytypevar.resolve(context)
+            
+            filter = filter.filter(category_type__in = categorytype.split(','))
+            #(TaskCategoryType.name, DivisionCategoryType.name),)
+        if parent is None:
+            filter = filter.filter(parent__isnull = True)
+        else:
+            filter = filter.filter(parent = parent)
+
+        output = []
+
+        for category in filter:
+            if not category.has_view_permission():
+                continue
+            # render children first
+            children = self.recursive_render(context, category, depth + 1)
+
+            # render the current category
+            context.push()
+            context['category'] = category
+            context['children'] = mark_safe(children)
+            context['depth'] = depth
+            context['depthrange'] = xrange(depth)
+            output.append(self.nodelist.render(context))
+            context.pop()
+
+        return ''.join(output)
+
+    def render(self, context):
+        return self.recursive_render(context, None)
+
+@register.tag(name = 'sphboard_recursive_category_iterator')
+def sphboard_recursive_category_iterator(parser, token):
+    bits = list(token.split_contents())
+    if len(bits) > 2:
+        raise template.TemplateSyntaxError("%r requires at most one argument." % bits[0])
+
+    categorytypevar = None
+    if len(bits) > 1:
+        categorytypevar = parser.compile_filter(bits[1])
+
+
+    nodelist = parser.parse(('endsphboard_recursive_category_iterator',))
+    parser.delete_first_token()
+    return RecursiveCategoryIteratorNode(nodelist, categorytypevar)
 
 
