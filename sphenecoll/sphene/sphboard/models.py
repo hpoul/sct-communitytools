@@ -1257,6 +1257,15 @@ class Poll(models.Model):
     def null_votes(self):
         return self.pollvoters_set.filter( choice__isnull = True ).count()
 
+    def allow_editing(self, user = None):
+        return self.post.allow_editing(user)
+
+
+
+    def get_absolute_editurl(self):
+        return ('sphboard_edit_poll', (), { 'poll_id': self.id, })
+    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+
     class Admin:
         pass
 

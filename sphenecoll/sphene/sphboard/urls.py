@@ -26,5 +26,6 @@ urlpatterns += patterns('sphene.sphboard.views',
                         (r'^vote/(?P<thread_id>\d+)/$', 'vote'),
                         (r'^togglemonitor_(?P<monitortype>\w+)/(?P<object_id>\d+)/$', 'toggle_monitor'),
                         (r'^catchup/(?P<category_id>\d+)/$', 'catchup'),
+                        url(r'^poll/(?P<poll_id>\d+)/edit/$', 'edit_poll', name = 'sphboard_edit_poll'),
                        )
 

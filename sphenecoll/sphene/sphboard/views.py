@@ -15,9 +15,12 @@ from datetime import datetime
 
 from sphene.community import PermissionDenied
 from sphene.community import sphutils
+from sphene.community.sphutils import sph_reverse
 from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
-from sphene.community.sphutils import get_user_displayname, format_date, get_sph_setting, add_rss_feed
+from sphene.community.sphutils import get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
+
 from sphene.sphboard import boardforms
+from sphene.sphboard.forms import PollForm, PollChoiceForm
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
 from sphene.sphboard.renderers import describe_render_choices
 
@@ -394,6 +397,37 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     # Maybe the user is in the 'edit' form, which should not be cached.
     res.sph_lastmodified = True
     return res
+
+
+def edit_poll(request, group, poll_id):
+    poll = get_object_or_404(Poll, pk = poll_id)
+    if not poll.allow_editing():
+        raise PermissionDenied()
+
+    postdata = None
+    if request.method == 'POST':
+        postdata = request.POST
+
+    form = PollForm(postdata, instance = poll)
+    choiceforms = [ PollChoiceForm( postdata,
+                                    prefix = 'choice_%d' % choice.id,
+                                    instance = choice,
+                                    ) for choice in poll.pollchoice_set.all() ]
+
+    if request.method == 'POST' and form.is_valid() \
+            and not [ True for choiceform in choiceforms if not choiceform.is_valid() ]:
+        form.save()
+        for choiceform in choiceforms:
+            choiceform.save()
+
+        return HttpResponseRedirect(sph_reverse('sphene.sphboard.views.showThread',
+                                                kwargs = { 'thread_id': poll.post.get_thread().id }))
+
+    return sph_render_to_response('sphene/sphboard/edit_poll.html',
+                                  { 'form': form,
+                                    'choiceforms': choiceforms,
+                                    })
+
 
 
 class AnnotateForm(forms.Form):

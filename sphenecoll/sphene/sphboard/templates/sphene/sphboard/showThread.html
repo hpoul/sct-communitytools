@@ -121,9 +121,12 @@
         {% if post.poll %}
           <tr>
             <td colspan='2'>
-              <b>{% trans "Poll:" %} {{ post.poll.question }}</b><br/><br/>
+              <h2>{% trans "Poll:" %} {{ post.poll.question }}</h2>
+              {% if post.poll.allow_editing %}
+                <p>[ <a href="{{ post.poll.get_absolute_editurl }}">{% trans "Edit this poll" %}</a> ]</p>
+              {% endif %}
               {% if post.poll.has_voted %}
-                {% trans "You already voted. Here are the results" %} ({{ post.poll.total_voters }} {% trans "votes total" %} - {% widthratio post.poll.null_votes post.poll.total_votes 100 %}% {% trans "did not answer" %}):
+                <p>{% trans "You already voted. Here are the results" %} ({{ post.poll.total_voters }} {% trans "votes total" %} - {% widthratio post.poll.null_votes post.poll.total_votes 100 %}% {% trans "did not answer" %}):</p>
                 <table class="sphboard polls_results">
                   {% for choice in post.poll.choices %}
                     <tr>
