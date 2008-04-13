@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-10 21:56+0200\n"
+"POT-Creation-Date: 2008-04-13 09:22+0200\n"
 "PO-Revision-Date: 2008-02-17 02:16+0100\n"
 "Last-Translator: Herbert Poul <herbert.poul@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,33 +24,33 @@ msgstr "-- Wähle eine Kategorie --"
 msgid "Latest threads in %(obj_name)s"
 msgstr "Aktuelle Threads in %(obj_name)s"
 
-#: models.py:945
+#: models.py:948
 msgid "File"
 msgstr "Datei"
 
-#: models.py:1401
+#: models.py:1413
 msgid "Board settings"
 msgstr "Foren Einstellungen"
 
-#: models.py:1402
+#: models.py:1414
 msgid "Signature"
 msgstr "Signatur"
 
-#: models.py:1410
+#: models.py:1422
 msgid "Default Notify Me - Value"
 msgstr "Voreinstellung für 'Benachrichtung'"
 
-#: models.py:1430
+#: models.py:1442
 msgid "Successfully saved board profile."
 msgstr "Forum Profil wurde erfolgrich gespeichert."
 
-#: models.py:1435 templates/sphene/sphboard/_post_authorinfo.html:10
+#: models.py:1447 templates/sphene/sphboard/_post_authorinfo.html:10
 #: templates/sphene/sphboard/listCategories.html:38
 #: templates/sphene/sphboard/listCategories.html:66
 msgid "Posts"
 msgstr "Posts"
 
-#: models.py:1441
+#: models.py:1453
 msgid "Board Signature"
 msgstr "Forum Signatur"
 
@@ -77,117 +77,116 @@ msgstr "Kann markup '%(markup)s' nicht rendern."
 msgid "You can use %(description)s in your posts"
 msgstr "Sie können %(description)s in Ihrem Post verwenden"
 
-#: views.py:162
+#: views.py:165
 msgid "Subject"
 msgstr "Betreff"
 
-#: views.py:163
+#: views.py:166
 msgid "Body"
 msgstr "Inhalt"
 
-#: views.py:168
+#: views.py:171
 msgid "Please enter the result of the above calculation."
 msgstr "Bitte geben Sie das Ergebnis der obigen Rechnung ein."
 
-#: views.py:189
+#: views.py:192
 msgid "Question"
 msgstr "Abstimmungs-Frage"
 
-#: views.py:190
+#: views.py:193
 msgid "Answers (1 per line)"
 msgstr "Antworten (1 pro Zeile)"
 
-#: views.py:192
+#: views.py:195
 msgid "Allowed Choices per User"
 msgstr "Anzahl der Wahlmöglichkeiten pro Benutzer"
 
-#: views.py:193
+#: views.py:196
 msgid "Enter how many answers a user can select."
 msgstr ""
 "Geben Sie die Anzahl der Auswahlmöglichkeiten ein die ein Benutzer "
 "selektieren kann."
 
-#: views.py:303
+#: views.py:306
 #, python-format
 msgid "--- Last Edited by %(username)s at %(edit_date)s ---"
 msgstr "--- Zuletzt bearbeitet von %(username)s am %(edit_date)s ---"
 
-#: views.py:348
+#: views.py:351
 msgid "Vote created successfully."
 msgstr "Abstimmung wurder erfolgreich erstellt."
 
-#: views.py:352
+#: views.py:355
 msgid "Post edited successfully."
 msgstr "Post wurde erfolgreich editiert."
 
-#: views.py:354
+#: views.py:357
 msgid "Post created successfully."
 msgstr "Post wurde erfolgreich gespeichert."
 
-#: views.py:442
+#: views.py:476
 msgid "Annotated a users post."
 msgstr "Annotation wurde erfolgreich zum Post hinzugefügt."
 
-#: views.py:471
+#: views.py:505
 msgid "Select target category"
 msgstr "Wählen Sie die Zielkategorie"
 
-#: views.py:482
-#, fuzzy
+#: views.py:516
 msgid "Please describe why this thread had to be moved."
 msgstr "Bitte erklären Sie, warum thiser Thread verschoben werden muss."
 
-#: views.py:531
+#: views.py:565
 msgid "Moved thread into new category."
 msgstr "Thread wurde in die neue Kategorie verschoben."
 
-#: views.py:542
+#: views.py:576
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
 msgstr "Dieser Thread wurde aus der Kategorie %(category_name)s verschoben"
 
-#: views.py:556
+#: views.py:590
 msgid "You have already voted."
 msgstr "Sie haben bereits abgestimmt."
 
-#: views.py:560
+#: views.py:594
 msgid "Please select at least one answer."
 msgstr "Bitte selektieren sie mindestens eine Antwort."
 
-#: views.py:566
+#: views.py:600
 #, python-format
 msgid "Please only select %(choices)d answers."
 msgstr "Bitte selektieren sie nur %(choices)d Antworten."
 
-#: views.py:570
+#: views.py:604
 msgid ""
 "You cannot abstain from voting and at the same time select a valid answer."
 msgstr ""
 "Sie können sich nicht Ihrer Stimme enthalten und gleichzeitig eine Antwort "
 "selektieren."
 
-#: views.py:579
+#: views.py:613
 msgid "You've selected an invalid choice."
 msgstr "Sie haben eine ungültige Auswahl getroffen."
 
-#: views.py:587
+#: views.py:621
 #, python-format
 msgid "Voted for '%(choice)s'."
 msgstr "Für '%(choice)s' abgestimmt."
 
-#: views.py:587
+#: views.py:621
 msgid "You selected to abstain from voting"
 msgstr "Sie haben sich Ihrer Stimme enthalten"
 
-#: views.py:605
+#: views.py:639
 msgid "Successfully created email notification monitor."
 msgstr "Sie werden zukünftig über neue Posts per email benachrichtigt."
 
-#: views.py:607
+#: views.py:641
 msgid "Removed email notification monitor."
 msgstr "Sie werden NICHT mehr per email über neue Posts benachrichtigt."
 
-#: templates/sphene/sphboard/_displayBreadcrumbs.html:4
+#: templates/sphene/sphboard/_displayBreadcrumbs.html:5
 msgid "Board"
 msgstr "Forum"
 
@@ -278,6 +277,15 @@ msgstr "Anmerkung hinzufügen zu: %(subject)s von "
 #: templates/sphene/sphboard/annotate.html:17
 msgid "Annotate"
 msgstr "Anmerkung speichern"
+
+#: templates/sphene/sphboard/edit_poll.html:11
+#, fuzzy
+msgid "Editing Poll"
+msgstr "Post editieren"
+
+#: templates/sphene/sphboard/edit_poll.html:25
+msgid "Save"
+msgstr "Speichern"
 
 #: templates/sphene/sphboard/listCategories.html:8
 msgid "Latest"
@@ -450,48 +458,52 @@ msgid "Attachments"
 msgstr "Anghängte Dateien"
 
 #: templates/sphene/sphboard/showThread.html:126
+msgid "Edit this poll"
+msgstr "Abstimmung editieren"
+
+#: templates/sphene/sphboard/showThread.html:129
 msgid "You already voted. Here are the results"
 msgstr "Sie haben bereits abgestimmt. Hier ist das Resultat"
 
-#: templates/sphene/sphboard/showThread.html:126
+#: templates/sphene/sphboard/showThread.html:129
 msgid "votes total"
 msgstr "Benutzer haben abgestimmt"
 
-#: templates/sphene/sphboard/showThread.html:126
+#: templates/sphene/sphboard/showThread.html:129
 msgid "did not answer"
 msgstr "haben sich enthalten"
 
-#: templates/sphene/sphboard/showThread.html:138
+#: templates/sphene/sphboard/showThread.html:141
 msgid "Error:"
 msgstr "Fehler:"
 
-#: templates/sphene/sphboard/showThread.html:141
+#: templates/sphene/sphboard/showThread.html:144
 #, python-format
 msgid "You may select up to %(choices_per_user)s answers: "
 msgstr "Sie können bis zu %(choices_per_user)s antworten auswählen"
 
-#: templates/sphene/sphboard/showThread.html:146
-#: templates/sphene/sphboard/showThread.html:153
+#: templates/sphene/sphboard/showThread.html:149
+#: templates/sphene/sphboard/showThread.html:156
 msgid "Show Results (You won't be able to vote.)"
 msgstr "Resultat anzeigen (Hiermit enthalten Sie sich.)"
 
-#: templates/sphene/sphboard/showThread.html:159
+#: templates/sphene/sphboard/showThread.html:162
 msgid "You need to be logged in to vote."
 msgstr "Sie müssen eingelogged sein umabzustimmen."
 
-#: templates/sphene/sphboard/showThread.html:175
+#: templates/sphene/sphboard/showThread.html:178
 msgid "Post Reply"
 msgstr "Antwort verfassen"
 
-#: templates/sphene/sphboard/showThread.html:179
+#: templates/sphene/sphboard/showThread.html:182
 msgid "Thread is locked."
 msgstr "Thread ist gesperrt."
 
-#: templates/sphene/sphboard/showThread.html:182
+#: templates/sphene/sphboard/showThread.html:185
 msgid "You have no permission to post a reply."
 msgstr "Sie haben nicht genügend Berechtigungen umzu antworten."
 
-#: templates/sphene/sphboard/showThread.html:184
+#: templates/sphene/sphboard/showThread.html:187
 msgid "Please login to post a reply."
 msgstr "Bitte loggen Sie sich ein um eine antwort zu verfassen."
 
