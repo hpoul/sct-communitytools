@@ -237,6 +237,10 @@ class Role(models.Model):
         return ('sphene.community.views.admin_permission_role_member_add', (), { 'groupName': self.group.name, 'role_id': self.id, } )
     get_absolute_memberaddurl = permalink(get_absolute_memberaddurl, get_urlconf)
 
+    def get_absolute_groupmemberaddurl(self):
+        return ('sphene.community.views.admin_permission_role_groupmember_add', (), { 'groupName': self.group.name, 'role_id': self.id, } )
+    get_absolute_groupmemberaddurl = permalink(get_absolute_groupmemberaddurl, get_urlconf)
+
     class Meta:
         unique_together = (('name', 'group'),)
 
@@ -246,8 +250,10 @@ class Role(models.Model):
 
 class RoleMember(models.Model):
     """
-    A role member is the relation between a given role and a user.
-    This relation might has additional limitations - e.g. for the board
+    A role member is the relation between a given role and a 
+    1.) user OR 2.) rolegroup - one of those two have to be null !
+
+    This relation can have additional limitations - e.g. for the board
     it might only be active within one given category -
     see RoleMemberLimitation.
 
@@ -255,10 +261,14 @@ class RoleMember(models.Model):
     is active for the user globally within the role's group.
     """
     role = models.ForeignKey( Role )
-    user = models.ForeignKey( User )
+    user = models.ForeignKey( User, null = True )
+    rolegroup = models.ForeignKey( 'RoleGroup', null = True )
 
     has_limitations = models.BooleanField()
 
+
+    changelog = ( ( '2008-04-15 00', 'alter', 'ALTER user_id DROP NOT NULL', ),
+                  ( '2008-04-15 01', 'alter', 'ADD rolegroup_id integer REFERENCES community_rolegroup(id)', ), )
 
     def get_limitations_string(self):
         if not self.has_limitations:
@@ -284,6 +294,35 @@ class RoleMemberLimitation(models.Model):
 
     class Meta:
         unique_together = (('role_member', 'object_type', 'object_id'),)
+
+
+
+
+class RoleGroup(models.Model):
+    """
+    a role group can be used to add common restrictions for a given group 
+    of users.
+    """
+    group = models.ForeignKey(Group)
+    name = models.CharField(max_length = 250)
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_editurl(self):
+        return ('sphene.community.views.admin_permission_rolegroup_edit', (), { 'groupName': self.group.name, 'rolegroup_id': self.id, } )
+    get_absolute_editurl = permalink(get_absolute_editurl, get_urlconf)
+
+    class Meta:
+        unique_together = ('group', 'name',)
+
+
+class RoleGroupMember(models.Model):
+    rolegroup = models.ForeignKey(RoleGroup)
+    user = models.ForeignKey(User)
+
+    class Meta:
+        unique_together = ('rolegroup', 'user',)
 
 
 

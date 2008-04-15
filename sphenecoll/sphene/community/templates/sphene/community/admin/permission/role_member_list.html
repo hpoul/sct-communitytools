@@ -11,17 +11,20 @@
   <tr>
     <th>&nbsp;</th>
     <th>{% trans "User" %}</th>
+    <th>{% trans "Role Group" %}</th>
     <th>{% trans "Limitations" %}</th>
   </tr>
   {% for member in members %}
     <tr>
       <td class="sph_options">[ <a href="?cmd=remove&amp;id={{ member.id }}">{% trans "Remove" %}</a> ]</td>
-      <td>{% sph_html_user member.user %}</td>
+      <td>{% if member.user %}{% sph_html_user member.user %}{% else %}{% trans "N/A" %}{% endif %}</td>
+      <td>{% if member.rolegroup %}{{ member.rolegroup.name }}{% else %}{% trans "N/A" %}{% endif %}</td>
       <td>{{ member.get_limitations_string }}</td>
     </tr>
   {% endfor %}
 </table><br/><br/>
 
 <a href="{{ role.get_absolute_memberaddurl }}">{% trans "Add Member" %}</a>
+<a href="{{ role.get_absolute_groupmemberaddurl }}">{% trans "Add Rolegroup" %}</a>
 
 {% endblock %}

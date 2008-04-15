@@ -18,7 +18,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext
 
 from sphene.community import PermissionDenied, sphsettings
-from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem
+from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem, RoleGroup, RoleGroupMember
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community import sphutils
@@ -360,6 +360,45 @@ def profile_edit(request, group, user_id):
 
 
 
+def admin_permission_rolegroup_list(request, group):
+    if request.method == 'POST':
+        name = request.POST['name']
+        if name:
+            RoleGroup(group = group,
+                      name = name).save()
+            return HttpResponseRedirect(sph_reverse('community_admin_permission_rolegroup_list'))
+    rolegroups = RoleGroup.objects.filter( group = group )
+    return render_to_response( 'sphene/community/admin/permission/rolegroup_list.html',
+                               { 'rolegroups': rolegroups, },
+                               context_instance = RequestContext(request) )
+
+def admin_permission_rolegroup_edit(request, group, rolegroup_id):
+    rolegroup = RoleGroup.objects.get( pk = rolegroup_id,
+                                       group = group, )
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        if username:
+            user = User.objects.get(username = username)
+            RoleGroupMember(user = user,
+                            rolegroup = rolegroup).save()
+            return HttpResponseRedirect(rolegroup.get_absolute_editurl())
+
+    if 'cmd' in request.GET and 'id' in request.GET:
+        if request.GET['cmd'] == 'remove':
+            member = rolegroup.rolegroupmember_set.get( pk = request.GET['id'] )
+            request.user.message_set.create( 
+                message = ugettext( u'Removed user %(username)s from rolegroup.' ) % \
+                    { 'username': member.user.username } )
+            member.delete()
+            return HttpResponseRedirect(rolegroup.get_absolute_editurl())
+
+
+    return render_to_response( 'sphene/community/admin/permission/rolegroup_edit.html',
+                               { 'rolegroup': rolegroup,
+                                 },
+                               context_instance = RequestContext(request) )
+
 def admin_permission_role_list(request, group):
     roles = Role.objects.filter( group = group )
     return render_to_response( 'sphene/community/admin/permission/role_list.html',
@@ -425,17 +464,23 @@ def admin_permission_role_member_list(request, group, role_id):
                                  },
                                context_instance = RequestContext(request) )
 
-from forms import EditRoleMemberForm
+from forms import EditRoleMemberForm, EditRoleGroupMemberForm
 
-def admin_permission_role_member_add(request, group, role_id):
+def admin_permission_role_member_add(request, group, role_id, addgroup = False):
     role = get_object_or_404(Role, pk = role_id)
 
+    if addgroup:
+        EditForm = EditRoleGroupMemberForm
+    else:
+        EditForm = EditRoleMemberForm
+
     if request.method == 'POST':
-        form = EditRoleMemberForm(group, request.POST)
+        form = EditForm(group = group, data = request.POST)
         if form.is_valid():
             data = form.cleaned_data
             role_member = RoleMember( role = role,
-                                      user = data['user'],
+                                      user = data.get('user', None),
+                                      rolegroup = data.get('rolegroup', None),
                                       has_limitations = data['has_limitations'], )
             role_member.save()
             if data['has_limitations']:
@@ -447,13 +492,16 @@ def admin_permission_role_member_add(request, group, role_id):
             request.user.message_set.create( message = _(u'Successfully added member.') )
             return HttpResponseRedirect( role.get_absolute_memberlisturl() )
     else:
-        form = EditRoleMemberForm(group = group)
+        form = EditForm(group = group)
     
     return render_to_response( 'sphene/community/admin/permission/role_member_add.html',
                                { 'form': form,
                                  'role': role,
                                  },
                                context_instance = RequestContext(request) )
+
+def admin_permission_role_groupmember_add(request, group, role_id):
+    return admin_permission_role_member_add(request, group, role_id, True)
 
 def groupaware_redirect_to(request, url, group, **kwargs):
     """

@@ -102,19 +102,28 @@ class EditRoleForm(forms.Form):
 
 autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.submit();' }
 
-class EditRoleMemberForm(forms.Form):
-    username = forms.CharField()
+class BasicRoleMemberForm(forms.Form):
+#    username = forms.CharField()
     has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = _(u'Allows you to limit the given permission to only one specific object.') )
     auto_submit = forms.BooleanField(widget = forms.HiddenInput, required = False)
 
     def __init__(self, group, *args, **kwargs):
-        super(EditRoleMemberForm, self).__init__( *args, **kwargs )
+        super(BasicRoleMemberForm, self).__init__( *args, **kwargs )
         if self.data.get( 'has_limitations', False ):
             self.fields['object_type'] = forms.ChoiceField( choices = get_object_type_choices(), widget = forms.Select( attrs = autosubmit_args ) )
 
         if self.data.get( 'object_type', ''):
             object_type = ContentType.objects.get( pk = self.data['object_type'] )
             self.fields['object'] = forms.ChoiceField( choices = get_object_id_choices(object_type, group) )
+
+    def clean_object_type(self):
+        try:
+            return ContentType.objects.get( pk = self.cleaned_data['object_type'] )
+        except ContentType.DoesNotExist:
+            raise forms.ValidationError(_(u'Invalid Object Type'))
+
+class UsernameRoleMemberForm(forms.Form):
+    username = forms.CharField()
 
     def clean_username(self):
         try:
@@ -124,8 +133,24 @@ class EditRoleMemberForm(forms.Form):
             raise forms.ValidationError(_(u'User does not exist.'))
         return self.cleaned_data['username']
 
-    def clean_object_type(self):
-        try:
-            return ContentType.objects.get( pk = self.cleaned_data['object_type'] )
-        except ContentType.DoesNotExist:
-            raise forms.ValidationError(_(u'Invalid Object Type'))
+
+#class RoleGroupChoiceField(forms.ModelChoiceField):
+#    def label_from_instance(self, obj):
+#        return obj.name
+
+class RoleGroupMemberForm(forms.Form):
+    rolegroup = forms.ModelChoiceField(queryset = None)
+
+    def __init__(self, group, *args, **kwargs):
+        super(RoleGroupMemberForm, self).__init__( group = group, *args, **kwargs )
+
+        from sphene.community.models import RoleGroup
+        self.fields['rolegroup'].queryset = RoleGroup.objects.filter( group = group )
+
+class EditRoleMemberForm(UsernameRoleMemberForm, BasicRoleMemberForm):
+    pass
+
+
+class EditRoleGroupMemberForm(RoleGroupMemberForm, BasicRoleMemberForm):
+    pass
+

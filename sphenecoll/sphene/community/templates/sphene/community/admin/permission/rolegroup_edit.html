@@ -1,0 +1,38 @@
+{% extends "sphene/community/admin/permission/base.html" %}
+
+{% load i18n %}
+{% load sph_extras %}
+
+{% block content %}
+
+  <p><a href="{% sph_url 'community_admin_permission_rolegroup_list' %}">{% trans "Back to Role Groups" %}</a></p>
+
+  <h1>{% blocktrans with rolegroup.name as rolegroup_name %}Modifying rolegroup '{{ rolegroup_name }}'{% endblocktrans %}</h1>
+
+
+  <h2>{% trans "Members" %}</h2>
+
+  <table>
+    <tr>
+      <td></td>
+      <th>Username</th>
+      <th>User</th>
+    </tr>
+    {% for member in rolegroup.rolegroupmember_set.all %}
+      <tr>
+        <td>[ <a href="?cmd=remove&amp;id={{ member.id }}">{% trans "Remove" %}</a> ]</td>
+        <td>{{ member.user.username }}</td>
+        <td>{{ member.user|sph_html_user }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  
+  <h2>{% trans "Add Member" %}</h2>
+
+  <form method="post">
+    <label for="username_id">{% trans "Username" %}</label>
+    <input type="text" name="username" id="username_id" />
+    <input type="submit" value="{% trans "Save" %}" />
+  </form>
+
+{% endblock %}

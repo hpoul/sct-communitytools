@@ -35,6 +35,14 @@ def get_all_viewable_categories(group, user):
 
 
 def showCategory(request, group = None, category_id = None, showType = None):
+    """
+    displays either all root categories, or the contents of a category.
+    the contents of a category could be other categories or forum threads.
+
+    TODO: clean this mess up - sorry for everyone who trys to understand
+    this function - this is is probably the oldest and ugliest in 
+    the whole SCT source.
+    """
     args = {
         'group__isnull': True,
         'parent__isnull': True,
@@ -63,11 +71,12 @@ def showCategory(request, group = None, category_id = None, showType = None):
         categories = []
     else:
         if 'group' in args:
-            categories = Category.sph_objects.filter_for_group( args['group'] )
+            categories = Category.sph_objects.filter( group = args['group'] )#filter_for_group( args['group'] )
             if 'parent' in args:
                 categories = categories.filter( parent = category_id )
             else:
                 categories = categories.filter( parent__isnull = True )
+            categories = [ category for category in categories if category.has_view_permission( request.user ) ]
         else:
             categories = Category.objects.filter( **args )
     

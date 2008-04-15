@@ -1,8 +1,12 @@
-from sphene.community.models import Role, RoleMember, PermissionFlag
+
+from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 
+from sphene.community.middleware import get_current_group
+from sphene.community.models import Role, RoleMember, PermissionFlag, RoleGroupMember
 
-def has_permission_flag(user, flag, contentobject = None):
+
+def has_permission_flag(user, flag, contentobject = None, group = None):
     """
     Checks if the given user has the given flag for the given model instance
     (object).
@@ -16,9 +20,21 @@ def has_permission_flag(user, flag, contentobject = None):
     # Super users have all flags anyway ..
     if user.is_superuser:
         return True
+
+    if group is None:
+        group = get_current_group()
     
+    # TODO cache rolegroup_ids for user ?
+    rolegroups = RoleGroupMember.objects.filter(rolegroup__group = group, user = user)
+    rolegroup_ids = [rolegroup.rolegroup_id for rolegroup in rolegroups]
+
     # Check if the user has a global flag ...
-    matches = RoleMember.objects.filter( user = user, role__permission_flags__name__exact = flag, has_limitations = False ).count()
+    userselect = Q(user = user, rolegroup__isnull = True) \
+        | Q(rolegroup__in = rolegroup_ids, user__isnull = True)
+    matches = RoleMember.objects.filter( 
+        userselect,
+        role__permission_flags__name__exact = flag, has_limitations = False ).count()
+
     if matches > 0:
         return True
 
@@ -26,7 +42,7 @@ def has_permission_flag(user, flag, contentobject = None):
     # ... lookup flag for the given model:
     if contentobject is not None:
         content_type = ContentType.objects.get_for_model(contentobject)
-        rolemembers = RoleMember.objects.filter( user = user,
+        rolemembers = RoleMember.objects.filter( userselect,
                                                  role__permission_flags__name__exact = flag,
                                                  has_limitations = True,
 

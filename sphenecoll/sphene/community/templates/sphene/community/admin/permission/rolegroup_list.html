@@ -1,0 +1,29 @@
+{% extends "sphene/community/admin/permission/base.html" %}
+
+{% load i18n %}
+{% load sph_extras %}
+
+{% block content %}
+
+  <h1>{% trans "Role Groups" %}</h1>
+
+  <table>
+    <tr>
+      <th>Members</th>
+      <th>Name</th>
+    </tr>
+    {% for rolegroup in rolegroups %}
+      <tr>
+        <td>{{ rolegroup.rolegroupmember_set.count }}</td>
+        <td><a href="{{ rolegroup.get_absolute_editurl }}">{{ rolegroup.name }}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h2>{% trans "Create a new Role Group" %}</h2>
+  <form method="post">
+    <input type="text" name="name" />
+    <input type="submit" value="{% trans "Save" %}" />
+  </form>
+
+{% endblock %}
