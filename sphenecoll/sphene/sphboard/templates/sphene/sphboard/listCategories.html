@@ -8,6 +8,7 @@
   <p><a href="../../latest/{{ category_id }}/">{% trans "Latest" %}</a> | {% sphboard_displayBreadcrumbsForCategory category 0 1 %}</p>
 
   {% if user.is_authenticated %}
+    <p>
     {% if category %}
       {% if category.has_monitor %}
         {% if category.has_direct_monitor %}
@@ -27,7 +28,7 @@
         {% endif %}
       {% endif %}
     {% endif %}
-    <br/><br/>
+    </p>
   {% endif %}
 
   {% if rootCategories %}
@@ -90,13 +91,10 @@
         <td colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}"><span class="board_threadcount">{% blocktrans %}{{ hits }} Threads in this category.{% endblocktrans %}</span><span class="board_pagination">{% sph_pagination pages page %}</span></td>
       </tr>
     </table>
-    <br/><br/>
     {% include category.get_category_type.get_new_thread_link_template %}
     {% if user.is_authenticated and category.has_new_posts %}
-      - <a href="../../catchup/{{ category.id }}/" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a>
+      <p><a href="../../catchup/{{ category.id }}/" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
     {% endif %}
   {% endif %}
-
-  <br/><br/>
 
 {% endblock %}
