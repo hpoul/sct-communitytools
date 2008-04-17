@@ -191,6 +191,9 @@ class StatsMiddleware(object):
         try:
             response = view_func(request, *view_args, **view_kwargs)
         finally:
+            if request.path.startswith('/static'):
+                return response
+
             totTime = time() - start
 
             # compute the db time for the queries just run
@@ -228,11 +231,11 @@ class StatsMiddleware(object):
                     #    logger.debug( '  %5s : %s' % (query['time'], query['sql'], ) )
                     response.content = s
 
-            logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
             querystr = ''
             for query in connection.queries:
                 querystr += "\t" + query['time'] + "\t" + query['sql'] + "\n"
             logger.debug( 'All Queries: %s' % (querystr,) )
+            logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
 
         return response
 

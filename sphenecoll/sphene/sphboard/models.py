@@ -176,7 +176,7 @@ def get_tags_for_categories(categories):
 class Category(models.Model):
     name = models.CharField(max_length = 250)
     group = models.ForeignKey(Group, null = True, blank = True)
-    parent = models.ForeignKey('self', related_name = '_childs', null = True, blank = True)
+    parent = models.ForeignKey('self', related_name = 'subcategories', null = True, blank = True)
     description = models.TextField(blank = True)
     allowview = models.IntegerField( default = -1, choices = POSTS_ALLOWED_CHOICES )
     allowthreads = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
@@ -425,8 +425,15 @@ class Category(models.Model):
         return self.__monitor
 
     def get_absolute_url(self):
+        cturl = self.get_category_type().get_absolute_url_for_category()
+        if cturl:
+            print "returning cturl"
+            return cturl
+        return self._get_absolute_url()
+
+    def _get_absolute_url(self):
         return ('sphene.sphboard.views.showCategory', (), { 'groupName': self.group.name, 'category_id': self.id })
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
 
     def get_absolute_post_thread_url(self):
         return ('sphboard_post_thread', (), { 'groupName': self.group.name, 'category_id': self.id })

@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load sph_switch %}
+{% load sph_extras %}
+<table>
+  <tr>
+    {% for name, column in columns %}
+      <th>
+        {% if column.is_sortable %}
+          <a href="?list_cmd=sort|toggle|{{ name }}">{{ column.get_label }}
+          {% ifequal list.state.sortby name %}
+            | {% ifequal list.state.sortorder "asc" %}{% trans "Ascending" %}{% else %}{% trans "Descending" %}{% endifequal %}
+          {% endifequal %}</a>
+        {% else %}
+          {{ column.get_label }}
+        {% endif %}
+      </th>
+    {% endfor %}
+  </tr>
+  {% for row in content %}
+    <tr>
+      {% for column, values in row %}
+        <td>
+          {% for value in values|sph_iter %}
+            {% switch column.type %}
+              {% case "user" %}{{ value|sph_html_user }}{% endcase %}
+              {% case "date" %}{{ value|sph_date }}{% endcase %}
+              {% case "default" %}{{ value }}{% endcase %}
+            {% endswitch %}
+          {% endfor %}
+        </td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+

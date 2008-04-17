@@ -227,6 +227,14 @@ def sph_html_user(user):
     return str
 
 @register.filter
+def sph_iter(value):
+    try:
+        return value.__iter__()
+    except AttributeError:
+        return (value,).__iter__()
+
+
+@register.filter
 def sph_user_profile_link(value):
     """ Returns the URL to the user profile. """
     req = get_current_request()

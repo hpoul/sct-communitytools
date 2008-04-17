@@ -92,6 +92,12 @@ class CategoryType(object):
         """
         return None
 
+    def get_absolute_url_for_category(self):
+        """
+        should return the absolute url for self.category
+        """
+        return None
+
 
     def append_edit_message_to_post(self, post):
         """

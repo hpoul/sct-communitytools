@@ -6,7 +6,7 @@
       <td width='5px'>&nbsp;</td>
     {% endfor %}
     <td width="20px"><img src="{{ MEDIA_URL }}sphene/sphboard/icons/{% if category.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
-    <td class="sphboard_categoryname" colspan='{{ maxDepth|sphminus:level }}'><a href="../{{ category.id }}/">{{ category.name }}</a><br/><small>{{ category.description }}</small></td>
+    <td class="sphboard_categoryname" colspan='{{ maxDepth|sphminus:level }}'><a href="{{ category.get_absolute_url }}">{{ category.name }}</a><br/><small>{{ category.description }}</small></td>
     <td class="sphboard_threadcount">{{ category.threadCount }}</td>
     <td class="sphboard_postcount">{{ category.postCount }}</td>
     <td class="sphboard_latestpost">{% sphboard_latestPost category.latestPost %}</td>
