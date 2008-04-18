@@ -5,6 +5,7 @@ import itertools
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy
 
 from sphene.generic.advanced_object_list.columns import Column
 
@@ -30,6 +31,8 @@ class ObjectProvider(object):
     def get_page(self, start, end):
         pass
 
+    def total_count(self):
+        pass
 
 class QuerySetProvider(object):
     def __init__(self, queryset, wrapper = None):
@@ -46,13 +49,20 @@ class QuerySetProvider(object):
     def sort(self, column, sortorder):
         self.queryset = column.sort_queryset(self.queryset, sortorder)
 
+    def total_count(self):
+        if isinstance(self.queryset, list):
+            return len(self.queryset)
+        return self.queryset.count()
+
+
 class BaseAdvancedObjectList(object):
     def __init__(self, object_provider, template_name = 'sphene/community/generic/advanced_list.html',
-                 state = None):
+                 state = None, object_name = ugettext_lazy('Items')):
         self.columns = deepcopy(self.base_columns)
         self.object_provider = object_provider
         self.template_name = template_name
         self.state = state or { }
+        self.object_name = object_name
 
     def __unicode__(self):
         #return mark_safe(u'<table>%s%s</table>' % (self.render_header(),self.render_content(),))
@@ -60,7 +70,9 @@ class BaseAdvancedObjectList(object):
             self.object_provider.sort(self.columns[self.state['sortby']], self.state['sortorder'])
         return render_to_string(self.template_name, { 'columns': self.columns.items(),
                                                       'content': self.get_content(),
-                                                      'list': self, })
+                                                      'list': self,
+                                                      'object_name': self.object_name,
+                                                      'object_count': self.object_provider.total_count(), })
 
     def get_content(self):
         content = list()

@@ -233,7 +233,9 @@ class StatsMiddleware(object):
 
             querystr = ''
             for query in connection.queries:
-                querystr += "\t" + query['time'] + "\t" + query['sql'] + "\n"
+                sql = query['sql']
+                if sql is None: sql = " ?WTF?None?WTF? "
+                querystr += "\t" + query['time'] + "\t" + sql + "\n"
             logger.debug( 'All Queries: %s' % (querystr,) )
             logger.info( 'Request %s: %s' % (request.get_full_path(), stats,) )
 

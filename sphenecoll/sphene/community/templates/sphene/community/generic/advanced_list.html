@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load sph_switch %}
 {% load sph_extras %}
-<table>
+<table class="sphlist">
   <tr>
     {% for name, column in columns %}
       <th>
@@ -17,7 +17,7 @@
     {% endfor %}
   </tr>
   {% for row in content %}
-    <tr>
+    <tr class="content">
       {% for column, values in row %}
         <td>
           {% for value in values|sph_iter %}
@@ -31,6 +31,9 @@
       {% endfor %}
     </tr>
   {% endfor %}
+  <tr>
+    <td colspan="{{ columns|length }}">{{ object_count }} {{ object_name }}</td>
+  </tr>
 </table>
 
 
