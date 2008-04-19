@@ -16,6 +16,7 @@ pluggable into any django project.
 - [Django](http://www.djangoproject.com) **trunk** (NOT compatible with 0.96)
 - Python >= 2.4 (Use >= 2.5 if you need wiki diffs with unicode support)
 - [PyCrypto](http://sf.net/projects/pycrypto) - (e.g. debian package python-crypto)
+- [Python Imaging Library (PIL)](http://www.pythonware.com/products/pil/)
 
 ## Installation
 
