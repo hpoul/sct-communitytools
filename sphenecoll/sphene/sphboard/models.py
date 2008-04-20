@@ -703,7 +703,7 @@ class Post(models.Model):
     def __get_render_cachekey(self):
         return 'sphboard_rendered_body_%s' % str(self.id)
 
-    def body_escaped(self):
+    def body_escaped(self, with_signature = True):
         """ returns the rendered body. """
         body = self.body
         markup = self.markup
@@ -722,11 +722,14 @@ class Post(models.Model):
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
 
-        if self.author_id:
+        if self.author_id and with_signature:
             signature = get_rendered_signature( self.author_id )
             if signature:
                 bodyhtml += '<div class="signature">%s</div>' % signature
         return mark_safe(bodyhtml)
+
+    def body_rendered_without_signature(self):
+        return self.body_escaped(with_signature = False)
 
     def clear_render_cache(self):
         cache.delete( self.__get_render_cachekey() )

@@ -1,5 +1,6 @@
 from django import template
 
+from sphene.community.templatetagutils import SimpleRetrieverNode, simple_retriever_tag
 from sphene.community.middleware import get_current_user, get_current_group
 
 from sphene.sphblockframework import blockregistry
@@ -11,30 +12,6 @@ from sphene.sphblockframework.models import \
 
 register = template.Library()
 
-
-class SimpleRetrieverNode(template.Node):
-    def __init__(self, nodelist, retrievervar, callback):
-        self.nodelist = nodelist
-        self.retrievervar = retrievervar
-        self.callback = callback
-
-    def render(self, context):
-        retriever = self.retrievervar.resolve(context)
-        context.push()
-        self.callback(retriever, context)
-        output = self.nodelist.render(context)
-        context.pop()
-        return output
-
-def sph_simple_retriever_tag(parser, token, tagname, callback):
-    bits = list(token.split_contents())
-    if len(bits) != 2:
-        raise template.TemplateSyntaxError("%r requires a variable as first argument." % bits[0])
-
-    retrievevar = parser.compile_filter(bits[1])
-    nodelist = parser.parse(('end'+tagname,))
-    parser.delete_first_token()
-    return SimpleRetrieverNode(nodelist, retrievevar, callback)
 
 
 def get_blocks(blockregion, context):
@@ -48,7 +25,7 @@ def get_blocks(blockregion, context):
 
 @register.tag(name="sphblock_get_blocks")
 def sphblock_get_blocks(parser, token):
-    return sph_simple_retriever_tag(parser, token, 'sphblock_get_blocks', get_blocks)
+    return simple_retriever_tag(parser, token, 'sphblock_get_blocks', get_blocks)
 
 
 def get_all_blocks(retriever, context):
@@ -56,7 +33,7 @@ def get_all_blocks(retriever, context):
 
 @register.tag(name="sphblock_get_all_blocks")
 def sphblock_get_all_blocks(parser, token):
-    return sph_simple_retriever_tag(parser, token, 'sphblock_get_all_blocks', get_all_blocks)
+    return simple_retriever_tag(parser, token, 'sphblock_get_all_blocks', get_all_blocks)
 
 
 def get_all_blockconfigs(retriever, context):
@@ -64,7 +41,7 @@ def get_all_blockconfigs(retriever, context):
 
 @register.tag(name="sphblock_get_all_blockconfigs")
 def sphblock_get_all_blockconfigs(parser, token):
-    return sph_simple_retriever_tag(parser, token, 'sphblock_get_all_blockconfigs', get_all_blockconfigs)
+    return simple_retriever_tag(parser, token, 'sphblock_get_all_blockconfigs', get_all_blockconfigs)
 
 
 @register.inclusion_tag('sphene/sphblockframework/_dashboard.html')

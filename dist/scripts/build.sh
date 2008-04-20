@@ -3,7 +3,7 @@
 
 # A very simple bash script to create a release.
 
-VERSION="0.3"
+VERSION="0.4"
 
 DISTDIR="/var/tmp/sct"
 DISTNAME="sct-$VERSION"
@@ -31,6 +31,7 @@ EOF
 
 cp -fr communitytools/dist/files/* .
 cp communitytools/LICENSE .
+cp communitytools/AUTHORS .
 
 wget -O communitydraft/README "http://sct.sphene.net/wiki/show/CommunityDraft/?type=src" 2> /dev/null
 
