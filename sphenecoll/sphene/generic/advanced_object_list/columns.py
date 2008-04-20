@@ -1,5 +1,6 @@
 
 from django.utils.safestring import mark_for_escaping
+from copy import deepcopy
 
 class Column(object):
 
@@ -47,6 +48,17 @@ class Column(object):
         should apply the sorting to the given queryset and return it.
         """
         return self.sort_list(queryset, direction)
+
+    def new_configure(self, config):
+        """
+        Returns a new instance of this column with the specified configuration.
+        """
+        col = deepcopy(self)
+        col.configure(config)
+        return col
+
+    def configure(self, config):
+        self.config = config
 
     def sort_list(self, sortlist, direction):
         return sortlist

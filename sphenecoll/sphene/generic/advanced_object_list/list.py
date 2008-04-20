@@ -3,6 +3,7 @@ from copy import deepcopy
 import itertools
 
 from django.template.loader import render_to_string
+from django.utils import simplejson
 from django.utils.datastructures import SortedDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
@@ -57,17 +58,61 @@ class QuerySetProvider(object):
 
 class BaseAdvancedObjectList(object):
     def __init__(self, object_provider, template_name = 'sphene/community/generic/advanced_list.html',
-                 state = None, object_name = ugettext_lazy('Items')):
-        self.columns = deepcopy(self.base_columns)
+                 state = None, object_name = ugettext_lazy('Items'),
+                 prefix = 'objlist', session = None, requestvars = None, defaultcolconfig = None):
+        self._prepared = False
+        #self.columns = deepcopy(self.base_columns)
         self.object_provider = object_provider
         self.template_name = template_name
-        self.state = state or { }
         self.object_name = object_name
+        self.prefix = prefix
+        self.defaultcolconfig = defaultcolconfig
+        if state is None and session is not None:
+            self.state = session.get(prefix, {})
+        else:
+            self.state = state or { }
+        if requestvars is not None:
+            self.process_vars(requestvars)
+            if session is not None:
+                session[prefix] = self.state
+
+    def prepare(self):
+        """
+        configures all columns based on the list's state
+        """
+        if self._prepared:
+            return
+        
+        colconfig = self.state.get('colconfig', self.defaultcolconfig)
+        self.colconfig = colconfig
+        instance_columns = list()
+        i=0
+        for colc in colconfig:
+            colid = colc
+            if isinstance(colc, dict):
+                column_name = colc['column']
+                column = self.base_columns[column_name]
+                column = column.new_configure(colc)
+                colid = "%s.%d" % (column_name, i)
+            else:
+                colid = colc
+                column = self.base_columns[colc]
+            instance_columns.append((colid, column,),)
+            i+=1
+
+        self.columns = SortedDict(instance_columns)
+        self._prepared = True
 
     def __unicode__(self):
+        if not self._prepared:
+            self.prepare()
+
         #return mark_safe(u'<table>%s%s</table>' % (self.render_header(),self.render_content(),))
         if 'sortby' in self.state:
-            self.object_provider.sort(self.columns[self.state['sortby']], self.state['sortorder'])
+            try:
+                self.object_provider.sort(self.columns[self.state['sortby']], self.state['sortorder'])
+            except KeyError:
+                pass
         return render_to_string(self.template_name, { 'columns': self.columns.items(),
                                                       'content': self.get_content(),
                                                       'list': self,
@@ -85,6 +130,7 @@ class BaseAdvancedObjectList(object):
 
         return content
 
+    """
     def render_header(self):
         ret = list()
         ret.append(u'<tr>')
@@ -106,11 +152,30 @@ class BaseAdvancedObjectList(object):
             ret.append(row_tmpl % u''.join(cols))
 
         return u''.join(ret)
+    """
 
-    def process_vars(self, request):
-        pass
+    def process_vars(self, requestvars):
+        try:
+            self.process_cmd(requestvars["%s.cmd" % self.prefix], requestvars)
+        except KeyError, e:
+            return
 
-    def process_cmd(self, cmd):
+    def colconfig_json(self):
+        return simplejson.dumps(self.colconfig)
+
+    def is_customized(self):
+        return 'colconfig' in self.state
+
+    def process_cmd(self, cmd, requestvars = {}):
+        if cmd == 'colconfig':
+            colconfig = requestvars["%s.colconfig" % self.prefix]
+            colconfig = simplejson.loads(colconfig)
+            self.state['colconfig'] = colconfig
+            return
+        elif cmd == 'revert':
+            del self.state['colconfig']
+            return
+        self.prepare()
         from django.conf import settings
         print "middleware: %s" % str(settings.MIDDLEWARE_CLASSES)
         bits = cmd.split('|')
@@ -135,8 +200,6 @@ class BaseAdvancedObjectList(object):
             self.state['sortby'] = sortby
             self.state['sortorder'] = sortorder
 
-    def get_state(self):
-        return self.state
 
 class AdvancedObjectList(BaseAdvancedObjectList):
     __metaclass__ = DeclarativeColumnsMetaclass
