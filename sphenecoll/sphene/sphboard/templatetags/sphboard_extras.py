@@ -186,6 +186,8 @@ class LatestThreadsNode(template.Node):
     def render(self, context):
         # TODO check permissions
         category_id = self.categoryvar.resolve(context)
+        if not category_id:
+            return ''
         category = Category.objects.get( pk = category_id )
         threads = Post.objects.filter(category = category,
                                       thread__isnull = True,).order_by('-postdate')
