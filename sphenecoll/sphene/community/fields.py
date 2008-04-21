@@ -35,7 +35,7 @@ class TagField(forms.CharField):
                 # Ignore empty labels
                 continue
 
-            tag_label = get_or_create_tag_label(get_current_group(), tag_label_str)
+            tag_label = tag_get_or_create_tag_label(get_current_group(), tag_label_str)
             
             tag_labels.append(tag_label)
 
