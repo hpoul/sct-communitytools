@@ -366,7 +366,7 @@ msgstr ""
 
 #: templates/sphene/community/accounts/logged_out.html:5
 msgid "Successfully logged out."
-msgstr "Erfolgreich angemeldet."
+msgstr "Erfolgreich abgemeldet."
 
 #: templates/sphene/community/accounts/login.html:8
 msgid "Your username and password didn't match. Please try again."
