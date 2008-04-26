@@ -34,7 +34,7 @@ def clean_community_advprofile_avatar(self):
     size = len(self.cleaned_data['community_advprofile_avatar'].content)
     max_size = get_sph_setting( 'community_avatar_max_size' )
     if size > max_size:
-        raise djangoforms.ValidationError( _(u"Max upload filesize of %{max_size}d bytes exceeded. (Your file had %{size}d bytes)") % {'max_size':max_size, 'size':size} )
+        raise djangoforms.ValidationError( _(u"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d bytes)") % {'max_size':max_size, 'size':size} )
 
     from PIL import Image
     from cStringIO import StringIO
