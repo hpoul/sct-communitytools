@@ -29,8 +29,8 @@ def has_permission_flag(user, flag, contentobject = None, group = None):
     rolegroup_ids = [rolegroup.rolegroup_id for rolegroup in rolegroups]
 
     # Check if the user has a global flag ...
-    userselect = Q(user = user, rolegroup__isnull = True) \
-        | Q(rolegroup__in = rolegroup_ids, user__isnull = True)
+    userselect = (Q(user = user) & Q(rolegroup__isnull = True)) \
+        | (Q(rolegroup__in = rolegroup_ids) & Q(user__isnull = True))
     matches = RoleMember.objects.filter( 
         userselect,
         role__permission_flags__name__exact = flag, has_limitations = False ).count()
