@@ -1,5 +1,6 @@
 
 import logging
+import os
 
 
 from django.conf import settings
@@ -78,8 +79,13 @@ def get_group_id(post):
     return post.category.group.id
 get_group_id.name = 'group_id'
 
+searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index', '/var/cache/sct/postindex/')
+
+if not os.path.isdir(searchboard_post_index):
+    os.makedirs(searchboard_post_index)
+
 post_index = XapianIndexer(
-    sphsettings.get_sph_setting('sphsearchboard_post_index', '/tmp/sct/postindex/'),
+    searchboard_post_index,
 
     Post,
 
