@@ -64,7 +64,9 @@ def search_posts(query, category = None):
         prefix = u' OR '.join([u'category_id:%d' % category for category in categories])
     query = u'(%s) AND (%s)' % (prefix, query)
     logger.debug('Searching for: %s' % query)
-    return PostFilter(post_index.search(query=query), categories)
+    ret = PostFilter(post_index.search(query=query), categories)
+    logger.debug('Searching done.')
+    return ret
 
 
 def get_category_name(post):
