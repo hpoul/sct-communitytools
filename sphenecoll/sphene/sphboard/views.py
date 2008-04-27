@@ -21,17 +21,9 @@ from sphene.community.sphutils import get_user_displayname, format_date, get_sph
 
 from sphene.sphboard import boardforms
 from sphene.sphboard.forms import PollForm, PollChoiceForm
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment, get_all_viewable_categories
 from sphene.sphboard.renderers import describe_render_choices
 
-
-def get_all_viewable_categories(group, user):
-    all_categories = Category.objects.filter( group = group )
-    allowed_categories = list()
-    for category in all_categories:
-        if category.has_view_permission( user ):
-            allowed_categories.append(category.id)
-    return allowed_categories
 
 
 def showCategory(request, group = None, category_id = None, showType = None):
@@ -84,6 +76,11 @@ def showCategory(request, group = None, category_id = None, showType = None):
                 'category': categoryObject,
                 'allowPostThread': categoryObject and categoryObject.allowPostThread( request.user ),
                 'category_id': category_id, }
+
+    try:
+        context['search_posts_url'] = sph_reverse('sphsearchboard_posts')
+    except:
+        pass
 
     templateName = 'sphene/sphboard/listCategories.html'
     if categoryObject == None:

@@ -172,6 +172,19 @@ def get_tags_for_categories(categories):
     return tags
 
 
+def get_all_viewable_categories(group, user):
+    """ 
+    returns a list containing the IDs of all categories viewable by the given 
+    user in the given group.
+    """
+    all_categories = Category.objects.filter( group = group )
+    allowed_categories = list()
+    for category in all_categories:
+        if category.has_view_permission( user ):
+            allowed_categories.append(category.id)
+    return allowed_categories
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length = 250)
