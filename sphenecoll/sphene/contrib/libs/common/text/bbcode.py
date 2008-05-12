@@ -37,6 +37,8 @@
 #        Small modification to allow nested tags in [url]'s
 # 2007-03-15, herbert.poul@gmail.com:
 #        in _prepare replace URLs with [url]xxxx[/url]
+# 2008-05-12
+#        added 'br' to prohibited_tags for code/pre
 
 ##########################################################################
 ## Module to convert BBCode to XHTML, featuring:
@@ -360,12 +362,12 @@ _TAGS = (
     
     # <pre> (only img currently needed out of the prohibited elements)
     HtmlEquivTag('pre',        _INLINE_TAGS,   None, 
-        prohibited_elements=('img', 'big', 'small', 'sub', 'sup'),
+        prohibited_elements=('img', 'big', 'small', 'sub', 'sup', 'br'),
         html_equiv='pre'), 
     
     # <pre class="code">
     HtmlEquivTag('code',       _INLINE_TAGS, None, 
-        prohibited_elements = ('img', 'big', 'small', 'sub', 'sup'),
+        prohibited_elements = ('img', 'big', 'small', 'sub', 'sup', 'br'),
         html_equiv='pre', attributes={'class':'code'}),
         
     # <li>
