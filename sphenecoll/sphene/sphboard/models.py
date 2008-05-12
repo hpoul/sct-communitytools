@@ -459,6 +459,10 @@ class Category(models.Model):
                         urlconf = get_urlconf(),
                         kwargs = { 'groupName': self.group.name,
                                    'url': 'latest/%d' % self.id } )
+
+    def get_absolute_togglemonitor_url(self):
+        return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.group.name, 'monitortype': 'category', 'object_id': self.id, })
+    get_absolute_togglemonitor_url = permalink(get_absolute_togglemonitor_url, get_current_request)
     
     def __unicode__(self):
         return self.name;
@@ -563,9 +567,10 @@ class Post(models.Model):
     #  administration interface for hidden posts.)
     is_hidden = models.IntegerField(default = 0, editable = False, db_index = True )
 
-    objects = PostManager()
     # allobjects also contain hidden posts.
     allobjects = models.Manager()
+    # objects only contains non-hidden posts.
+    objects = PostManager()
 
     changelog = ( ( '2007-04-07 00', 'alter', 'ALTER author_id DROP NOT NULL', ),
                   ( '2007-06-16 00', 'alter', 'ADD markup varchar(250) NULL', ),
