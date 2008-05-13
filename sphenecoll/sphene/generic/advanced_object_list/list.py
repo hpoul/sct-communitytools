@@ -253,7 +253,6 @@ class BaseAdvancedObjectList(object):
             return
         self.prepare()
         from django.conf import settings
-        print "middleware: %s" % str(settings.MIDDLEWARE_CLASSES)
         bits = cmd.split('|')
         if bits[0] == 'sort':
             dir, column_name = bits[1:3]

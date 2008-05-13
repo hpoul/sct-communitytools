@@ -93,7 +93,6 @@ class AttributeColumn(Column):
         #return mark_for_escaping(value)
 
     def sort_queryset(self, queryset, direction):
-        print "sorting %s" % direction
         if direction == 'desc':
             return queryset.order_by('-'+self.sortcolumn)
         return queryset.order_by(self.sortcolumn)
