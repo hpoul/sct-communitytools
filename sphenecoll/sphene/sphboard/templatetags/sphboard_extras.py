@@ -155,7 +155,7 @@ def clear_authorinfo_cache(instance):
         clear_cache_all_languages(instance.id, group.id)
 
 def clear_authorinfo_cache_postcount(instance):
-    clear_cache_all_languages(instance.id, instance.group.id)
+    clear_cache_all_languages(instance.user.id, instance.group.id)
 
 dispatcher.connect(clear_authorinfo_cache,
                    sender = User,
