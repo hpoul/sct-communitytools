@@ -1,0 +1,36 @@
+{% extends "sphene/sphboard/base.html" %}
+
+{% block content %}
+
+  <style>
+table.sphlist_threadlist {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.sphlist_threadlist td, table.sphlist_threadlist th {
+  border: 1px solid gray;
+  padding: 5px;
+}
+.sphlist_threadlist_newpost {
+  width: 20px;
+}
+td.sphlist_threadlist_views, td.sphlist_threadlist_posts {
+  text-align: right;
+  width: 5%;
+}
+th.sphlist_threadlist_views {
+  white-space: nowrap;
+}
+div.sortorder_desc::after {
+  content: "\2193";
+}
+div.sortorder_asc::after {
+  content: "\2191";
+}
+  </style>
+
+  <h2>Threads</h2>
+
+  {{ threadlist }}
+
+{% endblock %}

@@ -1,0 +1,10 @@
+{% load i18n %}
+      {% if category.has_monitor %}
+        {% if category.has_direct_monitor %}
+          {% trans "You are currently receiving email notifications on new posts." %} - <a href="{{ category.get_absolute_togglemonitor_url }}?next={{ sph.current_url|urlencode }}">{% trans "Stop notifications" %}</a>
+        {% else %}
+          {% trans "You are currently receiving email notifications on new posts because you subscribed to a parent category." %}
+        {% endif %}
+      {% else %}
+        <a href="{{ category.get_absolute_togglemonitor_url }}?next={{ sph.current_url|urlencode }}">{% trans "Notify me by email on new posts." %}</a>
+      {% endif %}

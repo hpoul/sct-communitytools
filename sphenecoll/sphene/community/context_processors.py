@@ -18,6 +18,11 @@ def navigation(request):
     sphdata = get_current_sphdata()
 
     sph_settings = getattr( settings, 'SPH_SETTINGS', None )
+    sphdata['installed_apps'] = settings.INSTALLED_APPS
+    sphdata['current_url'] = request.path
+    querystring = request.META.get('QUERY_STRING', None)
+    if querystring:
+        sphdata['current_url'] += '?'+querystring
     # urlPrefix is deprecated, don't use it.
     urlPrefix = ''
     if hasattr(request, 'attributes'):

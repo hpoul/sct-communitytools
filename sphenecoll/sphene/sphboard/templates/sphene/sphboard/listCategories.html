@@ -10,15 +10,7 @@
   {% if user.is_authenticated %}
     <p>
     {% if category %}
-      {% if category.has_monitor %}
-        {% if category.has_direct_monitor %}
-          {% trans "You are currently receiving email notifications on new posts." %} - <a href="../../togglemonitor_category/{{ category_id }}/">{% trans "Stop notifications" %}</a>
-        {% else %}
-          {% trans "You are currently receiving email notifications on new posts because you subscribed to a parent category." %}
-        {% endif %}
-      {% else %}
-        <a href="../../togglemonitor_category/{{ category_id }}/">{% trans "Notify me by email on new posts." %}</a>
-      {% endif %}
+      {% include "sphene/sphboard/_category_monitor.html" %}
     {% else %}
       {% if group.has_monitor %}
         {% trans "You are currently receiving email notifications on new posts." %} - <a href="../../togglemonitor_group/{{ group.id }}/">{% trans "Stop notifications" %}</a>

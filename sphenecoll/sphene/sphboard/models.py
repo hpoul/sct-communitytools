@@ -440,7 +440,6 @@ class Category(models.Model):
     def get_absolute_url(self):
         cturl = self.get_category_type().get_absolute_url_for_category()
         if cturl:
-            print "returning cturl"
             return cturl
         return self._get_absolute_url()
 

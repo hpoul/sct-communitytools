@@ -1,0 +1,17 @@
+{% load sphcomments_extras %}
+{% load i18n %}
+
+<div class="sphwiki_comments">
+{% sphcomments_load_infos snip %}
+  <h2>{{ threadlist.get_object_count }} Comments</h2>
+  {% if user.is_authenticated %}
+    <p>{% include "sphene/sphboard/_category_monitor.html" %}</p>
+  {% endif %}
+  {% if threadlist.get_object_count %}
+    {{ threadlist }}
+  {% else %}
+    <p>{% trans "No comments yet." %}</p>
+  {% endif %}
+  {% include "sphene/sphboard/_new_thread_link.html" %}
+{% endsphcomments_load_infos %}
+</div>

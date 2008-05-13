@@ -19,6 +19,8 @@ from sphene.community.sphutils import sph_reverse
 from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
 from sphene.community.sphutils import get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
 
+from sphene.generic import advanced_object_list as objlist
+
 from sphene.sphboard import boardforms
 from sphene.sphboard.forms import PollForm, PollChoiceForm
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment, get_all_viewable_categories
@@ -119,6 +121,32 @@ def showCategory(request, group = None, category_id = None, showType = None):
     
     res.sph_lastmodified = True
     return res
+
+def listThreads(request, group, category_id):
+    """
+    THIS IS JUST FOR TESTING PURPOSES FOR NOW !!!
+    """
+    from sphene.sphboard.lists import ThreadList
+    # TODO check permissions
+    queryset = ThreadInformation.objects.filter( category__pk = category_id )
+    queryset = queryset.select_related( 'root_post', 'latest_post', )
+    threadlist = ThreadList(objlist.QuerySetProvider(queryset),
+                            object_name = ugettext_lazy( 'Threads' ),
+                            prefix = 'threadlist',
+                            session = request.session,
+                            requestvars = request.GET,
+                            defaultsortby = 'latestpostdate',
+                            defaultsortorder = 'desc',
+                            defaultcolconfig = ( 'newpost',
+                                                 ( 'subject',
+                                                   'author', ),
+                                                 'views',
+                                                 'posts', 
+                                                 ( 'latestpostdate',
+                                                   'latestpostauthor', ), ), )
+    return sph_render_to_response( 'sphene/sphboard/new_list_threads.html',
+                                   { 'threadlist': threadlist, })
+
 
 def showThread(request, thread_id, group = None):
     thread = Post.objects.filter( pk = thread_id ).get()
@@ -646,6 +674,8 @@ def toggle_monitor(request, group, monitortype, object_id):
     else:
         request.user.message_set.create( message = ugettext(u'Removed email notification monitor.') )
 
+    if 'next' in request.GET:
+        return HttpResponseRedirect( request.GET['next'] )
     return HttpResponseRedirect( '../../%s/%s/' % (redirectview, object_id) )
 
 

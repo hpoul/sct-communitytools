@@ -39,7 +39,8 @@ def sphrange(value):
 def sphboard_displayCategories(context, categories, maxDepth = 5, level = -1 ):
     if maxDepth < level:
         return { }
-    ret = {'categories': categories,
+    ret = {'categories': [ c for c in categories \
+                               if c.get_category_type().is_displayed() ],
            'level'     : level + 1,
            'maxDepth'  : maxDepth}
     retctx = Context(context)

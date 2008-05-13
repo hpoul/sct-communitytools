@@ -15,7 +15,7 @@ class Column(object):
         self.default_sortorder = default_sortorder
 
     def get_label(self):
-        if self.label:
+        if self.label is not None:
             return self.label
         return self._get_label()
 

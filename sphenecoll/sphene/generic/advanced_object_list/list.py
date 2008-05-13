@@ -55,18 +55,36 @@ class QuerySetProvider(object):
             return len(self.queryset)
         return self.queryset.count()
 
+class MultiColumn(Column):
+    def __init__(self, subcolumns, *args, **kwargs):
+        super(MultiColumn, self).__init__(*args, **kwargs)
+        self.subcolumns = subcolumns
+
+    def is_multicolumn(self):
+        return True
+
+    def _get_value(self, object):
+        #    columns = list()
+        #    for column in self.columns.values():
+        #        columns.append((column, column.get_value(object)),)
+        #    content.append(columns)
+        return [ (c, c.get_value(object)) for cid,c in self.subcolumns ]
 
 class BaseAdvancedObjectList(object):
     def __init__(self, object_provider, template_name = 'sphene/community/generic/advanced_list.html',
                  state = None, object_name = ugettext_lazy('Items'),
-                 prefix = 'objlist', session = None, requestvars = None, defaultcolconfig = None):
+                 prefix = 'objlist', session = None, requestvars = None, defaultcolconfig = None, defaultsortby = None, defaultsortorder = None, cssclass = None):
         self._prepared = False
         #self.columns = deepcopy(self.base_columns)
         self.object_provider = object_provider
         self.template_name = template_name
         self.object_name = object_name
         self.prefix = prefix
+        self.cssclass = cssclass or prefix
         self.defaultcolconfig = defaultcolconfig
+        self.defaultsortby = defaultsortby
+        self.defaultsortorder = defaultsortorder
+        self.pagesize = 10
         if state is None and session is not None:
             self.state = session.get(prefix, {})
         else:
@@ -75,6 +93,37 @@ class BaseAdvancedObjectList(object):
             self.process_vars(requestvars)
             if session is not None:
                 session[prefix] = self.state
+
+
+    def prepare_column_config(self, colconfig, is_subcol = False):
+        instance_columns = list()
+        i=0
+        for colc in colconfig:
+            colid = colc
+            if isinstance(colc, dict):
+                column_name = colc['column']
+                column = self.base_columns[column_name]
+                column = column.new_configure(colc)
+                colid = "%s.%d" % (column_name, i)
+            elif isinstance(colc, tuple) or isinstance(colc, list):
+                colid = "multicol.%d" % i
+                column = self.prepare_column_config(colc, True)
+                instance_columns.append(column)
+                continue
+            else:
+                colid = colc
+                column = self.base_columns[colc]
+
+            # list in list in list ;)
+            if not is_subcol:
+                instance_columns.append(((colid, column,),),)
+            else:
+                instance_columns.append((colid, column,),)
+            self.allcolumns[colid] = column
+            i+=1
+
+        return instance_columns
+
 
     def prepare(self):
         """
@@ -85,47 +134,73 @@ class BaseAdvancedObjectList(object):
         
         colconfig = self.state.get('colconfig', self.defaultcolconfig)
         self.colconfig = colconfig
-        instance_columns = list()
-        i=0
-        for colc in colconfig:
-            colid = colc
-            if isinstance(colc, dict):
-                column_name = colc['column']
-                column = self.base_columns[column_name]
-                column = column.new_configure(colc)
-                colid = "%s.%d" % (column_name, i)
-            else:
-                colid = colc
-                column = self.base_columns[colc]
-            instance_columns.append((colid, column,),)
-            i+=1
+        self.allcolumns = {}
 
-        self.columns = SortedDict(instance_columns)
+        instance_columns = self.prepare_column_config(colconfig)
+
+        self.columns = instance_columns #SortedDict(instance_columns)
         self._prepared = True
+
+    def get_sorting(self):
+        return self.state.get('sortby', self.defaultsortby), \
+            self.state.get('sortorder', self.defaultsortorder)
+
+    def get_paging(self):
+        """
+        returns a dict of:
+        1. pagesize
+        2. current page
+        3. first item
+        4. last item of current page (no check is made if there are actualy
+           so many items!!)
+        """
+        page = self.state.get('page', 1)
+        pagesize = self.pagesize
+        return { 'pagesize': pagesize, 
+                 'page': page,
+                 'first': (page-1) * pagesize,
+                 'last': page * pagesize, }
+
+    def get_object_count(self):
+        if hasattr(self, '_object_count'):
+            return self._object_count
+        self._object_count = self.object_provider.total_count()
+        return self._object_count
 
     def __unicode__(self):
         if not self._prepared:
             self.prepare()
 
         #return mark_safe(u'<table>%s%s</table>' % (self.render_header(),self.render_content(),))
-        if 'sortby' in self.state:
+        sortby, sortorder = self.get_sorting()
+        if sortby is not None:
             try:
-                self.object_provider.sort(self.columns[self.state['sortby']], self.state['sortorder'])
+                self.object_provider.sort(self.allcolumns[sortby], sortorder)
             except KeyError:
                 pass
-        return render_to_string(self.template_name, { 'columns': self.columns.items(),
+        object_count = self.get_object_count()#self.object_provider.total_count()
+        paging = self.get_paging()
+        paging['hasnext'] = object_count > paging['last']
+        paging['hasprev'] = paging['page'] > 0
+        paging['pages'] = object_count // paging['pagesize'] + 1
+        paging['getparam'] = '%s.page' % self.prefix
+        return render_to_string(self.template_name, { 'columns': self.columns,
                                                       'content': self.get_content(),
                                                       'list': self,
                                                       'object_name': self.object_name,
-                                                      'object_count': self.object_provider.total_count(), })
+                                                      'object_count': object_count,
+                                                      'paging': paging, })
 
     def get_content(self):
         content = list()
 
-        for object in self.object_provider.get_page(0, 20):
+        paging = self.get_paging()
+        for object in self.object_provider.get_page(paging['first'],paging['last']):
             columns = list()
-            for column in self.columns.values():
-                columns.append((column, column.get_value(object)),)
+            for subcolumns in self.columns:
+                columns.append( [ (cid, column, column.get_value(object)) \
+                                      for cid, column in subcolumns ] )
+                #columns.append((column, column.get_value(object)),)
             content.append(columns)
 
         return content
@@ -155,6 +230,7 @@ class BaseAdvancedObjectList(object):
     """
 
     def process_vars(self, requestvars):
+        self.state['page'] = int(requestvars.get("%s.page" % self.prefix, 1))
         try:
             self.process_cmd(requestvars["%s.cmd" % self.prefix], requestvars)
         except KeyError, e:
@@ -181,9 +257,10 @@ class BaseAdvancedObjectList(object):
         bits = cmd.split('|')
         if bits[0] == 'sort':
             dir, column_name = bits[1:3]
-            sortby = self.state.get('sortby', None)
-            sortorder = self.state.get('sortorder', None)
-            column = self.columns[column_name]
+            sortby, sortorder = self.get_sorting()
+            #sortby = self.state.get('sortby', None)
+            #sortorder = self.state.get('sortorder', None)
+            column = self.allcolumns[column_name]
             if sortby != column_name:
                 sortorder = None
                 sortby = column_name

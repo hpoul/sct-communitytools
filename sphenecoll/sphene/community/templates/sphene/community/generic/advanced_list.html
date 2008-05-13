@@ -1,46 +1,60 @@
 {% load i18n %}
 {% load sph_switch %}
 {% load sph_extras %}
+{% load sph_pagination %}
 <small><a onclick="$('.custom').show();">Customize List</a>
 {% if list.is_customized %}/ <a href="?{{ list.prefix }}.cmd=revert">Revert to default</a>{% endif %}</small>
-<table class="sphlist">
+<table class="sphlist sphlist_{{ list.cssclass }}">
   <tr>
-    {% for name, column in columns %}
-      <th>
-        {% if column.is_sortable %}
-          <a href="?{{ list.prefix }}.cmd=sort|toggle|{{ name }}">{{ column.get_label }}
-          {% ifequal list.state.sortby name %}
-            | {% ifequal list.state.sortorder "asc" %}{% trans "Ascending" %}{% else %}{% trans "Descending" %}{% endifequal %}
-          {% endifequal %}</a>
-        {% else %}
-          {{ column.get_label }}
-        {% endif %}
+    {% for subcolumns in columns %}
+      <th class="sphlist_{{ list.cssclass }}_{{ subcolumns.0.0 }}">
+        {% for name, column in subcolumns %}
+          <div class="objlist_header_{{ name }}{% ifequal list.get_sorting.0 name %} sortorder_{{ list.get_sorting.1 }}{% endifequal %}">
+          {% if column.is_sortable %}
+            <a href="?{{ list.prefix }}.cmd=sort|toggle|{{ name }}">{{ column.get_label }}
+            {% comment %}
+            {% ifequal list.get_sorting.0 name %}
+              <span class="sortorder_{{ list.get_sorting.1 }}">| {% ifequal list.get_sorting.1 "asc" %}{% trans "Ascending" %}{% else %}{% trans "Descending" %}{% endifequal %}</span>
+            {% endifequal %}
+            {% endcomment %}
+            </a>
+          {% else %}
+            {{ column.get_label }}
+          {% endif %}
+          </div>
+        {% endfor %}
       </th>
     {% endfor %}
   </tr>
   <tr class="custom" style="display:none;">
     <form method="get">
       <input type="hidden" name="{{ list.prefix }}.cmd" value="colconfig" />
-    <td colspan="{{ columns|length }}" class="colconfig">Customize col config: <input type="text" name="{{ list.prefix }}.colconfig" value="{{ list.colconfig_json }}" /> <input type="submit" value="Store" /></td>
+    <td colspan="{{ columns|length }}" class="colconfig">Customize col config: <input type="text" name="{{ list.prefix }}.colconfig" size="80" value="{{ list.colconfig_json }}" /> <input type="submit" value="Store" /></td>
     </form>
   </tr>
   {% for row in content %}
     <tr class="content">
-      {% for column, values in row %}
-        <td>
-          {% for value in values|sph_iter %}
-            {% switch column.type %}
-              {% case "user" %}{{ value|sph_html_user }}{% endcase %}
-              {% case "date" %}{{ value|sph_date }}{% endcase %}
-              {% case "default" %}{{ value }}{% endcase %}
-            {% endswitch %}
+      {% for subcolumns in row %}
+        <td class="sphlist_{{ list.cssclass }}_{{ subcolumns.0.0 }}">
+          {% for id, column, values in subcolumns %}
+            <div>
+            {% for value in values|sph_iter %}
+              {% switch column.type %}
+                {% case "user" %}{% sph_html_user value %}{% endcase %}
+                {% case "date" %}{{ value|sph_date }}{% endcase %}
+                {% case "default" %}{{ value }}{% endcase %}
+              {% endswitch %}
+            {% endfor %}
+            </div>
           {% endfor %}
         </td>
       {% endfor %}
     </tr>
   {% endfor %}
   <tr>
-    <td colspan="{{ columns|length }}">{{ object_count }} {{ object_name }}</td>
+    <td colspan="{{ columns|length }}"><span class="sphlist_{{ list.cssclass }}_object_count">{{ object_count }} {{ object_name }}</span><span class="sphlist_{{ list.cssclass }}_pagination">
+      {% sph_pagination paging.pages paging.page '' paging.getparam %}</span>
+    </td>
   </tr>
 </table>
 

@@ -106,6 +106,14 @@ class CategoryType(object):
         """
         return True
 
+    def is_displayed(self):
+        """
+        Return True if it should be displayed in overviews,
+        False otherwise.
+        """
+        return True
+
+
 category_type_registry = { }
 initialized = False
 

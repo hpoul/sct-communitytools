@@ -42,8 +42,8 @@
       <p>{% blocktrans with snip.changed|sph_date as snip_changedate and snip.editor|sph_html_user as snip_editor %}Last Modified: {{ snip_changedate }} by {{ snip_editor }}{% endblocktrans %} - [ <a href="{{ snip.get_absolute_historyurl }}">{% trans "Snip Changes" %}</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">{% trans "Wiki History" %}</a> ]</p>
     </div>
     {% endwith %}
+    {% include commentstemplate %}
   {% else %}
     {% blocktrans with snipName as snip_name and "<strong>" as snip_prefix and "</strong>" as snip_postfix %}Snip {{ snip_prefix }}{{ snip_name }}{{ snip_postfix }} does not yet exist.{% endblocktrans %} {% if snip.has_edit_permission %}<a href="{{ snip.get_absolute_editurl }}">{% trans "Create It." %}</a>{% endif %}
   {% endif %}
-
 {% endblock %}
