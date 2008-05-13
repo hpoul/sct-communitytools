@@ -322,7 +322,6 @@ def editSnip(request, group, snipName, versionId = None):
 
             if tag_set_labels( snip, data['tags'] ):
                 change_type |= 4
-                print "it has changed ! - %d" % change_type
 
             change = WikiSnipChange( snip = snip,
                                      editor = request.user,
