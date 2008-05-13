@@ -9,7 +9,7 @@
   <p>{% sphboard_displayBreadcrumbsForCategory category 1 1 %} &gt;&gt; Search</p>
 
 
-  <form method="get">
+  <form method="get" action=".">
     <input type="hidden" name="category_id" value="{{ category.id }}" />
     <input type="text" name="query" value="{{ query }}" />
     <input type="submit" value="Search" />
