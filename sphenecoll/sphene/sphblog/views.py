@@ -65,7 +65,6 @@ def show_tag_posts(request, group, tag_name):
                             name__exact = tag_name )
     threads = get_posts_queryset(group, categories)
     threads = tag_get_models_by_tag( threads, tag )
-    select, sql, params = threads._get_sql_clause()
 
     return render_to_response( 'sphene/sphblog/blogindex.html',
                                { 'threads': threads,
