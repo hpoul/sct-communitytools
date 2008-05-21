@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 
 
 urlpatterns = patterns('',
-                       (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/Start'}),
+                       (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/Start/'}),
                                               )
 
 snip = r'(?P<snipName>[\w/:\-.]+?)'
