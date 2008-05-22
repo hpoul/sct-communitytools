@@ -1,0 +1,520 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-05-22 10:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\__init__.py:37
+#, python-format
+msgid ""
+"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d "
+"bytes)"
+msgstr "Taille de fichier max de %(max_size)d octets dépassée pour un téléchargement. (Votre fichier en fait %(size)d) "
+
+#: .\__init__.py:55
+msgid "Uploaded an invalid image."
+msgstr "image téléchargée invalide."
+
+#: .\__init__.py:67
+msgid "Delete avatar"
+msgstr "Supprimer avatar"
+
+#: .\__init__.py:69 .\__init__.py:116
+msgid "Avatar"
+msgstr "Avatar"
+
+#: .\__init__.py:116 .\templatetags\sph_extras.py:343
+msgid "Users avatar"
+msgstr "Avatars utilisateurs"
+
+#: .\fields.py:14
+msgid "Comma separated list of tags."
+msgstr "liste de tags séparés par virgule"
+
+#: .\forms.py:15
+msgid "First name"
+msgstr "Prénom"
+
+#: .\forms.py:16
+msgid "Last name"
+msgstr "Nom"
+
+#: .\forms.py:17 .\views.py:32 .\views.py:56 .\views.py:152
+msgid "Email address"
+msgstr "Adresse mél"
+
+#: .\forms.py:19
+msgid "Change password"
+msgstr "Modifier mot de passe"
+
+#: .\forms.py:20
+msgid "To modify your password fill out the following three fields."
+msgstr "Pour modifier votre mot de passe, remplissez les trois champs suivants."
+
+#: .\forms.py:22
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+#: .\forms.py:25
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: .\forms.py:28
+msgid "Retype your new password"
+msgstr "Répétez votre mot de passe"
+
+#: .\forms.py:40
+msgid "Invalid password."
+msgstr "Mot de passe invalide"
+
+#: .\forms.py:47 .\views.py:178
+msgid "Passwords do not match."
+msgstr "Les mots de passe ne coïncident pas"
+
+#: .\forms.py:57
+msgid "-- Select Object Type --"
+msgstr "-- Sélectionner un type d'objet --"
+
+#: .\forms.py:107
+msgid "Allows you to limit the given permission to only one specific object."
+msgstr "Permet de limiter une permission à un seul objet."
+
+#: .\forms.py:123
+msgid "Invalid Object Type"
+msgstr "Type d'objet invalide"
+
+#: .\forms.py:133
+msgid "User does not exist."
+msgstr "Utilisateur inexistant."
+
+#: .\models.py:44
+msgid "Normal User"
+msgstr "Utilisateur ordinaire"
+
+#: .\models.py:45
+msgid "Administrator"
+msgstr "Administrateur"
+
+#: .\models.py:525
+msgid ""
+"This email address will be shown to all users. If you leave it black noone "
+"will see your email address."
+msgstr ""
+"Cette adresse mél sera vue de tous les utilisateurs. Laisser vide pour "
+"que personne ne voit cette adresse."
+#: .\models.py:526
+msgid ""
+"This email address will be shown to all users. If you leave it blank, your "
+"verified email address will be shown."
+msgstr ""
+"Cette adresse mél sera vue de tous les utilisateurs. Laisser vide pour "
+"que soit montrée votre adresse après vérification."
+
+#: .\models.py:530
+msgid ""
+"This display name will be shown to all users. If you leave it blank then "
+"your username will be shown."
+msgstr ""
+"Ce nom sera vu de tous les utilisateurs. Laisser vide pour "
+"que votre nom utilisateur soit affiché."
+
+#: .\models.py:531
+msgid ""
+"This display name will be shown to all users. If you leave it blank, your "
+"first and last name will be shown. If those are blank too, then your "
+"username will be shown."
+msgstr ""
+"Ce nom sera vu de tous les utilisateurs. Laisser vide pour "
+"que vos nom et prénom soient affichés. Si ils sont vide également, "
+"le nom utilisateur sera affiché."
+
+#: .\models.py:541
+msgid "Community settings"
+msgstr "Paramètres community"
+
+#: .\models.py:542
+msgid "Display name"
+msgstr "Nom affiché"
+
+#: .\models.py:547
+msgid "Public email address"
+msgstr "Adresse mél publique"
+
+#: .\models.py:601
+msgid "Successfully saved community profile."
+msgstr "Profil community enregistré avec succès."
+
+#: .\sphutils.py:27 .\templates\sphene\community\_display_username.html.py:8
+msgid "Anonymous"
+msgstr "Anonyme"
+
+#: .\sphutils.py:114
+msgid "Captcha input"
+msgstr "Saisir le captcha"
+
+#: .\sphutils.py:144
+msgid "Invalid Captcha response."
+msgstr "Réponse au captcha invalide"
+
+#: .\views.py:39 .\views.py:163
+#, python-format
+msgid "Another user is already registered with the email address %(email)s."
+msgstr "Un utilisteur avec l'adresse mél %(email)s est déjà enregistré"
+
+#: .\views.py:63
+msgid "No user found with that email address."
+msgstr "Aucun utilisteur existant avec cette adresse mél."
+
+#: .\views.py:86
+msgid "Your requested username / password"
+msgstr "Vos nom utilisateur / mot de passe demandés"
+
+#: .\views.py:88
+#, python-format
+msgid "Your requested username / password for site %(site_name)s"
+msgstr "Vos nom utilisateur / mot de passe demandés pour le site %(site_name)s"
+
+#: .\views.py:115
+msgid "Email verification required"
+msgstr "Vérification mél requise"
+
+#: .\views.py:117
+#, python-format
+msgid "Email verification required for site %(site_name)s"
+msgstr "Vérification mél requise pour le site %(site_name)s"
+
+#: .\views.py:151
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:33
+msgid "Username"
+msgstr "Nom utilisateur"
+
+#: .\views.py:158
+#, python-format
+msgid "The username %(username)s is already taken."
+msgstr " Le nom utilisateur %(username)s est déjà pris."
+
+#: .\views.py:168
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .\views.py:170
+msgid "Verify Password"
+msgstr "Vérifier le mot de passe"
+
+#: .\views.py:338
+msgid "Successfully changed user profile."
+msgstr "Profil utilisateur modifié avec succès."
+
+#: .\views.py:391
+#, python-format
+msgid "Removed user %(username)s from rolegroup."
+msgstr "Utilisateur %(username)s retiré du groupe."
+
+#: .\views.py:435
+msgid "Successfully saved role."
+msgstr "Rôle enregistré avec succès."
+
+#: .\views.py:458
+msgid "Successfully deleted role member."
+msgstr "Rôle supprimé avec succès."
+
+#: .\views.py:492
+msgid "Successfully added member."
+msgstr "Membre ajouté avec succès."
+
+#: .\views.py:551
+msgid "Please enter the result of the above calculation."
+msgstr "Saisissez svp le résultat de l'opération ci-dessus."
+
+#: .\templates\sphene\community\_pagination.html.py:2
+msgid "Page:"
+msgstr "Page:"
+
+#: .\templates\sphene\community\_pagination.html.py:4
+msgid "Previous"
+msgstr "Précédent"
+
+#: .\templates\sphene\community\_pagination.html.py:14
+msgid "Next"
+msgstr "Suivant"
+
+#: .\templates\sphene\community\permissiondenied.html.py:5
+msgid "Permission Denied"
+msgstr "Permission refusée"
+
+#: .\templates\sphene\community\permissiondenied.html.py:7
+msgid "You do not have permission to view this page."
+msgstr "Vous n'avez pas la permission d'accéder à cette page."
+
+#: .\templates\sphene\community\profile.html.py:6
+msgid "Profile for"
+msgstr "Profil de"
+
+#: .\templates\sphene\community\profile.html.py:6
+#: .\templates\sphene\community\admin\permission\role_list.html.py:20
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\templates\sphene\community\profile.html.py:9
+#: .\templates\sphene\community\admin\permission\role_list.html.py:14
+msgid "Name"
+msgstr "Nom"
+
+#: .\templates\sphene\community\profile.html.py:13
+msgid "Email Address"
+msgstr "Adresse mél"
+
+#: .\templates\sphene\community\profile_edit.html.py:6
+msgid "Modifying user profile for"
+msgstr "Modifier"
+
+#: .\templates\sphene\community\profile_edit.html.py:10
+#: .\templates\sphene\community\accounts\login.html.py:13
+msgid "Username:"
+msgstr "Nom utilisateur:"
+
+#: .\templates\sphene\community\profile_edit.html.py:31
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:35
+#: .\templates\sphene\community\admin\permission\rolegroup_list.html.py:26
+#: .\templatetags\sph_form.py:15
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\templates\sphene\community\profile_reveal_emailaddress.html.py:12
+msgid "Reveal email address"
+msgstr "Révéler adresse mél"
+
+#: .\templates\sphene\community\register.html.py:5
+msgid ""
+"Please Enter your email address. You will then receive a URL to continue "
+"registration."
+msgstr ""
+"Saisissez svp votre adresse mél. Vous recevrez alors un URL pour poursuivre "
+"votre enregistrement."
+
+#: .\templates\sphene\community\register.html.py:11
+msgid "Send Email Validation Code"
+msgstr "Envoyez le code de validation mél"
+
+#: .\templates\sphene\community\register_emailsent.html.py:5
+#, python-format
+msgid ""
+"An email containing the required validation code has been sent to <b>%(email)"
+"s</b>.<br/>\n"
+"  Please check your emails to continue registration process."
+msgstr ""
+"Un mél contenant le code de validation requis a été envoyé à <b>%(email)"
+"s</b>.<br/>\n"
+" Vérifiez svp votre courrier pour continuer le processus d'enregistrement."
+
+#: .\templates\sphene\community\register_hash.html.py:5
+#: .\templates\sphene\community\register_hash_success.html.py:5
+msgid "User Registration"
+msgstr "Enregistrement utilisateur"
+
+#: .\templates\sphene\community\register_hash.html.py:11
+msgid "Register"
+msgstr "Enregisrer vous"
+
+#: .\templates\sphene\community\register_hash_success.html.py:7
+msgid "Successfully registered user and logged in."
+msgstr "Utilisateur enregistré avec succès et connecté."
+
+#: .\templates\sphene\community\accounts\account_verification_email.html.py:6
+#, python-format
+msgid ""
+"You have requested to register with the email address:\n"
+"      %(email)s \n"
+"on the %(group_name)s website."
+msgstr ""
+"Vous avez demandé à vous enregistrer avec cette adresse mél:\n"
+"      %(email)s \n"
+"sur le site web %(group_name)s"
+
+#: .\templates\sphene\community\accounts\account_verification_email.html.py:10
+#, python-format
+msgid ""
+"\n"
+"<a href=\"http://%(baseurl)s%(path)s\">To continue registration, please "
+"follow this link</a>."
+msgstr ""
+"\n"
+"<a href=\"http://%(baseurl)s%(path)s\">Pour continuer l'enregistrement, "
+"suivez svp ce lien</a>."
+
+#: .\templates\sphene\community\accounts\account_verification_email.html.py:14
+#, python-format
+msgid ""
+"\n"
+"Thanks for your interest,\n"
+"  Your %(group_name)s Team.\n"
+msgstr ""
+"\n"
+"Merci pour l'intérêt que vous portez à ce site,\n"
+"  Votre équipe %(group_name)s.\n"
+
+#: .\templates\sphene\community\accounts\account_verification_email.html.py:20
+msgid "If you did not make this request you can safely ignore this email."
+msgstr "Si vous n'avez pas fait cette requête, vous pouvez sans risque ignorer ce courrier."
+
+#: .\templates\sphene\community\accounts\forgot.html.py:5
+msgid ""
+"If you have forgotten your username or password, you can enter your\n"
+"email address here. You will then receive your username and a newly\n"
+"generated password by email."
+msgstr ""
+"Si vous avez oublié votre nom d'utilisateur ou votre mot de passe,\n"
+"vous pouvez saisir ici votre adresse mél. Vous recevrez alors votre\n"
+"nom d'utilisateur et un nouveau mote de passe par mail."
+
+#: .\templates\sphene\community\accounts\forgot.html.py:12
+msgid "Send"
+msgstr "Envoyer"
+
+#: .\templates\sphene\community\accounts\forgot_sent.html.py:4
+msgid "A new password was generated for your account."
+msgstr "Un nouveau mot de passe a été généré pour votre compte."
+
+#: .\templates\sphene\community\accounts\forgot_sent.html.py:5
+msgid ""
+"You should receive an email containing your username and new password "
+"shortly."
+msgstr ""
+"Vous devriez recevoir un courrier contenant votre nom d'utilisateur "
+"et un nouveau mote de passe prochainement."
+
+#: .\templates\sphene\community\accounts\logged_out.html.py:5
+msgid "Successfully logged out."
+msgstr "Déconnecté avec succès."
+
+#: .\templates\sphene\community\accounts\login.html.py:8
+msgid "Your username and password didn't match. Please try again."
+msgstr "Votre nom d'utilisateur and votre mot de passe ne coïncident pas. Essayez encore svp."
+
+#: .\templates\sphene\community\accounts\login.html.py:14
+msgid "Password:"
+msgstr "Mot de passe:"
+
+#: .\templates\sphene\community\accounts\login.html.py:17
+msgid "Login"
+msgstr "Connection"
+
+#: .\templates\sphene\community\accounts\login.html.py:22
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\templates\sphene\community\accounts\login.html.py:22
+msgid "Forgot Username/Password ?"
+msgstr "Nom/mot de pass oublié ?"
+
+#: .\templates\sphene\community\admin\permission\base.html.py:7
+msgid "Role List"
+msgstr "Liste des Rôles"
+
+#: .\templates\sphene\community\admin\permission\base.html.py:9
+#: .\templates\sphene\community\admin\permission\role_list.html.py:16
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:13
+msgid "Members"
+msgstr "Membres"
+
+#: .\templates\sphene\community\admin\permission\role_edit.html.py:11
+#: .\templates\sphene\community\admin\permission\role_member_add.html.py:11
+msgid "Store"
+msgstr "Archiver"
+
+#: .\templates\sphene\community\admin\permission\role_list.html.py:13
+msgid "Options"
+msgstr "Options"
+
+#: .\templates\sphene\community\admin\permission\role_list.html.py:15
+msgid "Flags"
+msgstr "Drapeaux"
+
+#: .\templates\sphene\community\admin\permission\role_list.html.py:20
+msgid "Manage Members"
+msgstr "Gérer les Membres"
+
+#: .\templates\sphene\community\admin\permission\role_list.html.py:28
+msgid "Create Role"
+msgstr "Créer un Rôle"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:8
+#, python-format
+msgid "Members of the role '%(role_name)s'."
+msgstr "Membres du rôle '%(role_name)s'."
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:13
+msgid "User"
+msgstr "Utilisateur"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:14
+msgid "Role Group"
+msgstr "Groupe"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:15
+msgid "Limitations"
+msgstr "Limitations"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:19
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:23
+msgid "Remove"
+msgstr "Enlever"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:20
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:21
+msgid "N/A"
+msgstr "N/A"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:27
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:30
+msgid "Add Member"
+msgstr "Ajouter un Membre"
+
+#: .\templates\sphene\community\admin\permission\role_member_list.html.py:28
+msgid "Add Rolegroup"
+msgstr "Ajouter un Groupe"
+
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:8
+msgid "Back to Role Groups"
+msgstr "Retour vers les Groupes"
+
+#: .\templates\sphene\community\admin\permission\rolegroup_edit.html.py:10
+#, python-format
+msgid "Modifying rolegroup '%(rolegroup_name)s'"
+msgstr "Modification du groupe '%(rolegroup_name)s'"
+
+#: .\templates\sphene\community\admin\permission\rolegroup_list.html.py:8
+msgid "Role Groups"
+msgstr "Groupes"
+
+#: .\templates\sphene\community\admin\permission\rolegroup_list.html.py:23
+msgid "Create a new Role Group"
+msgstr "Créer un nouveau Groupe"
+
+#: .\templates\sphene\community\generic\advanced_list.html.py:17
+msgid "Ascending"
+msgstr "Montant"
+
+#: .\templates\sphene\community\generic\advanced_list.html.py:17
+msgid "Descending"
+msgstr "Descendant"
+
+#: .\templatetags\sph_extras.py:191
+msgid "Reveal this emailaddress"
+msgstr "Révéler cette adresse mél"
+
+#: .\templatetags\sph_extras.py:346
+msgid "Submit"
+msgstr "Soumettre"
