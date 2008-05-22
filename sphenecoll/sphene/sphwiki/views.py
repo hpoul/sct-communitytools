@@ -230,9 +230,6 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
 
             if get_sph_setting( 'django096compatibility' ):
                 attachment.save_fileupload_file( reqdata['fileupload']['filename'], reqdata['fileupload']['content'] )
-            else:
-                data = form.cleaned_data
-                attachment.save_fileupload_file( data['fileupload'].filename, data['fileupload'].content )
                 
             attachment.save()
             return HttpResponseRedirect( snip.get_absolute_attachmenturl() )
