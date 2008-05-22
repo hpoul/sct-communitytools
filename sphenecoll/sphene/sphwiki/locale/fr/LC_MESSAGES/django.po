@@ -1,0 +1,242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-05-22 10:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\models.py:45
+msgid "name"
+msgstr "Nom"
+
+#: .\models.py:46
+msgid "title"
+msgstr "titre"
+
+#: .\models.py:48
+msgid "body"
+msgstr "corps"
+
+#: .\models.py:362
+msgid "fileupload"
+msgstr "téléchargement de fichier"
+
+#: .\models.py:364
+msgid "description"
+msgstr "description"
+
+#: .\views.py:59
+msgid "Detected redirect loop."
+msgstr "Boucle détectée dans redirection."
+
+#: .\views.py:83
+msgid "Not configured."
+msgstr "Non configuré."
+
+#: .\views.py:146
+msgid "This is the first change."
+msgstr "Ceci est la première modification."
+
+#: .\views.py:157
+#, python-format
+msgid "%(date)s by %(editor)s"
+msgstr "%(date)s par %(editor)s"
+
+#: .\views.py:159 .\templates\sphene\sphwiki\diff.html.py:46
+#: .\templates\sphene\sphwiki\diff.html.py:47
+#: .\templates\sphene\sphwiki\history.html.py:37
+msgid "Edit this version"
+msgstr "Modifier cette version"
+
+#: .\views.py:213
+msgid "Successfully deleted attachment."
+msgstr "Pièce jointe supprimée avec succès."
+
+#: .\views.py:257
+msgid "Please enter the result of the above calculation."
+msgstr "Saisissez svp le résultat de l'opération ci-dessus."
+
+#: .\views.py:348
+#, python-format
+msgid "Reverted to revision of %(editdate)s"
+msgstr "Retour à la révision de %(editdate)s"
+
+#: .\templates\sphene\sphwiki\_snip_header.html.py:4
+#, python-format
+msgid "This snip is secured - View only allowed by: %(allowed_users)s"
+msgstr "Ce snip est sécurisé - Vue autorisée par: %(allowed_users)s"
+
+#: .\templates\sphene\sphwiki\_snip_header.html.py:22
+#: .\templates\sphene\sphwiki\diff.html.py:45
+#: .\templates\sphene\sphwiki\history.html.py:19
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\templates\sphene\sphwiki\_snip_header.html.py:22
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#: .\templates\sphene\sphwiki\_snip_header.html.py:22
+msgid "Download PDF"
+msgstr "Télécharger au format PDF"
+
+#: .\templates\sphene\sphwiki\diff.html.py:10
+#: .\templates\sphene\sphwiki\editSnip.html.py:17
+#: .\templates\sphene\sphwiki\history.html.py:10
+#: .\templates\sphene\sphwiki\listAttachments.html.py:19
+msgid "Back to Snip"
+msgstr "Retour vers Snip"
+
+#: .\templates\sphene\sphwiki\diff.html.py:14
+msgid "Previous Change"
+msgstr "Modification précédente"
+
+#: .\templates\sphene\sphwiki\diff.html.py:18
+msgid "Next Change"
+msgstr "Modification suivante"
+
+#: .\templates\sphene\sphwiki\diff.html.py:26
+msgid "Diff Summary"
+msgstr "Ecart résumé"
+
+#: .\templates\sphene\sphwiki\diff.html.py:29
+#: .\templates\sphene\sphwiki\history.html.py:24
+msgid "Title"
+msgstr "Titre"
+
+#: .\templates\sphene\sphwiki\diff.html.py:34
+#: .\templates\sphene\sphwiki\history.html.py:14
+msgid "Date"
+msgstr "Date"
+
+#: .\templates\sphene\sphwiki\diff.html.py:39
+#: .\templates\sphene\sphwiki\history.html.py:15
+msgid "Editor"
+msgstr "Editeur"
+
+#: .\templates\sphene\sphwiki\editAttachment.html.py:12
+#: .\templates\sphene\sphwiki\editSnip.html.py:30
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\templates\sphene\sphwiki\editSnip.html.py:21
+msgid "Warning"
+msgstr "Attention"
+
+#: .\templates\sphene\sphwiki\editSnip.html.py:21
+#, python-format
+msgid ""
+"You are editing an old version: By %(version_editor)s at %(version_editdate)s"
+msgstr ""
+"Vous éditez une ancienne version: Par %(version_editor)s à %(version_editdate)s"
+
+#: .\templates\sphene\sphwiki\editSnip.html.py:27
+#: .\templates\sphene\sphwiki\history.html.py:17
+msgid "Change Message"
+msgstr "Modifier le message"
+
+#: .\templates\sphene\sphwiki\editSnip.html.py:30
+msgid "Preview"
+msgstr "Vue préalable"
+
+#: .\templates\sphene\sphwiki\history.html.py:16
+msgid "Changes"
+msgstr "Modifications"
+
+#: .\templates\sphene\sphwiki\history.html.py:23
+msgid "Body"
+msgstr "Corps"
+
+#: .\templates\sphene\sphwiki\history.html.py:25
+msgid "Tags"
+msgstr "Tags"
+
+#: .\templates\sphene\sphwiki\history.html.py:44
+#: .\templates\sphene\sphwiki\history.html.py:46
+#, python-format
+msgid "%(changecount)s Changes."
+msgstr "%(changecount)s Modifications."
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:19
+msgid "Create New Attachment"
+msgstr "Créer une nouvelle pièce jointe"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:23
+msgid "Id"
+msgstr "Id"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:24
+msgid "Action"
+msgstr "Action"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:25
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:26
+msgid "Upload Date"
+msgstr "Date de téléchargement"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:27
+msgid "Uploader"
+msgstr "Téléchargeur"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:32
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\templates\sphene\sphwiki\listAttachments.html.py:40
+#: .\templates\sphene\sphwiki\listAttachments.html.py:42
+#, python-format
+msgid "%(attachment_count)s Attachments."
+msgstr "%(attachment_count)s Pièces jointes."
+
+#: .\templates\sphene\sphwiki\list_tag_snips.html.py:8
+#, python-format
+msgid "Snips with the tag '%(tag_name)s'"
+msgstr "Snips avec tag '%(tag_name)s'"
+
+#: .\templates\sphene\sphwiki\list_tag_snips.html.py:16
+msgid "Not enough permissions to view this wiki snip."
+msgstr "Vous n'avez pas la permission de voir ce wiki snip."
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:35
+msgid "Tags:"
+msgstr "Tags:"
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:42
+#, python-format
+msgid "Last Modified: %(snip_changedate)s by %(snip_editor)s"
+msgstr "Dernière modification: %(snip_changedate)s par %(snip_editor)s"
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:42
+msgid "Snip Changes"
+msgstr "Modifications"
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:42
+msgid "Wiki History"
+msgstr "Historique Wiki"
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:47
+#, python-format
+msgid "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s does not yet exist."
+msgstr "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s inexistant."
+
+#: .\templates\sphene\sphwiki\showSnip.html.py:47
+msgid "Create It."
+msgstr "Créer."
+
+#: .\templates\sphene\sphwiki\wikicomments.html.py:13
+msgid "No comments yet."
+msgstr "Pas encore de commentaire."
