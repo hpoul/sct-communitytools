@@ -245,7 +245,7 @@ class Role(models.Model):
         unique_together = (('name', 'group'),)
 
     class Admin:
-        ordering = ('group_id', 'name')
+        ordering = ('group__id', 'name')
 
 
 class RoleMember(models.Model):
