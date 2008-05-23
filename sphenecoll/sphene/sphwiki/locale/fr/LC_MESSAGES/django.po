@@ -65,7 +65,7 @@ msgstr "Pièce jointe supprimée avec succès."
 
 #: .\views.py:257
 msgid "Please enter the result of the above calculation."
-msgstr "Saisissez svp le résultat de l'opération ci-dessus."
+msgstr "Ecrire le résultat de l'opération ci-dessus."
 
 #: .\views.py:348
 #, python-format
@@ -75,7 +75,7 @@ msgstr "Retour à la révision de %(editdate)s"
 #: .\templates\sphene\sphwiki\_snip_header.html.py:4
 #, python-format
 msgid "This snip is secured - View only allowed by: %(allowed_users)s"
-msgstr "Ce snip est sécurisé - Vue autorisée par: %(allowed_users)s"
+msgstr "Ce snip est sécurisé - Vue autorisée pour: %(allowed_users)s"
 
 #: .\templates\sphene\sphwiki\_snip_header.html.py:22
 #: .\templates\sphene\sphwiki\diff.html.py:45
@@ -108,7 +108,7 @@ msgstr "Modification suivante"
 
 #: .\templates\sphene\sphwiki\diff.html.py:26
 msgid "Diff Summary"
-msgstr "Ecart résumé"
+msgstr "Résumé de l'écart"
 
 #: .\templates\sphene\sphwiki\diff.html.py:29
 #: .\templates\sphene\sphwiki\history.html.py:24
@@ -148,7 +148,7 @@ msgstr "Modifier le message"
 
 #: .\templates\sphene\sphwiki\editSnip.html.py:30
 msgid "Preview"
-msgstr "Vue préalable"
+msgstr "Prévisualisation"
 
 #: .\templates\sphene\sphwiki\history.html.py:16
 msgid "Changes"
@@ -209,7 +209,7 @@ msgstr "Snips avec tag '%(tag_name)s'"
 
 #: .\templates\sphene\sphwiki\list_tag_snips.html.py:16
 msgid "Not enough permissions to view this wiki snip."
-msgstr "Vous n'avez pas la permission de voir ce wiki snip."
+msgstr "Vous n'avez pas la permission de voir ce snip wiki."
 
 #: .\templates\sphene\sphwiki\showSnip.html.py:35
 msgid "Tags:"

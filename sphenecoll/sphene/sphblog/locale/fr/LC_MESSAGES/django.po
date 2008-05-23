@@ -43,7 +43,7 @@ msgstr "Retour"
 
 #: .\templates\sphene\sphblog\blogindex.html.py:38
 msgid "All used Tags:"
-msgstr "Tous les tags utilisés:"
+msgstr "Tous les tags:"
 
 #: .\templates\sphene\sphblog\blogindex.html.py:47
 msgid "RSS Feed"

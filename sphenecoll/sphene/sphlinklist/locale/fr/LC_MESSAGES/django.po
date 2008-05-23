@@ -18,7 +18,7 @@ msgstr ""
 
 #: .\categorytype.py:15
 msgid "Enter your link here"
-msgstr "Saisissez votre lien ici"
+msgstr "Ecrire votre lien ici"
 
 #: .\templates\sphene\sphlinklist\show_thread.html.py:14
 msgid "Project:"

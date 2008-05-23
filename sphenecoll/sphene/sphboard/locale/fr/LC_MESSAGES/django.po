@@ -90,6 +90,8 @@ msgid ""
 "Custom renderer '%(renderer)s' needs a matching Render Class entry in your "
 "sphene settings 'board_custom_markup'"
 msgstr ""
+"L'afficheur personnalisé '%(renderer)s' exige une entrée classe de rendu "
+"dans le paramètre 'board_custom_markup'"
 
 #: .\renderers.py:144
 #, python-format
@@ -112,7 +114,7 @@ msgstr "Corps"
 
 #: .\views.py:205
 msgid "Please enter the result of the above calculation."
-msgstr "Veuillez saisir le résultat de l'opération ci-dessus."
+msgstr "Ecrire le résultat de l'opération ci-dessus."
 
 #: .\views.py:226
 msgid "Question"
@@ -124,11 +126,11 @@ msgstr "Réponses (1 par ligne)"
 
 #: .\views.py:229
 msgid "Allowed Choices per User"
-msgstr "Choix autorisés par utilisateur"
+msgstr "Choix possibles par utilisateur"
 
 #: .\views.py:230
 msgid "Enter how many answers a user can select."
-msgstr "Saisissez combien de réponses un utilisateur peut sélectionner."
+msgstr "Saisissez le nombre de réponses qu'un utilisateur peut sélectionner."
 
 #: .\views.py:340
 #, python-format
@@ -149,19 +151,19 @@ msgstr "Message créé avec succès."
 
 #: .\views.py:510
 msgid "Annotated a users post."
-msgstr "Annotated a users message."
+msgstr "Message annoté."
 
 #: .\views.py:539
 msgid "Select target category"
-msgstr "Sélectionné la catégorie cible"
+msgstr "Sélectionner la catégorie cible"
 
 #: .\views.py:550
 msgid "Please describe why this thread had to be moved."
-msgstr "Décrivez svp la raison du déplacement de cette discussion."
+msgstr "Décrire la raison du déplacement de cette discussion."
 
 #: .\views.py:599
 msgid "Moved thread into new category."
-msgstr "Moved discussion dans la nouvelle catégorie."
+msgstr "Discussion déplacée dans une nouvelle catégorie."
 
 #: .\views.py:610
 #, python-format
@@ -194,25 +196,25 @@ msgstr "Vous avez sélectionné un choix invalide."
 #: .\views.py:655
 #, python-format
 msgid "Voted for '%(choice)s'."
-msgstr "Voté pour '%(choice)s'."
+msgstr "Vote pour '%(choice)s'."
 
 #: .\views.py:655
 msgid "You selected to abstain from voting"
-msgstr "Vous avez sélectionner un vote d'abstention"
+msgstr "Vous avez sélectionné un vote d'abstention"
 
 #: .\views.py:673
 msgid "Successfully created email notification monitor."
-msgstr "Moniteur de notification créé avec succès."
+msgstr "Notification programmée avec succès."
 
 #: .\views.py:675
 msgid "Removed email notification monitor."
-msgstr "Moniteur de notification retiré."
+msgstr "Notification désactivée."
 
 #: .\templates\sphene\sphboard\_category_monitor.html.py:4
 #: .\templates\sphene\sphboard\listCategories.html.py:16
 #: .\templates\sphene\sphboard\showThread.html.py:57
 msgid "You are currently receiving email notifications on new posts."
-msgstr "Vous recevez actuellement des notification mél concernant les nouveaux messages."
+msgstr "Vous êtes actuellement notifié(e) par courriel concernant les nouveaux messages."
 
 #: .\templates\sphene\sphboard\_category_monitor.html.py:4
 #: .\templates\sphene\sphboard\listCategories.html.py:16
@@ -226,8 +228,8 @@ msgid ""
 "You are currently receiving email notifications on new posts because you "
 "subscribed to a parent category."
 msgstr ""
-"Vous recevez actuellement des notification mél concernant les nouveaux messages "
-"car vous avez souscrit à une catégorie parente."
+"Vous recevez actuellement des notification par courriel concernant les nouveaux messages "
+"car vous êtes abonné(e) à une catégorie parente."
 
 #: .\templates\sphene\sphboard\_category_monitor.html.py:9
 #: .\templates\sphene\sphboard\listCategories.html.py:19
@@ -260,17 +262,17 @@ msgstr "Pas de message."
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:12
 msgid "Loading Preview ..."
-msgstr "Chargement de la vue préalable ..."
+msgstr "Chargement de la prévisualisation ..."
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:32
 msgid ""
 "You are already receiving email notifications for this thread or category."
 msgstr ""
-"Vous recevez déjà des notifications mél pour cette discussion ou catégorie."
+"Vous recevez déjà des notifications par courriel pour cette discussion ou catégorie."
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:34
 msgid "Notify me by email on new posts in this thread."
-msgstr "Me notifier par mél pour les nouveaux messages dans cette discussion."
+msgstr "Me notifier par courriel pour les nouveaux messages dans cette discussion."
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:40
 msgid "Add a poll to this thread"
@@ -290,11 +292,11 @@ msgstr "Télécharger le fichier"
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:75
 msgid "Post"
-msgstr "Message"
+msgstr "Envoyer"
 
 #: .\templates\sphene\sphboard\_displayPostForm.html.py:75
 msgid "Preview"
-msgstr "Vue préalable"
+msgstr "Prévisualisation"
 
 #: .\templates\sphene\sphboard\_new_thread_link.html.py:5
 msgid "Post New Thread"
@@ -306,7 +308,7 @@ msgstr "Vous n'avez pas la permission de créer une nouvelle discussion."
 
 #: .\templates\sphene\sphboard\_new_thread_link.html.py:11
 msgid "Please login to create a new thread."
-msgstr "Enregistrez vous pour créer une nouvelle discussion."
+msgstr "S'enregistrer pour créer une nouvelle discussion."
 
 #: .\templates\sphene\sphboard\_post_authorinfo.html.py:4
 msgid "Posted by"
@@ -335,7 +337,7 @@ msgstr "Enregistrer"
 
 #: .\templates\sphene\sphboard\listCategories.html.py:8
 msgid "Latest"
-msgstr "Dernier"
+msgstr "Récents"
 
 #: .\templates\sphene\sphboard\listCategories.html.py:29
 msgid "Title"
@@ -502,7 +504,7 @@ msgstr "Vous devez être connecté pour voter."
 
 #: .\templates\sphene\sphboard\showThread.html.py:178
 msgid "Post Reply"
-msgstr "Répondre"
+msgstr "Réponse"
 
 #: .\templates\sphene\sphboard\showThread.html.py:182
 msgid "Thread is locked."
@@ -514,7 +516,7 @@ msgstr "Vous n'avez pas la permission de répondre."
 
 #: .\templates\sphene\sphboard\showThread.html.py:187
 msgid "Please login to post a reply."
-msgstr "Connectez vous pour répondre."
+msgstr "Se Connecter pour répondre."
 
 #: .\templates\sphene\sphboard\wikimacros\news.html.py:10
 msgid "Comments"
