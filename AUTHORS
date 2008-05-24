@@ -20,6 +20,11 @@ feature requests/feedback and the "default avatar" image:
 http://sct.sphene.net/board/thread/256/?page=2
 
 
+Eric Simorre <eric.simorre@c-s.fr> - contributed french
+translations for all apps and communitydraft.
+http://djangopeople.net/esimorre/
+
+
 Jakub Wiśniowski <restless.being@gmail.com> - for contributing patches 
 (Using MEDIA_URL instead of hard coded links, i18n translation strings
 as well as polish translations)
