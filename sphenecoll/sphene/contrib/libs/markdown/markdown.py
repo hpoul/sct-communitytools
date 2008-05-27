@@ -692,11 +692,15 @@ class AutomailPattern (Pattern):
         email = m.group(2)
         if email.startswith("mailto:"):
             email = email[len("mailto:"):]
-        for letter in email:
-            entity = doc.createEntityReference("#%d" % ord(letter))
-            el.appendChild(entity)
+        #for letter in email:
+        #    if letter.isalpha():
+        #        entity = letter
+        #    else:
+        #        entity = doc.createEntityReference("#%d" % ord(letter))
+        #    el.appendChild(entity)
+        el.appendChild(doc.createTextNode(email))
         mailto = "mailto:" + email
-        mailto = "".join(['&#%d;' % ord(letter) for letter in mailto])
+        #mailto = "".join(['&#%d;' % ord(letter) for letter in mailto])
         el.setAttribute('href', mailto)
         return el
 
