@@ -84,3 +84,12 @@ class BlogCategoryType(CategoryType):
     def get_show_thread_template(self):
         return 'sphene/sphblog/show_blogentry.html'
 
+
+class HiddenBlogCategoryType(CategoryType):
+    name = "sphbloghidden"
+
+    label = "Blog Category hidden from forum overviews"
+
+    def is_displayed(self):
+        return False
+
