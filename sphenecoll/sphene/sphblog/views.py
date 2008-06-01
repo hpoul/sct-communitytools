@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from sphene.community.models import Tag, tag_get_models_by_tag
 from sphene.community.middleware import get_current_urlconf
@@ -21,8 +22,9 @@ def get_board_categories(group):
     Returns a list of all categories of type 'sphblog'
     """
     # First fetch all categories matching the group and type.
-    categories = Category.objects.filter( group = group,
-                                          category_type = 'sphblog' )
+    categories = Category.objects.filter(
+        Q( group = group ) &
+        Q( category_type = 'sphblog' ) | Q( category_type = 'sphbloghidden'))
     # Now check permissions
     blogcategories = filter(Category.has_view_permission, categories)
     return blogcategories
