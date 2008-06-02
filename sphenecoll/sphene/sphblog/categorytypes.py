@@ -85,7 +85,7 @@ class BlogCategoryType(CategoryType):
         return 'sphene/sphblog/show_blogentry.html'
 
 
-class HiddenBlogCategoryType(CategoryType):
+class HiddenBlogCategoryType(BlogCategoryType):
     name = "sphbloghidden"
 
     label = "Blog Category hidden from forum overviews"
