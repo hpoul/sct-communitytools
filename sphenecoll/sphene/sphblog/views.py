@@ -35,8 +35,12 @@ def get_posts_queryset(group, categories):
                                    category__id__in = map(lambda x: x.id, categories) ).order_by( '-postdate' )
     return threads
 
-def blogindex(request, group):
+def blogindex(request, group, category_id = None):
     categories = get_board_categories(group)
+    if category_id is not None:
+        category_id = int(category_id)
+        categories = [category for category in categories \
+                          if category.id == category_id]
     if not categories:
         return render_to_response( 'sphene/sphblog/nocategory.html',
                                    { },
