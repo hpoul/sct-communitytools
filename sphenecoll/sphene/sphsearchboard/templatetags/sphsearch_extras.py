@@ -52,7 +52,7 @@ def searchexcerpt(text, phrases, context_words=None, ignore_case=None, word_boun
     def merge(lists):
         merged = []
         for words in lists:
-            if merged:
+            if merged and len(words) > 0:
                 merged[-1] += words[0]
                 del words[0]
             merged.extend(words)
