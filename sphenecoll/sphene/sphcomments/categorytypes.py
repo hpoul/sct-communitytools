@@ -2,7 +2,7 @@ from sphene.sphboard.categorytypes import DefaultCategoryType
 from sphene.sphboard.categorytyperegistry import CategoryType
 
 
-class CommentsCategoryType(CategoryType):
+class CommentsCategoryType(DefaultCategoryType):
     """
     Defines the "root" category for comments.
     """
