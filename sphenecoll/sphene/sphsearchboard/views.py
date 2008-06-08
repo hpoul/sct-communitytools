@@ -31,9 +31,9 @@ def view_search_posts(request, group):
 
         start += 1
         if start > 1:
-            prev = mark_safe(u'?query=%s&amp;start=%d' % (urlquote_plus(query), max(0,start-pagingsize-1)))
+            prev = mark_safe(u'?query=%s&amp;start=%d&amp;category_id=%s' % (urlquote_plus(query), max(0,start-pagingsize-1), category_id))
         if end < count:
-            next = mark_safe(u'?query=%s&amp;start=%d' % (urlquote_plus(query), end))
+            next = mark_safe(u'?query=%s&amp;start=%d&amp;category_id=%s' % (urlquote_plus(query), end, category_id))
         if end > count:
             end = count
 
