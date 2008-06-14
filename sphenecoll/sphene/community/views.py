@@ -219,7 +219,7 @@ try:
     from djaptcha.models import CaptchaRequest
     from cStringIO import StringIO
     import random
-    import Image,ImageDraw,ImageFont
+    import Image,ImageDraw,ImageFont,ImageChops
     
 except:
     pass
@@ -236,14 +236,26 @@ def captcha_image(request,token_id,group = None):
     text = captcha.text
     #TODO: Calculate the image dimensions according to the given text.
     #      The dimensions below are for a "X+Y" text
-    image = Image.new('RGB', (40, 23), (39, 36, 81))
+    #image = Image.new('RGB', (40, 23), (39, 36, 81))
     # You need to specify the fonts dir and the font you are going to usue
+    bgcolor = (39, 36, 81)
+    if hasattr(settings,'CAPTCHA_BGCOLOR'):
+        bgcolor = settings.CAPTCHA_BGCOLOR
+    fgcolor = (153, 204, 0)
+    if hasattr(settings,'CAPTCHA_FGCOLOR'):
+        fgcolor = settings.CAPTCHA_FGCOLOR
+    borderWidth = 2
+    if hasattr(settings,'CAPTCHA_BORDER'):
+        borderWidth = settings.CAPTCHA_BORDER
     font = ImageFont.truetype(settings.FONT_PATH,settings.FONT_SIZE)
+    (width,height) = font.getsize(text)
+    image = Image.new('RGB', (width+(borderWidth*2),height+(borderWidth*2)), bgcolor)
     draw = ImageDraw.Draw(image)
-    # Draw the text, starting from (2,2) so the text won't be edge
-    draw.text((2, 2), text, font = font, fill = (153, 204, 0))
+    # Draw the text, starting from (borderWidth,borderWidth) so the text won't be edge
+    draw.text((borderWidth, borderWidth), text, font = font, fill = fgcolor)
     # Saves the image in a StringIO object, so you can write the response
     # in a HttpResponse object
+    image = autocrop(image, bgcolor,borderWidth)
     out = StringIO()
     image.save(out,"JPEG")
     out.seek(0)
@@ -252,6 +264,40 @@ def captcha_image(request,token_id,group = None):
     response.write(out.read())
     return response
 
+def autocrop(im, bgcolor, borderWidth = 0):
+    if im.mode != 'RGB':
+        im = im.convert('RGB')
+    bg = Image.new('RGB', im.size, bgcolor)
+    diff = ImageChops.difference(im, bg)
+    bbox = diff.getbbox()
+    if bbox:
+        if borderWidth > 0:
+            (x0,y0,x2,y2) = bbox
+
+            if x0 > borderWidth:
+                x0 = x0 - borderWidth
+            else:
+                x0 = 0
+
+            if y0 > borderWidth:
+                y0 = y0 - borderWidth
+            else:
+                y0 = 0
+
+            if x2 + borderWidth < im.size[0]:
+                x2 = x2 + borderWidth
+            else:
+                x2 = im.size[0]
+
+            if y2 + borderWidth < im.size[1]:
+                y2 = y2 + borderWidth
+            else:
+                y2 = im.size[1]
+
+            bbox = (x0,y0,x2,y2)
+
+        return im.crop(bbox)
+    return im
 
 def profile(request, group, user_id):
     user = get_object_or_404(User, pk = user_id)
