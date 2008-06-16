@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from sphene.community.middleware import get_current_request, get_current_sphdata
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
+from sphene.community import sphsettings
 from django.utils.translation import ugettext as _
 from django.template import RequestContext
 import logging
@@ -72,6 +73,9 @@ try:
         return ('sphene.community.views.captcha_image', (), { 'token_id': self.id })
     get_absolute_captcha_url = sphpermalink(captcha_request_get_absolute_url, get_current_request)
     
+    # update the captcha settings defaults (which can still be overridden by a set_sph_setting)
+    sphsettings.add_setting_defaults({'community_email_anonymous_require_captcha': True})
+
     usecaptcha = True
 except:
     usecaptcha = False
@@ -167,8 +171,6 @@ class HTML:
 
     def toxml(self):
         return self.value
-
-from sphene.community import sphsettings
 
 def add_setting_defaults(newdefaults):
     """
