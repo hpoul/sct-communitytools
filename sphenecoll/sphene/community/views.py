@@ -30,7 +30,15 @@ from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField(label=_(u'Email address'))
+    captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
+                                    help_text = _(u'Please enter the result of the above calculation.'),
+                                    )
     
+    def __init__(self, *args, **kwargs):
+        super(RegisterEmailAddress, self).__init__(*args, **kwargs)
+        if not sphutils.has_captcha_support() or not sphsettings.get_sph_setting('community_register_require_captcha', False):
+            del self.fields['captcha']
+
     def clean(self):
         if 'email_address' not in self.cleaned_data:
             return self.cleaned_data
