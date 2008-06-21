@@ -5,7 +5,7 @@ from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
 
 # We don't want to match anything in HTML link tags.. so we exclude them completely.
-WIKILINK_RE = r'''(?P<urls><a .*?>.*?</a)|(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\]))'''
+WIKILINK_RE = r'''((?P<urls><a .*?>.*?</a)|(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\])))'''
 
 WIKILINK_RE = get_sph_setting( 'wikilink_regexp', WIKILINK_RE )
 
