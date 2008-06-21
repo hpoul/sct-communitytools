@@ -4,7 +4,6 @@ from sphene.sphwiki.models import WikiSnip
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
 
-WIKILINK_RE = r'''(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\]))'''
 # We don't want to match anything in HTML link tags.. so we exclude them completely.
 WIKILINK_RE = r'''(?P<urls><a .*?>.*?</a)|(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\]))'''
 
