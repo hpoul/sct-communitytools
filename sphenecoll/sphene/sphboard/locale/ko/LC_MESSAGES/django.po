@@ -18,7 +18,7 @@ msgstr ""
 
 #: boardforms.py:19
 msgid "-- Select Category --"
-msgstr "-- 카테고리 --"
+msgstr "-- 카테고리 선택 --"
 
 #: feeds.py:22 feeds.py:25
 #, python-format
@@ -50,7 +50,7 @@ msgstr "마크업을 렌더링할 수 없습니다. '%(markup)s'"
 #: renderers.py:158
 #, python-format
 msgid "You can use %(description)s in your posts"
-msgstr "%(description)s은 글 등록시 사용할 수 없습니다."
+msgstr "%(description)s은 글 등록시 사용할 수 있습니다."
 
 #: views.py:154
 msgid "Subject"
@@ -74,7 +74,7 @@ msgstr "답 (한줄)"
 
 #: views.py:184
 msgid "Allowed Choices per User"
-msgstr ""
+msgstr "사용자당 허락된 답변수"
 
 #: views.py:185
 msgid "Enter how many answers a user can select."
@@ -107,16 +107,16 @@ msgstr "카테고리를 선택하세요"
 
 #: views.py:471
 msgid "Please describe why this thread had to be moved. "
-msgstr "글을 이동하는 이유를 쓰세요."
+msgstr "글을 다른 게시판으로 이동하는 이유를 쓰세요."
 
 #: views.py:520
 msgid "Moved thread into new category."
-msgstr "글타래가 새로운 카테고리로 이동되었습니다."
+msgstr "글이 새로운 카테고리로 이동되었습니다."
 
 #: views.py:531
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
-msgstr "이 글타래는  %(category_name)s 카테고리로 이동되었습니다."
+msgstr "이 글은 %(category_name)s 카테고리로 이동되었습니다."
 
 #: views.py:545
 msgid "You have already voted."
@@ -151,11 +151,11 @@ msgstr "선택하신 곳에는 투표하실 수 없습니다."
 
 #: views.py:594
 msgid "Successfully created email notification monitor."
-msgstr "성공적으로 이메일 통지 모니터를 수행하였습니다."
+msgstr "성공적으로 이 게시판에 새 글에 대한 이메일 통보를 받도록 설정하였습니다."
 
 #: views.py:596
 msgid "Removed email notification monitor."
-msgstr "이메일 통지 모니터가 제거 되었습니다."
+msgstr "이 게시판의 새 글에 대한 이메일 통보 기능이 제거 되었습니다."
 
 #: templates/sphene/sphboard/_displayBreadcrumbs.html:2
 msgid "Board"
@@ -186,7 +186,7 @@ msgstr "이직 게시물이 없습니다."
 msgid ""
 "You are already receiving email notifications for this thread or category."
 msgstr ""
-"당신은 이미 이 글타래 또는 카테고리에 대한 이메일 통지를 받의셨습니다."
+"당신은 이미 이 글 또는 카테고리에 대한 이메일 통보를 받어셨습니다."
 
 #: templates/sphene/sphboard/_displayPostForm.html:34
 msgid "Notify me by email on new posts in this thread."
@@ -218,15 +218,15 @@ msgstr "미리보기"
 
 #: templates/sphene/sphboard/_new_thread_link.html:4
 msgid "Post New Thread"
-msgstr "새 글타래 등록"
+msgstr "새 글 등록"
 
 #: templates/sphene/sphboard/_new_thread_link.html:8
 msgid "You have no permission to create a new thread."
-msgstr "새 글타래를 등록하실 권한이 없습니다."
+msgstr "새 글을 등록하실 권한이 없습니다."
 
 #: templates/sphene/sphboard/_new_thread_link.html:10
 msgid "Please login to create a new thread."
-msgstr "새 글타래를 등록하실려면 로그인 해 주세요."
+msgstr "새 글을 등록하실려면 로그인 해 주세요."
 
 #: templates/sphene/sphboard/_post_authorinfo.html:4
 msgid "Posted by"
@@ -254,13 +254,13 @@ msgstr "최근 글"
 #: templates/sphene/sphboard/listCategories.html:23
 #: templates/sphene/sphboard/showThread.html:56
 msgid "You are currently receiving email notifications on new posts."
-msgstr "새로운 글에 대한 이메일 통지를 받으셨습니다."
+msgstr "새로운 글에 대한 이메일 통보를 받으셨습니다."
 
 #: templates/sphene/sphboard/listCategories.html:14
 #: templates/sphene/sphboard/listCategories.html:23
 #: templates/sphene/sphboard/showThread.html:56
 msgid "Stop notifications"
-msgstr "통지 중지"
+msgstr "통보 중지"
 
 #: templates/sphene/sphboard/listCategories.html:16
 #: templates/sphene/sphboard/showThread.html:58
@@ -268,14 +268,14 @@ msgid ""
 "You are currently receiving email notifications on new posts because you "
 "subscribed to a parent category."
 msgstr ""
-"새로은 글에 대한 이메일 통지를 받으셨습니다."
-"왜냐하면 당신은 상위 카테고리에 "
+"새로은 글에 대한 이메일 통보를 받으셨습니다."
+"왜냐하면 당신은 상위 카테고리에서 이 기능에 등록되어있기 때문입니다."
 
 #: templates/sphene/sphboard/listCategories.html:19
 #: templates/sphene/sphboard/listCategories.html:26
 #: templates/sphene/sphboard/showThread.html:61
 msgid "Notify me by email on new posts."
-msgstr "새로운 글에 이메일로 나에게 통지"
+msgstr "새로운 글에 이메일로 나에게 통보"
 
 #: templates/sphene/sphboard/listCategories.html:36
 msgid "Title"
@@ -284,7 +284,7 @@ msgstr "제목"
 #: templates/sphene/sphboard/listCategories.html:37
 #: templates/sphene/sphboard/listCategories.html:59
 msgid "Threads"
-msgstr "스레드"
+msgstr "글"
 
 #: templates/sphene/sphboard/listCategories.html:38
 #: templates/sphene/sphboard/listCategories.html:66
@@ -315,14 +315,16 @@ msgid ""
 "Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%"
 "(cat_url)s\">%(cat_name)s</a>."
 msgstr ""
+"글이: <a href=\"%(th_url)s\">%(th_subject)s</a> 에서 <a href=\"%"
+"(cat_url)s\">%(cat_name)s</a>로 이동되었습니다."
 
 #: templates/sphene/sphboard/listCategories.html:78
 msgid "Sticky:"
-msgstr "찜:"
+msgstr "이글을 찜:"
 
 #: templates/sphene/sphboard/listCategories.html:78
 msgid "Hot:"
-msgstr "핫:"
+msgstr "Hot:"
 
 #: templates/sphene/sphboard/listCategories.html:78
 #: templates/sphene/sphboard/showThread.html:122
@@ -349,12 +351,12 @@ msgstr "캐치 업"
 #: templates/sphene/sphboard/move.html:10
 #, python-format
 msgid "Move Thread: %(subject)s by "
-msgstr "이동 글타래: %(subject)s"
+msgstr "이동 글: %(subject)s"
 
 #: templates/sphene/sphboard/move.html:17
 #: templates/sphene/sphboard/showThread.html:41
 msgid "Move Thread"
-msgstr "글타래 이동"
+msgstr "글 이동"
 
 #: templates/sphene/sphboard/post.html:14
 msgid "Editing post"
@@ -375,19 +377,19 @@ msgstr "스레드 옵션"
 
 #: templates/sphene/sphboard/showThread.html:30
 msgid "Remove Sticky"
-msgstr "스티키 지우기"
+msgstr "찜기능 삭제"
 
 #: templates/sphene/sphboard/showThread.html:32
 msgid "Make Sticky"
-msgstr "스티키 표시"
+msgstr "이 글을 찜하기"
 
 #: templates/sphene/sphboard/showThread.html:37
 msgid "Unlock Thread"
-msgstr "글타래 풀기"
+msgstr "글 제한 풀기"
 
 #: templates/sphene/sphboard/showThread.html:37
 msgid "Lock Thread"
-msgstr "글타래 잠그기"
+msgstr "글 잠그기"
 
 #: templates/sphene/sphboard/showThread.html:48
 msgid "Store"
@@ -453,7 +455,7 @@ msgstr "답글 달기"
 
 #: templates/sphene/sphboard/showThread.html:176
 msgid "Thread is locked."
-msgstr "글타래가 잠겼습니다."
+msgstr "글이 잠겼습니다."
 
 #: templates/sphene/sphboard/showThread.html:179
 msgid "You have no permission to post a reply."

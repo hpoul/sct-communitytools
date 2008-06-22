@@ -55,7 +55,7 @@ msgstr "다른 사용자가 이미 %(email)s 이 메일 주소를 사용하고 �
 
 #: views.py:59
 msgid "No user found with that email address."
-msgstr "그 이 메일 주소로 사용자를 찾을 수 없습니다."
+msgstr "해당 이메일 주소 사용자를 찾을 수 없습니다."
 
 #: views.py:82
 msgid "Your requested username / password"
@@ -68,7 +68,7 @@ msgstr "사용자명 / 암호 %(site_name)s"
 
 #: views.py:111
 msgid "Email verification required"
-msgstr "이 메일 검증이 필요합니다."
+msgstr "이 메일 확인이 필요합니다."
 
 #: views.py:113
 #, python-format
@@ -122,7 +122,7 @@ msgid ""
 "An email containing the required validation code has been sent to <b>%(email)"
 "s</b>.<br/>\n"
 "  Please check your emails to continue registration process."
-msgstr "인증 코드를 포함한 이 메일이 <b>%(email)s 로</b>발송되었습니다.<br/>\n 이메일을 확인 해 주세요."
+msgstr "인증 코드를 포함한 이메일이 <b>%(email)s 로</b>발송되었습니다.<br/>\n 이메일을 확인 해 주세요."
 
 #: community/register_hash.html:5 community/register_hash_success.html:5
 msgid "User Registration"
