@@ -100,7 +100,7 @@ msgstr "PDF 다운로드"
 #: templates/sphene/sphwiki/history.html:10
 #: templates/sphene/sphwiki/listAttachments.html:19
 msgid "Back to Snip"
-msgstr "Snip으로 돌아가기"
+msgstr "이전 페이지로 돌아가기"
 
 #: templates/sphene/sphwiki/diff.html:14
 msgid "Previous Change"
@@ -130,11 +130,11 @@ msgstr ""
 #: templates/sphene/sphwiki/editSnip.html:27
 #: templates/sphene/sphwiki/history.html:16
 msgid "Change Message"
-msgstr "Log Meldung"
+msgstr "변경 메세지"
 
 #: templates/sphene/sphwiki/editSnip.html:30
 msgid "Preview"
-msgstr "이전"
+msgstr "미리보기"
 
 #: templates/sphene/sphwiki/history.html:14
 msgid "Date"
@@ -191,7 +191,7 @@ msgstr "마지막 수정일 %(snip_changedate)s 수정인 %(snip_editor)s"
 
 #: templates/sphene/sphwiki/showSnip.html:31
 msgid "Snip Changes"
-msgstr "스닢 변경"
+msgstr "이 페이지의 변경 히스토리"
 
 #: templates/sphene/sphwiki/showSnip.html:31
 msgid "Wiki History"
@@ -201,7 +201,7 @@ msgstr "위키 히스토리"
 #, python-format
 msgid "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s does not yet exist."
 msgstr ""
-"스닢 %(snip_prefix)s%(snip_name)s%(snip_postfix)s 은 아직 존재하지 않습니다. "
+"%(snip_prefix)s%(snip_name)s%(snip_postfix)s페이지는 아직 존재하지 않습니다. "
 
 #: templates/sphene/sphwiki/showSnip.html:33
 msgid "Create It."
