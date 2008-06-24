@@ -277,9 +277,14 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
 
         category = thread.category
         context['thread'] = thread
+        
+        if not thread.allowPosting( request.user ):
+            raise PermissionDenied()
     else:
         category = get_object_or_404(Category, pk = category_id)
-    if not category.allowPostThread( request.user ): raise Http404;
+        if not category.allowPostThread( request.user ):
+            raise PermissionDenied()
+
     context['category'] = category
 
     category_type = category.get_category_type()
