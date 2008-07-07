@@ -37,8 +37,10 @@ class BBCodeRenderer(BaseRenderer):
         return test.group()
 
     def render(self, text):
-        return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(text))
-
+         if get_sph_setting( 'board_auto_wiki_link_enabled', True ):
+             return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(text))
+         else:
+             return bbcode.bb2xhtml(text)
 
 HTML_ALLOWED_TAGS = {
     'p': ( 'align' ),

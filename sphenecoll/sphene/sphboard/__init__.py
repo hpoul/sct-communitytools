@@ -34,6 +34,12 @@ add_setting_defaults( {
     # Allow users to attach files to their posts ?
     'board_allow_attachments': True,
 
+    # Pass the board and blog posts through the wiki camel case
+    # markup. This will allow wiki links to be automatically placed
+    # into the posts. It is better to turn this off and use the
+    # sph extended BBCODE wiki label.
+    'board_auto_wiki_link_enabled': True,
+
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
     })
 
