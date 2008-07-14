@@ -301,6 +301,9 @@ class Category(models.Model):
 
         if level == 1 and self.group.get_member(user) != None:
             return True
+
+        if level <= 2 and user.is_staff:
+            return True
         
         return user.has_perm( 'sphboard.add_post' );
 
