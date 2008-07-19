@@ -300,10 +300,6 @@ class WikiSnip(models.Model):
         pref = self.get_wiki_preference()
         return pref == None or self.__has_permission(user, pref, pref.view)
 
-    class Admin:
-        list_display = ('name', 'group', 'title', 'changed', )
-        list_filter = ('group',)
-
 
 class WikiSnipChange(models.Model):
     snip = models.ForeignKey(WikiSnip)
@@ -356,8 +352,6 @@ class WikiPreference(models.Model):
     view = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
     edit = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
 
-    class Admin:
-        list_display = ( 'snip', 'view', 'edit' )
 
 class WikiAttachment(models.Model):
     snip = models.ForeignKey(WikiSnip, editable = False)
@@ -379,8 +373,6 @@ class WikiAttachment(models.Model):
     def __unicode__(self):
         return self.fileupload
 
-    class Admin:
-        pass
 
 
 

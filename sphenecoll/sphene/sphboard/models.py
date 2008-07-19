@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.contrib import admin
 
 from sphene.community.permissionutils import has_permission_flag
 from sphene.community.models import Group, Role, PermissionFlag, RoleMember
@@ -472,11 +473,6 @@ class Category(models.Model):
     class Meta:
         ordering = ['sortorder']
     
-    class Admin:
-        list_display = ('name', 'group', 'parent', 'allowview', 'category_type' )
-        list_filter = ('group', 'parent', )
-        search_fields = ('name')
-
 
 
 class ThreadLastVisit(models.Model):
@@ -498,12 +494,6 @@ class CategoryLastVisit(models.Model):
 
     changelog = ( ( '2007-06-15 00', 'alter', 'ADD oldlastvisit timestamp with time zone' ),
                   )
-
-
-    class Admin:
-        list_display = ('user', 'lastvisit')
-        list_filter = ('user',)
-        pass
 
     class Meta:
         unique_together = ('user', 'category')
@@ -968,8 +958,6 @@ class Post(models.Model):
         return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
     get_absolute_annotate_url = permalink(get_absolute_annotate_url, get_current_request)
 
-    class Admin:
-        pass
 
 
 class PostAttachment(models.Model):
@@ -1252,9 +1240,6 @@ class Monitor(models.Model):
     group = models.ForeignKey(Group)
     user = models.ForeignKey(User)
 
-    class Admin:
-        list_display = ('user', 'group', 'category', 'thread')
-        list_filter = ('user', 'group')
 
 
 class Poll(models.Model):
@@ -1296,8 +1281,6 @@ class Poll(models.Model):
         return ('sphboard_edit_poll', (), { 'poll_id': self.id, })
     get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
 
-    class Admin:
-        pass
 
 class PollChoice(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
@@ -1313,8 +1296,6 @@ class PollChoice(models.Model):
     class Meta:
         ordering = [ 'sortorder' ]
 
-    class Admin:
-        pass
 
 class PollVoters(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
@@ -1394,8 +1375,6 @@ class ExtendedCategoryConfig(models.Model):
     post_new_thread_label = models.CharField( max_length = 250, blank = True)
     above_thread_list_block = models.TextField(blank = True, help_text = 'HTML which will be displayed above the thread list.')
 
-    class Admin:
-        pass
 
 
 from django import newforms as forms

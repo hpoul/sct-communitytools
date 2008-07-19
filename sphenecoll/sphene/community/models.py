@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -36,8 +37,6 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-    class Admin:
-        pass
 
 
 USERLEVEL_CHOICES = (
@@ -62,10 +61,6 @@ class GroupMember(models.Model):
                     return str;
 
 
-        class Admin:
-                list_display = ('group', 'user',)
-                list_filter = ('group',)
-
 
 class Theme(models.Model):
         name = models.CharField(max_length = 250)
@@ -74,8 +69,6 @@ class Theme(models.Model):
         def __unicode__(self):
                 return self.name;
 
-        class Admin:
-                pass
 
 NAVIGATION_URL_TYPES = (
         (0, 'Relative (e.g. /wiki/show/Start)'),
@@ -101,11 +94,6 @@ class Navigation(models.Model):
 
         class Meta:
                 ordering = ['sortorder']
-
-        class Admin:
-                list_display = ( 'label', 'group', 'href', 'navigationType', 'sortorder' )
-                list_filter = ( 'group', 'navigationType' )
-                ordering = ['group', 'navigationType', 'sortorder']
         
 
 class ApplicationChangelog(models.Model):
@@ -154,8 +142,6 @@ class CommunityUserProfileField(models.Model):
     class Meta:
         ordering = [ 'sortorder' ]
 
-    class Admin:
-        list_display = ('name', 'regex', 'renderstring', 'sortorder', )
 
 class CommunityUserProfileFieldValue(models.Model):
     user_profile = models.ForeignKey( CommunityUserProfile )
@@ -181,9 +167,6 @@ class GroupTemplate(models.Model):
     class Meta:
         unique_together = (("group", "template_name"),)
 
-    class Admin:
-        list_display = ('template_name', 'group')
-        list_filter = ( 'group', 'template_name' )
 
 
 class PermissionFlag(models.Model):
@@ -244,8 +227,6 @@ class Role(models.Model):
     class Meta:
         unique_together = (('name', 'group'),)
 
-    class Admin:
-        ordering = ('group__id', 'name')
 
 
 class RoleMember(models.Model):
@@ -276,8 +257,6 @@ class RoleMember(models.Model):
         limitation = self.rolememberlimitation_set.get()
         return "%s: %s" % (limitation.object_type.model_class()._meta.object_name, unicode(limitation.content_object))
 
-    class Admin:
-        pass
 
 
 class RoleMemberLimitation(models.Model):
