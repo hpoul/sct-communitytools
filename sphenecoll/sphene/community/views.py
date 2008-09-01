@@ -2,7 +2,7 @@
 
 from time import time
 
-from django import newforms as forms
+from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -11,7 +11,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template import loader, Context
 from django.core.mail import send_mail, EmailMultiAlternatives
-from django.dispatch import dispatcher
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
@@ -316,9 +315,8 @@ def profile(request, group, user_id):
         has_edit_permission = True
         profile_edit_url = sph_reverse( 'sphene.community.views.profile_edit', (), { 'user_id': user.id, })
 
-    ret = dispatcher.send(signal = profile_display,
-                          request = request,
-                          user = user, )
+    ret = profile_display.send(request = request,
+                               user = user, )
 
     additionalprofile = ''
     blocks = list()
@@ -361,11 +359,10 @@ def profile_edit(request, group, user_id):
     else:
         form = EditProfileForm(user)
 
-    dispatcher.send(signal = profile_edit_init_form,
-                    sender = EditProfileForm,
-                    instance = form,
-                    request = request,
-                    )
+    profile_edit_init_form.send(sender = EditProfileForm,
+                                instance = form,
+                                request = request,
+                                )
     
     if request.method == 'POST':
         if form.is_valid():
@@ -381,12 +378,10 @@ def profile_edit(request, group, user_id):
                 # Check was already made in form, we only need to change the password.
                 user.set_password( data['new_password'] )
 
-            dispatcher.send(signal = profile_edit_save_form,
-                            sender = EditProfileForm,
-                            instance = form,
-                            request = request,
-                            )
-            
+            profile_edit_save_form.send(sender = EditProfileForm,
+                                        instance = form,
+                                        request = request,
+                                        )
 
             user.save()
             request.user.message_set.create( message = _(u'Successfully changed user profile.') )

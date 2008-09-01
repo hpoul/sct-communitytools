@@ -2,7 +2,6 @@ import os
 
 from django.conf import settings
 from django.db.models import signals
-from django.dispatch import dispatcher
 from django.template import TemplateDoesNotExist
 
 from sphene.community.models import GroupTemplate, Group
@@ -74,13 +73,12 @@ def _recursive_clear_template_cache(template_name, group):
     for child in children:
         _recursive_clear_template_cache( template_name, child )
 
-def clear_template_cache(instance):
+def clear_template_cache(instance, **kwargs):
     """
     Clears the template cache for the given instance, and all subgroups.
     """
     _recursive_clear_template_cache(instance.template_name, instance.group)
 
 
-dispatcher.connect(clear_template_cache,
-                   sender = GroupTemplate,
-                   signal = signals.post_save)
+signals.post_save.connect(clear_template_cache,
+                   sender = GroupTemplate)

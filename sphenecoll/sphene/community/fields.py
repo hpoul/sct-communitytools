@@ -1,4 +1,4 @@
-from django import newforms as forms
+from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 

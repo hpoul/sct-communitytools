@@ -8,7 +8,7 @@
 from django.conf import settings
 
 if hasattr(settings, 'SPH_SETTINGS') and settings.SPH_SETTINGS.get('django096compatibility', False):
-    from django import newforms as forms
+    from django import forms
 
     if not hasattr(forms.Form, 'cleaned_data'):
         def get_cleaned_data(self):

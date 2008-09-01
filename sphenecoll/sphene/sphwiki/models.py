@@ -164,12 +164,12 @@ class WikiSnip(models.Model):
 
         return False
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         if not self.id:
             self.created = datetime.today()
             self.creator = self.editor
         self.changed = datetime.today()
-        super(WikiSnip, self).save()
+        super(WikiSnip, self).save(force_insert=force_insert, force_update=force_update)
 
     def __unicode__(self):
         if not self.group: return self.name;
@@ -348,9 +348,9 @@ class WikiSnipChange(models.Model):
 
 
 class WikiPreference(models.Model):
-    snip = models.ForeignKey(WikiSnip, edit_inline = models.STACKED, max_num_in_admin = 1)
-    view = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
-    edit = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES, core = True )
+    snip = models.ForeignKey(WikiSnip)
+    view = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
+    edit = models.IntegerField( choices = WIKI_PERMISSIONS_ALLOWED_CHOICES )
 
 
 class WikiAttachment(models.Model):
@@ -366,9 +366,9 @@ class WikiAttachment(models.Model):
         return ('sphene.sphwiki.views.attachmentEdit', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'attachmentId': self.id } )
     get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         self.uploaded = datetime.today()
-        super(WikiAttachment, self).save()
+        super(WikiAttachment, self).save(force_insert=force_insert, force_update=force_update)
 
     def __unicode__(self):
         return self.fileupload

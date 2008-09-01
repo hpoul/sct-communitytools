@@ -1,4 +1,4 @@
-from django import newforms as forms
+from django import forms
 from django.utils.safestring import mark_safe
 
 from sphene.community.models import Tag, TagLabel, TaggedItem, tag_set_labels, tag_get_labels

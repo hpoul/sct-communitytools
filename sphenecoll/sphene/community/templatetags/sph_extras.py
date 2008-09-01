@@ -18,6 +18,9 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext
 from django.utils.translation import ugettext_lazy
     
+import logging
+log = logging.getLogger('sph_extras')
+    
 register = template.Library()
 
 
@@ -200,7 +203,7 @@ def sph_publicemailaddress(value):
     try:
         profile = CommunityUserProfile.objects.get( user = value, )
     except CommunityUserProfile.DoesNotExist:
-        return value.email
+        return "n/a" #value.email
     return profile.public_emailaddress or value.email
 
 @register.filter
@@ -331,6 +334,7 @@ def sph_showavatar(user):
     avatar_height = None
     if not profile or not profile.avatar:
         avatar = get_sph_setting( 'community_avatar_default' )
+        log.error("got default avatar: %s", avatar)
         if not avatar:
             return ''
         avatar_width = get_sph_setting( 'community_avatar_default_width' )
@@ -340,6 +344,7 @@ def sph_showavatar(user):
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
         
+    log.info("avatar: %s", avatar)
     return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height, _(u'Users avatar'))
 
 @register.inclusion_tag('sphene/community/templatetags/_form.html')

@@ -45,8 +45,8 @@ USERLEVEL_CHOICES = (
     )
 
 class GroupMember(models.Model):
-        group = models.ForeignKey( Group, edit_inline = models.TABULAR, core = True )
-        user = models.ForeignKey( User, core = True, )
+        group = models.ForeignKey( Group )
+        user = models.ForeignKey( User, )
         userlevel = models.IntegerField( choices = USERLEVEL_CHOICES )
 
 
@@ -492,8 +492,7 @@ class TaggedItem(models.Model):
 ### hooks
 ###
 
-from django.dispatch import dispatcher
-from django import newforms as forms
+from django import forms
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 
@@ -579,7 +578,7 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
     
     request.user.message_set.create( message = _("Successfully saved community profile.") )
 
-def community_profile_display(sender, signal, request, user):
+def community_profile_display(sender, signal, request, user, **kwargs):
     try:
         profile = CommunityUserProfile.objects.get( user = user, )
     except CommunityUserProfile.DoesNotExist:
@@ -599,8 +598,8 @@ def community_profile_display(sender, signal, request, user):
                                             
     return ret
 
-dispatcher.connect(community_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
-dispatcher.connect(community_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
-dispatcher.connect(community_profile_display, signal = profile_display)
+profile_edit_init_form.connect(community_profile_edit_init_form, sender = EditProfileForm)
+profile_edit_save_form.connect(community_profile_edit_save_form, sender = EditProfileForm)
+profile_display.connect(community_profile_display)
 
 

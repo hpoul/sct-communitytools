@@ -1,11 +1,10 @@
 # Create your views here.
-from django import newforms as forms, template
+from django import forms, template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.db.models import Q
 from django.template.context import RequestContext
-from django.dispatch import dispatcher
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.utils.translation import ugettext, string_concat
 from django.core.urlresolvers import reverse

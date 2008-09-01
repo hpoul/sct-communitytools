@@ -1,11 +1,11 @@
-from django import newforms as forms
-from django.newforms import widgets
+from django import forms
+from django.forms import widgets
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.template import loader
 from django.template.context import RequestContext
-from django import newforms as forms
-from django.newforms import widgets
+from django import forms
+from django.forms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings

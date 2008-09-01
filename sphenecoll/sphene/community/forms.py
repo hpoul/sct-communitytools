@@ -1,5 +1,4 @@
-from django import newforms as forms
-from django.dispatch import dispatcher
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from sphene.community.signals import profile_edit_init_form

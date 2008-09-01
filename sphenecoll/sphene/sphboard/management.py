@@ -1,4 +1,3 @@
-from django.dispatch import dispatcher
 from django.db.models import signals
 
 from sphene.sphboard import models
@@ -43,5 +42,5 @@ def synchronize_threadinformation(verbosity = -1):
 
 
 from sphene.community.management import do_changelog
-dispatcher.connect(do_changelog, sender=models, signal=signals.post_syncdb)
-dispatcher.connect(init_data, sender=models, signal=signals.post_syncdb)
+signals.post_syncdb.connect(do_changelog, sender=models)
+signals.post_syncdb.connect(init_data, sender=models)

@@ -4,7 +4,6 @@ from django.db import models
 from django.db.models import signals
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.dispatch import dispatcher
 
 
 from sphene.community.middleware import get_current_group
@@ -70,16 +69,14 @@ class CommentsCategoryConfig(models.Model):
 
 
 
-def clear_root_category_cache(instance):
+def clear_root_category_cache(instance, **kwargs):
     # TODO - This is a 'bit' flawed because it only works on single-process
     # installations.. which is pretty unrealistic
     # We should probably use django caching for this !
     root_category_id = {}
 
-dispatcher.connect(clear_root_category_cache,
-                   sender = Category,
-                   signal = signals.post_save)
-dispatcher.connect(clear_root_category_cache,
-                   sender = Category,
-                   signal = signals.post_delete)
-
+signals.post_save.connect(clear_root_category_cache,
+                   sender = Category)
+                   
+signals.post_delete.connect(clear_root_category_cache,
+                   sender = Category)

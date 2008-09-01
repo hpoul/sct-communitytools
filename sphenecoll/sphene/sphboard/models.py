@@ -14,7 +14,6 @@ from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 
 #from django.db.models import permalink
-from django.dispatch import dispatcher
 from django.db.models import signals
 from sphene.community.sphutils import sphpermalink as permalink, get_urlconf, get_sph_setting, get_method_by_name
 import sphene.community.signals
@@ -842,7 +841,7 @@ class Post(models.Model):
             self.__monitor = monitor
             return monitor
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         isnew = not self.id
 
         if isnew and self.is_hidden != 0:
@@ -856,7 +855,7 @@ class Post(models.Model):
         # signal handler if this is really a new post (to send out email notifications
         # or similar)
         self.is_new_post = isnew
-        ret = super(Post, self).save()
+        ret = super(Post, self).save(force_insert=force_insert, force_update=force_update)
 
         # Clear cache
         cache.delete( self.__get_render_cachekey() )
@@ -986,7 +985,7 @@ class PostAnnotation(models.Model):
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         if not self.post.is_annotated():
             self.post.set_annotated(True)
             self.post.save()
@@ -994,7 +993,7 @@ class PostAnnotation(models.Model):
             self.created = datetime.today()
         if not self.id:
             self.author = get_current_user()
-        return super(PostAnnotation, self).save()
+        return super(PostAnnotation, self).save(force_insert=force_insert, force_update=force_update)
 
     def body_escaped(self):
         body = self.body
@@ -1040,11 +1039,11 @@ class ThreadInformation(models.Model):
     objects = ThreadInformationManager()
 
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         if self.thread_latest_postdate is None:
             self.thread_latest_postdate = self.latest_post.postdate
         
-        super(ThreadInformation, self).save()
+        super(ThreadInformation, self).save(force_insert=force_insert, force_update=force_update)
 
     def is_hot(self):
         if self.heat_calculated and (datetime.today() - self.heat_calculated).days > 7:
@@ -1180,7 +1179,7 @@ def calculate_heat(thread, postcount, viewcount, age):
 
     return heat
 
-def update_heat():
+def update_heat(**kwargs):
     """
     This method should be regularly called through a cronjob or similar -
     this can be done by simply dispatching the maintenance signal.
@@ -1192,10 +1191,9 @@ def update_heat():
         thread.update_heat()
         thread.save()
 
-dispatcher.connect(update_heat,
-                   signal = sphene.community.signals.maintenance, )
+sphene.community.signals.maintenance.connect(update_heat)
 
-def update_thread_information(instance):
+def update_thread_information(instance, **kwargs):
     """
     Updates the thread information every time a post is saved.
     """
@@ -1215,9 +1213,9 @@ def update_thread_information(instance):
         threadinfo.save()
 
 
-dispatcher.connect(update_thread_information,
-                   sender = Post,
-                   signal = signals.post_save)
+signals.post_save.connect(update_thread_information,
+                   sender = Post)
+
 
 def ensure_thread_information():
     """
@@ -1356,12 +1354,12 @@ class UserPostCount(models.Model):
     class Meta:
         unique_together = ( 'user', 'group' )
 
-def update_post_count(instance):
+def update_post_count(instance, **kwargs):
     UserPostCount.objects.update_post_count( instance.author, instance.category.group )
 
-dispatcher.connect(update_post_count,
-                   sender = Post,
-                   signal = signals.post_save)
+
+signals.post_save.connect(update_post_count,
+                   sender = Post)
 
 
 class ExtendedCategoryConfig(models.Model):
@@ -1377,7 +1375,7 @@ class ExtendedCategoryConfig(models.Model):
 
 
 
-from django import newforms as forms
+from django import forms
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 
@@ -1403,13 +1401,12 @@ def get_rendered_signature(user_id):
     
     return rendered_profile
 
-def clear_signature_cache(instance):
+def clear_signature_cache(instance, **kwargs):
     cache.delete( __get_signature_cachekey( instance.user.id ) )
 
 
-dispatcher.connect(clear_signature_cache,
-                   sender = BoardUserProfile,
-                   signal = signals.post_save)
+signals.post_save.connect(clear_signature_cache,
+                   sender = BoardUserProfile)
 
 
 def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
@@ -1432,7 +1429,7 @@ def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
                                                                         required = False,
                                                                         initial = profile.default_notifyme_value, )
 
-def board_profile_edit_save_form(sender, instance, signal, request):
+def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     user = instance.user
     data = instance.cleaned_data
     try:
@@ -1451,7 +1448,7 @@ def board_profile_edit_save_form(sender, instance, signal, request):
     request.user.message_set.create( message = ugettext(u"Successfully saved board profile.") )
 
 
-def board_profile_display(sender, signal, request, user):
+def board_profile_display(sender, signal, request, user, **kwargs):
     ret = '<tr><th>%s</th><td>%d</td></tr>' % (
             _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()), )
     try:
@@ -1469,6 +1466,6 @@ def board_profile_display(sender, signal, request, user):
     return { 'additionalprofile': ret,
              'block': mark_safe(blocks), }
 
-dispatcher.connect(board_profile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
-dispatcher.connect(board_profile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
-dispatcher.connect(board_profile_display, signal = profile_display)
+profile_edit_init_form.connect(board_profile_edit_init_form, sender = EditProfileForm)
+profile_edit_save_form.connect(board_profile_edit_save_form, sender = EditProfileForm)
+profile_display.connect(board_profile_display)

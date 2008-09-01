@@ -1,10 +1,8 @@
 class PermissionDenied(Exception):
     pass
 
-
-from django.dispatch import dispatcher
 # We can't import it as 'forms' because we've got a package called 'forms' .. how smart.
-from django import newforms as djangoforms
+from django import forms as djangoforms
 from django.conf import settings
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
@@ -69,7 +67,7 @@ def community_advprofile_edit_init_form(sender, instance, signal, *args, **kwarg
     instance.fields['community_advprofile_avatar'] = djangoforms.ImageField( label = _(u'Avatar'), required = False, )
     instance.clean_community_advprofile_avatar = lambda : clean_community_advprofile_avatar(instance)
 
-def community_advprofile_edit_save_form(sender, instance, signal, request):
+def community_advprofile_edit_save_form(sender, instance, signal, request, **kwargs):
     data = instance.cleaned_data
     user = instance.user
     try:
@@ -89,7 +87,7 @@ def community_advprofile_edit_save_form(sender, instance, signal, request):
 
 from sphene.community.templatetags import sph_extras
 
-def community_advprofile_display(sender, signal, request, user):
+def community_advprofile_display(sender, signal, request, user, **kwargs):
     try:
         profile = CommunityUserProfile.objects.get( user = user, )
     except CommunityUserProfile.DoesNotExist:
@@ -117,8 +115,8 @@ def community_advprofile_display(sender, signal, request, user):
     
     return ret
 
-dispatcher.connect(community_advprofile_edit_init_form, signal = profile_edit_init_form, sender = EditProfileForm)
-dispatcher.connect(community_advprofile_edit_save_form, signal = profile_edit_save_form, sender = EditProfileForm)
-dispatcher.connect(community_advprofile_display, signal = profile_display)
+profile_edit_init_form.connect(community_advprofile_edit_init_form, sender = EditProfileForm)
+profile_edit_save_form.connect(community_advprofile_edit_save_form, sender = EditProfileForm)
+profile_display.connect(community_advprofile_display)
 
 

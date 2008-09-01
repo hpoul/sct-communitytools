@@ -60,7 +60,7 @@ class CategoryType(object):
 
     def get_post_form_class(self, replypost, editpost):
         """
-        Should return a 'newforms' form instance - a subclass of 
+        Should return a 'forms' form instance - a subclass of 
         sphene.sphboard.views.PostForm
 
         Arguments:

@@ -1,10 +1,9 @@
 from django import template
-from django import newforms as forms
+from django import forms
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import signals
-from django.dispatch import dispatcher
-from django.newforms import widgets
+from django.forms import widgets
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 
@@ -151,22 +150,20 @@ def clear_cache_all_languages(user_id, group_id):
     for code, name in settings.LANGUAGES:
         cache.delete( authorinfo_cachekey( user_id, group_id, code ) )
 
-def clear_authorinfo_cache(instance):
+def clear_authorinfo_cache(instance, **kwargs):
     for group in Group.objects.all():
         clear_cache_all_languages(instance.id, group.id)
 
-def clear_authorinfo_cache_postcount(instance):
+def clear_authorinfo_cache_postcount(instance, **kwargs):
     clear_cache_all_languages(instance.user.id, instance.group.id)
 
-dispatcher.connect(clear_authorinfo_cache,
-                   sender = User,
-                   signal = signals.post_save)
+signals.post_save.connect(clear_authorinfo_cache,
+                   sender = User)
 
-dispatcher.connect(clear_authorinfo_cache_postcount,
-                   sender = UserPostCount,
-                   signal = signals.post_save)
+signals.post_save.connect(clear_authorinfo_cache_postcount,
+                   sender = UserPostCount)
 
-def clear_posts_render_cache(instance):
+def clear_posts_render_cache(instance, **kwargs):
     for group in Group.objects.all():
         allowed_categories = get_all_viewable_categories( group, instance.user )
         post_list = Post.objects.filter( category__id__in = allowed_categories,
@@ -174,9 +171,8 @@ def clear_posts_render_cache(instance):
         for post in post_list:
             post.clear_render_cache()
 
-dispatcher.connect(clear_posts_render_cache,
-                   sender = CommunityUserProfile,
-                   signal = signals.post_save)
+signals.post_save.connect(clear_posts_render_cache,
+                   sender = CommunityUserProfile)
 
 
 class LatestThreadsNode(template.Node):

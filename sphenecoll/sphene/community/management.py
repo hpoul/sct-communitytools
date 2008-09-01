@@ -1,5 +1,4 @@
 
-from django.dispatch import dispatcher
 from django.db.models import signals, get_apps, get_models
 from sphene.community import models
 
@@ -132,11 +131,10 @@ def do_changelog(app, created_models, verbosity, **kwargs):
         else:
             print "Not updating database. You have to do this by hand !"
 
-dispatcher.connect(init_data, sender=models, signal=signals.post_syncdb)
-dispatcher.connect(do_changelog, signal=signals.post_syncdb)
+signals.post_syncdb.connect(init_data, sender=models)
+signals.post_syncdb.connect(do_changelog)
 
-
-def create_permission_flags(app, created_models, verbosity):
+def create_permission_flags(app, created_models, verbosity, **kwargs):
     """
     Creates permission flags by looking at the Meta class of all models.
 
@@ -188,4 +186,4 @@ def create_permission_flags(app, created_models, verbosity):
             
 
 
-dispatcher.connect(create_permission_flags ,signal=signals.post_syncdb)
+signals.post_syncdb.connect(create_permission_flags)

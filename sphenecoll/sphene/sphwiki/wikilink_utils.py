@@ -3,6 +3,8 @@ import re
 from sphene.sphwiki.models import WikiSnip
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
+import logging
+log = logging.getLogger('wikilink_utils')
 
 # We don't want to match anything in HTML link tags.. so we exclude them completely.
 WIKILINK_RE = r'''((?P<urls><a .*?>.*?</a)|(?P<escape>\\|\b)?(?P<wholeexpression>(((?P<camelcase>([A-Z]+[a-z-_0-9]+){2,})\b)|\[(?P<snipname>[A-Za-z-_/0-9]+)(\|(?P<sniplabel>.+?))?\])))'''
@@ -35,9 +37,13 @@ def handle_wikilinks_match(matchgroups):
                                      name = snipname, )
         href = snip.get_absolute_url()
     except WikiSnip.DoesNotExist:
-        
-        snip = WikiSnip( group = get_current_group(),
-                         name = snipname, )
+
+        try:
+            snip = WikiSnip( group = get_current_group(),
+                            name = snipname, )
+        except TypeError:
+            log.error('No group found when getting wikilinks. Ignoring.')
+            return { 'label' : label}
 
         if not snip.has_edit_permission() \
                 and get_sph_setting('wiki_links_nonexistent_show_only_privileged'):
