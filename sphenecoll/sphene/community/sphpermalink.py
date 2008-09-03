@@ -23,6 +23,9 @@ def sphpermalink(func, get_urlconf_func = None):
         
         bits = func(*args, **kwargs)
         viewname = bits[0]
+        # OMG that is an ugly hack !!
+        if 'groupName' in bits[2]:
+            del bits[2]['groupName']
 
         if not hasattr( urlconf, '__iter__' ) \
                 and not isinstance( urlconf, str ):

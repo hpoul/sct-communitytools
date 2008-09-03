@@ -29,8 +29,8 @@
     {% for attachment in object_list %}
       <tr>
         <td>{{ attachment.id }}</td>
-        <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.get_fileupload_filename|sph_basename }}')"><img src="{{ MEDIA_URL}}sphene/sphwiki/icons/edit-delete.png" alt="{% trans 'Delete'%}" title="{% trans 'Delete' %}" border="0" /></a></td>
-        <td><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a></td>
+        <td><a href="{{ attachment.get_absolute_editurl }}?delete=1" onClick="return verifyDelete('{{ attachment.fileupload.name|sph_basename }}')"><img src="{{ MEDIA_URL}}sphene/sphwiki/icons/edit-delete.png" alt="{% trans 'Delete'%}" title="{% trans 'Delete' %}" border="0" /></a></td>
+        <td><a href="{{ attachment.fileupload.url }}">{{ attachment.fileupload.name|sph_basename }}</a></td>
         <td>{{ attachment.uploaded|sph_date }}</td>
         <td>{% sph_html_user attachment.uploader %}</td>
       </tr>

@@ -5,7 +5,8 @@ import os
 
 from django.conf import settings
 
-from djapian.backend.backends import XapianIndexer
+#from djapian.backend.backends import XapianIndexer
+from djapian import Indexer
 
 from sphene.community import sphsettings
 from sphene.community.middleware import get_current_group, get_current_user
@@ -86,20 +87,21 @@ searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index'
 if not os.path.isdir(searchboard_post_index):
     os.makedirs(searchboard_post_index)
 
-post_index = XapianIndexer(
-    searchboard_post_index,
+post_index = Indexer(
+    path = searchboard_post_index,
 
-    Post,
+    model = Post,
 
-    [('Post.subject', 20), 'Post.body'],
+    fields = [('subject', 20), 'body'],
 
-    { 'subject': ('Post.subject', 20),
-      'date': 'Post.postdate',
-      'category': get_category_name,
-      'post_id': 'Post.id',
-      'category_id': get_category_id,
-      'group_id': get_group_id,
-      })
+    tags = [
+        ('subject', 'subject', 20),
+        ('date', 'postdate'),
+        ('category', 'category.name'),
+        ('post_id', 'id'),
+        ('category_id', 'category.id'),
+        ('group_id', 'category.group.id'),
+      ])
 
 
 post_index.boolean_fields = ('category_id', 'group_id',)

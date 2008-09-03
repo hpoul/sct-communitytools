@@ -273,8 +273,8 @@ class SphURLNode(Node):
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
 
-        if not 'groupName' in kwargs:
-            kwargs['groupName'] = get_current_group().name
+        #if not 'groupName' in kwargs:
+        #    kwargs['groupName'] = get_current_group().name
 
         req = get_current_request()
         urlconf = getattr(req, 'urlconf', None)
@@ -340,7 +340,7 @@ def sph_showavatar(user):
         avatar_width = get_sph_setting( 'community_avatar_default_width' )
         avatar_height = get_sph_setting( 'community_avatar_default_height' )
     else:
-        avatar = profile.get_avatar_url()
+        avatar = profile.avatar.url
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
         
@@ -362,15 +362,15 @@ def resize(file, size='200x200'):
     # defining the size
     width, height = size.split('x')
     # defining the filename and the miniature filename
-    basename, format = file.rsplit('.', 1)
+    basename, format = file.name.rsplit('.', 1)
     miniature = basename + '_' + size + '.thumb.' +  format
     miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
     miniature_url = os.path.join(settings.MEDIA_URL, miniature)
 
     # always calculate the width/height
     if width == 'X' or height == 'X':
-        filename = os.path.join(settings.MEDIA_ROOT, file)
-        image = Image.open(filename)
+        #filename = os.path.join(settings.MEDIA_ROOT, file)
+        image = Image.open(file)
         ox, oy = image.size
         
         if width != 'X':

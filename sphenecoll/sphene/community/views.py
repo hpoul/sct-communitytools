@@ -315,7 +315,7 @@ def profile(request, group, user_id):
         has_edit_permission = True
         profile_edit_url = sph_reverse( 'sphene.community.views.profile_edit', (), { 'user_id': user.id, })
 
-    ret = profile_display.send(request = request,
+    ret = profile_display.send(None, request = request,
                                user = user, )
 
     additionalprofile = ''

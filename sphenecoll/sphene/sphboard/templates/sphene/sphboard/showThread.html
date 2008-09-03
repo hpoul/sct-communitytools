@@ -108,7 +108,7 @@
                 <strong>{% trans "Attachments" %}</strong>
                 <ul>
 		{% for attachment in allattachments %}
-		  <li><a href="{{ attachment.get_fileupload_url }}" target="_blank">{{ attachment.get_fileupload_filename|sph_basename }}</a> ({{ attachment.get_fileupload_size|filesizeformat }})</li>
+		  <li><a href="{{ attachment.fileupload.url }}" target="_blank">{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})</li>
 		{% endfor %}
                 </ul>
               </div>

@@ -29,7 +29,7 @@ def clean_community_advprofile_avatar(self):
         return f
 
     # Verify file size ..
-    size = len(self.cleaned_data['community_advprofile_avatar'].content)
+    size = len(self.cleaned_data['community_advprofile_avatar'])
     max_size = get_sph_setting( 'community_avatar_max_size' )
     if size > max_size:
         raise djangoforms.ValidationError( _(u"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d bytes)") % {'max_size':max_size, 'size':size} )
@@ -39,7 +39,7 @@ def clean_community_advprofile_avatar(self):
 
     try:
         # Verify image dimensions ..
-        image = Image.open(StringIO(f.content))
+        image = Image.open(f)
         width = image.size[0]
         height = image.size[1]
 
@@ -104,7 +104,7 @@ def community_advprofile_display(sender, signal, request, user, **kwargs):
         avatar_width = get_sph_setting( 'community_avatar_default_width' )
         avatar_height = get_sph_setting( 'community_avatar_default_height' )
     else:
-        avatar = profile.get_avatar_url()
+        avatar = profile.avatar.url
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
         

@@ -49,7 +49,8 @@ def blogindex(request, group, category_id = None):
     threads = get_posts_queryset(group, categories)
 
     allowpostcategories = filter(Category.has_post_thread_permission, categories)
-    blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), args = ('latestposts',), kwargs = { 'groupName': group.name })
+    #blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), args = ('latestposts',), kwargs = { 'groupName': group.name })
+    blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), kwargs = { 'url': 'latestposts' })
     add_rss_feed( blog_feed_url, 'Blog RSS Feed' )
     all_tags = get_tags_for_categories( categories )
     return render_to_response( 'sphene/sphblog/blogindex.html',

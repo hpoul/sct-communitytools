@@ -459,8 +459,7 @@ class Category(models.Model):
         This will only work since django changeset 4901 (>0.96) """
         return reverse( 'sphboard-feeds',
                         urlconf = get_urlconf(),
-                        kwargs = { 'groupName': self.group.name,
-                                   'url': 'latest/%d' % self.id } )
+                        kwargs = { 'url': 'latest/%d' % self.id } )
 
     def get_absolute_togglemonitor_url(self):
         return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.group.name, 'monitortype': 'category', 'object_id': self.id, })
@@ -1356,7 +1355,6 @@ class UserPostCount(models.Model):
 
 def update_post_count(instance, **kwargs):
     UserPostCount.objects.update_post_count( instance.author, instance.category.group )
-
 
 signals.post_save.connect(update_post_count,
                    sender = Post)

@@ -15,7 +15,7 @@ sph_settings_defaults = {
     'community_avatar_default_height': 48,
     'community_avatar_max_width': 150,
     'community_avatar_max_height': 150,
-    'community_avatar_max_size': 20*1024,
+    'community_avatar_max_size': 150*1024,
     'community_avatar_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
 
     # Can either be 'None' so we only look into the database,

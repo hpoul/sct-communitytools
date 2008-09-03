@@ -61,7 +61,7 @@
     {% if post %}
       {% for attachment in post.attachments.all %}
         <tr>
-	  <td><a href="{{ attachment.get_fileupload_url }}" target="_blank">{{ attachment.get_fileupload_filename|sph_basename }}</a> ({{ attachment.get_fileupload_size|filesizeformat }})</td>
+	  <td><a href="{{ attachment.fileupload.url }}" target="_blank">{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})</td>
 	</tr>
       {% endfor %}
     {% endif %}

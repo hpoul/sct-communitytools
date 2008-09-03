@@ -1,11 +1,9 @@
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, ModelForm
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.template import loader
 from django.template.context import RequestContext
-from django import forms
-from django.forms import widgets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
@@ -256,9 +254,26 @@ class CaptchaEditBaseForm(forms.BaseForm):
         self.fields['tags'] = TagField(model = WikiSnip, required = False)
 
 
+class WikiSnipForm(ModelForm):
+
+    tags = TagField(model = WikiSnip, required = False)
+    captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
+                                    help_text = ugettext_lazy(u'Please enter the result of the above calculation.'),
+                                    )
+
+    def __init__(self, *args, **kwargs):
+        super(WikiSnipForm, self).__init__(*args, **kwargs)
+        self.fields['body'].widget.attrs['cols'] = 80;
+        self.fields['body'].widget.attrs['rows'] = 30;
+        if not sphutils.has_captcha_support() or get_current_user().is_authenticated():
+            del self.fields['captcha']
+
+    class Meta:
+        model = WikiSnip
 
 def editSnip(request, group, snipName, versionId = None):
     version = None
+    data = request.method == 'POST' and request.POST or None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
@@ -269,18 +284,20 @@ def editSnip(request, group, snipName, versionId = None):
                 raise PermissionDenied()
             snip.body = version.body
 
-        SnipForm = forms.models.form_for_instance(snip, form = CaptchaEditBaseForm)
+        #SnipForm = forms.models.form_for_instance(snip, form = CaptchaEditBaseForm)
+        form = WikiSnipForm(data, instance = snip)
 
     except WikiSnip.DoesNotExist:
-        SnipForm = forms.models.form_for_model(WikiSnip, form = CaptchaEditBaseForm)
+        #SnipForm = forms.models.form_for_model(WikiSnip, form = CaptchaEditBaseForm)
+        form = WikiSnipForm(data)
         snip = WikiSnip( name = snipName, group = group )
         #snip = None
 
     if not snip.has_edit_permission():
         raise PermissionDenied()
 
-    SnipForm.base_fields['body'].widget.attrs['cols'] = 80
-    SnipForm.base_fields['body'].widget.attrs['rows'] = 30
+    #SnipForm.base_fields['body'].widget.attrs['cols'] = 80
+    #SnipForm.base_fields['body'].widget.attrs['rows'] = 30
 
     changemessage = ""
 
@@ -288,7 +305,7 @@ def editSnip(request, group, snipName, versionId = None):
         if 'type' in request.POST and request.POST['type'] == 'preview':
             return HttpResponse( unicode(WikiSnip(body = request.POST['body']).render() ))
         changemessage = request.POST['message']
-        form = SnipForm(request.POST)
+        #form = SnipForm(request.POST)
 
         if form.is_valid():
             old_title = None
@@ -301,7 +318,10 @@ def editSnip(request, group, snipName, versionId = None):
             snip = form.save(commit=False)
             snip.group = group
             snip.name = snipName
-            snip.editor = request.user
+            if request.user.is_authenticated():
+                snip.editor = request.user
+            else:
+                snip.editor = None
             snip.save()
 
             if old_body is not None:
@@ -321,7 +341,8 @@ def editSnip(request, group, snipName, versionId = None):
                 change_type |= 4
 
             change = WikiSnipChange( snip = snip,
-                                     editor = request.user,
+                                     #editor = request.user,
+                                     editor = snip.editor,
                                      edited = datetime.today(),
                                      message = request.POST['message'],
                                      title = snip.title,
@@ -335,10 +356,11 @@ def editSnip(request, group, snipName, versionId = None):
             return HttpResponseRedirect( snip.get_absolute_url() )
 
     else:
-        form = SnipForm()
+        #form = SnipForm()
 
         if snip is not None:
             form.fields['tags'].initial = tag_get_labels(snip)
+        pass
 
     if version:
         from sphene.community.templatetags.sph_extras import sph_date

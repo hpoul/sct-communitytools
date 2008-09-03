@@ -51,7 +51,7 @@ def showCategory(request, group = None, category_id = None, showType = None):
         if not categoryObject.has_view_permission( request.user ):
             raise PermissionDenied()
         categoryObject.touch(request.session, request.user)
-        blog_feed_url = reverse('sphboard-feeds', urlconf=get_current_urlconf(), args = (), kwargs = { 'groupName': group.name, 'url': 'latest/2' })
+        blog_feed_url = reverse('sphboard-feeds', urlconf=get_current_urlconf(), args = (), kwargs = { 'url': 'latest/2' })
         add_rss_feed( blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name )
 
         if sphdata != None: sphdata['subtitle'] = categoryObject.name
@@ -343,10 +343,11 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 if not post.is_new() and category_type.append_edit_message_to_post(post):
                     newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_user_displayname( request.user ), 'edit_date':format_date( datetime.today())}
             else:
+                user = request.user.is_authenticated() and request.user or None
                 newpost = Post( category = category,
                                 subject = data['subject'],
                                 body = data['body'],
-                                author = request.user,
+                                author = user,
                                 thread = thread,
                                 )
             if 'markup' in data:

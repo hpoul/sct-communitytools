@@ -63,7 +63,7 @@ class ImageMacro (object):
             except WikiAttachment.DoesNotExist:
                 return HTML( '<b>Attachment for image does not exist: %s</b>' % params['id'] )
             el = doc.createElement( 'img' )
-            el.setAttribute( 'src', attachment.get_fileupload_url() )
+            el.setAttribute( 'src', attachment.fileupload.url )
 
             cssclass = get_sph_setting('getwiki_macros_default_image_class')
             if cssclass is not None:
@@ -85,7 +85,7 @@ class ImageMacro (object):
             if not 'nolink' in params or not params['nolink']:
                 el.setAttribute( 'border', '0' )
                 a = doc.createElement( 'a' )
-                a.setAttribute( 'href', attachment.get_fileupload_url() )
+                a.setAttribute( 'href', attachment.fileupload.url )
 
                 if cssclass is not None:
                     a.setAttribute('class', cssclass)
