@@ -3,6 +3,12 @@ from django.conf import settings
 
 defaultdict = { 'groupName': 'example' }
 
+
+# newforms admin magic
+
+from django.contrib import admin
+admin.autodiscover()
+
 urlpatterns = patterns('',
     # Example:
     # (r'^simpleproject/', include('simpleproject.foo.urls')),
@@ -20,5 +26,5 @@ urlpatterns = patterns('',
     (r'^static/sphene/(.*)$', 'django.views.static.serve', {'document_root': settings.ROOT_PATH + '/../../static/sphene' }),
 
     # Uncomment this for admin:
-     (r'^admin/', include('django.contrib.admin.urls')),
+    (r'^admin/(.*)', admin.site.root),
 )
