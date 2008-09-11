@@ -18,4 +18,8 @@ class WikiPreferenceAdmin(admin.ModelAdmin):
     list_display = ( 'snip', 'view', 'edit' )
 
 admin.site.register(models.WikiPreference, WikiPreferenceAdmin)
-admin.site.register(models.WikiAttachment)
+
+class WikiAttachmentAdmin(admin.ModelAdmin):
+    list_display = ( 'uploader', 'fileupload', 'snip', )
+
+admin.site.register(models.WikiAttachment, WikiAttachmentAdmin)

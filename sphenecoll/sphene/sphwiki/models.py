@@ -370,7 +370,7 @@ class WikiAttachment(models.Model):
         super(WikiAttachment, self).save(force_insert=force_insert, force_update=force_update)
 
     def __unicode__(self):
-        return self.fileupload
+        return self.fileupload.name
 
 
 
