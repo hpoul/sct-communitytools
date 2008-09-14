@@ -39,11 +39,16 @@ class BlogPostForm(PostForm):
         self.__ext_id = None
         super(BlogPostForm, self).init_for_category_type(category_type, post)
         if post:
-            ext = post.blogpostextension_set.get()
-            self.__ext_id = ext.id
-            self.fields['tags'].initial = tag_get_labels(post)
-            self.fields['slug'].initial = ext.slug
-            self.fields['status'].initial = ext.status
+            try:
+                ext = post.blogpostextension_set.get()
+                self.__ext_id = ext.id
+                self.fields['tags'].initial = tag_get_labels(post)
+                self.fields['slug'].initial = ext.slug
+                self.fields['status'].initial = ext.status
+            except BlogPostExtension.DoesNotExist:
+                # This can happen after post was created for
+                # attaching a file.. which wouldn't create a BlogPostExtension.
+                pass
 
 
 class BlogCategoryType(CategoryType):

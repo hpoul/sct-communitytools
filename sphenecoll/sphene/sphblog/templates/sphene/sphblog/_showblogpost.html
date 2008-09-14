@@ -12,4 +12,14 @@
 	<p class="sphuser">{% trans "Posted by" %} {% sph_html_user post.author %}</p>
         <p class="sphtags">{% trans "Assigned Tags:" %} {% for tag_label in blogpost.get_tag_labels %}<a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag_label.tag.name %}" class="sphtag">{{ tag_label.label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with post.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>
+        {% with post.attachments.all as allattachments %}
+          {% if allattachments|length %}
+            <p class="sphattachments">
+              {% trans "Attachments" %}:
+              {% for attachment in allattachments %}
+		<a href="{{ attachment.fileupload.url }}" target="_blank">{% if not forloop.first %}, {% endif %}{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})
+              {% endfor %}
+            </p>
+          {% endif %}
+        {% endwith %}
       </div>
