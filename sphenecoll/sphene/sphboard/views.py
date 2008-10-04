@@ -148,11 +148,10 @@ def listThreads(request, group, category_id):
 
 
 def showThread(request, thread_id, group = None):
-    thread = Post.objects.filter( pk = thread_id ).get()
+    thread = get_object_or_404(Post, pk = thread_id )
     if not thread.category.has_view_permission(request.user):
         raise PermissionDenied()
     thread.viewed( request.session, request.user )
-    #thread = get_object_or_404(Post, pk = thread_id )
 
     sphdata = get_current_sphdata()
     if sphdata != None: sphdata['subtitle'] = thread.subject
