@@ -264,7 +264,7 @@ class Category(models.Model):
         if get_sph_setting( 'workaround_select_related_bug' ):
             # See http://code.djangoproject.com/ticket/4789
             return self.threadinformation_set
-        return self.threadinformation_set.select_related( depth = 1 )
+        return self.threadinformation_set.filter(root_post__is_hidden = 0).select_related( depth = 1 )
 
     def threadCount(self):
         return self.threadinformation_set.count()
