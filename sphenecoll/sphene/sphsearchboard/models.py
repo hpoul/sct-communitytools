@@ -45,7 +45,7 @@ class PostFilter(object):
                 yield hit
 
     def verify_hit(self, hit):
-        return hit.get_object().category_id in self.viewable_category_ids
+        return hit.instance.category_id in self.viewable_category_ids
 
     def __getslice__(self, start, end):
         for hit in self.resultset[start:end]:

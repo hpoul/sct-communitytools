@@ -21,7 +21,7 @@
     <ul class="sphsearch">
       {% for result in results %}
         <li>
-          {% with result.get_object as post %}
+          {% with result.instance as post %}
             <a href="{{ post.get_absolute_url }}">{% highlight terms %}{{ post.subject }}{% endhighlight %}</a>
             <p>
               {% highlight terms %}
