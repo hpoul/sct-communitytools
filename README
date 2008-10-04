@@ -13,25 +13,12 @@ pluggable into any django project.
 
 ## Requirements
 
-- [Django](http://www.djangoproject.com) **trunk** (NOT compatible with 0.96)
+- [Django](http://www.djangoproject.com) 1.0 or later
 - Python >= 2.4 (Use >= 2.5 if you need wiki diffs with unicode support)
 - [PyCrypto](http://sf.net/projects/pycrypto) - (e.g. debian package python-crypto)
 - [Python Imaging Library (PIL)](http://www.pythonware.com/products/pil/)
 
 ## Installation
-
-### Django bug workarounds
-
-The current django trunk contains a bug in the select_related method.
-
-To workaround the problem (ie. don't use it) you need to activate the 
-following setting:
-
-    SPH_SETTING['workaround_select_related_bug'] = True
-
-See <http://code.djangoproject.com/ticket/4789> - If this patch was already
-committed or you applied it manually you can disable the workaround to
-improve performance.
 
 
 ### Python library path
@@ -53,9 +40,16 @@ SCT makes use of django caching framework - it is therefore advised to
 configure CACHE_BACKEND django setting & co.
 look at the [django caching documentation](http://www.djangoproject.com/documentation/cache/)
 
+### Search
+
+Please follow the [search documentation](http://sct.sphene.net/wiki/show/Search/).
+
 ## Examples
 
-The examples/ directory (currently) contains one example project.
-Please see the README file in it's directory (examples/simpleproject)
-for more information.
+There are currently two examples - a very simplistic 'simpleproject' in the
+examples/ directory (see examples/simpleproject/README) and a more
+sophisticated example called CommunityDraft which i recommend as using as a base for your
+own projects (if you start from scratch).
+See <http://sct.sphene.net/wiki/show/CommunityDraft/> for details.
+
 
