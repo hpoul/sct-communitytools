@@ -43,6 +43,8 @@ def clean_community_advprofile_avatar(self):
         width = image.size[0]
         height = image.size[1]
 
+        f.seek(-f.tell())
+
         max_width = get_sph_setting( 'community_avatar_max_width' )
         max_height = get_sph_setting( 'community_avatar_max_height' )
 
@@ -80,7 +82,7 @@ def community_advprofile_edit_save_form(sender, instance, signal, request, **kwa
         profile.avatar = None
 
     if data['community_advprofile_avatar']:
-        profile.save_avatar_file( data['community_advprofile_avatar'].filename, data['community_advprofile_avatar'].content )
+        profile.avatar.save( data['community_advprofile_avatar'].name, data['community_advprofile_avatar'] )
     #profile.avat = data['public_emailaddress']
     profile.save()
 
