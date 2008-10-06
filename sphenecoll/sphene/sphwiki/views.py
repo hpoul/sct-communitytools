@@ -196,12 +196,21 @@ def attachmentCreate(request, group, snipName, attachmentId = None):
     return attachmentEdit(request, group, snipName, attachmentId)
 
 def attachmentEdit(request, group, snipName, attachmentId = None):
+    
+    """Importing ModelForm"""
+    from django.forms import ModelForm
+    
+    """ Class necessary for the Modelform """
+    class AttachmentFormNew(ModelForm):
+        class Meta:
+            model = WikiAttachment
+    
     attachment = None
     if attachmentId is None:
-        AttachmentForm = forms.models.form_for_model( WikiAttachment )
+        AttachmentForm = AttachmentFormNew()
     else:
         attachment = WikiAttachment.objects.get(id=attachmentId)
-        AttachmentForm = forms.models.form_for_instance(attachment)
+        AttachmentForm = AttachmentFormNew(instance=attachment)
 
     if attachment:
         if not attachment.snip.has_edit_permission():
@@ -219,7 +228,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             reqdata.update(request.FILES)
             form = AttachmentForm(reqdata)
         else:
-            form = AttachmentForm(request.POST, request.FILES)
+            form = AttachmentFormNew(request.POST, request.FILES)
         if form.is_valid():
             attachment = form.save(commit=False)
             snip = WikiSnip.objects.get( name__exact = snipName, group = group )
@@ -232,7 +241,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             attachment.save()
             return HttpResponseRedirect( snip.get_absolute_attachmenturl() )
     else:
-        form = AttachmentForm()
+        form = AttachmentFormNew(instance=attachment)
 
     return render_to_response( 'sphene/sphwiki/editAttachment.html',
                                { 'form': form,
