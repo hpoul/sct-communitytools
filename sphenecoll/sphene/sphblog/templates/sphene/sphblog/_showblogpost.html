@@ -3,7 +3,11 @@
 
       <div class="entrytitle">
 	<h2><a href="{{ blogpost.get_absolute_url }}">{{ post.subject }}</a></h2>
-	<h3>{{ post.postdate|sph_date }}</h3>
+	<h3>{{ post.postdate|sph_date }}
+            {% if post.allowEditing %}
+              <a href="{{ post.get_absolute_editurl }}">{% trans "Edit" %}</a>
+            {% endif %}
+        </h3>
       </div>
       <div class="entrybody">
 	{{ post.body_escaped }}
