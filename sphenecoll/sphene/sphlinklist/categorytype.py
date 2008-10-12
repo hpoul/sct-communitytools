@@ -8,7 +8,9 @@ from sphene.community.templatetags.sph_extras import sph_truncate
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytypes import ExtendedCategoryType, ExtendedPostForm
+
 #from sphene.sphlinklist.models import LinkListCategoryConfig
+from sphene.sphlinklist.models import LinkListPostExtension
 
 class LinkListPostForm(ExtendedPostForm):
     link = forms.URLField(initial = 'http://', 
@@ -22,8 +24,12 @@ class LinkListPostForm(ExtendedPostForm):
     def init_for_category_type(self, category_type, post):
         super(LinkListPostForm, self).init_for_category_type(category_type, post)
         if post:
-            ext = post.linklistpostextension_set.get()
-            self.fields['link'].initial = ext.link
+            try:
+                ext = post.linklistpostextension_set.get()
+                self.fields['link'].initial = ext.link
+            except LinkListPostExtension.DoesNotExist:
+                # This can happen if post was created for attachments.
+                pass
 
 
 class LinkListCategoryType(ExtendedCategoryType):
@@ -72,9 +78,4 @@ class LinkListCategoryType(ExtendedCategoryType):
 
     def get_show_thread_template(self):
         return 'sphene/sphlinklist/show_thread.html'
-
-
-def doinit():
-    """ This method is called from __init__.py """
-    register_category_type(LinkListCategoryType)
 
