@@ -279,6 +279,7 @@ class WikiSnipForm(ModelForm):
 
     class Meta:
         model = WikiSnip
+        exclude = ('name', 'group',)
 
 def editSnip(request, group, snipName, versionId = None):
     version = None

@@ -10,6 +10,12 @@ class WikiPreferenceInline(admin.TabularInline):
 class WikiSnipAdmin(admin.ModelAdmin):
     list_display = ('name', 'group', 'title', 'changed', )
     list_filter = ('group',)
+    fieldsets = (
+        ( 'Basics', {
+                'description': 'You should not create or edit wiki snips through the django admin page. (Except for permissions.)',
+                'fields': ('name', 'title', 'group', 'body', ),
+                }),
+        )
     inlines = [ WikiPreferenceInline, ]
 
 admin.site.register(models.WikiSnip, WikiSnipAdmin)

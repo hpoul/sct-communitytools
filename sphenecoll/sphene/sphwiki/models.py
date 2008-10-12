@@ -42,9 +42,9 @@ WIKI_PERMISSIONS_ALLOWED_CHOICES = (
 
 
 class WikiSnip(models.Model):
-    name = models.CharField(ugettext_lazy('name'), max_length = 250, editable = False)
+    name = models.CharField(ugettext_lazy('name'), max_length = 250)
     title = models.CharField(ugettext_lazy('title'), max_length = 250, blank = True)
-    group = models.ForeignKey(Group, editable = False)
+    group = models.ForeignKey(Group)
     body = models.TextField(ugettext_lazy('body'))
     creator = models.ForeignKey(User, related_name = 'wikisnip_created', editable = False, null = True, blank = True)
     created = models.DateTimeField(editable = False)
