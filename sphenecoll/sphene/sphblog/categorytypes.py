@@ -1,6 +1,8 @@
 from django import forms
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
+from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
 from sphene.community.models import Tag, TagLabel, TaggedItem, tag_set_labels, tag_get_labels
 from sphene.community.fields import TagField
 from sphene.community.widgets import TagWidget
@@ -88,6 +90,15 @@ class BlogCategoryType(CategoryType):
 
     def get_show_thread_template(self):
         return 'sphene/sphblog/show_blogentry.html'
+
+    def get_absolute_url_for_category(self):
+        try:
+            blog_url = reverse('sphblog_category_index', urlconf=get_current_urlconf(), args = (), kwargs = { 'category_id': self.category.id })
+            return blog_url
+        except Exception, e:
+            #print "err.. argl %s" % str(e)
+            return None
+
 
 
 class HiddenBlogCategoryType(BlogCategoryType):

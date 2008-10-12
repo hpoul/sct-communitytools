@@ -840,7 +840,7 @@ class Post(models.Model):
             self.__monitor = monitor
             return monitor
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, force_insert=False, force_update=False, additional_data=None):
         isnew = not self.id
 
         if isnew and self.is_hidden != 0:
@@ -855,6 +855,9 @@ class Post(models.Model):
         # or similar)
         self.is_new_post = isnew
         ret = super(Post, self).save(force_insert=force_insert, force_update=force_update)
+
+        if additional_data is not None:
+            self.category.get_category_type().save_post(self, additional_data)
 
         # Clear cache
         cache.delete( self.__get_render_cachekey() )

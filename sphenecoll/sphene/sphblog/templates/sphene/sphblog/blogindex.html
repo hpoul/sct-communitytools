@@ -25,6 +25,17 @@
     </form>
   {% endif %}
 
+  {% if category %}
+    <center><h1>{{ category.name }}</h1></center>
+    <p>
+    {% if user.is_authenticated %}
+      {% include "sphene/sphboard/_category_monitor.html" %}
+    {% else %}
+      Log in to add email notification.
+    {% endif %}
+    </p>
+  {% endif %}
+
   {% if tag %}
     <p class="sphtagheader">{% trans "Tag" %}: {{ tag.name }} / <a href="{% sph_url2 sphblog_index %}">{% trans "Back" %}</a></p>
   {% endif %}

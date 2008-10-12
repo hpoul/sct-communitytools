@@ -355,9 +355,9 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
             elif len( POST_MARKUP_CHOICES ) == 1:
                 newpost.markup = POST_MARKUP_CHOICES[0][0]
                 
-            newpost.save()
+            newpost.save(additional_data = data)
 
-            category_type.save_post( newpost, data )
+            #category_type.save_post( newpost, data )
 
 
             # Creating monitor

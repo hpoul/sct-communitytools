@@ -37,10 +37,14 @@ def get_posts_queryset(group, categories):
 
 def blogindex(request, group, category_id = None):
     categories = get_board_categories(group)
+    category = None
     if category_id is not None:
         category_id = int(category_id)
         categories = [category for category in categories \
                           if category.id == category_id]
+        if categories:
+            category = categories[0]
+
     if not categories:
         return render_to_response( 'sphene/sphblog/nocategory.html',
                                    { },
@@ -58,6 +62,7 @@ def blogindex(request, group, category_id = None):
                                  'threads': threads,
                                  'blog_feed_url': blog_feed_url,
                                  'all_tags': all_tags,
+                                 'category': category,
                                  },
                                context_instance = RequestContext(request) )
 
