@@ -1,9 +1,5 @@
 # link list models ..
 
-from sphene.sphlinklist.categorytype import doinit
-
-doinit()
-
 from django.db import models
 
 from sphene.sphboard.models import Category, Post
