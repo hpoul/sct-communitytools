@@ -179,13 +179,13 @@ def showThread(request, thread_id, group = None):
 def options(request, thread_id, group = None):
     thread = Post.objects.get( pk = thread_id )
 
-    if request['cmd'] == 'makeSticky':
+    if request.REQUEST['cmd'] == 'makeSticky':
         thread.set_sticky(True)
-    elif request['cmd'] == 'removeSticky':
+    elif request.REQUEST['cmd'] == 'removeSticky':
         thread.set_sticky(False)
-    elif request['cmd'] == 'toggleClosed':
+    elif request.REQUEST['cmd'] == 'toggleClosed':
         thread.set_closed(not thread.is_closed())
-    elif request['cmd'] == 'modifytags':
+    elif request.REQUEST['cmd'] == 'modifytags':
         from tagging.models import Tag
         Tag.objects.update_tags( thread.get_threadinformation(), [request.POST['tags'], ] )
 
