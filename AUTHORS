@@ -25,6 +25,10 @@ translations for all apps and communitydraft.
 http://djangopeople.net/esimorre/
 
 
+Iain Mac Donald - contributed the 'SCT powered' logo:
+http://sct.sphene.net/static/sphene/community/logo/sct-powered-124x25.png
+
+
 Jakub Wiśniowski <restless.being@gmail.com> - for contributing patches 
 (Using MEDIA_URL instead of hard coded links, i18n translation strings
 as well as polish translations)
