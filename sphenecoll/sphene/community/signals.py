@@ -28,4 +28,4 @@ maintenance = django.dispatch.Signal()
 #
 # echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 def trigger_maintenance():
-    maintenance.send()
+    maintenance.send(None)
