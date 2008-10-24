@@ -83,7 +83,7 @@
               [ <a href="{{ post.get_absolute_editurl }}">{% trans "Edit" %}</a> ]
             {% endif %}
             {% if allowPosting %}
-              [ <a href="../../post/{{ thread.category.id }}/?thread={{ thread.id }}&amp;quote={{ post.id }}">{% trans "Quote" %}</a> ]
+              [ <a href="{{ post.get_absolute_postreplyurl }}?quote={{ post.id }}">{% trans "Quote" %}</a> ]
             {% endif %}
           </div>
         </td>
