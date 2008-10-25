@@ -6,7 +6,8 @@ from django.db import models
 from sphene.community.models import tag_get_labels
 from sphene.community.sphutils import sphpermalink as permalink
 from sphene.community.middleware import get_current_request
-from sphene.sphboard.models import Post
+
+from sphene.sphboard.models import Post, Category
 
 BLOG_POST_STATUS_CHOICES = (
     (1, 'Draft'),
@@ -38,4 +39,15 @@ class BlogPostExtension(models.Model):
                                                           'slug': self.slug,
                                                           })
     get_absolute_url = permalink(get_absolute_url, get_current_request)
+
+
+
+class BlogCategoryConfig(models.Model):
+    """
+    Extended configuration for a Blog category.
+    """
+    category = models.ForeignKey( Category, unique = True )
+
+    enable_googleblogping = models.BooleanField(help_text = "Enable ping to blogsearch.google.com ?")
+
 

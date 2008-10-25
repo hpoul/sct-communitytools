@@ -16,7 +16,7 @@ class Group(models.Model):
     longname = models.CharField(max_length = 250)
     default_theme = models.ForeignKey('Theme', null = True, blank = True)
     parent = models.ForeignKey('Group', null = True, blank = True)
-    baseurl = models.CharField(max_length = 250)
+    baseurl = models.CharField(max_length = 250, help_text = 'The base URL under which this group will be available. Example: sct.sphene.net')
 
     def get_name(self):
         return self.longname or self.name
@@ -33,6 +33,17 @@ class Group(models.Model):
                                             user = user, )
         except GroupMember.DoesNotExist:
             return None
+
+    def get_baseurl(self):
+        """
+        Returns the "base URL" including http:// and without tailing slash.
+        """
+        url = self.baseurl
+        if not (url.startswith('http://') or url.startswith('https://')):
+            url = 'http://%s' % url
+        if url.endswith('/'):
+            url = url[0:-1]
+        return url
 
     def __unicode__(self):
         return self.name;

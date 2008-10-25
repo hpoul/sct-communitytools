@@ -1,4 +1,6 @@
 
+
+from django.http import Http404
 from django.contrib.syndication.feeds import Feed
 
 from sphene.community.middleware import get_current_group
@@ -15,24 +17,38 @@ class LatestBlogPosts(Feed):
     title_template = 'sphene/sphblog/feeds/latestposts_title.html'
     description_template = 'sphene/sphblog/feeds/latestposts_description.html'
 
-    def title(self):
+    def get_object(self, bits):
+        group = get_current_group()
+        categories = get_board_categories(group)
+        if len(bits) != 1:
+            return categories
+        category_id = int(bits[0])
+        categories = [category for category in categories \
+                          if category.id == category_id]
+        if not categories:
+            raise Http404
+        return categories
+
+    def title(self, obj):
+        if len(obj) == 1:
+            return obj[0].name
         group = get_current_group()
         return group.get_name()
 
-    def items(self):
+    def items(self, obj):
         group = get_current_group()
-        categories = get_board_categories(group)
+        categories = obj
         threads = get_posts_queryset(group, categories )
         return threads
 
 
-    def item_pubdate(self, obj):
-        return obj.postdate
+    def item_pubdate(self, item):
+        return item.postdate
 
-    def item_link(self, obj):
+    def item_link(self, item):
         try:
-            return obj.blogpostextension_set.get().get_absolute_url()
+            return item.blogpostextension_set.get().get_absolute_url()
         except BlogPostExtension.DoesNotExist:
             # This should never happen.
-            return obj.get_absolute_url()
+            return item.get_absolute_url()
 

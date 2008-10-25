@@ -10,7 +10,7 @@ from sphene.community.widgets import TagWidget
 from sphene.sphboard.models import Post
 from sphene.sphboard.views import PostForm
 from sphene.sphboard.categorytyperegistry import CategoryType, register_category_type
-from sphene.sphblog.models import BlogPostExtension, BLOG_POST_STATUS_CHOICES
+from sphene.sphblog.models import BlogPostExtension, BLOG_POST_STATUS_CHOICES, BlogCategoryConfig
 from sphene.sphblog.utils import slugify
 
 
@@ -80,6 +80,27 @@ class BlogCategoryType(CategoryType):
         ext.save()
 
         tag_set_labels( newpost, data['tags'] )
+
+        if newpost.is_new_post:
+            try:
+                config = BlogCategoryConfig.objects.get( \
+                    category = self.category)
+
+                if config.enable_googleblogping:
+                    # If enabled, ping google blogsearch.
+                    import urllib
+                    url = self.category.group.get_baseurl()
+                    blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), kwargs = { 'url': 'latestposts/%s' % self.category.id })
+                    pingurl = 'http://blogsearch.google.com/ping?%s' % \
+                        urllib.urlencode( \
+                        { 'name': self.category.name,
+                          'url': ''.join((url, self.category.get_absolute_url()),),
+                          'changesURL': ''.join((url, blog_feed_url),) } )
+                    urllib.urlopen( pingurl )
+
+            except BlogCategoryConfig.DoesNotExist:
+                pass
+                
 
 
     def get_absolute_url_for_post(self, post):
