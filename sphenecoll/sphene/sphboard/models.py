@@ -1207,8 +1207,8 @@ def update_thread_information(instance, **kwargs):
             # If thread is still hidden, don't bother creating a 
             # ThreadInformation object.
             return
-        threadinfos = ( ThreadInformation( root_post = instance,
-                                           category = instance.category,
+        threadinfos = ( ThreadInformation( root_post = thread,
+                                           category = thread.category,
                                            thread_type = THREAD_TYPE_DEFAULT, ),  )
     for threadinfo in threadinfos:
         threadinfo.update_cache()
