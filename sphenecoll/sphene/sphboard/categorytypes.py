@@ -15,6 +15,17 @@ class DefaultCategoryType(CategoryType):
         return PostForm
 
 
+class SeparatorCategoryType(CategoryType):
+    """
+    category type which is only a separator (ie. a root categry which
+    cannot be used for posting, ..)
+    """
+    name = 'sphseparator'
+
+    label = 'Separator'
+
+
+
 class ExtendedPostForm(PostForm):
     def __init__(self, *args, **kwargs):
         super(ExtendedPostForm, self).__init__(*args, **kwargs)

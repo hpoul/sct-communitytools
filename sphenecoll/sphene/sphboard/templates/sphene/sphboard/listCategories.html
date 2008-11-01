@@ -42,6 +42,7 @@
     {% endif %}
   {% endif %}
 
+  {% ifnotequal category.category_type "sphseparator" %}
   {% if isShowLatest or category.canContainPosts %}
     {% block above_thread_list %}
     {% endblock %}
@@ -88,5 +89,6 @@
       <p><a href="../../catchup/{{ category.id }}/" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
     {% endif %}
   {% endif %}
+  {% endifnotequal %}
 
 {% endblock %}
