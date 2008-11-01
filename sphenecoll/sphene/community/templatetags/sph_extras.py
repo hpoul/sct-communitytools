@@ -312,7 +312,7 @@ def sph_minus(value, arg = 0):
 
 @register.filter
 def sph_plus(value, arg = 0):
-    return value-arg
+    return value+arg
 
 
 @register.simple_tag
