@@ -14,7 +14,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _, ugettext
+from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
 
 from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem, RoleGroup, RoleGroupMember
@@ -28,9 +28,9 @@ from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 
 class RegisterEmailAddress(forms.Form):
-    email_address = forms.EmailField(label=_(u'Email address'))
+    email_address = forms.EmailField(label=ugettext_lazy(u'Email address'))
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
-                                    help_text = _(u'Please enter the result of the above calculation.'),
+                                    help_text = ugettext_lazy(u'Please enter the result of the above calculation.'),
                                     )
     
     def __init__(self, *args, **kwargs):
@@ -43,7 +43,7 @@ class RegisterEmailAddress(forms.Form):
             return self.cleaned_data
 
         if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
-            raise forms.ValidationError(_(u"Another user is already registered with the email address %(email)s.")
+            raise forms.ValidationError(ugettext(u"Another user is already registered with the email address %(email)s.")
                                         % {'email':self.cleaned_data['email_address']} )
         return self.cleaned_data
 
@@ -60,14 +60,14 @@ def accounts_logout(request, group = None):
 
 
 class ForgotUsernamePassword(forms.Form):
-    email_address = forms.EmailField(label=_(u'Email address'))
+    email_address = forms.EmailField(label=ugettext_lazy(u'Email address'))
 
     def clean_email_address(self):
         try:
             user = User.objects.get( email__exact = self.cleaned_data['email_address'] )
             self.cleaned_data['user'] = user
         except User.DoesNotExist:
-            raise forms.ValidationError( _(u'No user found with that email address.') )
+            raise forms.ValidationError( ugettext(u'No user found with that email address.') )
         return self.cleaned_data
 
 from random import choice
@@ -90,9 +90,9 @@ def accounts_forgot(request, group = None):
             user.set_password(password)
             user.save()
             if not group:
-                subject = _(u'Your requested username / password')
+                subject = ugettext(u'Your requested username / password')
             else:
-                subject = _(u'Your requested username / password for site %(site_name)s') % {'site_name': group.get_name()}
+                subject = ugettext(u'Your requested username / password for site %(site_name)s') % {'site_name': group.get_name()}
             t = loader.get_template('sphene/community/accounts/forgot_password_email.txt')
             c = {
                 'currentuser': user,
@@ -119,9 +119,9 @@ def register(request, group = None):
             regdata = form.cleaned_data
             email_address = regdata['email_address']
             if not group:
-                subject = _(u'Email verification required')
+                subject = ugettext(u'Email verification required')
             else:
-                subject = _(u'Email verification required for site %(site_name)s') % {'site_name': group.get_name()}
+                subject = ugettext(u'Email verification required for site %(site_name)s') % {'site_name': group.get_name()}
             validationcode = cryptString( settings.SECRET_KEY, email_address )
             mail_context = RequestContext(request,
                                           {
@@ -155,26 +155,26 @@ def register(request, group = None):
 username_re = r'^\w+$'
 
 class UserForm(forms.Form):
-    username = forms.RegexField( username_re, label=_(u'Username'))
-    email_address = forms.CharField(label=_(u'Email address'),
+    username = forms.RegexField( username_re, label=ugettext_lazy(u'Username'))
+    email_address = forms.CharField(label=ugettext_lazy(u'Email address'),
                                     widget = forms.TextInput(attrs={'disabled': 'disabled'}))
     
 
     def clean_username(self):
         if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
-            raise forms.ValidationError(_(u'The username %(username)s is already taken.') % {'username': self.cleaned_data['username']})
+            raise forms.ValidationError(ugettext(u'The username %(username)s is already taken.') % {'username': self.cleaned_data['username']})
         return self.cleaned_data['username']
 
     def clean_email_address(self):
         if User.objects.filter( email__exact = self.cleaned_data['email_address'] ).count() != 0:
-            raise forms.ValidationError(_(u'Another user is already registered with the email address %(email)s.')
+            raise forms.ValidationError(ugettext(u'Another user is already registered with the email address %(email)s.')
                                         % {'email':self.cleaned_data['email_address']} )
         return self.cleaned_data['email_address']
 
 class RegisterForm(UserForm):
-    password = forms.CharField(label=_(u'Password'),
+    password = forms.CharField(label=ugettext_lazy(u'Password'),
                                widget = forms.PasswordInput )
-    repassword = forms.CharField(label=_(u'Verify Password'),
+    repassword = forms.CharField(label=ugettext_lazy(u'Verify Password'),
                                  widget = forms.PasswordInput )
 
     def clean(self):
@@ -182,7 +182,7 @@ class RegisterForm(UserForm):
             return self.cleaned_data
         
         if self.cleaned_data['password'] != self.cleaned_data['repassword']:
-            raise forms.ValidationError(_(u'Passwords do not match.'))
+            raise forms.ValidationError(ugettext(u'Passwords do not match.'))
 
         return self.cleaned_data
 
@@ -384,7 +384,7 @@ def profile_edit(request, group, user_id):
                                         )
 
             user.save()
-            request.user.message_set.create( message = _(u'Successfully changed user profile.') )
+            request.user.message_set.create( message = ugettext(u'Successfully changed user profile.') )
             
             return HttpResponseRedirect( sph_user_profile_link( user ) )
 
@@ -481,7 +481,7 @@ def admin_permission_role_edit(request, group, role_id = None):
 
             r.save()
 
-            request.user.message_set.create( message = _(u'Successfully saved role.') )
+            request.user.message_set.create( message = ugettext(u'Successfully saved role.') )
             return HttpResponseRedirect( r.get_absolute_memberlisturl() )
             
     else:
@@ -504,7 +504,7 @@ def admin_permission_role_member_list(request, group, role_id):
         role_member = RoleMember.objects.get( pk = memberid )
         role_member.delete()
 
-        request.user.message_set.create( message = _(u'Successfully deleted role member.') )
+        request.user.message_set.create( message = ugettext(u'Successfully deleted role member.') )
 
         return HttpResponseRedirect( role.get_absolute_memberlisturl() )
     return render_to_response( 'sphene/community/admin/permission/role_member_list.html',
@@ -538,7 +538,7 @@ def admin_permission_role_member_add(request, group, role_id, addgroup = False):
                                                    object_id = data['object'], )
                 limitation.save()
                 
-            request.user.message_set.create( message = _(u'Successfully added member.') )
+            request.user.message_set.create( message = ugettext(u'Successfully added member.') )
             return HttpResponseRedirect( role.get_absolute_memberlisturl() )
     else:
         form = EditForm(group = group)
