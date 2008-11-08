@@ -1174,11 +1174,12 @@ class ThreadInformation(models.Model):
     def _get_absolute_url(self):
         kwargs = { 'groupName': self.category.group.name,
                    'thread_id': self.root_post.id }
+        name = 'sphboard_show_thread_without_slug'
         if get_sph_setting('board_slugify_links'):
-            name = 'sphboard_show_thread'
-            kwargs['slug'] = slugify(self.root_post.subject)
-        else:
-            name = 'sphboard_show_thread_without_slug'
+            slug = slugify(self.root_post.subject)
+            if slug:
+                name = 'sphboard_show_thread'
+                kwargs['slug'] = slug
         return (name, (), kwargs)
     _get_absolute_url = permalink(_get_absolute_url, get_current_request)
     
