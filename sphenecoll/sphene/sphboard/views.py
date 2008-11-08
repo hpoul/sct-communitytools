@@ -27,7 +27,7 @@ from sphene.sphboard.renderers import describe_render_choices
 
 
 
-def showCategory(request, group = None, category_id = None, showType = None):
+def showCategory(request, group = None, category_id = None, showType = None, slug = None):
     """
     displays either all root categories, or the contents of a category.
     the contents of a category could be other categories or forum threads.
@@ -147,7 +147,7 @@ def listThreads(request, group, category_id):
                                    { 'threadlist': threadlist, })
 
 
-def showThread(request, thread_id, group = None):
+def showThread(request, thread_id, group = None, slug = None):
     thread = get_object_or_404(Post.objects, pk = thread_id )
     if not thread.category.has_view_permission(request.user):
         raise PermissionDenied()

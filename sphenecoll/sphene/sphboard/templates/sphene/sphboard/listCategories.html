@@ -1,11 +1,12 @@
 {% extends "sphene/sphboard/base.html" %}
 {% load i18n %}
 {% load sphboard_extras %}
+{% load sph_extras %}
 {% load sph_pagination %}
 
 {% block content %}
 
-  <p>{% if search_posts_url %}<a href="{{ search_posts_url }}?category_id={{ category.id }}">Search</a> | {% endif %}<a href="../../latest/{{ category_id }}/">{% trans "Latest" %}</a> | {% sphboard_displayBreadcrumbsForCategory category 0 1 %}</p>
+  <p>{% if search_posts_url %}<a href="{{ search_posts_url }}?category_id={{ category.id }}">Search</a> | {% endif %}<a href="{% sph_url2 sphboard_latest category_id=category_id %}">{% trans "Latest" %}</a> | {% sphboard_displayBreadcrumbsForCategory category 0 1 %}</p>
 
   {% if user.is_authenticated %}
     <p>

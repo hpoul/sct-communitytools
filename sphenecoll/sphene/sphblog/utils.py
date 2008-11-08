@@ -9,6 +9,9 @@ from django.utils.encoding import smart_unicode, force_unicode
 
 def slugify(s, entities=True, decimal=True, hexadecimal=True, model=None, slug_field='slug', pk=None):
     s = smart_unicode(s)
+    # we don't want a string > 40 characters
+    if len(s) > 40:
+        s = s[:40]
 
     #character entity reference
     if entities:

@@ -6,6 +6,8 @@ from django.contrib import admin
 from sphene.community.permissionutils import has_permission_flag
 from sphene.community.models import Group, Role, PermissionFlag, RoleMember
 
+from sphene.sphblog.utils import slugify
+
 from sphene.sphboard import categorytyperegistry
 
 from django.utils import html
@@ -447,7 +449,14 @@ class Category(models.Model):
         return self._get_absolute_url()
 
     def _get_absolute_url(self):
-        return ('sphene.sphboard.views.showCategory', (), { 'groupName': self.group.name, 'category_id': self.id })
+        kwargs = { 'groupName': self.group.name,
+                   'category_id': self.id }
+        if get_sph_setting('board_slugify_links'):
+            kwargs['slug'] = slugify(self.name)
+            name = 'sphboard_show_category'
+        else:
+            name = 'sphboard_show_category_without_slug'
+        return (name, (), kwargs)
     _get_absolute_url = permalink(_get_absolute_url, get_current_request)
 
     def get_absolute_post_thread_url(self):
@@ -460,6 +469,10 @@ class Category(models.Model):
         return reverse( 'sphboard-feeds',
                         urlconf = get_urlconf(),
                         kwargs = { 'url': 'latest/%d' % self.id } )
+
+    def get_absolute_latest_url(self):
+        return ('sphboard_latest', (), { 'groupName': self.group.name, 'category_id': self.id, })
+    get_absolute_latest_url = permalink(get_absolute_latest_url, get_current_request)
 
     def get_absolute_togglemonitor_url(self):
         return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.group.name, 'monitortype': 'category', 'object_id': self.id, })
@@ -944,7 +957,14 @@ class Post(models.Model):
                                        self.id)
 
     def _get_absolute_url(self):
-        return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.thread and self.thread.id or self.id })
+        kwargs = { 'groupName': self.category.group.name,
+                   'thread_id': self.thread and self.thread.id or self.id }
+        if get_sph_setting('board_slugify_links'):
+            name = 'sphboard_show_thread'
+            kwargs['slug'] = slugify(self.get_thread().subject)
+        else:
+            name = 'sphboard_show_thread_without_slug'
+        return (name, (), kwargs)
     _get_absolute_url = permalink(_get_absolute_url, get_current_request)
     
     def get_absolute_editurl(self):
@@ -1152,7 +1172,14 @@ class ThreadInformation(models.Model):
         return self._get_absolute_url()
 
     def _get_absolute_url(self):
-        return ('sphene.sphboard.views.showThread', (), { 'groupName': self.category.group.name, 'thread_id': self.root_post.id })
+        kwargs = { 'groupName': self.category.group.name,
+                   'thread_id': self.root_post.id }
+        if get_sph_setting('board_slugify_links'):
+            name = 'sphboard_show_thread'
+            kwargs['slug'] = slugify(self.root_post.subject)
+        else:
+            name = 'sphboard_show_thread_without_slug'
+        return (name, (), kwargs)
     _get_absolute_url = permalink(_get_absolute_url, get_current_request)
     
 

@@ -41,6 +41,8 @@ add_setting_defaults( {
     'board_auto_wiki_link_enabled': True,
 
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
+
+    'board_slugify_links': True,
     })
 
 
