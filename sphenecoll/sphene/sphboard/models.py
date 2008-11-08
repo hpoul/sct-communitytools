@@ -244,7 +244,7 @@ class Category(models.Model):
             return DefaultCategoryType( self )
         ct = categorytyperegistry.get_category_type( self.category_type )
         if ct is None:
-            raise Exception( 'Invalid category type "%s"' % (self.category_type))
+            raise Exception( 'Invalid category type "%s" for "%s"' % (self.category_type, self.name))
         return ct(self)
 
     def get_rolemember_limitation_objects(group):

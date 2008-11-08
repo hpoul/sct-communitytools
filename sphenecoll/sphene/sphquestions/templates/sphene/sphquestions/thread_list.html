@@ -1,0 +1,50 @@
+{% extends "sphene/sphboard/listCategories.html" %}
+
+{% load sph_extras %}
+{% load sphboard_extras %}
+{% load i18n %}
+
+{% block stylesheets %}
+  {{ block.super }}
+
+  <style>
+  img.sphquestion {
+    display:block;
+    float: left;
+    margin-right: 0.5em; margin-top: 8px;
+  }
+  ul.sphquestions_icons li {
+    list-style-type: none;
+    margin: 0px;
+  }
+  </style>
+{% endblock %}
+
+
+{% block thread_list_subject %}
+
+  {% with thread.root_post.sphquestions_ext.get as qext %}
+    {% if qext.is_question %}
+      {% if qext.answered %}
+        {% ifequal ext.answered 3 %}
+          <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" class="sphquestion" />
+        {% else %}
+          <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" class="sphquestion" />
+        {% endifequal %}
+      {% else %}
+        <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" class="sphquestion" />
+      {% endif %}
+    {% endif %}
+  {% endwith %}
+  {{ block.super }}
+
+{% endblock %}
+
+
+{% block below_thread_list %}
+  <ul class="sphquestions_icons">
+    <li><img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" /> Answered question (Voted by the author of the question)</li>
+    <li><img src="{{ MEDIA_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" /> Answered question (Voted by another user but not by the author)</li>
+    <li> <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" /> Unanswered question.</li>
+  </ul>
+{% endblock %}

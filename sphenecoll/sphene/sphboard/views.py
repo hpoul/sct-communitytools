@@ -191,7 +191,7 @@ def options(request, thread_id, group = None):
 
     thread.save()
     
-    return HttpResponseRedirect( '../../thread/%s/' % thread.id )
+    return HttpResponseRedirect( thread.get_absolute_url() )
 
 class PostForm(forms.Form):
     subject = forms.CharField( label = ugettext_lazy(u"Subject" ) )

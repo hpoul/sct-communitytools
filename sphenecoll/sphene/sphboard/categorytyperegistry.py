@@ -113,6 +113,17 @@ class CategoryType(object):
         """
         return True
 
+    def is_separator(self):
+        """
+        defines if this category is just meant as a separator
+        (ie. nobody can post new threads, etc.)
+        this is only true for 'sphseparator' - and only existed
+        because a {% ifequal category_type "sphseparator" %} 
+        destroyed my template inheritance:
+        http://code.djangoproject.com/ticket/6510
+        """
+        return False
+
 
 category_type_registry = { }
 initialized = False

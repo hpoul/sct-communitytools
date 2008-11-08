@@ -28,18 +28,18 @@
     {% trans "Thread Options:" %} 
       {% if thread.allow_sticking %}
         {% if thread.is_sticky %}
-          [ <a href="../../options/{{ thread.id }}/?cmd=removeSticky">{% trans "Remove Sticky" %}</a> ]
+          [ <a href="{% sph_url2 sphboard_options thread_id=thread.id %}?cmd=removeSticky">{% trans "Remove Sticky" %}</a> ]
         {% else %}
-          [ <a href="../../options/{{ thread.id }}/?cmd=makeSticky">{% trans "Make Sticky" %}</a> ]
+          [ <a href="{% sph_url2 sphboard_options thread_id=thread.id %}?cmd=makeSticky">{% trans "Make Sticky" %}</a> ]
         {% endif %}
       {% endif %}
       {% if thread.allow_locking %}
-        [ <a href="../../options/{{ thread.id }}/?cmd=toggleClosed">
+        [ <a href="{% sph_url2 sphboard_options thread_id=thread.id %}?cmd=toggleClosed">
             {% if thread.is_closed %}{% trans "Unlock Thread" %}{% else %}{% trans "Lock Thread" %}{% endif %}
           </a> ]
       {% endif %}
       {% if thread.allow_moving %}
-        [ <a href="../../move/{{ thread.id }}/">{% trans "Move Thread" %}</a> ]
+        [ <a href="{% sph_url2 sphboard_move_thread thread_id=thread.id %}">{% trans "Move Thread" %}</a> ]
       {% endif %}
       <!-- [ <a href="#" id="modifythreadtags">Modify Thread Tags</a> ] -->
       <br/>
@@ -90,6 +90,7 @@
       </tr>
       <tr>
         <td class="sphboard_post_body">
+          {% block post_body %}
           {% if post.is_annotated %}
             {% if post.annotation.get.hide_post %}
               <div class="annotation annotation_post_hidden">
@@ -114,6 +115,8 @@
               </div>
             {% endif %}
           {% endwith %}
+
+          {% endblock post_body %}
 
         </td>
       </tr>

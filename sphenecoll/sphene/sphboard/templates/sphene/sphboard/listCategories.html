@@ -17,7 +17,7 @@
         {% trans "You are currently receiving email notifications on new posts." %} - <a href="../../togglemonitor_group/{{ group.id }}/">{% trans "Stop notifications" %}</a>
       {% else %}
         {% if rootCategories %}
-          <a href="../../togglemonitor_group/{{ group.id }}/">{% trans "Notify me by email on new posts." %}</a>
+          <a href="{% sph_url2 sphboard_toggle_monitor monitortype="group" object_id=group.id %}">{% trans "Notify me by email on new posts." %}</a>
         {% endif %}
       {% endif %}
     {% endif %}
@@ -43,7 +43,7 @@
     {% endif %}
   {% endif %}
 
-  {% ifnotequal category.category_type "sphseparator" %}
+  {% if not category.get_category_type.is_separator %}
   {% if isShowLatest or category.canContainPosts %}
     {% block above_thread_list %}
     {% endblock %}
@@ -90,6 +90,8 @@
       <p><a href="../../catchup/{{ category.id }}/" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
     {% endif %}
   {% endif %}
-  {% endifnotequal %}
+  {% endif %}
 
+  {% block below_thread_list %}
+  {% endblock %}
 {% endblock %}

@@ -1,0 +1,40 @@
+{% extends "sphene/sphboard/showThread.html" %}
+
+
+{% load sph_extras %}
+{% load sphquestions_extras %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <style>
+.sphquestions_answer {
+  margin-top: 2em;
+  padding-top: 3px;
+  border-top: 1px solid black;
+}
+.sphquestions_answer div {
+  clear: both;
+}
+.sphquestions_answer img {
+  margin-right:0.2em; display:block;float:left;
+}
+  </style>
+{% endblock %}
+
+{% block content %}
+  {% with thread.sphquestions_ext.get as qext %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
+{% block post_body %}
+
+  {{ block.super }}
+
+  {% sphquestions_answervoting qext post %}
+
+
+{% endblock post_body %}
+
+
+

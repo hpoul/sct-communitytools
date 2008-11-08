@@ -25,6 +25,10 @@ class SeparatorCategoryType(CategoryType):
     label = 'Separator'
 
 
+    def is_separator(self):
+        return True
+
+
 
 class ExtendedPostForm(PostForm):
     def __init__(self, *args, **kwargs):
