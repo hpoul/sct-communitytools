@@ -322,7 +322,7 @@ def sph_truncate(string, charlen, replacement):
     return string
 
 @register.simple_tag
-def sph_showavatar(user):
+def sph_showavatar(user, maxwidth = None):
     profile = None
     try:
         profile = CommunityUserProfile.objects.get( user = user, )
@@ -343,6 +343,10 @@ def sph_showavatar(user):
         avatar = profile.avatar.url
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
+    
+    if maxwidth is not None and maxwidth < avatar_width:
+        avatar_height = round(float(avatar_height) * (float(maxwidth) / avatar_width))
+        avatar_width = maxwidth
         
     log.info("avatar: %s", avatar)
     return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height, _(u'Users avatar'))
