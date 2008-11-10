@@ -45,7 +45,7 @@ class QuestionPostExtension(models.Model):
     is_question = models.BooleanField()
     # 0 = not answered
     # 1 = someone marked a reply as valid answer
-    # 2 = author marked it as answered.
+    # 3 = author marked it as answered.
     answered = models.IntegerField()
 
 

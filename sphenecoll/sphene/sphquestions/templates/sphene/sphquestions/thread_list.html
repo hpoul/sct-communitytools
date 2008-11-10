@@ -26,7 +26,7 @@
   {% with thread.root_post.sphquestions_ext.get as qext %}
     {% if qext.is_question %}
       {% if qext.answered %}
-        {% ifequal ext.answered 3 %}
+        {% ifequal qext.answered 3 %}
           <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" class="sphquestion" />
         {% else %}
           <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" class="sphquestion" />
