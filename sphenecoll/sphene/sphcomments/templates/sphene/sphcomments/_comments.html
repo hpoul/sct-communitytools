@@ -1,0 +1,26 @@
+{% comment %}
+  simply include this template using:
+  {% with mymodel as comment_object %}
+    {% include "sphene/sphcomments/_comments.html" %}
+  {% endwith %}
+{% endcomment %}
+
+
+{% load sphcomments_extras %}
+{% load i18n %}
+
+
+<div class="sphcomments">
+{% sphcomments_load_infos comment_object %}
+  <h2>{{ threadlist.get_object_count }} Comments</h2>
+  {% if user.is_authenticated %}
+    <p>{% include "sphene/sphboard/_category_monitor.html" %}</p>
+  {% endif %}
+  {% if threadlist.get_object_count %}
+    {{ threadlist }}
+  {% else %}
+    <p>{% trans "No comments yet." %}</p>
+  {% endif %}
+  {% include "sphene/sphboard/_new_thread_link.html" %}
+{% endsphcomments_load_infos %}
+</div>
