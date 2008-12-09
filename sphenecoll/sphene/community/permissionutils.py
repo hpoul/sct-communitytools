@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from sphene.community.middleware import get_current_group
 from sphene.community.models import Role, RoleMember, PermissionFlag, RoleGroupMember
 
-
 def has_permission_flag(user, flag, contentobject = None, group = None):
     """
     Checks if the given user has the given flag for the given model instance

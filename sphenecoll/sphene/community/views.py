@@ -26,7 +26,6 @@ from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
 from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
-
 class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField(label=ugettext_lazy(u'Email address'))
     captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
@@ -311,7 +310,10 @@ def profile(request, group, user_id):
     has_edit_permission = False
     profile_edit_url = None
 
-    if user == request.user:
+    requester = request.user
+    
+    if user == requester or \
+        (requester and requester.is_authenticated() and requester.is_superuser):
         has_edit_permission = True
         profile_edit_url = sph_reverse( 'sphene.community.views.profile_edit', (), { 'user_id': user.id, })
 
@@ -344,13 +346,16 @@ def profile_edit_mine(request, group):
 
 
 def profile_edit(request, group, user_id):
+    requester = request.user
+    
     if user_id:
         user = get_object_or_404(User, pk = user_id)
     else:
-        user = request.user
+        user = requester
 
-    if user is None or user != request.user or not user.is_authenticated():
-        raise PermissionDenied()
+    if user is None or user != requester or not requester.is_authenticated():
+        if not (requester and requester.is_authenticated() and requester.is_superuser):
+            raise PermissionDenied()
 
     if request.method == 'POST':
         reqdata = request.POST.copy()
