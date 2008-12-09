@@ -155,7 +155,9 @@ def clear_authorinfo_cache(instance, **kwargs):
         clear_cache_all_languages(instance.id, group.id)
 
 def clear_authorinfo_cache_postcount(instance, **kwargs):
-    clear_cache_all_languages(instance.user.id, instance.group.id)
+    if instance.group:
+        group_id = group.id
+    clear_cache_all_languages(instance.user.id, group_id)
 
 signals.post_save.connect(clear_authorinfo_cache,
                    sender = User)
