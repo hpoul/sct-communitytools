@@ -32,8 +32,8 @@ False
 >>> p = Post( category = c, subject = 'Test Subject', 
 ...           body = "Some body", markup = 'bbcode', author = testuser )
 >>> p.save()
->>> p.author.username
-u'sometestuser'
+>>> p.author.username == u'sometestuser'
+True
 
 # Install monitor
 >>> p.toggle_monitor() == None
@@ -117,7 +117,7 @@ False
 # Validate outgoing email ..
 >>> from django.core import mail
 >>> mail.outbox[0].subject
-'New Forum Post: Re: Test Subject'
+u'New Forum Post in "Example Category": Re: Test Subject'
 >>> len(mail.outbox)
 2
 

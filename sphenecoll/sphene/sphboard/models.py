@@ -1362,6 +1362,7 @@ class UserPostCountManager(models.Manager):
             return None
         try:
             upc = self.get(user = user, group = group)
+            
         except UserPostCount.DoesNotExist:
             upc = UserPostCount(user = user, group = group)
         upc.update_post_count()
@@ -1371,15 +1372,19 @@ class UserPostCountManager(models.Manager):
 
 class UserPostCount(models.Model):
     user = models.ForeignKey( User )
-    group = models.ForeignKey( Group )
+    group = models.ForeignKey( Group, null=True )
     post_count = models.IntegerField()
 
     objects = UserPostCountManager()
 
     def update_post_count(self):
-        self.post_count = self.user.sphboard_post_author_set. \
-            filter( category__group = self.group ).count()
-
+        qry = self.user.sphboard_post_author_set
+        try:
+            qry = qry.filter(category__group = self.group)
+        except:
+            qry = qry.filter(category__group__isnull = True).count()
+        
+        self.post_count = qry.count()
 
     class Meta:
         unique_together = ( 'user', 'group' )
