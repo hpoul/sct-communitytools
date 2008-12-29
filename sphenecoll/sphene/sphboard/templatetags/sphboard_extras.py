@@ -77,10 +77,7 @@ def sphboard_displayUserName( user ):
 
 @register.inclusion_tag('sphene/sphboard/_displayPostForm.html')
 def sphboard_quick_reply( thread ):
-    if get_sph_setting('board_quick_reply'):
-        return { 'form': PostForm(initial={'subject': u'Re: ' + thread.subject} ), 'form_action': thread.get_absolute_postreplyurl() }
-    else:
-        return None
+    return { 'form': PostForm(initial={'subject': u'Re: ' + thread.subject} ), 'form_action': thread.get_absolute_postreplyurl() }
 
 ### sphboard_displayPostForm is deprecated, there is a view function for this !!
 @register.inclusion_tag('sphene/sphboard/_displayPostForm.html', takes_context=True)
