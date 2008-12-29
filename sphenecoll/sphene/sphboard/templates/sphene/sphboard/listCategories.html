@@ -87,7 +87,7 @@
     </table>
     {% include category.get_category_type.get_new_thread_link_template %}
     {% if user.is_authenticated and category.has_new_posts %}
-      <p><a href="../../catchup/{{ category.id }}/" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
+      <p><a href="{% sph_url2 sphene.sphboard.views.catchup  category_id=category.id %}" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
     {% endif %}
   {% endif %}
   {% endif %}

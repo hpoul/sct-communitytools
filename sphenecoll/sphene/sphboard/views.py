@@ -686,7 +686,7 @@ def toggle_monitor(request, group, monitortype, object_id):
 def catchup(request, group, category_id):
     category = get_object_or_404(Category, pk = category_id )
     category.catchup(request.session, request.user)
-    req = HttpResponseRedirect( '../../show/%s/' % category_id )
+    req = HttpResponseRedirect( sph_reverse('sphene.sphboard.views.showCategory' , kwargs = {'category_id': category_id } ) )
     req.sph_lastmodified = True
     return req
 
