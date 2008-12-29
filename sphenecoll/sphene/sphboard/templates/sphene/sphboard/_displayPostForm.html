@@ -15,7 +15,7 @@
   </script>
 
 <div id="previewarea" class="board_previewarea"></div>
-<form enctype="multipart/form-data" method="post" action="." name="postform">
+<form enctype="multipart/form-data" method="post" action='{{ form_action|default:"." }}' name="postform">
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}
     <input type="hidden" name="thread" value="{{ thread.id }}" />

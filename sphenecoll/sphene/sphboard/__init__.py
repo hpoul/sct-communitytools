@@ -43,6 +43,9 @@ add_setting_defaults( {
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
 
     'board_slugify_links': True,
+
+    # Display the reply form directly below a thread instead of just a 'Post Reply' link.
+    'board_quick_reply': False,
     })
 
 

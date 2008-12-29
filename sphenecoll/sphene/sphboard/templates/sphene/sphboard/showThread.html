@@ -178,7 +178,11 @@
   <br/><br/>
   
   {% if allowPosting %}
-    <a href="{{ thread.get_absolute_postreplyurl }}">{% trans "Post Reply" %}</a>
+    {% if sph_settings.board_quick_reply %}
+      {% sphboard_quick_reply thread %}
+    {% else %}
+      <a href="{{ thread.get_absolute_postreplyurl }}">{% trans "Post Reply" %}</a>
+    {% endif %}
     {# sphboard_displayPostForm thread #}
   {% else %}
     {% if thread.is_closed %}
