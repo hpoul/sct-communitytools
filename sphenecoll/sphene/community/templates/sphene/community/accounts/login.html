@@ -4,8 +4,8 @@
 
 {% block content %}
 
-{% if form.has_errors %}
-  <p>{% trans "Your username and password didn't match. Please try again." %}</p>
+{% if form.errors %}
+  <ul class="errorlist"><li>{% trans "Your username and password didn't match. Please try again." %}</li></ul>
 {% endif %}
 
 <form method="post" action="." class="sphform">
