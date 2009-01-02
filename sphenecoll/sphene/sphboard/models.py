@@ -1182,6 +1182,9 @@ class ThreadInformation(models.Model):
                 kwargs['slug'] = slug
         return (name, (), kwargs)
     _get_absolute_url = permalink(_get_absolute_url, get_current_request)
+
+    def __unicode__(self):
+        return self.root_post.subject
     
 
 def calculate_heat(thread, postcount, viewcount, age):
