@@ -40,9 +40,22 @@
     <p class="sphtagheader">{% trans "Tag" %}: {{ tag.name }} / <a href="{% sph_url2 sphblog_index %}">{% trans "Back" %}</a></p>
   {% endif %}
 
-  {% for thread in threads %}
+
+  {% for thread in threads.object_list %}
     {% sphblog_showblogpost thread %}
   {% endfor %}
+
+  {# Pagination #}
+  <p align="right">
+  {% if threads.has_previous %}
+      <a href="{% sph_url2 sphblog_paged_index page=threads.previous_page_number %}">Previous</a> | 
+  {% endif %}
+  Page {{ threads.number }}
+  {% if threads.has_next %}
+    | <a href="{% sph_url2 sphblog_paged_index page=threads.next_page_number %}">Next</a>
+  {% endif %}
+  </p>
+  {# Pagination end #}
 
   {% if all_tags %}
     <div class="sph_all_tags">
@@ -57,4 +70,5 @@
   <p>
     <a href="{% sph_url2 sphblog-feeds "latestposts" %}">{% trans "RSS Feed" %}</a>
   </p>
+
 {% endblock %}

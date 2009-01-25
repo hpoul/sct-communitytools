@@ -9,6 +9,7 @@ from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from sphene.community.models import Tag, tag_get_models_by_tag
 from sphene.community.middleware import get_current_urlconf
@@ -16,6 +17,7 @@ from sphene.community.sphutils import add_rss_feed
 from sphene.sphboard.views import showThread as sphboard_show_thread
 from sphene.sphboard.models import Category, ThreadInformation, Post, get_tags_for_categories
 from sphene.sphblog.models import BlogPostExtension
+from sphene.community.sphutils import get_sph_setting
 
 def get_board_categories(group):
     """
@@ -35,7 +37,21 @@ def get_posts_queryset(group, categories):
                                    category__id__in = map(lambda x: x.id, categories) ).order_by( '-postdate' )
     return threads
 
-def blogindex(request, group, category_id = None):
+def get_paged_objects(objects, page):
+    paginator = Paginator(objects, get_sph_setting('blog_post_paging'))
+    try:
+        page = int(page)
+    except ValueError:
+        page = 1
+
+    try:
+        paged_objects = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        paged_objects = paginator.page(paginator.num_pages)
+
+    return paged_objects
+
+def blogindex(request, group, category_id = None, page = 1):
     categories = get_board_categories(group)
     category = None
     if category_id is not None:
@@ -51,6 +67,7 @@ def blogindex(request, group, category_id = None):
                                    context_instance = RequestContext(request) )
 
     threads = get_posts_queryset(group, categories)
+    paged_threads = get_paged_objects(threads, page)
 
     allowpostcategories = filter(Category.has_post_thread_permission, categories)
     #blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), args = ('latestposts',), kwargs = { 'groupName': group.name })
@@ -59,7 +76,7 @@ def blogindex(request, group, category_id = None):
     all_tags = get_tags_for_categories( categories )
     return render_to_response( 'sphene/sphblog/blogindex.html',
                                { 'allowpostcategories': allowpostcategories,
-                                 'threads': threads,
+                                 'threads': paged_threads,
                                  'blog_feed_url': blog_feed_url,
                                  'all_tags': all_tags,
                                  'category': category,
@@ -98,5 +115,4 @@ def show_thread(request, group, slug, year = None, month = None, day = None):
     except BlogPostExtension.DoesNotExist:
         raise Http404
     return sphboard_show_thread( request, blogpost.post.id, group )
-
 
