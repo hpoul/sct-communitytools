@@ -15,7 +15,7 @@
       <div class="entrydetails">
 	<p class="sphuser">{% trans "Posted by" %} {% sph_html_user post.author %}</p>
         <p class="sphtags">{% trans "Assigned Tags:" %} {% for tag_label in blogpost.get_tag_labels %}<a href="{% sph_url2 sphblog_show_tag_posts tag_name=tag_label.tag.name %}" class="sphtag">{{ tag_label.label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with post.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>
+	<a href="{{ blogpost.get_absolute_url }}">{% blocktrans with post.threadinformation_set.get.post_count|add:"-1" as count %}{{ count }} Comments{% endblocktrans %}</a>{% if allowPosting %} | <a href="{{ thread.get_absolute_postreplyurl }}">{% trans "Post new Comment" %}</a>{% endif %}
         {% with post.attachments.all as allattachments %}
           {% if allattachments|length %}
             <p class="sphattachments">
