@@ -2,7 +2,7 @@
 
 <ul class="sphwiki attachmentlist">
   {% for attachment in attachment_list %}
-    <li><a href="{{ attachment.get_fileupload_url }}">{{ attachment.get_fileupload_filename|sph_basename }}</a>
+    <li><a href="{{ attachment.fileupload.url }}">{{ attachment.fileupload.name|sph_basename }}</a>
       {% if attachment.description %}
         - {{ attachment.description }}
       {% endif %}
