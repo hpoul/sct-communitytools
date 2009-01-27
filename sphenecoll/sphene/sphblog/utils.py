@@ -41,13 +41,14 @@ def slugify(s, entities=True, decimal=True, hexadecimal=True, model=None, slug_f
     s = re.sub('-{2,}', '-', s).strip('-')
 
     slug = s
-    if model:
+    if model:  
+        # return unique slug for a model (appending integer counter)
         def get_query():
             query = model.objects.filter(**{ slug_field: slug })
             if pk:
                 query = query.exclude(pk=pk)
             return query
-        counter = 1
+        counter = 2
         while get_query():
             slug = "%s-%s" % (s, counter)
             counter += 1

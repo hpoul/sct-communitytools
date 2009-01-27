@@ -26,15 +26,9 @@ class BlogPostForm(PostForm):
             raise forms.ValidationError( 'No subject to generate slug.' )
         slug = self.cleaned_data['slug']
         if slug == '':
-            slug = slugify(self.cleaned_data['subject'])
+            slug = slugify(self.cleaned_data['subject'], model=BlogPostExtension)
         else:
-            try:
-                ext = BlogPostExtension.objects.get( slug__exact = slug )
-                if ext.id != self.__ext_id:
-                    raise forms.ValidationError( 'Slug is already in use.' )
-            except BlogPostExtension.DoesNotExist:
-                # Everything all-right
-                pass
+            slug = slugify(slug, model=BlogPostExtension) 
         return slug
 
     def init_for_category_type(self, category_type, post):
