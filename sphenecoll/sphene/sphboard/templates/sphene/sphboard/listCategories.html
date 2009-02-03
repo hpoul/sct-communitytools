@@ -14,7 +14,7 @@
       {% include "sphene/sphboard/_category_monitor.html" %}
     {% else %}
       {% if group.has_monitor %}
-        {% trans "You are currently receiving email notifications on new posts." %} - <a href="../../togglemonitor_group/{{ group.id }}/">{% trans "Stop notifications" %}</a>
+        {% trans "You are currently receiving email notifications on new posts." %} - <a href="{% sph_url2 sphboard_toggle_monitor monitortype="group" object_id=group.id %}">{% trans "Stop notifications" %}</a>
       {% else %}
         {% if rootCategories %}
           <a href="{% sph_url2 sphboard_toggle_monitor monitortype="group" object_id=group.id %}">{% trans "Notify me by email on new posts." %}</a>
