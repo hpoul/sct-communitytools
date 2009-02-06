@@ -4,7 +4,7 @@
 <ul class="news">
   {% for thread in threads %}
     <li>
-      <div class="subject">{{ thread.postdate|sph_date }}: {{ thread.subject }}</div>
+      <div class="subject">{{ thread.postdate|sph_date }}: <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a></div>
       <div class="body">{{ thread.body_escaped }}</div>
       {% if baseURL %}
         <div class="comments"><a href="{{ thread.get_absolute_url }}">{{ thread.replyCount }} {% trans "Comments" %}</a></div>
