@@ -15,7 +15,7 @@ from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
 
 from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
-from sphene.sphboard.views import PostForm, get_all_viewable_categories
+from sphene.sphboard.views import PostForm, get_all_viewable_categories, enable_wysiwyg_editor
 
 register = template.Library()
 
@@ -106,10 +106,11 @@ def sphboard_displayPostForm(context, post = None):
     else: category = None
     if context.has_key('thread'): thread = context['thread']
     else: thread = None
-    
+
     return { 'form': form,
              'category': category,
-             'thread': thread, }
+             'thread': thread,
+             'bbcodewysiwyg': enable_wysiwyg_editor(), }
 
 
 @register.filter

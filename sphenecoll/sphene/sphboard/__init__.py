@@ -46,6 +46,16 @@ add_setting_defaults( {
 
     # Display the reply form directly below a thread instead of just a 'Post Reply' link.
     'board_quick_reply': False,
+
+    # Activates the experimental WYSIWYG editor - 
+    #   only if 'bbcode' is the only markup choice.
+    # If you are using it, please provide feedback in the 
+    # forums at http://sct.spene.net !
+    'board_wysiwyg': False,
+    # This options let users test the wysiwyg editor by appending
+    # ?wysiwyg=1 to the post URL. (I just added it so it can be seen on
+    # sct.sphene.net and tested by users.)
+    'board_wysiwyg_testing': False,
     })
 
 

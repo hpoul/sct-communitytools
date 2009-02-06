@@ -238,6 +238,14 @@ class PostAttachmentForm(forms.ModelForm):
 def reply(*args, **kwargs):
     return post(*args, **kwargs)
 
+
+def enable_wysiwyg_editor():
+    # we want the bbcode WYSIWYG editor only if 'bbcode' is the only
+    # choice.
+    return len( POST_MARKUP_CHOICES ) == 1 and \
+        POST_MARKUP_CHOICES[0][0] == 'bbcode' and \
+        get_sph_setting('board_wysiwyg')
+
 def post(request, group = None, category_id = None, post_id = None, thread_id = None):
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
         previewpost = Post( body = request.REQUEST['body'],
@@ -248,7 +256,10 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     post = None
     thread = None
     category = None
-    context = { }
+    context = {
+        'bbcodewysiwyg': enable_wysiwyg_editor() \
+            or (get_sph_setting('board_wysiwyg_testing') \
+                    and request.REQUEST.get('wysiwyg', False)) }
     
     if post_id is None and 'post_id' in request.REQUEST:
         # if no post_id is given take it from the request.

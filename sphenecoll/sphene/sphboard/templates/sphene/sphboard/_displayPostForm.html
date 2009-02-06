@@ -1,10 +1,17 @@
 {% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
+  {% if bbcodewysiwyg %}
+    <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/sphboard/styles/editor.css" />
+    <script type="text/javascript" src="{{ MEDIA_URL }}sphene/sphboard/js/editor.js"></script>
+  {% endif %}
   <script language="JavaScript" type="text/javascript" src="{{ MEDIA_URL }}sphene/community/xmlhttp.js"></script>
   <script language="JavaScript" type="text/javascript">
   <!--
    function doPreview() {
+     {% if bbcodewysiwyg %}
+       doCheck();
+     {% endif %}
      var markup = "";
      if(document.postform.markup) {
        markup = "&markup=" + encodeURIComponent( document.postform.markup.value );
@@ -15,7 +22,7 @@
   </script>
 
 <div id="previewarea" class="board_previewarea"></div>
-<form enctype="multipart/form-data" method="post" action='{{ form_action|default:"." }}' name="postform">
+<form enctype="multipart/form-data" method="post" action='{{ form_action|default:"." }}' name="postform" {% if bbcodewysiwyg %}onsubmit="doCheck()" {% endif %}>
   <input type="hidden" name="category" value="{{ category.id }}" />
   {% if thread %}
     <input type="hidden" name="thread" value="{{ thread.id }}" />
@@ -25,6 +32,12 @@
   {% endif %}
   <table class="sphboard form">
     {{ form }}
+    {% if bbcodewysiwyg %}
+    <script type="text/javascript">
+      var editor_static = "{{ MEDIA_URL }}sphene/sphboard";
+    </script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}sphene/sphboard/js/inline.js"></script>
+    {% endif %}
   </table>
   </script>
     {% if user.is_authenticated %}
