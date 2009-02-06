@@ -92,6 +92,10 @@
   {% endif %}
   {% endif %}
 
+  {% if not category and user.is_authenticated %}
+      <p><a href="{% sph_url2 sphene.sphboard.views.catchup category_id=0 %}">{% trans "Mark all as read" %}</a></p>
+  {% endif %}
+
   {% block below_thread_list %}
   {% endblock %}
 {% endblock %}

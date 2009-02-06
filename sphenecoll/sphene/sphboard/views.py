@@ -22,7 +22,7 @@ from sphene.generic import advanced_object_list as objlist
 
 from sphene.sphboard import boardforms
 from sphene.sphboard.forms import PollForm, PollChoiceForm
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment, get_all_viewable_categories
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
 from sphene.sphboard.renderers import describe_render_choices
 
 
@@ -695,9 +695,15 @@ def toggle_monitor(request, group, monitortype, object_id):
 
 
 def catchup(request, group, category_id):
-    category = get_object_or_404(Category, pk = category_id )
-    category.catchup(request.session, request.user)
-    req = HttpResponseRedirect( sph_reverse('sphene.sphboard.views.showCategory' , kwargs = {'category_id': category_id } ) )
+    if category_id == '0':
+        ThreadLastVisit.objects.filter(user = request.user).delete() 
+        CategoryLastVisit.objects.filter(user = request.user).update(lastvisit = datetime.today(), oldlastvisit = None)
+        req = HttpResponseRedirect(sph_reverse('sphboard-index'))
+    else:
+        category = get_object_or_404(Category, pk = category_id )
+        category.catchup(request.session, request.user)
+        req = HttpResponseRedirect( sph_reverse('sphene.sphboard.views.showCategory' , kwargs = {'category_id': category_id } ) )
+
     req.sph_lastmodified = True
     return req
 
