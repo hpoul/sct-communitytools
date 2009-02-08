@@ -83,8 +83,11 @@ def blogindex(request, group, category_id = None, page = 1):
                                  },
                                context_instance = RequestContext(request) )
 
-def show_tag_posts(request, group, tag_name):
+def show_tag_posts(request, group, tag_name, page = 1):
     categories = get_board_categories(group)
+
+    if not page:
+        page = 1
 
     if not categories:
         return render_to_response( 'sphene/sphblog/nocategory.html',{},
@@ -94,9 +97,10 @@ def show_tag_posts(request, group, tag_name):
                             name__exact = tag_name )
     threads = get_posts_queryset(group, categories)
     threads = tag_get_models_by_tag( threads, tag )
+    paged_threads = get_paged_objects(threads, page)
 
     return render_to_response( 'sphene/sphblog/blogindex.html',
-                               { 'threads': threads,
+                               { 'threads': paged_threads,
                                  'tag': tag,
                                  },
                                context_instance = RequestContext(request) )

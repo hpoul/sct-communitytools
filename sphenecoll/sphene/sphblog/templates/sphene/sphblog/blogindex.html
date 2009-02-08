@@ -48,11 +48,11 @@
   {# Pagination #}
   <p align="right">
   {% if threads.has_previous %}
-      <a href="{% sph_url2 sphblog_paged_index page=threads.previous_page_number %}">Previous</a> | 
+      <a href="{% if tag %}{% sph_url2 sphblog_show_tag_posts tag_name=tag page=threads.previous_page_number %}{% else %}{% sph_url2 sphblog_paged_index page=threads.previous_page_number %}{% endif %}">Previous</a> | 
   {% endif %}
   Page {{ threads.number }}
   {% if threads.has_next %}
-    | <a href="{% sph_url2 sphblog_paged_index page=threads.next_page_number %}">Next</a>
+    | <a href="{% if tag %}{% sph_url2 sphblog_show_tag_posts tag_name=tag page=threads.next_page_number%}{% else %}{% sph_url2 sphblog_paged_index page=threads.next_page_number %}{% endif %}">Next</a>
   {% endif %}
   </p>
   {# Pagination end #}
