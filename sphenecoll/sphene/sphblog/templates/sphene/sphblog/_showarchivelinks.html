@@ -1,0 +1,9 @@
+{% load sph_extras %}
+{% load sphblog_extras %}
+
+<ul>
+{% for link in links %}
+{# links comes as a list of (year, month) tuples #}
+<li><a href='{% sph_url2 sphblog_archive_month year=link.0 month=link.1 %}'>{{ link.1|humanize_month }}, {{ link.0 }}</a></li>
+{% endfor %}
+</ul>
