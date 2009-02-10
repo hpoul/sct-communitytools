@@ -36,6 +36,14 @@
     </p>
   {% endif %}
 
+  {% if archive_year %}
+    {% if archive_month %}
+        <center><h2>Archive for {{ archive_month|humanize_month }}, {{ archive_year }}</h2></center>
+    {% else %}
+        <center><h2>Archive for {{ archive_year }}</h2></center>
+    {% endif %}
+  {% endif %}
+
   {% if tag %}
     <p class="sphtagheader">{% trans "Tag" %}: {{ tag.name }} / <a href="{% sph_url2 sphblog_index %}">{% trans "Back" %}</a></p>
   {% endif %}
@@ -48,11 +56,27 @@
   {# Pagination #}
   <p align="right">
   {% if threads.has_previous %}
+    {% if not archive_year %}
       <a href="{% if tag %}{% sph_url2 sphblog_show_tag_posts tag_name=tag page=threads.previous_page_number %}{% else %}{% sph_url2 sphblog_paged_index page=threads.previous_page_number %}{% endif %}">Previous</a> | 
+    {% else %}
+        {% if archive_month %}
+        <a href="{% sph_url2 sphblog_archive_month_paged page=threads.previous_page_number year=archive_year month=archive_month %}">Previous</a> | 
+        {% else %}
+        <a href="{% sph_url2 sphblog_archive_year_paged page=threads.previous_page_number year=archive_year %}">Previous</a> | 
+        {% endif %}
+    {% endif %}
   {% endif %}
   Page {{ threads.number }}
   {% if threads.has_next %}
+    {% if not archive_year %}
     | <a href="{% if tag %}{% sph_url2 sphblog_show_tag_posts tag_name=tag page=threads.next_page_number%}{% else %}{% sph_url2 sphblog_paged_index page=threads.next_page_number %}{% endif %}">Next</a>
+    {% else %}
+        {% if archive_month %}
+        | <a href="{% sph_url2 sphblog_archive_month_paged page=threads.next_page_number year=archive_year month=archive_month %}">Next</a>
+        {% else %}
+        | <a href="{% sph_url2 sphblog_archive_year_paged page=thread.next_page_number year=archive_year %}">Next</a>
+        {% endif %}
+    {% endif %}
   {% endif %}
   </p>
   {# Pagination end #}
@@ -67,6 +91,12 @@
       </ul>
     </div>
   {% endif %}
+
+  <div class="sph_archive_list">
+    <strong>{% trans "Archive" %}</strong>
+    {% show_archive %}
+  </div>
+
   <p>
     <a href="{% sph_url2 sphblog-feeds "latestposts" %}">{% trans "RSS Feed" %}</a>
   </p>
