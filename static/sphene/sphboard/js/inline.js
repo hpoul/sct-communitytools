@@ -16,7 +16,7 @@
   for(i=0;i<11;i++) {
     str += '<td><div class="bn" onmouseover="switchBtn(this, 1)" onmouseout="switchBtn(this, 0)" onclick="doColor(\'' + c[i] + '\')" style="cursor:pointer;"><div style="width:16px;height:16px;background-color:' + c[i] + ';"></div></div></td>';
   }
-  str += '</tr></table><iframe id="rte" style="border:1px solid grey;width:500px;height:300px"></iframe><input type="hidden" id="id_body" name="body"/>';
+  str += '</tr></table><iframe id="rte" style="border:1px solid grey;width:100%;height:300px"></iframe><input type="hidden" id="id_body" name="body"/>';
   t.parentNode.innerHTML = str;
 
   str = p.innerHTML + '<div id="smilies"><table>';
