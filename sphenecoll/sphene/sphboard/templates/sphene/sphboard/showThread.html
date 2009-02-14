@@ -19,6 +19,18 @@
 
 {% endblock %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  <!--[if IE 6]>
+    <style>
+    .sphboard_post_list td.sphboard_post_body div {
+      padding-left: 10px;
+    }
+    </style>
+
+  <![endif]-->
+{% endblock %}
+
 {% block content %}
   {% block sphboard_breadcrumb %}
     {% sphboard_displayBreadcrumbsForThread thread %}
