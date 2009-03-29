@@ -961,7 +961,7 @@ class Post(models.Model):
                    'thread_id': self.thread and self.thread.id or self.id }
         if get_sph_setting('board_slugify_links'):
             name = 'sphboard_show_thread'
-            kwargs['slug'] = slugify(self.get_thread().subject)
+            kwargs['slug'] = slugify(self.get_thread().subject) or '_'
         else:
             name = 'sphboard_show_thread_without_slug'
         return (name, (), kwargs)
