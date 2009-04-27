@@ -452,7 +452,7 @@ class Category(models.Model):
         kwargs = { 'groupName': self.group.name,
                    'category_id': self.id }
         if get_sph_setting('board_slugify_links'):
-            kwargs['slug'] = slugify(self.name)
+            kwargs['slug'] = slugify(self.name) or '_'
             name = 'sphboard_show_category'
         else:
             name = 'sphboard_show_category_without_slug'
