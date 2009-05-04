@@ -180,12 +180,16 @@ def options(request, thread_id, group = None):
     thread = Post.objects.get( pk = thread_id )
 
     if request.REQUEST['cmd'] == 'makeSticky':
+        if not thread.allow_sticking(): raise PermissionDenied()
         thread.set_sticky(True)
     elif request.REQUEST['cmd'] == 'removeSticky':
+        if not thread.allow_sticking(): raise PermissionDenied()
         thread.set_sticky(False)
     elif request.REQUEST['cmd'] == 'toggleClosed':
+        if not thread.allow_locking(): raise PermissionDenied()
         thread.set_closed(not thread.is_closed())
     elif request.REQUEST['cmd'] == 'modifytags':
+        if not request.user.is_superuser: raise PermissionDenied()
         from tagging.models import Tag
         Tag.objects.update_tags( thread.get_threadinformation(), [request.POST['tags'], ] )
 
