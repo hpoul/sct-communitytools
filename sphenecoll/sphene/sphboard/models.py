@@ -719,7 +719,7 @@ class Post(models.Model):
         return self._allow_adminfunctionality( 'sphboard_lock', user )
     
     def allow_sticking(self, user = None):
-        return self._allow_adminfunctionality( 'sphboard_stick', user )
+        return self._allow_adminfunctionality( 'sphboard_sticky', user )
 
     def __get_render_cachekey(self):
         return 'sphboard_rendered_body_%s' % str(self.id)
