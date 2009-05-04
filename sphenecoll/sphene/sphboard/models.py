@@ -1343,7 +1343,7 @@ class BoardUserProfile(models.Model):
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 
-    default_notifyme_value = models.BooleanField(null = True, )
+    default_notifyme_value = models.NullBooleanField(null = True, )
 
 
     def render_signature(self):
