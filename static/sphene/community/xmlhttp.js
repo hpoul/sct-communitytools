@@ -32,5 +32,7 @@
        }
      };
      http.open("POST",".");
+     http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+     http.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
      http.send( url );
    }
