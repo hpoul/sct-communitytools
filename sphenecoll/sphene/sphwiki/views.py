@@ -30,11 +30,13 @@ import os
 
 def showSnip(request, group, snipName):
     snip_rendered_body = None
+    status = None
     try:
         snip = WikiSnip.objects.get( group = group,
                                      name__exact = snipName )
     except WikiSnip.DoesNotExist:
         snip = WikiSnip( name = snipName, group = group )
+        status = 404
 
     if not snip.has_view_permission():
         raise PermissionDenied()
@@ -72,6 +74,8 @@ def showSnip(request, group, snipName):
                                     },
                                   context_instance = RequestContext(request) )
 
+    if status is not None:
+        res.status_code = status
     res.sph_lastmodified = snip.changed
     return res
 

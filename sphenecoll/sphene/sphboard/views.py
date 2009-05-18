@@ -55,7 +55,9 @@ def showCategory(request, group = None, category_id = None, showType = None, slu
         add_rss_feed( blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name )
 
         if sphdata != None: sphdata['subtitle'] = categoryObject.name
-        
+    elif sphdata is not None:
+        sphdata['subtitle'] = ugettext('Forum Overview')
+
     if group != None:
         args['group__isnull'] = False
         args['group'] = group

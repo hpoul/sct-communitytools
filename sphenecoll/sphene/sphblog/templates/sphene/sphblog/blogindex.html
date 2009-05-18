@@ -8,7 +8,8 @@
   {% if tag %}
     {{ tag.name }}
   {% else %}
-    {{ block.super }}
+    {# {{ block.super }} #}
+    {% trans "Blog" %}
   {% endif %}
 {% endblock %}
 

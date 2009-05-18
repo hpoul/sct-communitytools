@@ -1679,6 +1679,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </xsl:attribute>
     </xsl:if>
     <xsl:apply-templates/>
+    (<xsl:value-of select="@href" />)
   </xsl:template>
 
   <!--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
