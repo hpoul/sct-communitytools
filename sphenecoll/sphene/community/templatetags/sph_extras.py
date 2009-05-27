@@ -1,7 +1,6 @@
 import Image
 import os
-import re
-from time import strftime, time
+from time import time
 
 
 from django import template

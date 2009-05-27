@@ -3,7 +3,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import signals
-from django.forms import widgets
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 

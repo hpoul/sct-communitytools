@@ -67,7 +67,7 @@ usecaptcha = True
 try:
     from djaptcha.models import CaptchaRequest, CAPTCHA_ANSWER_OK
     #from django.db.models import permalink
-    from sphene.community.middleware import get_current_request, get_current_group
+    from sphene.community.middleware import get_current_request
 
     def captcha_request_get_absolute_url(self):
         return ('sphene.community.views.captcha_image', (), { 'token_id': self.id })
@@ -222,11 +222,6 @@ def get_method_by_name(methodname):
 
     return named_method
 
-
-
-
-
-
 def add_rss_feed(url, label):
     sphdata = get_current_sphdata()
     if not 'rss' in sphdata:
@@ -234,7 +229,6 @@ def add_rss_feed(url, label):
 
     sphdata['rss'].append( { 'url': url,
                              'label': label, } )
-    
 
 def sph_render_to_response(template_name, context = None):
     return render_to_response(template_name,
