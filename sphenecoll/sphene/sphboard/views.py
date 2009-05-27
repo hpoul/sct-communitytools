@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.db.models import Q
 from django.template.context import RequestContext
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext, string_concat
 from django.core.urlresolvers import reverse
 
@@ -132,7 +132,7 @@ def listThreads(request, group, category_id):
     queryset = ThreadInformation.objects.filter( category__pk = category_id )
     queryset = queryset.select_related( 'root_post', 'latest_post', )
     threadlist = ThreadList(objlist.QuerySetProvider(queryset),
-                            object_name = ugettext_lazy( 'Threads' ),
+                            object_name = _( 'Threads' ),
                             prefix = 'threadlist',
                             session = request.session,
                             requestvars = request.GET,
@@ -200,8 +200,8 @@ def options(request, thread_id, group = None):
     return HttpResponseRedirect( thread.get_absolute_url() )
 
 class PostForm(forms.Form):
-    subject = forms.CharField( label = ugettext_lazy(u"Subject" ) )
-    body = forms.CharField( label = ugettext_lazy(u"Body"),
+    subject = forms.CharField( label = _(u"Subject" ) )
+    body = forms.CharField( label = _(u"Body"),
                             widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 70 } ),
                             help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
@@ -227,8 +227,8 @@ class PostForm(forms.Form):
         pass
 
 class PostPollForm(forms.Form):
-    question = forms.CharField( label = ugettext_lazy( u'Question' ) )
-    answers = forms.CharField( label = ugettext_lazy( u'Answers (1 per line)' ),
+    question = forms.CharField( label = _( u'Question' ) )
+    answers = forms.CharField( label = _( u'Answers (1 per line)' ),
                                widget = forms.Textarea( attrs = { 'rows': 5, 'cols': 80 } ) )
     choicesPerUser = forms.IntegerField( label = _(u'Allowed Choices per User'),
                                          help_text = _(u'Enter how many answers a user can select.'),
@@ -486,11 +486,11 @@ def edit_poll(request, group, poll_id):
 
 
 class AnnotateForm(forms.Form):
-    body = forms.CharField( widget = forms.Textarea( attrs = { 'rows': 10,
+    body = forms.CharField( label=_(u'Body'), widget = forms.Textarea( attrs = { 'rows': 10,
                                                                'cols': 80, }, ),
                                                      help_text = describe_render_choices(), )
     markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
-    hide_post = forms.BooleanField( required = False )
+    hide_post = forms.BooleanField( label=_('Hide Post'), required = False )
 
     def __init__(self, *args, **kwargs):
         super(AnnotateForm, self).__init__(*args, **kwargs)
@@ -568,7 +568,7 @@ class MoveAndAnnotateForm(MoveForm, AnnotateForm):
 
         del self.fields['hide_post']
 
-        self.fields['body'].help_text = string_concat(ugettext_lazy(u'Please describe why this thread had to be moved.'), ' ', self.fields['body'].help_text)
+        self.fields['body'].help_text = string_concat(_(u'Please describe why this thread had to be moved.'), ' ', self.fields['body'].help_text)
 
 
 def move(request, group, thread_id):
