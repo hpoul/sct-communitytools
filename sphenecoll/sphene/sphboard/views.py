@@ -1,30 +1,22 @@
 # Create your views here.
-from django import forms, template
+from django import template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
-from django.db.models import Q
 from django.template.context import RequestContext
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext, string_concat
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
-
 
 from datetime import datetime
 
 from sphene.community import PermissionDenied
-from sphene.community import sphutils
-from sphene.community.sphutils import sph_reverse
-from sphene.community.middleware import get_current_user, get_current_sphdata, get_current_urlconf
-from sphene.community.sphutils import get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
+from sphene.community.middleware import get_current_sphdata, get_current_urlconf
+from sphene.community.sphutils import sph_reverse, get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
 
 from sphene.generic import advanced_object_list as objlist
 
-from sphene.sphboard import boardforms
-from sphene.sphboard.forms import PollForm, PollChoiceForm
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, POST_STATUSES, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, PostAttachment, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
-from sphene.sphboard.renderers import describe_render_choices
-
+from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, PostPollForm, PostAttachmentForm, AnnotateForm, MoveAndAnnotateForm
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
 
 
 def showCategory(request, group = None, category_id = None, showType = None, slug = None):
@@ -198,48 +190,6 @@ def options(request, thread_id, group = None):
     thread.save()
     
     return HttpResponseRedirect( thread.get_absolute_url() )
-
-class PostForm(forms.Form):
-    subject = forms.CharField( label = _(u"Subject" ) )
-    body = forms.CharField( label = _(u"Body"),
-                            widget = forms.Textarea( attrs = { 'rows': 10, 'cols': 70 } ),
-                            help_text = describe_render_choices(), )
-    markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
-    captcha = sphutils.CaptchaField(widget=sphutils.CaptchaWidget,
-                                    help_text = _(u'Please enter the result of the above calculation.'),
-                                    )
-
-    def __init__(self, *args, **kwargs):
-        super(PostForm, self).__init__(*args, **kwargs)
-        if not sphutils.has_captcha_support() or get_current_user().is_authenticated():
-            del self.fields['captcha']
-        if len( POST_MARKUP_CHOICES ) == 1:
-            del self.fields['markup']
-
-    def init_for_category_type(self, category_type, post):
-        """
-        Called after initialization with the category type instance.
-
-        Arguments:
-        category_type: the category_type instance of the category.
-        post: the post which is edited (if any)
-        """
-        pass
-
-class PostPollForm(forms.Form):
-    question = forms.CharField( label = _( u'Question' ) )
-    answers = forms.CharField( label = _( u'Answers (1 per line)' ),
-                               widget = forms.Textarea( attrs = { 'rows': 5, 'cols': 80 } ) )
-    choicesPerUser = forms.IntegerField( label = _(u'Allowed Choices per User'),
-                                         help_text = _(u'Enter how many answers a user can select.'),
-                                         min_value = 1,
-                                         max_value = 100,
-                                         initial = 1, )
-
-class PostAttachmentForm(forms.ModelForm):
-    class Meta:
-        model = PostAttachment
-        fields = ('fileupload',)
 
 def reply(*args, **kwargs):
     return post(*args, **kwargs)
@@ -483,26 +433,6 @@ def edit_poll(request, group, poll_id):
                                     'choiceforms': choiceforms,
                                     })
 
-
-
-class AnnotateForm(forms.Form):
-    body = forms.CharField( label=_(u'Body'), widget = forms.Textarea( attrs = { 'rows': 10,
-                                                               'cols': 80, }, ),
-                                                     help_text = describe_render_choices(), )
-    markup = forms.CharField( widget = forms.Select( choices = POST_MARKUP_CHOICES, ) )
-    hide_post = forms.BooleanField( label=_('Hide Post'), required = False )
-
-    def __init__(self, *args, **kwargs):
-        super(AnnotateForm, self).__init__(*args, **kwargs)
-        if len( POST_MARKUP_CHOICES ) == 1:
-            del self.fields['markup']
-
-    def clean(self):
-        if 'markup' not in self.cleaned_data and len( POST_MARKUP_CHOICES ):
-            self.cleaned_data['markup'] = POST_MARKUP_CHOICES[0][0]
-            
-        return self.cleaned_data
-
 def annotate(request, group, post_id):
     post = Post.objects.get( pk = post_id )
     thread = post.get_thread()
@@ -547,29 +477,6 @@ def annotate(request, group, post_id):
                                  'form': form,
                                  },
                                context_instance = RequestContext(request) )
-
-
-class MoveForm(forms.Form):
-    """
-    A basic form which allows a user to select a target
-    category.
-
-    This should not be used allown, but in stead use
-    MoveAndAnnotateForm
-    """
-    category = boardforms.SelectCategoryField(help_text = _(u'Select target category'))
-
-
-class MoveAndAnnotateForm(MoveForm, AnnotateForm):
-
-    
-    def __init__(self, *args, **kwargs):
-        super(MoveAndAnnotateForm, self).__init__(*args, **kwargs)
-
-        del self.fields['hide_post']
-
-        self.fields['body'].help_text = string_concat(_(u'Please describe why this thread had to be moved.'), ' ', self.fields['body'].help_text)
-
 
 def move(request, group, thread_id):
     thread = get_object_or_404(Post, pk = thread_id)
@@ -636,7 +543,6 @@ def move(request, group, thread_id):
                                  },
                                context_instance = RequestContext(request))
 
-
 def vote(request, group = None, thread_id = None):
     thread = get_object_or_404(Post, pk = thread_id)
 
@@ -699,7 +605,6 @@ def toggle_monitor(request, group, monitortype, object_id):
         return HttpResponseRedirect( request.GET['next'] )
     return HttpResponseRedirect( '../../%s/%s/' % (redirectview, object_id) )
 
-
 def catchup(request, group, category_id):
     if category_id == '0':
         ThreadLastVisit.objects.filter(user = request.user).delete() 
@@ -713,7 +618,6 @@ def catchup(request, group, category_id):
     req.sph_lastmodified = True
     return req
 
-
 def latest_posts_of_user_context(request, group, user):
     allowed_categories = get_all_viewable_categories( group, request.user )
     post_list = Post.objects.filter( category__id__in = allowed_categories,
@@ -723,7 +627,6 @@ def latest_posts_of_user_context(request, group, user):
     return { 'post_list': post_list,
              'post_user': user,
              }
-
 
 def render_latest_posts_of_user(request, group, user):
     ctx = latest_posts_of_user_context(request,group,user)

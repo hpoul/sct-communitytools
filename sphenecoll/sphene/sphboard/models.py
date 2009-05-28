@@ -1,38 +1,31 @@
+from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
-from django.contrib import admin
-
-from sphene.community.permissionutils import has_permission_flag
-from sphene.community.models import Group, Role, PermissionFlag, RoleMember
-
-from sphene.sphblog.utils import slugify
-
-from sphene.sphboard import categorytyperegistry
-
-from django.utils import html
-from django.conf import settings
-from datetime import datetime, timedelta
-from django.utils.safestring import mark_safe
-
-#from django.db.models import permalink
 from django.db.models import signals
-from sphene.community.sphutils import sphpermalink as permalink, get_urlconf, get_sph_setting, get_method_by_name
-import sphene.community.signals
-from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
-from django.template.context import RequestContext
-from django.template import loader, Context
 from django.core.cache import cache
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
+from django.template.context import RequestContext
+from django.template import loader
+from django.conf import settings
+from django.contrib.auth.models import User
+from django import forms
+
+import sphene.community.signals
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
+from sphene.community.sphutils import sphpermalink as permalink, get_urlconf, get_sph_setting, get_method_by_name
+from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
+from sphene.community.permissionutils import has_permission_flag
+from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.models import Group
+from sphene.sphblog.utils import slugify
+from sphene.sphboard import categorytyperegistry
 from renderers import POST_MARKUP_CHOICES, render_body
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext
+
 import logging
-
 logger = logging.getLogger('sphene.sphboard.models')
-
-import re
 
 """
 Extended Group methods ........
@@ -185,7 +178,6 @@ def get_all_viewable_categories(group, user):
         if category.has_view_permission( user ):
             allowed_categories.append(category.id)
     return allowed_categories
-
 
 
 class Category(models.Model):
@@ -483,7 +475,6 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['sortorder']
-    
 
 
 class ThreadLastVisit(models.Model):
@@ -494,6 +485,7 @@ class ThreadLastVisit(models.Model):
 
     class Meta:
         unique_together = (( "user", "thread", ),)
+
 
 class CategoryLastVisit(models.Model):
     """ Entity which stores when a category was last accessed. """
@@ -519,7 +511,6 @@ class PostManager(models.Manager):
         return super(PostManager, self).get_query_set().filter(is_hidden = 0)
 
 
-
 POST_STATUS_DEFAULT = 0
 POST_STATUS_STICKY = 1
 POST_STATUS_CLOSED = 2
@@ -541,8 +532,6 @@ POST_STATUSES = {
     # notifications can be sent out).
     'new': 16,
     }
-
-from django.contrib.auth.models import AnonymousUser
 
 
 class Post(models.Model):
@@ -980,7 +969,6 @@ class Post(models.Model):
     get_absolute_annotate_url = permalink(get_absolute_annotate_url, get_current_request)
 
 
-
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
     # This is only blank so the form does not throw errors when it was not entered !
@@ -1036,6 +1024,7 @@ thread_types = (
 class ThreadInformationManager(models.Manager):
     def type_default(self):
         return self.filter( thread_type = THREAD_TYPE_DEFAULT )
+
 
 class ThreadInformation(models.Model):
     """ A object which holds information about threads and caches
@@ -1114,7 +1103,6 @@ class ThreadInformation(models.Model):
         self.heat = int(heat)
         self.heat_calculated = datetime.today()
         
-
     def is_sticky(self):
         return self.sticky_value > 0
 
@@ -1122,7 +1110,6 @@ class ThreadInformation(models.Model):
         """ Returns true if this thread represents a thread which was moved
         into another category. """
         return self.thread_type == THREAD_TYPE_MOVED
-
 
     def get_page_count(self):
         """ Returns the number of pages this thread has. """
@@ -1245,10 +1232,8 @@ def update_thread_information(instance, **kwargs):
         threadinfo.update_cache()
         threadinfo.save()
 
-
 signals.post_save.connect(update_thread_information,
                    sender = Post)
-
 
 def ensure_thread_information():
     """
@@ -1272,7 +1257,6 @@ class Monitor(models.Model):
     user = models.ForeignKey(User)
 
 
-
 class Poll(models.Model):
     post = models.ForeignKey(Post, editable = False)
     question = models.CharField( max_length = 250 )
@@ -1283,7 +1267,6 @@ class Poll(models.Model):
 
     def choices(self):
         return self.pollchoice_set.all()
-
 
     def has_voted(self, user = None):
         if not user: user = get_current_user()
@@ -1305,8 +1288,6 @@ class Poll(models.Model):
 
     def allow_editing(self, user = None):
         return self.post.allow_editing(user)
-
-
 
     def get_absolute_editurl(self):
         return ('sphboard_edit_poll', (), { 'poll_id': self.id, })
@@ -1334,7 +1315,6 @@ class PollVoters(models.Model):
     user = models.ForeignKey(User, editable = False)
 
 
-
 class BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     signature = models.TextField(default = '')
@@ -1345,11 +1325,11 @@ class BoardUserProfile(models.Model):
 
     default_notifyme_value = models.NullBooleanField(null = True, )
 
-
     def render_signature(self):
         if self.signature == '':
             return ''
         return render_body(self.signature, self.markup)
+
 
 class UserPostCountManager(models.Manager):
     def get_post_count(self, user, group):
@@ -1392,6 +1372,7 @@ class UserPostCount(models.Model):
     class Meta:
         unique_together = ( 'user', 'group' )
 
+
 def update_post_count(instance, **kwargs):
     UserPostCount.objects.update_post_count( instance.author, instance.category.group )
 
@@ -1410,11 +1391,6 @@ class ExtendedCategoryConfig(models.Model):
     post_new_thread_label = models.CharField( max_length = 250, blank = True)
     above_thread_list_block = models.TextField(blank = True, help_text = 'HTML which will be displayed above the thread list.')
 
-
-
-from django import forms
-from sphene.community.forms import EditProfileForm, Separator
-from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 
 def __get_signature_cachekey(user_id):
     return 'sphboard_signature_%s' % user_id
@@ -1482,8 +1458,7 @@ def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     profile.default_notifyme_value = data['default_notifyme_value']
 
     profile.save()
-    request.user.message_set.create( message = ugettext(u"Successfully saved board profile.") )
-
+    request.user.message_set.create( message = _(u"Successfully saved board profile.") )
 
 def board_profile_display(sender, signal, request, user, **kwargs):
     ret = '<tr><th>%s</th><td>%d</td></tr>' % (
