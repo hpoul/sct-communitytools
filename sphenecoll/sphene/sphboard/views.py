@@ -230,6 +230,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         if not post.allowEditing():
             raise PermissionDenied()
         thread = post.thread
+        thread_id = post.thread.id
     
     if 'thread' in request.REQUEST:
         thread_id = request.REQUEST['thread']
