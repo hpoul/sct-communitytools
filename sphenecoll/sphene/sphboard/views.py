@@ -203,12 +203,23 @@ def enable_wysiwyg_editor():
         get_sph_setting('board_wysiwyg')
 
 def post(request, group = None, category_id = None, post_id = None, thread_id = None):
+    """
+    View method to allow users to:
+    - create new threads (post_id and thread_id is None)
+    - reply to threads (post_id is None)
+    - edit posts (post_id is the post which should be edited, thread_id is None)
+
+    post_id and thread_id can either be passed in by URL (named parameters 
+    to this method) or by request.REQUEST parameters.
+    """
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
+        # If user just wants a preview, simply create a dummy post so it can be rendered.
         previewpost = Post( body = request.REQUEST['body'],
                             markup = request.REQUEST.get('markup', None), )
         return HttpResponse( unicode(previewpost.body_escaped()) )
 
-    
+
+    # All available objects should be loaded from the _id variables.
     post = None
     thread = None
     category = None
@@ -221,7 +232,8 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         # if no post_id is given take it from the request.
         post_id = request.REQUEST['post_id']
 
-    if post_id:
+    if post_id is not None:
+        # User wants to edit a post ..
         try:
             post = Post.allobjects.get( pk = post_id )
         except Post.DoesNotExist:
@@ -230,27 +242,31 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         if not post.allowEditing():
             raise PermissionDenied()
         thread = post.thread
-        thread_id = thread.id
+        category = post.category
     
-    if 'thread' in request.REQUEST:
-        thread_id = request.REQUEST['thread']
-
-    if thread_id:
-        try:
-            thread = Post.allobjects.get( pk = thread_id )
-        except Post.DoesNotExist:
-            raise Http404
-
-        category = thread.category
-        context['thread'] = thread
-        
-        if not thread.allowPosting( request.user ):
-            raise PermissionDenied()
     else:
-        category = get_object_or_404(Category, pk = category_id)
-        if not category.allowPostThread( request.user ):
-            raise PermissionDenied()
+        # User wants to create a new post (thread or reply)
+        if 'thread' in request.REQUEST:
+            thread_id = request.REQUEST['thread']
 
+        if thread_id is not None:
+            # User is posting (replying) to a thread.
+            try:
+                thread = Post.allobjects.get( pk = thread_id )
+            except Post.DoesNotExist:
+                raise Http404
+
+            category = thread.category
+        
+            if not thread.allowPosting( request.user ):
+                raise PermissionDenied()
+        else:
+            # User is creating a new thread.
+            category = get_object_or_404(Category, pk = category_id)
+            if not category.allowPostThread( request.user ):
+                raise PermissionDenied()
+
+    context['thread'] = thread
     context['category'] = category
 
     category_type = category.get_category_type()
