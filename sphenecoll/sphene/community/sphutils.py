@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
-from sphene.community.middleware import get_current_request, get_current_sphdata
+from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
 from sphene.community import sphsettings
 from django.utils.translation import ugettext as _
@@ -197,6 +197,9 @@ class SphSettings(object):
 def sph_reverse( viewname, args=(), kwargs={} ):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
+    sphdata = get_current_sphdata()
+    if not sphdata.get('group_fromhost', False):
+        kwargs['groupName'] = get_current_group().name
     return reverse( viewname, urlconf, args, kwargs )
 
 def get_method_by_name(methodname):

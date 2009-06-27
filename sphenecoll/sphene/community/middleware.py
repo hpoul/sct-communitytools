@@ -4,9 +4,14 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from sphene.community.models import Group
 from django.core import urlresolvers
-import re
 
 from django.contrib.sites.models import SiteManager, Site
+
+import re
+import logging
+
+
+logger = logging.getLogger('sphene.community.middleware')
 
 def my_get_current(self):
     group = get_current_group()
@@ -26,9 +31,18 @@ SiteManager.get_current = my_get_current
 # 3.) GroupMiddleware
 # all other orders will lead to problems ..
 
+
+#
+# Short descriptions:
+#  every module within SCT requires a Group object - this can either come from the
+#  MultiHostMiddleware - ie. from the domain/host name (vhosts) or from an URL parameter.
+#  we need to somehow distuingish between those two within the reverse URL lookups.
+#
+
 class MultiHostMiddleware:
     def process_request(self, request):
         try:
+            sphdata = get_current_sphdata()
             host = request.META['HTTP_HOST']
             if host[-3:] == ':80':
                 host = host[:-3] # ignore default port number, if present
@@ -51,7 +65,7 @@ class MultiHostMiddleware:
                         urlconf_params[key] = value
                     break
             if not urlconf:
-                print "Unable to find urlconf for %s / map: %s !!!" % (host, str(settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP))
+                logging.info("Unable to find urlconf for %s / map: %s !!!" % (host, str(settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP)))
                 return
             while 'alias' in urlconf:
                 urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[urlconf['alias']]
@@ -63,6 +77,7 @@ class MultiHostMiddleware:
             if myparams and 'groupName' in myparams:
                 try:
                     set_current_group( Group.objects.get( name__exact = myparams['groupName'] ) )
+                    sphdata['group_fromhost'] = True
                 except Group.DoesNotExist:
                     pass
             set_current_urlconf_params( urlconf_params or urlconf['params'] )

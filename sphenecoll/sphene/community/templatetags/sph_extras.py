@@ -18,7 +18,7 @@ from django.utils.translation import ugettext as _, ugettext
 from django.utils.translation import ugettext_lazy
     
 import logging
-log = logging.getLogger('sph_extras')
+log = logging.getLogger('sphene.community.sph_extras')
     
 register = template.Library()
 
@@ -240,8 +240,13 @@ def sph_iter(value):
 def sph_user_profile_link(value):
     """ Returns the URL to the user profile. """
     req = get_current_request()
+    sphdata = get_current_sphdata()
     urlconf = getattr(req, 'urlconf', None)
-    return reverse('sphene.community.views.profile', urlconf, (), { 'user_id': value.id } )
+    kwargs = { 'user_id': value.id, }
+    if not sphdata.get('group_fromhost', False):
+        # If Group was not loaded from host name, we need to put it back in.
+        kwargs['groupName'] = get_current_group().name
+    return reverse('sphene.community.views.profile', urlconf, (), kwargs )
 
 
 import os
@@ -272,8 +277,10 @@ class SphURLNode(Node):
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
 
-        #if not 'groupName' in kwargs:
-        #    kwargs['groupName'] = get_current_group().name
+        sphdata = get_current_sphdata()
+        if not sphdata.get('group_fromhost', False):
+            # If Group was not loaded from host name, we need to put it back in.
+            kwargs['groupName'] = get_current_group().name
 
         req = get_current_request()
         urlconf = getattr(req, 'urlconf', None)
@@ -301,8 +308,15 @@ def sph_url(view):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     try:
-        return reverse(view, urlconf)
+        kwargs = {}
+        sphdata = get_current_sphdata()
+        if not sphdata.get('group_fromhost', False):
+            # If Group was not loaded from host name, we need to put it back in.
+            kwargs['groupName'] = get_current_group().name
+
+        return reverse(view, urlconf, kwargs = kwargs)
     except:
+        log.exception('Unable to reverse sph_url for view %r' % view)
         return 'NOT FOUND'
 
 @register.filter

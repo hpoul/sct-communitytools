@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 
 
 
+
 # Decorator. Takes a function that returns a tuple in this format:
 #     (viewname, viewargs, viewkwargs)
 #   Optionally takes a function which should either return an object with
@@ -23,8 +24,10 @@ def sphpermalink(func, get_urlconf_func = None):
         
         bits = func(*args, **kwargs)
         viewname = bits[0]
-        # OMG that is an ugly hack !!
-        if 'groupName' in bits[2]:
+
+        from sphene.community.middleware import get_current_sphdata
+        sphdata = get_current_sphdata()
+        if sphdata.get('group_fromhost', False) and 'groupName' in bits[2]:
             del bits[2]['groupName']
 
         if not hasattr( urlconf, '__iter__' ) \
