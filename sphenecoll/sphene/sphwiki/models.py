@@ -8,7 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy
 
 from sphene.community.templatetags.sph_extras import sph_markdown
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting
+from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, sph_reverse
 
 from sphene.community.models import Group
 
@@ -340,10 +340,9 @@ class WikiSnipChange(models.Model):
     get_absolute_url = permalink(get_absolute_url, get_current_request)
 
     def get_absolute_editurl(self):
-        return reverse( 'sphwiki_editversion', 
-                        urlconf = getattr( get_current_request(), 'urlconf', None ), 
-                        kwargs = { 'snipName': self.snip.name,
-                                   'versionId': self.id } );
+        return sph_reverse( 'sphwiki_editversion', 
+                            kwargs = { 'snipName': self.snip.name,
+                                       'versionId': self.id } );
 
 
 class WikiPreference(models.Model):
