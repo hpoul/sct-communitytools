@@ -30,6 +30,8 @@ def navigation(request):
     if group:
         return { 'navigation_left': Navigation.objects.filter( group = group,
                                                                navigationType = 0 ),
+                 'navigation_top': Navigation.objects.filter( group = group,
+                                                               navigationType = 1 ),
                  'urlPrefix': urlPrefix,
                  'group': group,
                  'sph': sphdata,
