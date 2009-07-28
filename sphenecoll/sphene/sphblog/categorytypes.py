@@ -28,7 +28,7 @@ class BlogPostForm(PostForm):
         if slug == '':
             slug = slugify(self.cleaned_data['subject'], model=BlogPostExtension)
         else:
-            slug = slugify(slug, model=BlogPostExtension) 
+            slug = slugify(slug, model=BlogPostExtension, pk=self.__ext_id)
         return slug
 
     def init_for_category_type(self, category_type, post):
