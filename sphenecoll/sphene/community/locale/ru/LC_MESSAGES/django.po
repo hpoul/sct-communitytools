@@ -1,0 +1,512 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-07-04 19:30+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: __init__.py:35
+#, python-format
+msgid ""
+"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d "
+"bytes)"
+msgstr "Максимальный размер загружаемого файла не может превышать %(max_size)d "
+"байт (размер вашего файла — %(size)d байт)."
+
+#: __init__.py:55
+msgid "Uploaded an invalid image."
+msgstr "Загруженный файл не является изображением"
+
+#: __init__.py:67
+msgid "Delete avatar"
+msgstr "Удалить аватар"
+
+#: __init__.py:69 __init__.py:116
+msgid "Avatar"
+msgstr "Аватар"
+
+#: __init__.py:116 templatetags/sph_extras.py:365
+msgid "Users avatar"
+msgstr "Аватар пользователя"
+
+#: fields.py:14
+msgid "Comma separated list of tags."
+msgstr "Список тегов, разделённых запятой"
+
+#: forms.py:14
+msgid "First name"
+msgstr "Имя"
+
+#: forms.py:15
+msgid "Last name"
+msgstr "Фамилия"
+
+#: forms.py:16 views.py:30 views.py:62 views.py:158
+msgid "Email address"
+msgstr "Email адрес"
+
+#: forms.py:18
+msgid "Change password"
+msgstr "Сменить пароль"
+
+#: forms.py:19
+msgid "To modify your password fill out the following three fields."
+msgstr "Чтобы сменить пароль, заполните следующие три поля."
+
+#: forms.py:21
+msgid "Current password"
+msgstr "Текущий пароль"
+
+#: forms.py:24
+msgid "New password"
+msgstr "Новый пароль"
+
+#: forms.py:27
+msgid "Retype your new password"
+msgstr "Новый пароль ещё раз"
+
+#: forms.py:39
+msgid "Invalid password."
+msgstr "Неверный пароль."
+
+#: forms.py:46 views.py:184
+msgid "Passwords do not match."
+msgstr "Новые пароли не совпадают."
+
+#: forms.py:56
+msgid "-- Select Object Type --"
+msgstr "-- Выберите тип объекта --"
+
+#: forms.py:106
+msgid "Allows you to limit the given permission to only one specific object."
+msgstr "Позволяет применять выбранные права только к выбранному объекту."
+
+#: forms.py:122
+msgid "Invalid Object Type"
+msgstr "Неверный тип объекта"
+
+#: forms.py:132
+msgid "User does not exist."
+msgstr "Пользователь не существует."
+
+#: models.py:54
+msgid "Normal User"
+msgstr "Обычный пользователь"
+
+#: models.py:55
+msgid "Administrator"
+msgstr "Администратор"
+
+#: models.py:514
+msgid ""
+"This email address will be shown to all users. If you leave it black noone "
+"will see your email address."
+msgstr "Этот email адрес будет виден всем пользователям. Если вы оставите это "
+"поле пустым, ваш email адрес не будет виден никому."
+
+#: models.py:515
+msgid ""
+"This email address will be shown to all users. If you leave it blank, your "
+"verified email address will be shown."
+msgstr "Этот email адрес будет виден всем пользователям. Если вы оставите это "
+"поле пустым, будет отображаться email адрес, указанный при регистрации."
+
+#: models.py:519
+msgid ""
+"This display name will be shown to all users. If you leave it blank then "
+"your username will be shown."
+msgstr "Это публичное имя будет видно всеи пользователям. Если вы оставите это "
+"поле пустым, будет отображаться имя пользователя."
+
+#: models.py:520
+msgid ""
+"This display name will be shown to all users. If you leave it blank, your "
+"first and last name will be shown. If those are blank too, then your "
+"username will be shown."
+msgstr "Это публичное имя будет видно всеи пользователям. Если вы оставите это "
+"поле пустым, будут отображаться ваши имя и фамилия. Если вы их не ввели, будет "
+"отображаться имя пользователя."
+
+#: models.py:530
+msgid "Community settings"
+msgstr "Настройки сайта."
+
+#: models.py:531
+msgid "Display name"
+msgstr "Публичное имя"
+
+#: models.py:536
+msgid "Public email address"
+msgstr "Публичный email адрес"
+
+#: models.py:590
+msgid "Successfully saved community profile."
+msgstr "Профиль успешно сохранён."
+
+#: sphutils.py:28 templates/sphene/community/_display_username.html:8
+msgid "Anonymous"
+msgstr "Анонимус"
+
+#: sphutils.py:118
+msgid "Captcha input"
+msgstr "Капча."
+
+#: sphutils.py:148
+msgid "Invalid Captcha response."
+msgstr "Код введён неверно."
+
+#: views.py:32 views.py:605
+msgid "Please enter the result of the above calculation."
+msgstr "Введите результат арифметического действия."
+
+#: views.py:45 views.py:169
+#, python-format
+msgid "Another user is already registered with the email address %(email)s."
+msgstr "Другой пользователь уже зарегистрирован с email адресом %(email)s."
+
+#: views.py:69
+msgid "No user found with that email address."
+msgstr "Пользователя с таким email адресом нет."
+
+#: views.py:92
+msgid "Your requested username / password"
+msgstr "Желаемое имя пользователя / пароль"
+
+#: views.py:94
+#, python-format
+msgid "Your requested username / password for site %(site_name)s"
+msgstr "Желаемое имя пользователя / пароль для сайта %(site_name)s"
+
+#: views.py:121
+msgid "Email verification required"
+msgstr "Требуется подтверждение email адреса"
+
+#: views.py:123
+#, python-format
+msgid "Email verification required for site %(site_name)s"
+msgstr "Требуется подтверждение email адреса для сайта %(site_name)s"
+
+#: views.py:157
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:33
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: views.py:164
+#, python-format
+msgid "The username %(username)s is already taken."
+msgstr "Пользователь с именем %(username)s уже существует."
+
+#: views.py:174
+msgid "Password"
+msgstr "Пароль"
+
+#: views.py:176
+msgid "Verify Password"
+msgstr "Подтвердите пароль"
+
+#: views.py:392
+msgid "Successfully changed user profile."
+msgstr "Профиль успешно изменён"
+
+#: views.py:445
+#, python-format
+msgid "Removed user %(username)s from rolegroup."
+msgstr "Пользователь %(username)s удалён из группы."
+
+#: views.py:489
+msgid "Successfully saved role."
+msgstr "Роль сохранена."
+
+#: views.py:512
+msgid "Successfully deleted role member."
+msgstr "Участник вычеркнут из роли."
+
+#: views.py:546
+msgid "Successfully added member."
+msgstr "Участник добавлен."
+
+#: templates/sphene/community/_pagination.html:2
+msgid "Page:"
+msgstr "Страница:"
+
+#: templates/sphene/community/_pagination.html:4
+msgid "Previous"
+msgstr "Предыдущая"
+
+#: templates/sphene/community/_pagination.html:14
+msgid "Next"
+msgstr "Следующая"
+
+#: templates/sphene/community/permissiondenied.html:5
+msgid "Permission Denied"
+msgstr "Доступ запрещён"
+
+#: templates/sphene/community/permissiondenied.html:7
+msgid "You do not have permission to view this page."
+msgstr "У вас нет прав просматривать эту страницу"
+
+#: templates/sphene/community/profile.html:6
+msgid "Profile for"
+msgstr "Профиль пользователя"
+
+#: templates/sphene/community/profile.html:6
+#: templates/sphene/community/admin/permission/role_list.html:20
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/sphene/community/profile.html:9
+#: templates/sphene/community/admin/permission/role_list.html:14
+msgid "Name"
+msgstr "Имя"
+
+#: templates/sphene/community/profile.html:13
+msgid "Email Address"
+msgstr "Email адрес"
+
+#: templates/sphene/community/profile_edit.html:6
+msgid "Modifying user profile for"
+msgstr "Редактирование профиля пользователя"
+
+#: templates/sphene/community/profile_edit.html:10
+#: templates/sphene/community/accounts/login.html:13
+msgid "Username:"
+msgstr "Имя пользователя:"
+
+#: templates/sphene/community/profile_edit.html:31
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:35
+#: templates/sphene/community/admin/permission/rolegroup_list.html:26
+#: templatetags/sph_form.py:15
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/sphene/community/profile_reveal_emailaddress.html:12
+msgid "Reveal email address"
+msgstr "Сделать email адрес публичным"
+
+#: templates/sphene/community/register.html:5
+msgid ""
+"Please Enter your email address. You will then receive a URL to continue "
+"registration."
+msgstr "Введите email адрес. На него будет отправлено письмо со ссылкой, по "
+"которой нужно будет перейти, чтобы завершить регистрацию."
+
+#: templates/sphene/community/register.html:11
+msgid "Send Email Validation Code"
+msgstr "Отослать письмо с кодом подтверждения"
+
+#: templates/sphene/community/register_emailsent.html:5
+#, python-format
+msgid ""
+"An email containing the required validation code has been sent to <b>%(email)"
+"s</b>.<br/>\n"
+"  Please check your emails to continue registration process."
+msgstr "Письмо с кодом подтверждения отправлено по адресу <b>%(email)s</b>.<br/>\n"
+" Чтобы завершить регистрацию, проверьте свой ящик."
+
+#: templates/sphene/community/register_hash.html:5
+#: templates/sphene/community/register_hash_success.html:5
+msgid "User Registration"
+msgstr "Регистрация пользователей"
+
+#: templates/sphene/community/register_hash.html:11
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+#: templates/sphene/community/register_hash_success.html:7
+msgid "Successfully registered user and logged in."
+msgstr "Вы успешно зарегистрировались и вошли в систему."
+
+#: templates/sphene/community/accounts/account_verification_email.html:6
+#, python-format
+msgid ""
+"You have requested to register with the email address:\n"
+"      %(email)s \n"
+"on the %(group_name)s website."
+msgstr "Вы сделали запрос на регистрацию пользователя с email адресом:\n"
+"      %(email)s \n"
+"на сайте %(group_name)s."
+
+#: templates/sphene/community/accounts/account_verification_email.html:10
+#, python-format
+msgid ""
+"\n"
+"<a href=\"http://%(baseurl)s%(path)s\">To continue registration, please "
+"follow this link</a>."
+msgstr ""
+"\n"
+"<a href=\"http://%(baseurl)s%(path)s\">Для продолжения регистрации "
+"пройдите по ссылке</a>."
+
+#: templates/sphene/community/accounts/account_verification_email.html:14
+#, python-format
+msgid ""
+"\n"
+"Thanks for your interest,\n"
+"  Your %(group_name)s Team.\n"
+msgstr ""
+"\n"
+"Спасибо за внимание,\n"
+"  Администрация сайта %(group_name)s.\n"
+
+#: templates/sphene/community/accounts/account_verification_email.html:20
+msgid "If you did not make this request you can safely ignore this email."
+msgstr "Если вы не делали этот запрос, не обращайте внимания на это письмо."
+
+#: templates/sphene/community/accounts/forgot.html:5
+msgid ""
+"If you have forgotten your username or password, you can enter your\n"
+"email address here. You will then receive your username and a newly\n"
+"generated password by email."
+msgstr "Если вы забыли имя пользователя или пароль, вы можете ввести\n"
+"сюда email адрес. После этого вы получите письмо с именем пользователя\n"
+"и новым паролем."
+
+#: templates/sphene/community/accounts/forgot.html:12
+msgid "Send"
+msgstr "Отослать"
+
+#: templates/sphene/community/accounts/forgot_sent.html:4
+msgid "A new password was generated for your account."
+msgstr "Новый пароль для вашего аккаунта сгенерирован."
+
+#: templates/sphene/community/accounts/forgot_sent.html:5
+msgid ""
+"You should receive an email containing your username and new password "
+"shortly."
+msgstr "В скором времени вы должны получить письмо с именем пользователя "
+"и новым паролем."
+
+#: templates/sphene/community/accounts/logged_out.html:5
+msgid "Successfully logged out."
+msgstr "Вы успешно вышли из системы."
+
+#: templates/sphene/community/accounts/login.html:8
+msgid "Your username and password didn't match. Please try again."
+msgstr "Неправильное имя пользователя или пароль. Попробуйте ещё."
+
+#: templates/sphene/community/accounts/login.html:14
+msgid "Password:"
+msgstr "Пароль:"
+
+#: templates/sphene/community/accounts/login.html:17
+msgid "Login"
+msgstr "Войти"
+
+#: templates/sphene/community/accounts/login.html:22
+msgid "Cancel"
+msgstr "Отмена"
+
+#: templates/sphene/community/accounts/login.html:22
+msgid "Forgot Username/Password ?"
+msgstr "Забыли имя пользователя/пароль"
+
+#: templates/sphene/community/admin/permission/base.html:7
+msgid "Role List"
+msgstr "Список ролей"
+
+#: templates/sphene/community/admin/permission/base.html:9
+#: templates/sphene/community/admin/permission/role_list.html:16
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:13
+msgid "Members"
+msgstr "Участиники"
+
+#: templates/sphene/community/admin/permission/role_edit.html:11
+#: templates/sphene/community/admin/permission/role_member_add.html:11
+msgid "Store"
+msgstr "Сохранить"
+
+#: templates/sphene/community/admin/permission/role_list.html:13
+msgid "Options"
+msgstr "Параметры"
+
+#: templates/sphene/community/admin/permission/role_list.html:15
+msgid "Flags"
+msgstr "Флаги"
+
+#: templates/sphene/community/admin/permission/role_list.html:20
+msgid "Manage Members"
+msgstr "Управление участниками"
+
+#: templates/sphene/community/admin/permission/role_list.html:28
+msgid "Create Role"
+msgstr "Создать роль"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:8
+#, python-format
+msgid "Members of the role '%(role_name)s'."
+msgstr "Участник роли '%(role_name)s'."
+
+#: templates/sphene/community/admin/permission/role_member_list.html:13
+msgid "User"
+msgstr "Пользователь"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:14
+msgid "Role Group"
+msgstr "Группа"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:15
+msgid "Limitations"
+msgstr "Ограничения"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:19
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:23
+msgid "Remove"
+msgstr "Удалить"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:20
+#: templates/sphene/community/admin/permission/role_member_list.html:21
+msgid "N/A"
+msgstr "N/A"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:27
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:30
+msgid "Add Member"
+msgstr "Добавить участника"
+
+#: templates/sphene/community/admin/permission/role_member_list.html:28
+msgid "Add Rolegroup"
+msgstr "Добавить группу"
+
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:8
+msgid "Back to Role Groups"
+msgstr "Редактировать ролевые группы."
+
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:10
+#, python-format
+msgid "Modifying rolegroup '%(rolegroup_name)s'"
+msgstr "Изменение ролевой группы '%(rolegroup_name)s'"
+
+#: templates/sphene/community/admin/permission/rolegroup_list.html:8
+msgid "Role Groups"
+msgstr "Ролевые группы"
+
+#: templates/sphene/community/admin/permission/rolegroup_list.html:23
+msgid "Create a new Role Group"
+msgstr "Создать новую группу"
+
+#: templates/sphene/community/generic/advanced_list.html:17
+msgid "Ascending"
+msgstr "Поднять"
+
+#: templates/sphene/community/generic/advanced_list.html:17
+msgid "Descending"
+msgstr "Опустить"
+
+#: templatetags/sph_extras.py:193
+msgid "Reveal this emailaddress"
+msgstr "Сделать email адрес публичным"
+
+#: templatetags/sph_extras.py:368
+msgid "Submit"
+msgstr "Отослать"

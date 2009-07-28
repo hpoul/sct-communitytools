@@ -1,0 +1,541 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-07-04 19:31+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: boardforms.py:19
+msgid "-- Select Category --"
+msgstr "-- Выбрать категорию --"
+
+#: feeds.py:22 feeds.py:25
+#, python-format
+msgid "Latest threads in %(obj_name)s"
+msgstr "Последние темы в разделе '%(obj_name)s'"
+
+#: forms.py:57 lists.py:28
+msgid "Subject"
+msgstr "Тема"
+
+#: forms.py:58 forms.py:104
+msgid "Body"
+msgstr "Тело сообщения"
+
+#: forms.py:61 forms.py:107
+msgid "Markup"
+msgstr "Разметка"
+
+#: forms.py:63
+msgid "Captcha"
+msgstr "Код"
+
+#: forms.py:65
+msgid "Please enter the result of the above calculation."
+msgstr "Введите результат вычисления на картинке"
+
+#: forms.py:87
+msgid "Question"
+msgstr "Вопрос"
+
+#: forms.py:88
+msgid "Answers (1 per line)"
+msgstr "Ответы (каждый на отдельной строке)"
+
+#: forms.py:90
+msgid "Allowed Choices per User"
+msgstr "Вариантов ответа на пользователя"
+
+#: forms.py:91
+msgid "Enter how many answers a user can select."
+msgstr "Введите, сколько ответов может выбрать пользователь."
+
+#: forms.py:109
+msgid "Hide Post"
+msgstr "Сделать скрытым"
+
+#: forms.py:131
+msgid "Category"
+msgstr "Категория"
+
+#: forms.py:132
+msgid "Select target category"
+msgstr "Выберите категорию, в которую хотите поместить тему"
+
+#: forms.py:143
+msgid "Please describe why this thread had to be moved."
+msgstr "Обоснуйте необходимость перемещения темы"
+
+#: lists.py:34
+msgid "Author"
+msgstr "Автор"
+
+#: lists.py:40 templates/sphene/sphboard/listCategories.html:59
+msgid "Views"
+msgstr "Просмотры"
+
+#: lists.py:45 models.py:1465
+#: templates/sphene/sphboard/_post_authorinfo.html:10
+#: templates/sphene/sphboard/listCategories.html:32
+#: templates/sphene/sphboard/listCategories.html:61
+msgid "Posts"
+msgstr "Темы"
+
+#: lists.py:50
+msgid "Latest Post"
+msgstr "Последнее сообщение"
+
+#: lists.py:56
+msgid "Latest Post Author"
+msgstr "Автор последнего сообщения"
+
+#: lists.py:62
+msgid "Heat"
+msgstr "Обсуждаемая тема"
+
+#: models.py:975
+msgid "File"
+msgstr "Файл"
+
+#: models.py:1432
+msgid "Board settings"
+msgstr "Настройки форума"
+
+#: models.py:1433
+msgid "Signature"
+msgstr "Подпись"
+
+#: models.py:1441
+msgid "Default Notify Me - Value"
+msgstr "Уведомлять об ответах"
+
+#: models.py:1461
+msgid "Successfully saved board profile."
+msgstr "Настройки форума сохранены."
+
+#: models.py:1471
+msgid "Board Signature"
+msgstr "Подпись"
+
+#: renderers.py:96 renderers.py:98
+msgid "Markdown"
+msgstr "Markdown"
+
+#: renderers.py:124
+#, python-format
+msgid ""
+"Custom renderer '%(renderer)s' needs a matching Render Class entry in your "
+"sphene settings 'board_custom_markup'"
+msgstr "Для языка разметки '%(renderer)s' нужен соответствующий класс рендеринга"
+"в настройках sphene (параметр 'board_custom_markup')"
+
+#: renderers.py:146
+#, python-format
+msgid "Can't render markup '%(markup)s'"
+msgstr "Не могу отрендерить язык разметки '%(markup)s'"
+
+#: renderers.py:160
+#, python-format
+msgid "You can use %(description)s in your posts"
+msgstr "Вы можете использовать %(description)s в ваших сообщениях"
+
+#: views.py:51
+msgid "Forum Overview"
+msgstr "Обзор форума"
+
+#: views.py:127 templates/sphene/sphboard/listCategories.html:31
+#: templates/sphene/sphboard/listCategories.html:54
+msgid "Threads"
+msgstr "Темы"
+
+#: views.py:327
+#, python-format
+msgid "--- Last Edited by %(username)s at %(edit_date)s ---"
+msgstr "--- Последний раз редактировал пользователь %(username)s %(edit_date)s ---"
+
+#: views.py:373
+msgid "Vote created successfully."
+msgstr "Опрос создан"
+
+#: views.py:377
+msgid "Post edited successfully."
+msgstr "Сообщение отредактировано"
+
+#: views.py:379
+msgid "Post created successfully."
+msgstr "Сообщение отправлено"
+
+#: views.py:478
+msgid "Annotated a users post."
+msgstr "Сообщение прокомментировано."
+
+#: views.py:544
+msgid "Moved thread into new category."
+msgstr "Тема перемещена."
+
+#: views.py:555
+#, python-format
+msgid "This thread was moved from the category %(category_name)s"
+msgstr "Тема была перемещена из категории %(category_name)s"
+
+#: views.py:568
+msgid "You have already voted."
+msgstr "Вы уже голосовали."
+
+#: views.py:572
+msgid "Please select at least one answer."
+msgstr "Пожалуйста, выберите хотя бы один вариант ответа."
+
+#: views.py:578
+#, python-format
+msgid "Please only select %(choices)d answers."
+msgstr "Количество ответов, которое вы должны выбрать: %(choices)d."
+
+#: views.py:582
+msgid ""
+"You cannot abstain from voting and at the same time select a valid answer."
+msgstr "Вы не можете воздержаться от ответа, в то же самое время выбирая варианты ответа."
+
+#: views.py:591
+msgid "You've selected an invalid choice."
+msgstr "Вы указали недействительный вариант."
+
+#: views.py:599
+#, python-format
+msgid "Voted for '%(choice)s'."
+msgstr "Вы проголосовали за '%(choice)s'."
+
+#: views.py:599
+msgid "You selected to abstain from voting"
+msgstr "Вы воздержались от голосования."
+
+#: views.py:617
+msgid "Successfully created email notification monitor."
+msgstr "Почтовое уведомление создано."
+
+#: views.py:619
+msgid "Removed email notification monitor."
+msgstr "Почтовое уведомление удалено."
+
+#: templates/sphene/sphboard/_category_monitor.html:4
+#: templates/sphene/sphboard/listCategories.html:17
+#: templates/sphene/sphboard/showThread.html:69
+msgid "You are currently receiving email notifications on new posts."
+msgstr "Сейчас вы получаете почтовые уведомления о новых сообщениях."
+
+#: templates/sphene/sphboard/_category_monitor.html:4
+#: templates/sphene/sphboard/listCategories.html:17
+#: templates/sphene/sphboard/showThread.html:69
+msgid "Stop notifications"
+msgstr "Прекратить отсылку уведомлений"
+
+#: templates/sphene/sphboard/_category_monitor.html:6
+#: templates/sphene/sphboard/showThread.html:71
+msgid ""
+"You are currently receiving email notifications on new posts because you "
+"subscribed to a parent category."
+msgstr "Вы получаете почтовые уведомления о новых сообщениях, так как вы"
+"подписались на порождающую категорию."
+
+#: templates/sphene/sphboard/_category_monitor.html:9
+#: templates/sphene/sphboard/listCategories.html:20
+#: templates/sphene/sphboard/showThread.html:74
+msgid "Notify me by email on new posts."
+msgstr "Отсылать мне уведомления о новых сообщениях по email."
+
+#: templates/sphene/sphboard/_displayBreadcrumbs.html:5
+msgid "Board"
+msgstr "Форум"
+
+#: templates/sphene/sphboard/_displayLatestPost.html:7
+#, python-format
+msgid "at %(latest_post)s"
+msgstr "в %(latest_post)s"
+
+#: templates/sphene/sphboard/_displayLatestPost.html:10
+#, python-format
+msgid "At <a href=\"%(post_url)s\">%(latest_post)s</a>"
+msgstr "В <a href=\"%(post_url)s\">%(latest_post)s</a>"
+
+#: templates/sphene/sphboard/_displayLatestPost.html:13
+#: templates/sphene/sphboard/listCategories.html:73
+msgid "By"
+msgstr "Автор: "
+
+#: templates/sphene/sphboard/_displayLatestPost.html:15
+msgid "No Posts Yet."
+msgstr "Нет сообщений."
+
+#: templates/sphene/sphboard/_displayPostForm.html:19
+msgid "Loading Preview ..."
+msgstr "Загрузка предпросмотра ..."
+
+#: templates/sphene/sphboard/_displayPostForm.html:45
+msgid ""
+"You are already receiving email notifications for this thread or category."
+msgstr "Вы уже получаете уведомления о новых сообщениях в теме/категории."
+
+#: templates/sphene/sphboard/_displayPostForm.html:47
+msgid "Notify me by email on new posts in this thread."
+msgstr "Отсылать мне почтовые уведомления о новых сообщениях в этой теме."
+
+#: templates/sphene/sphboard/_displayPostForm.html:53
+msgid "Add a poll to this thread"
+msgstr "Добавить к теме опрос"
+
+#: templates/sphene/sphboard/_displayPostForm.html:58
+msgid "Poll"
+msgstr "Опрос"
+
+#: templates/sphene/sphboard/_displayPostForm.html:72
+msgid "Upload Attachment"
+msgstr "Загрузить вложение"
+
+#: templates/sphene/sphboard/_displayPostForm.html:83
+msgid "Upload File"
+msgstr "Загрузить файл"
+
+#: templates/sphene/sphboard/_displayPostForm.html:88
+msgid "Post"
+msgstr "Отослать"
+
+#: templates/sphene/sphboard/_displayPostForm.html:88
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: templates/sphene/sphboard/_new_thread_link.html:5
+msgid "Post New Thread"
+msgstr "Новая тема"
+
+#: templates/sphene/sphboard/_new_thread_link.html:9
+msgid "You have no permission to create a new thread."
+msgstr "У вас нет прав создавать новую тему."
+
+#: templates/sphene/sphboard/_new_thread_link.html:11
+msgid "Please login to create a new thread."
+msgstr "Войдите в систему, чтобы создать новую тему."
+
+#: templates/sphene/sphboard/_post_authorinfo.html:4
+msgid "Posted by"
+msgstr "Автор сообщения"
+
+#: templates/sphene/sphboard/_post_authorinfo.html:13
+msgid "Registered at"
+msgstr "Зарегистрирован"
+
+#: templates/sphene/sphboard/annotate.html:10
+#, python-format
+msgid "Annotate post: %(subject)s by "
+msgstr "Прокомментировать сообщение: '%(subject)s' "
+
+#: templates/sphene/sphboard/annotate.html:17
+msgid "Annotate"
+msgstr "Прокомментировать сообщение"
+
+#: templates/sphene/sphboard/edit_poll.html:11
+msgid "Editing Poll"
+msgstr "Редактирование опроса"
+
+#: templates/sphene/sphboard/edit_poll.html:25
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/sphene/sphboard/listCategories.html:9
+msgid "Latest"
+msgstr "Последние"
+
+#: templates/sphene/sphboard/listCategories.html:30
+msgid "Title"
+msgstr "Заголовок"
+
+#: templates/sphene/sphboard/listCategories.html:33
+#: templates/sphene/sphboard/listCategories.html:62
+msgid "Last Post"
+msgstr "Последнее сообщение"
+
+#: templates/sphene/sphboard/listCategories.html:41
+msgid ""
+"There are currently no categories. (Or you have no permission to see them.)"
+msgstr "В настоящее время категорий нет. (Или у вас нет прав для их просмотра.)"
+
+#: templates/sphene/sphboard/listCategories.html:57
+msgid "Subject / Author"
+msgstr "Тема / Автор"
+
+#: templates/sphene/sphboard/listCategories.html:70
+#, python-format
+msgid ""
+"Thread was moved: <a href=\"%(th_url)s\">%(th_subject)s</a> into <a href=\"%"
+"(cat_url)s\">%(cat_name)s</a>."
+msgstr "Тема <a href=\"%(th_url)s\">%(th_subject)s</a> была перемещена в категорию "
+"<a href=\"%(cat_url)s\">%(cat_name)s</a>."
+
+#: templates/sphene/sphboard/listCategories.html:73
+msgid "Sticky:"
+msgstr "Прикреплена:"
+
+#: templates/sphene/sphboard/listCategories.html:73
+msgid "Hot:"
+msgstr "Обсуждаемая:"
+
+#: templates/sphene/sphboard/listCategories.html:73
+#: templates/sphene/sphboard/showThread.html:139
+msgid "Poll:"
+msgstr "Опрос:"
+
+#: templates/sphene/sphboard/listCategories.html:73
+msgid "Locked:"
+msgstr "Закрыта:"
+
+#: templates/sphene/sphboard/listCategories.html:85
+#, python-format
+msgid "%(hits)s Threads in this category."
+msgstr "%(hits)s тем в этой категории."
+
+#: templates/sphene/sphboard/listCategories.html:90
+msgid "Mark all Posts in this Category as read."
+msgstr "Пометить все сообщения в категории как прочитанные."
+
+#: templates/sphene/sphboard/listCategories.html:90
+msgid "Catch Up"
+msgstr "'Прочитать' всё"
+
+#: templates/sphene/sphboard/listCategories.html:96
+msgid "Mark all as read"
+msgstr "Пометить всё как прочитаннок"
+
+#: templates/sphene/sphboard/move.html:10
+#, python-format
+msgid "Move Thread: %(subject)s by "
+msgstr "Переместить тему '%(subject)s' "
+
+#: templates/sphene/sphboard/move.html:17
+#: templates/sphene/sphboard/showThread.html:54
+msgid "Move Thread"
+msgstr "Переместить тему"
+
+#: templates/sphene/sphboard/post.html:14
+msgid "Editing post"
+msgstr "Редактирование сообщения"
+
+#: templates/sphene/sphboard/post.html:17
+#, python-format
+msgid "Posting reply to thread %(subject)s."
+msgstr "Послать ответ на тему %(subject)s."
+
+#: templates/sphene/sphboard/post.html:19
+msgid "Posting new thread."
+msgstr "Новая тема"
+
+#: templates/sphene/sphboard/showThread.html:40
+msgid "Thread Options:"
+msgstr "Параметры темы:"
+
+#: templates/sphene/sphboard/showThread.html:43
+msgid "Remove Sticky"
+msgstr "Открепить тему"
+
+#: templates/sphene/sphboard/showThread.html:45
+msgid "Make Sticky"
+msgstr "Прикрепить тему"
+
+#: templates/sphene/sphboard/showThread.html:50
+msgid "Unlock Thread"
+msgstr "Открыть тему"
+
+#: templates/sphene/sphboard/showThread.html:50
+msgid "Lock Thread"
+msgstr "Закрыть тему"
+
+#: templates/sphene/sphboard/showThread.html:61
+msgid "Store"
+msgstr "Сохранить"
+
+#: templates/sphene/sphboard/showThread.html:92
+msgid "Annotate/Hide"
+msgstr "Прокомментировать/скрыть"
+
+#: templates/sphene/sphboard/showThread.html:95
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/sphene/sphboard/showThread.html:98
+msgid "Quote"
+msgstr "Цитировать"
+
+#: templates/sphene/sphboard/showThread.html:109
+msgid "Post hidden by"
+msgstr "Сообщение скрыто"
+
+#: templates/sphene/sphboard/showThread.html:112
+msgid "Post annotated by"
+msgstr "Сообщение прокомментировано"
+
+#: templates/sphene/sphboard/showThread.html:121
+msgid "Attachments"
+msgstr "Приложения"
+
+#: templates/sphene/sphboard/showThread.html:141
+msgid "Edit this poll"
+msgstr "Редактировать опрос"
+
+#: templates/sphene/sphboard/showThread.html:144
+msgid "You already voted. Here are the results"
+msgstr "Вы уже голосовали. Вот результаты"
+
+#: templates/sphene/sphboard/showThread.html:144
+msgid "votes total"
+msgstr "всего голосов"
+
+#: templates/sphene/sphboard/showThread.html:144
+msgid "did not answer"
+msgstr "не ответили"
+
+#: templates/sphene/sphboard/showThread.html:156
+msgid "Error:"
+msgstr "Ошибка:"
+
+#: templates/sphene/sphboard/showThread.html:159
+#, python-format
+msgid "You may select up to %(choices_per_user)s answers: "
+msgstr "Вы можете выбрать количество ответов не более %(choices_per_user)s"
+
+#: templates/sphene/sphboard/showThread.html:164
+#: templates/sphene/sphboard/showThread.html:171
+msgid "Show Results (You won't be able to vote.)"
+msgstr "Показать результаты (вы не сможете проголосовать)."
+
+#: templates/sphene/sphboard/showThread.html:177
+msgid "You need to be logged in to vote."
+msgstr "Чтобы проголосовать, вы должны войти в систему."
+
+#: templates/sphene/sphboard/showThread.html:196
+msgid "Post Reply"
+msgstr "Написать ответ"
+
+#: templates/sphene/sphboard/showThread.html:201
+msgid "Thread is locked."
+msgstr "Тема закрыта."
+
+#: templates/sphene/sphboard/showThread.html:204
+msgid "You have no permission to post a reply."
+msgstr "У вас нет прав на написание ответа."
+
+#: templates/sphene/sphboard/showThread.html:206
+msgid "Please login to post a reply."
+msgstr "Войдите в систему, чтобы написать ответ."
+
+#: templates/sphene/sphboard/wikimacros/news.html:10
+msgid "Comments"
+msgstr "Комментарии"

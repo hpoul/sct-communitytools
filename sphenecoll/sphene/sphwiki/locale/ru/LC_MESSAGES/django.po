@@ -1,0 +1,241 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-07-04 19:31+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: models.py:45
+msgid "name"
+msgstr "имя"
+
+#: models.py:46
+msgid "title"
+msgstr "заголовок"
+
+#: models.py:48
+msgid "body"
+msgstr "содержимое"
+
+#: models.py:358
+msgid "fileupload"
+msgstr "загрузка файла"
+
+#: models.py:360
+msgid "description"
+msgstr "описание"
+
+#: views.py:59
+msgid "Detected redirect loop."
+msgstr "Обнаружено зацикливание."
+
+#: views.py:85
+msgid "Not configured."
+msgstr "Приложение не сконфигурировано."
+
+#: views.py:148
+msgid "This is the first change."
+msgstr "Это первое изменение."
+
+#: views.py:159
+#, python-format
+msgid "%(date)s by %(editor)s"
+msgstr "%(date)s, отредактировано %(editor)s"
+
+#: views.py:161 templates/sphene/sphwiki/diff.html:51
+#: templates/sphene/sphwiki/diff.html:52
+#: templates/sphene/sphwiki/history.html:37
+msgid "Edit this version"
+msgstr "Редактировать эту версию"
+
+#: views.py:224
+msgid "Successfully deleted attachment."
+msgstr "Вложение удалено."
+
+#: views.py:265 views.py:274
+msgid "Please enter the result of the above calculation."
+msgstr "Введите результат арифметического действия на картинке."
+
+#: views.py:381
+#, python-format
+msgid "Reverted to revision of %(editdate)s"
+msgstr "Статья возвращена к ревизии %(editdate)s"
+
+#: templates/sphene/sphwiki/_snip_header.html:4
+#, python-format
+msgid "This snip is secured - View only allowed by: %(allowed_users)s"
+msgstr "Эта статья защищена, просмотр разрешён только: %(allowed_users)s"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+#: templates/sphene/sphwiki/diff.html:50
+#: templates/sphene/sphwiki/history.html:19
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Attachments"
+msgstr "Вложение"
+
+#: templates/sphene/sphwiki/_snip_header.html:22
+msgid "Download PDF"
+msgstr "Загрузить PDF"
+
+#: templates/sphene/sphwiki/diff.html:15
+#: templates/sphene/sphwiki/editSnip.html:17
+#: templates/sphene/sphwiki/history.html:10
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Back to Snip"
+msgstr "Вернуться к статье"
+
+#: templates/sphene/sphwiki/diff.html:19
+msgid "Previous Change"
+msgstr "Предыдущее изменение"
+
+#: templates/sphene/sphwiki/diff.html:23
+msgid "Next Change"
+msgstr "Следующее изменение"
+
+#: templates/sphene/sphwiki/diff.html:31
+msgid "Diff Summary"
+msgstr "Различия"
+
+#: templates/sphene/sphwiki/diff.html:34
+#: templates/sphene/sphwiki/history.html:24
+msgid "Title"
+msgstr "Заголовок"
+
+#: templates/sphene/sphwiki/diff.html:39
+#: templates/sphene/sphwiki/history.html:14
+msgid "Date"
+msgstr "Дата"
+
+#: templates/sphene/sphwiki/diff.html:44
+#: templates/sphene/sphwiki/history.html:15
+msgid "Editor"
+msgstr "Отредактировано"
+
+#: templates/sphene/sphwiki/editAttachment.html:12
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+msgid "Warning"
+msgstr "Предупреждение"
+
+#: templates/sphene/sphwiki/editSnip.html:21
+#, python-format
+msgid ""
+"You are editing an old version: By %(version_editor)s at %(version_editdate)s"
+msgstr "Вы редактируете старую версию %(version_editor)s %(version_editdate)s"
+
+#: templates/sphene/sphwiki/editSnip.html:27
+#: templates/sphene/sphwiki/history.html:17
+msgid "Change Message"
+msgstr "Изменить сообщение"
+
+#: templates/sphene/sphwiki/editSnip.html:30
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: templates/sphene/sphwiki/history.html:16
+msgid "Changes"
+msgstr "Изменения"
+
+#: templates/sphene/sphwiki/history.html:23
+msgid "Body"
+msgstr "Содержимое"
+
+#: templates/sphene/sphwiki/history.html:25
+msgid "Tags"
+msgstr "Теги"
+
+#: templates/sphene/sphwiki/history.html:44
+#: templates/sphene/sphwiki/history.html:46
+#, python-format
+msgid "%(changecount)s Changes."
+msgstr "изменений: %(changecount)s"
+
+#: templates/sphene/sphwiki/listAttachments.html:19
+msgid "Create New Attachment"
+msgstr "Загрузить новое вложение"
+
+#: templates/sphene/sphwiki/listAttachments.html:23
+msgid "Id"
+msgstr "Идентификатор"
+
+#: templates/sphene/sphwiki/listAttachments.html:24
+msgid "Action"
+msgstr "Действие"
+
+#: templates/sphene/sphwiki/listAttachments.html:25
+msgid "Attachment"
+msgstr "Вложение"
+
+#: templates/sphene/sphwiki/listAttachments.html:26
+msgid "Upload Date"
+msgstr "Дата загрузки"
+
+#: templates/sphene/sphwiki/listAttachments.html:27
+msgid "Uploader"
+msgstr "Автор"
+
+#: templates/sphene/sphwiki/listAttachments.html:32
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/sphene/sphwiki/listAttachments.html:40
+#: templates/sphene/sphwiki/listAttachments.html:42
+#, python-format
+msgid "%(attachment_count)s Attachments."
+msgstr "вложений: %(attachment_count)s"
+
+#: templates/sphene/sphwiki/list_tag_snips.html:8
+#, python-format
+msgid "Snips with the tag '%(tag_name)s'"
+msgstr "Статьи с тегом '%(tag_name)s'"
+
+#: templates/sphene/sphwiki/list_tag_snips.html:16
+msgid "Not enough permissions to view this wiki snip."
+msgstr "У вас нет прав на просмотр этой статьи."
+
+#: templates/sphene/sphwiki/showSnip.html:35
+msgid "Tags:"
+msgstr "Теги:"
+
+#: templates/sphene/sphwiki/showSnip.html:42
+#, python-format
+msgid "Last Modified: %(snip_changedate)s by %(snip_editor)s"
+msgstr "Последнее изменение: %(snip_changedate)s, %(snip_editor)s"
+
+#: templates/sphene/sphwiki/showSnip.html:42
+msgid "Snip Changes"
+msgstr "Изменения статьи"
+
+#: templates/sphene/sphwiki/showSnip.html:42
+msgid "Wiki History"
+msgstr "История wiki"
+
+#: templates/sphene/sphwiki/showSnip.html:47
+#, python-format
+msgid "Snip %(snip_prefix)s%(snip_name)s%(snip_postfix)s does not yet exist."
+msgstr "Статья %(snip_prefix)s%(snip_name)s%(snip_postfix)s не существует."
+
+#: templates/sphene/sphwiki/showSnip.html:47
+msgid "Create It."
+msgstr "Создать её."
+
+#: templates/sphene/sphwiki/wikicomments.html:13
+msgid "No comments yet."
+msgstr "Комментариев нет."
