@@ -116,9 +116,6 @@ def blogindex(request, group, category_id = None, page = 1, year=None, month=Non
             month = int(month)
 
     threads = get_posts_queryset(group, category_info[0], year, month)
-    if not threads:
-        return render_to_response('sphene/sphblog/nopost.html', {},
-                                  context_instance = RequestContext(request))
 
     paged_threads = get_paged_objects(threads, page)
 

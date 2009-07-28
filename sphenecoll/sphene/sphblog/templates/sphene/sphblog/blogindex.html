@@ -49,6 +49,9 @@
     <p class="sphtagheader">{% trans "Tag" %}: {{ tag.name }} / <a href="{% sph_url2 sphblog_index %}">{% trans "Back" %}</a></p>
   {% endif %}
 
+  {% if not threads.object_list %}
+    <p>{% trans "There are no blog posts yet." %}</p>
+  {% endif %}
 
   {% for thread in threads.object_list %}
     {% sphblog_showblogpost thread %}
