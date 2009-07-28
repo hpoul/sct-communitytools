@@ -5,7 +5,7 @@ from django.contrib.syndication.feeds import Feed
 
 from sphene.community.middleware import get_current_group
 from sphene.sphblog.models import BlogPostExtension
-from sphene.sphblog.views import get_board_categories, get_posts_queryset
+from sphene.sphblog.views import get_board_categories, get_blog_posts_queryset
 from sphene.sphboard.models import Post
 
 class LatestBlogPosts(Feed):
@@ -38,17 +38,15 @@ class LatestBlogPosts(Feed):
     def items(self, obj):
         group = get_current_group()
         categories = obj
-        threads = get_posts_queryset(group, categories )
+        threads = get_blog_posts_queryset(group, categories )
         return threads
 
-
     def item_pubdate(self, item):
-        return item.postdate
+        return item.post.postdate
 
     def item_link(self, item):
-        try:
-            return item.blogpostextension_set.get().get_absolute_url()
-        except BlogPostExtension.DoesNotExist:
-            # This should never happen.
-            return item.get_absolute_url()
+        return item.get_absolute_url()
+
+    def item_categories(self, item):
+        return item.get_tag_labels()
 

@@ -31,17 +31,34 @@ def get_board_categories(group):
     blogcategories = filter(Category.has_view_permission, categories)
     return blogcategories
 
+def get_blog_posts_queryset(group, categories, year=None, month=None):
+    """
+    Return a list of blog posts.
+    If given, year and month should be integers.
+    """
+    threads = BlogPostExtension.objects.filter( post__thread__isnull = True,
+                                   post__category__group__id = group.id,
+                                   post__category__id__in = map(lambda x: x.id, categories) ).order_by( '-post__postdate' )
+
+    return _year_month_filter(threads, year, month)
+
 def get_posts_queryset(group, categories, year=None, month=None):
     """
     Return a list of blog posts.
     If given, year and month should be integers.
     """
-    if month is not None and (month > 12 or month < 1):
-        return None
-
     threads = Post.objects.filter( thread__isnull = True,
                                    category__group__id = group.id,
                                    category__id__in = map(lambda x: x.id, categories) ).order_by( '-postdate' )
+
+    return _year_month_filter(threads, year, month)
+
+def _year_month_filter(threads, year=None, month=None):
+    """
+    Filter a queryset containing a 'postdate' field by year/month.
+    """
+    if month is not None and not 1 <= month <= 12:
+        return None
 
     if year is not None:
         threads = threads.filter(postdate__year = year)
