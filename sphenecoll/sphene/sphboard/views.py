@@ -602,6 +602,8 @@ def vote(request, group = None, thread_id = None):
     return HttpResponseRedirect( '../../thread/%s/' % thread.id )
 
 def toggle_monitor(request, group, monitortype, object_id):
+    if not request.user.is_authenticated():
+        raise PermissionDenied()
     redirectview = 'show'
     obj = None
     if monitortype == 'group':
