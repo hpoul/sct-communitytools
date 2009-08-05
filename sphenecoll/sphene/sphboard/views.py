@@ -599,7 +599,8 @@ def vote(request, group = None, thread_id = None):
         request.user.message_set.create( message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
     
 
-    return HttpResponseRedirect( '../../thread/%s/' % thread.id )
+    #return HttpResponseRedirect( '../../thread/%s/' % thread.id )
+    return HttpResponseRedirect( thread.get_absolute_url() )
 
 def toggle_monitor(request, group, monitortype, object_id):
     if not request.user.is_authenticated():
