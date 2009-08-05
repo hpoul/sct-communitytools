@@ -599,13 +599,11 @@ def vote(request, group = None, thread_id = None):
         request.user.message_set.create( message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
     
 
-    #return HttpResponseRedirect( '../../thread/%s/' % thread.id )
     return HttpResponseRedirect( thread.get_absolute_url() )
 
 def toggle_monitor(request, group, monitortype, object_id):
     if not request.user.is_authenticated():
         raise PermissionDenied()
-    redirectview = 'show'
     obj = None
     if monitortype == 'group':
         obj = group
@@ -614,7 +612,6 @@ def toggle_monitor(request, group, monitortype, object_id):
         obj = Category.objects.get( pk = object_id )
     elif monitortype == 'thread':
         obj = Post.objects.get( pk = object_id )
-        redirectview = 'thread'
 
     if obj.toggle_monitor():
         request.user.message_set.create( message = ugettext(u'Successfully created email notification monitor.') )
@@ -623,7 +620,9 @@ def toggle_monitor(request, group, monitortype, object_id):
 
     if 'next' in request.GET:
         return HttpResponseRedirect( request.GET['next'] )
-    return HttpResponseRedirect( '../../%s/%s/' % (redirectview, object_id) )
+    if monitortype == 'group':
+        return HttpResponseRedirect( sph_reverse( 'sphboard-index' ) )
+    return HttpResponseRedirect( obj.get_absolute_url() )
 
 def catchup(request, group, category_id):
     if category_id == '0':
