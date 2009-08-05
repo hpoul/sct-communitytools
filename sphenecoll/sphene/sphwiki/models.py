@@ -8,7 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy
 
 from sphene.community.templatetags.sph_extras import sph_markdown
 #from django.db.models import permalink
-from sphene.community.sphutils import sphpermalink as permalink, get_sph_setting, sph_reverse
+from sphene.community.sphutils import sphpermalink, get_sph_setting, sph_reverse
 
 from sphene.community.models import Group
 
@@ -18,19 +18,6 @@ from sphene.community.middleware import get_current_request, get_current_user
 
 import os
 import re
-
-"""
-def permalink(func):
-    from django.core.urlresolvers import reverse
-    from django.conf import settings
-    def inner(*args, **kwargs):
-        bits = func(*args, **kwargs)
-        viewname = bits[0]
-        req = get_current_request()
-        urlconf = getattr(req, 'urlconf', settings.ROOT_URLCONF)
-        return reverse(bits[0], urlconf, *bits[1:3])
-    return inner
-"""
 
 WIKI_PERMISSIONS_ALLOWED_CHOICES = (
     (-1, 'All Users'),
@@ -177,31 +164,31 @@ class WikiSnip(models.Model):
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.showSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    get_absolute_url = sphpermalink(get_absolute_url)
 
     def get_absolute_editurl(self):
         return ('sphene.sphwiki.views.editSnip', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def get_absolute_attachmenturl(self):
         return ('sphene.sphwiki.views.attachment', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_attachmenturl = permalink(get_absolute_attachmenturl, get_current_request)
+    get_absolute_attachmenturl = sphpermalink(get_absolute_attachmenturl)
 
     def get_absolute_create_attachmenturl(self):
         return ('sphene.sphwiki.views.attachmentCreate', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_create_attachmenturl = permalink(get_absolute_create_attachmenturl, get_current_request)
+    get_absolute_create_attachmenturl = sphpermalink(get_absolute_create_attachmenturl)
 
     def get_absolute_historyurl(self):
         return ('sphene.sphwiki.views.history', (), { 'groupName': self.group.name, 'snipName': self.name})
-    get_absolute_historyurl = permalink(get_absolute_historyurl, get_current_request)
+    get_absolute_historyurl = sphpermalink(get_absolute_historyurl)
 
     def get_absolute_recentchangesurl(self):
         return ('sphene.sphwiki.views.recentChanges', (), { 'groupName': self.group.name })
-    get_absolute_recentchangesurl = permalink(get_absolute_recentchangesurl, get_current_request)
+    get_absolute_recentchangesurl = sphpermalink(get_absolute_recentchangesurl)
 
     def get_absolute_pdfurl(self):
         return ('sphene.sphwiki.views.generatePDF', (), { 'groupName': self.group.name, 'snipName': self.name })
-    get_absolute_pdfurl = permalink(get_absolute_pdfurl, get_current_request)
+    get_absolute_pdfurl = sphpermalink(get_absolute_pdfurl)
 
     def get_parent(self):
         lastslash = len(self.name)
@@ -337,7 +324,7 @@ class WikiSnipChange(models.Model):
 
     def get_absolute_url(self):
         return ('sphene.sphwiki.views.diff', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'changeId': self.id})
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    get_absolute_url = sphpermalink(get_absolute_url)
 
     def get_absolute_editurl(self):
         return sph_reverse( 'sphwiki_editversion', 
@@ -362,7 +349,7 @@ class WikiAttachment(models.Model):
 
     def get_absolute_editurl(self):
         return ('sphene.sphwiki.views.attachmentEdit', (), { 'groupName': self.snip.group.name, 'snipName': self.snip.name, 'attachmentId': self.id } )
-    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def save(self, force_insert=False, force_update=False):
         self.uploaded = datetime.today()

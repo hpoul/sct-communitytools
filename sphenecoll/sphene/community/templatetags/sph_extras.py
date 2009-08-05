@@ -239,14 +239,8 @@ def sph_iter(value):
 @register.filter
 def sph_user_profile_link(value):
     """ Returns the URL to the user profile. """
-    req = get_current_request()
-    sphdata = get_current_sphdata()
-    urlconf = getattr(req, 'urlconf', None)
     kwargs = { 'user_id': value.id, }
-    if not sphdata.get('group_fromhost', False):
-        # If Group was not loaded from host name, we need to put it back in.
-        kwargs['groupName'] = get_current_group().name
-    return reverse('sphene.community.views.profile', urlconf, (), kwargs )
+    return sph_reverse('sphene.community.views.profile', kwargs = kwargs )
 
 
 import os
@@ -277,23 +271,14 @@ class SphURLNode(Node):
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
 
-        sphdata = get_current_sphdata()
-        if not sphdata.get('group_fromhost', False):
-            # If Group was not loaded from host name, we need to put it back in.
-            kwargs['groupName'] = get_current_group().name
-
-        req = get_current_request()
-        urlconf = getattr(req, 'urlconf', None)
-
         try:
-            return reverse(self.view_name, urlconf=urlconf,
-                           args=args, kwargs=kwargs)
+            return sph_reverse(self.view_name,
+                               args=args, kwargs=kwargs)
         except NoReverseMatch:
             try:
                 project_name = settings.SETTINGS_MODULE.split('.')[0]
-                return reverse(project_name + '.' + self.view_name,
-                               urlconf=urlconf,
-                               args=args, kwargs=kwargs)
+                return sph_reverse(project_name + '.' + self.view_name,
+                                   args=args, kwargs=kwargs)
             except NoReverseMatch:
                 return ''
 
@@ -308,13 +293,7 @@ def sph_url(view):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     try:
-        kwargs = {}
-        sphdata = get_current_sphdata()
-        if not sphdata.get('group_fromhost', False):
-            # If Group was not loaded from host name, we need to put it back in.
-            kwargs['groupName'] = get_current_group().name
-
-        return reverse(view, urlconf, kwargs = kwargs)
+        return sph_reverse(view)
     except:
         log.exception('Unable to reverse sph_url for view %r' % view)
         return 'NOT FOUND'

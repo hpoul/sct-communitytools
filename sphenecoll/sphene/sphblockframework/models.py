@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from sphene.community.middleware import get_current_group, get_current_request
-from sphene.community.sphutils import sphpermalink as permalink
+from sphene.community.sphutils import sphpermalink
 from sphene.community.models import Group
 
 from sphene.sphblockframework import blockregistry
@@ -127,7 +127,7 @@ class BlockConfiguration(models.Model):
 
     def get_absolute_edit_url(self):
         return ('sphene.sphblockframework.views.edit_block_config', (), { 'block_config_id': self.id })
-    get_absolute_edit_url = permalink(get_absolute_edit_url, get_current_request)
+    get_absolute_edit_url = sphpermalink(get_absolute_edit_url)
 
 
 class BlockInstancePosition(models.Model):

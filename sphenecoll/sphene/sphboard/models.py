@@ -15,7 +15,7 @@ from django import forms
 
 import sphene.community.signals
 from sphene.community.middleware import get_current_request, get_current_user, get_current_group, get_current_session
-from sphene.community.sphutils import sphpermalink as permalink, get_urlconf, get_sph_setting, get_method_by_name
+from sphene.community.sphutils import sphpermalink, get_urlconf, get_sph_setting, get_method_by_name
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.permissionutils import has_permission_flag
 from sphene.community.forms import EditProfileForm, Separator
@@ -449,11 +449,11 @@ class Category(models.Model):
         else:
             name = 'sphboard_show_category_without_slug'
         return (name, (), kwargs)
-    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
+    _get_absolute_url = sphpermalink(_get_absolute_url)
 
     def get_absolute_post_thread_url(self):
         return ('sphboard_post_thread', (), { 'groupName': self.group.name, 'category_id': self.id })
-    get_absolute_post_thread_url = permalink(get_absolute_post_thread_url, get_current_request)
+    get_absolute_post_thread_url = sphpermalink(get_absolute_post_thread_url)
 
     def get_absolute_url_rss_latest_threads(self):
         """ Returns the absolute url to the RSS feed displaying the latest threads.
@@ -464,11 +464,11 @@ class Category(models.Model):
 
     def get_absolute_latest_url(self):
         return ('sphboard_latest', (), { 'groupName': self.group.name, 'category_id': self.id, })
-    get_absolute_latest_url = permalink(get_absolute_latest_url, get_current_request)
+    get_absolute_latest_url = sphpermalink(get_absolute_latest_url)
 
     def get_absolute_togglemonitor_url(self):
         return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.group.name, 'monitortype': 'category', 'object_id': self.id, })
-    get_absolute_togglemonitor_url = permalink(get_absolute_togglemonitor_url, get_current_request)
+    get_absolute_togglemonitor_url = sphpermalink(get_absolute_togglemonitor_url)
     
     def __unicode__(self):
         return self.name;
@@ -954,19 +954,19 @@ class Post(models.Model):
         else:
             name = 'sphboard_show_thread_without_slug'
         return (name, (), kwargs)
-    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
+    _get_absolute_url = sphpermalink(_get_absolute_url)
     
     def get_absolute_editurl(self):
         return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
-    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def get_absolute_postreplyurl(self):
         return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })
-    get_absolute_postreplyurl = permalink(get_absolute_postreplyurl, get_current_request)
+    get_absolute_postreplyurl = sphpermalink(get_absolute_postreplyurl)
 
     def get_absolute_annotate_url(self):
         return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
-    get_absolute_annotate_url = permalink(get_absolute_annotate_url, get_current_request)
+    get_absolute_annotate_url = sphpermalink(get_absolute_annotate_url)
 
 
 class PostAttachment(models.Model):
@@ -1168,7 +1168,7 @@ class ThreadInformation(models.Model):
                 name = 'sphboard_show_thread'
                 kwargs['slug'] = slug
         return (name, (), kwargs)
-    _get_absolute_url = permalink(_get_absolute_url, get_current_request)
+    _get_absolute_url = sphpermalink(_get_absolute_url)
 
     def __unicode__(self):
         return self.root_post.subject
@@ -1291,7 +1291,7 @@ class Poll(models.Model):
 
     def get_absolute_editurl(self):
         return ('sphboard_edit_poll', (), { 'poll_id': self.id, })
-    get_absolute_editurl = permalink(get_absolute_editurl, get_current_request)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
 
 class PollChoice(models.Model):

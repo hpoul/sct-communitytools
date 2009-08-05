@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from sphene.community.sphpermalink import sphpermalink as permalink, get_urlconf
+from sphene.community.sphpermalink import sphpermalink
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
 import logging
@@ -221,19 +221,19 @@ class Role(models.Model):
 
     def get_absolute_editurl(self):
         return ('sphene.community.views.admin_permission_role_edit', (), { 'groupName': self.group.name, 'role_id': self.id, } )
-    get_absolute_editurl = permalink(get_absolute_editurl, get_urlconf)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def get_absolute_memberlisturl(self):
         return ('sphene.community.views.admin_permission_role_member_list', (), { 'groupName': self.group.name, 'role_id': self.id, } )
-    get_absolute_memberlisturl = permalink(get_absolute_memberlisturl, get_urlconf)
+    get_absolute_memberlisturl = sphpermalink(get_absolute_memberlisturl)
 
     def get_absolute_memberaddurl(self):
         return ('sphene.community.views.admin_permission_role_member_add', (), { 'groupName': self.group.name, 'role_id': self.id, } )
-    get_absolute_memberaddurl = permalink(get_absolute_memberaddurl, get_urlconf)
+    get_absolute_memberaddurl = sphpermalink(get_absolute_memberaddurl)
 
     def get_absolute_groupmemberaddurl(self):
         return ('sphene.community.views.admin_permission_role_groupmember_add', (), { 'groupName': self.group.name, 'role_id': self.id, } )
-    get_absolute_groupmemberaddurl = permalink(get_absolute_groupmemberaddurl, get_urlconf)
+    get_absolute_groupmemberaddurl = sphpermalink(get_absolute_groupmemberaddurl)
 
     class Meta:
         unique_together = (('name', 'group'),)
@@ -301,7 +301,7 @@ class RoleGroup(models.Model):
 
     def get_absolute_editurl(self):
         return ('sphene.community.views.admin_permission_rolegroup_edit', (), { 'groupName': self.group.name, 'rolegroup_id': self.id, } )
-    get_absolute_editurl = permalink(get_absolute_editurl, get_urlconf)
+    get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     class Meta:
         unique_together = ('group', 'name',)

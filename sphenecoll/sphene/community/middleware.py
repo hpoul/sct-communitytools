@@ -26,9 +26,9 @@ SiteManager.get_current = my_get_current
 
 
 # If all are used the following order has to remain:
-# 1.) ThreadLocals
-# 2.) MultiHostMiddleware
-# 3.) GroupMiddleware
+# 1.) ThreadLocals (required)
+# 2.) MultiHostMiddleware (optional, but very much recommended!)
+# 3.) GroupMiddleware (required)
 # all other orders will lead to problems ..
 
 
@@ -149,7 +149,11 @@ def get_current_user():
     return req.user
 
 def get_current_group():
-    return getattr(_thread_locals, 'group', None)
+    try:
+        return _thread_locals.group
+    except AttributeError, e:
+        logger.error('Unable to retrieve group. Is GroupMiddleware enabled?')
+        raise e
 
 def get_current_urlconf_params():
     return getattr(_thread_locals, 'urlconf_params', None)

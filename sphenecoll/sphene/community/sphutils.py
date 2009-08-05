@@ -198,8 +198,11 @@ def sph_reverse( viewname, args=(), kwargs={} ):
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     sphdata = get_current_sphdata()
-    if not sphdata.get('group_fromhost', False):
+    if 'group_fromhost' in sphdata and \
+            not sphdata.get('group_fromhost', False):
         kwargs['groupName'] = get_current_group().name
+    elif 'groupName' in kwargs:
+        del kwargs['groupName']
     return reverse( viewname, urlconf, args, kwargs )
 
 def get_method_by_name(methodname):

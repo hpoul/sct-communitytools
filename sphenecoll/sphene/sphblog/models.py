@@ -4,7 +4,7 @@
 from django.db import models
 
 from sphene.community.models import tag_get_labels
-from sphene.community.sphutils import sphpermalink as permalink
+from sphene.community.sphutils import sphpermalink
 from sphene.community.middleware import get_current_request
 
 from sphene.sphboard.models import Post, Category
@@ -38,7 +38,7 @@ class BlogPostExtension(models.Model):
                                                           'day': date.day,
                                                           'slug': self.slug,
                                                           })
-    get_absolute_url = permalink(get_absolute_url, get_current_request)
+    get_absolute_url = sphpermalink(get_absolute_url)
 
 
 
