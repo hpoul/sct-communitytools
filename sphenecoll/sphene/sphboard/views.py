@@ -19,7 +19,7 @@ from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, PostPollFo
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
 
 
-def showCategory(request, group = None, category_id = None, showType = None, slug = None):
+def showCategory(request, group, category_id = None, showType = None, slug = None):
     """
     displays either all root categories, or the contents of a category.
     the contents of a category could be other categories or forum threads.
@@ -27,6 +27,8 @@ def showCategory(request, group = None, category_id = None, showType = None, slu
     TODO: clean this mess up - sorry for everyone who trys to understand
     this function - this is is probably the oldest and ugliest in 
     the whole SCT source.
+
+    We no longer support having no group !!
     """
     args = {
         'group__isnull': True,

@@ -1,11 +1,16 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from sphene.community.models import Group
 from django.core import urlresolvers
 
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+
 from django.contrib.sites.models import SiteManager, Site
+
+
+from sphene.community.models import Group
+from sphene.community.sphsettings import get_sph_setting
+
 
 import re
 import logging
@@ -111,8 +116,10 @@ class GroupMiddleware(object):
             else:
                 groupName = view_kwargs['groupName']
                 if groupName == None: groupName = get_current_urlconf_params()['groupName']
+                sphdata = get_current_sphdata()
                 if group == None:
                     group = get_object_or_404(Group, name = groupName )
+                    sphdata['group_fromhost'] = not get_sph_setting('community_groups_in_url')
                 del view_kwargs['groupName']
                 view_kwargs['group'] = group
                 request.attributes['group'] = group

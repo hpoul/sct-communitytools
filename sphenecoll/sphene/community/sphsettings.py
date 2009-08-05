@@ -23,6 +23,9 @@ sph_settings_defaults = {
     # $(dir)/$(groupName)/$(templateName)
     'community_groupaware_template_dir': None,
 
+    # If True, the group name is set in the URL
+    'community_groups_in_url': False,
+
     # used by sphene.community.views.groupaware_redirect_to which looks up this variable
     # expecting a dictionary containing { 'groupname': '/redirect/url/' }
     'community_groupaware_startpage': None,

@@ -7,9 +7,9 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+
 
 from sphene.community.models import Tag, tag_get_models_by_tag
 from sphene.community.middleware import get_current_urlconf
@@ -17,7 +17,7 @@ from sphene.community.sphutils import add_rss_feed
 from sphene.sphboard.views import showThread as sphboard_show_thread
 from sphene.sphboard.models import Category, ThreadInformation, Post, get_tags_for_categories
 from sphene.sphblog.models import BlogPostExtension
-from sphene.community.sphutils import get_sph_setting
+from sphene.community.sphutils import get_sph_setting, sph_reverse
 
 def get_board_categories(group):
     """
@@ -121,7 +121,7 @@ def blogindex(request, group, category_id = None, page = 1, year=None, month=Non
 
     allowpostcategories = filter(Category.has_post_thread_permission, category_info[0])
     #blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), args = ('latestposts',), kwargs = { 'groupName': group.name })
-    blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), kwargs = { 'url': 'latestposts' })
+    blog_feed_url = sph_reverse('sphblog-feeds', kwargs = { 'url': 'latestposts' })
     add_rss_feed( blog_feed_url, 'Blog RSS Feed' )
     all_tags = get_tags_for_categories( category_info[0] )
 
