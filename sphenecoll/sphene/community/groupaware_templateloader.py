@@ -25,7 +25,13 @@ def load_template_source(template_name, template_dirs=None):
     Template loader which loads templates from the database based on
     the current group.
     """
-    group = get_current_group()
+    try:
+        group = get_current_group()
+    except:
+        # Ignore the error for now.
+        # this can happen in combination with 'django app plugins' application
+        # during syncdb see: http://sct.sphene.net/board/thread/1864/error-while-running-syncdb/?page=1#post-1864
+        raise TemplateDoesNotExist(template_name)
     if group is None:
         # If there is no current group .. we have nothing to do ..
         raise TemplateDoesNotExist(template_name)
