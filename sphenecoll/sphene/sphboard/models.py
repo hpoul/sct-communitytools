@@ -82,15 +82,8 @@ POSTS_ALLOWED_CHOICES = (
 class AccessCategoryManager(models.Manager):
     def filter_for_group(self, group):
         user = get_current_user()
-        level = -1
-        if user.is_authenticated():
-            level = 0
-            if user.is_superuser:
-                level = 2
-            elif group and group.get_member(user) != None:
-                level = 3
-        return self.filter(group = group,
-                           allowview__lte = level)
+        category_ids = get_all_viewable_categories(group, user)
+        return self.filter(group = group, id__in = category_ids)
 
     def rolemember_limitation_objects(self, group):
         return self.filter( group = group )
@@ -171,6 +164,8 @@ def get_all_viewable_categories(group, user):
     """ 
     returns a list containing the IDs of all categories viewable by the given 
     user in the given group.
+    (If for_parent is passed in, only categries with the given parent are
+    returned.)
     """
     all_categories = Category.objects.filter( group = group )
     allowed_categories = list()
