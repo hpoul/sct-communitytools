@@ -294,7 +294,7 @@ class Category(models.Model):
         if level <= 2 and user.is_staff:
             return True
         
-        return user.has_perm( 'sphboard.add_post' );
+        return False
 
     def has_permission_flag(self, user, flag):
         return False
