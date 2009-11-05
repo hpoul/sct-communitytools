@@ -155,16 +155,16 @@ msgstr ""
 
 #: views.py:142
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: views.py:144
 msgid "Verify Password"
-msgstr ""
+msgstr "Passwort wiederholen"
 
 #: views.py:158
 #, python-format
 msgid "The username %(username)s is already taken."
-msgstr ""
+msgstr "Der Benutzername %(username)s wird bereits verwendet."
 
 #: views.py:322
 msgid "Successfully changed user profile."
