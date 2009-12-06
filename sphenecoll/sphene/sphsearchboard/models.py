@@ -5,9 +5,6 @@ import os
 
 from django.conf import settings
 
-#from djapian.backend.backends import XapianIndexer
-from djapian import Indexer
-
 from sphene.community import sphsettings
 from sphene.community.middleware import get_current_group, get_current_user
 from sphene.sphboard.models import Post, get_all_viewable_categories
@@ -15,9 +12,36 @@ from sphene.sphboard.models import Post, get_all_viewable_categories
 
 logger = logging.getLogger('sphene.sphsearchboard.models')
 
+post_index = None
+try:
+    import urls  #ensure that load_indexes is called
+    post_index= Post.indexer
+except:
+    from djapian import Indexer
+    searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index', '/var/cache/sct/postindex/')
 
-Post.index_model = 'sphene.sphsearchboard.models.post_index'
+    if not os.path.isdir(searchboard_post_index):
+        os.makedirs(searchboard_post_index)
 
+    Post.index_model = 'sphene.sphsearchboard.models.post_index'
+    post_index = Indexer(
+        path = searchboard_post_index,
+
+        model = Post,
+
+        fields = [('subject', 20), 'body'],
+
+        tags = [
+            ('subject', 'subject', 20),
+            ('date', 'postdate'),
+            ('category', 'category.name'),
+            ('post_id', 'id'),
+            ('category_id', 'category.id'),
+            ('group_id', 'category.group.id'),
+          ])
+
+
+    post_index.boolean_fields = ('category_id', 'group_id',)
 
 class PostFilter(object):
     """
@@ -81,27 +105,3 @@ get_category_id.name = 'category_id'
 def get_group_id(post):
     return post.category.group.id
 get_group_id.name = 'group_id'
-
-searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index', '/var/cache/sct/postindex/')
-
-if not os.path.isdir(searchboard_post_index):
-    os.makedirs(searchboard_post_index)
-
-post_index = Indexer(
-    path = searchboard_post_index,
-
-    model = Post,
-
-    fields = [('subject', 20), 'body'],
-
-    tags = [
-        ('subject', 'subject', 20),
-        ('date', 'postdate'),
-        ('category', 'category.name'),
-        ('post_id', 'id'),
-        ('category_id', 'category.id'),
-        ('group_id', 'category.group.id'),
-      ])
-
-
-post_index.boolean_fields = ('category_id', 'group_id',)
