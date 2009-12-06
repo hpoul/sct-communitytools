@@ -21,6 +21,7 @@ from sphene.community.models import Role, RoleMember, RoleMemberLimitation, Perm
 from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community import sphutils
+from sphene.community.permissionutils import has_permission_flag
 from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
@@ -415,6 +416,8 @@ def profile_edit(request, group, user_id):
 
 
 def admin_permission_rolegroup_list(request, group):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     if request.method == 'POST':
         name = request.POST['name']
         if name:
@@ -427,6 +430,8 @@ def admin_permission_rolegroup_list(request, group):
                                context_instance = RequestContext(request) )
 
 def admin_permission_rolegroup_edit(request, group, rolegroup_id):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     rolegroup = RoleGroup.objects.get( pk = rolegroup_id,
                                        group = group, )
 
@@ -454,6 +459,8 @@ def admin_permission_rolegroup_edit(request, group, rolegroup_id):
                                context_instance = RequestContext(request) )
 
 def admin_permission_role_list(request, group):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     roles = Role.objects.filter( group = group )
     return render_to_response( 'sphene/community/admin/permission/role_list.html',
                                { 'roles' : roles,
@@ -463,6 +470,8 @@ def admin_permission_role_list(request, group):
 from forms import EditRoleForm
 
 def admin_permission_role_edit(request, group, role_id = None):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     role = None
     if role_id:
         role = get_object_or_404(Role, pk = role_id)
@@ -502,6 +511,8 @@ def admin_permission_role_edit(request, group, role_id = None):
                                context_instance = RequestContext(request) )
 
 def admin_permission_role_member_list(request, group, role_id):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     role = get_object_or_404(Role, pk = role_id)
     members = role.rolemember_set.all()
     if 'cmd' in request.GET and request.GET['cmd'] == 'remove':
@@ -521,6 +532,8 @@ def admin_permission_role_member_list(request, group, role_id):
 from forms import EditRoleMemberForm, EditRoleGroupMemberForm
 
 def admin_permission_role_member_add(request, group, role_id, addgroup = False):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     role = get_object_or_404(Role, pk = role_id)
 
     if addgroup:
@@ -555,6 +568,8 @@ def admin_permission_role_member_add(request, group, role_id, addgroup = False):
                                context_instance = RequestContext(request) )
 
 def admin_permission_role_groupmember_add(request, group, role_id):
+    if not has_permission_flag(request.user, 'community_manage_roles'):
+        raise PermissionDenied()
     return admin_permission_role_member_add(request, group, role_id, True)
 
 def groupaware_redirect_to(request, url, group, **kwargs):
