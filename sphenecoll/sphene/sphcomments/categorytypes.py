@@ -1,6 +1,6 @@
 from sphene.sphboard.categorytypes import DefaultCategoryType
 from sphene.sphboard.categorytyperegistry import CategoryType
-
+from django.utils.translation import ugettext_lazy as _
 
 class CommentsCategoryType(DefaultCategoryType):
     """
@@ -28,4 +28,5 @@ class CommentsOnObjectCategoryType(DefaultCategoryType):
             pass
         return url
 
-
+    def get_post_new_thread_label(self):
+        return _("New comment")
