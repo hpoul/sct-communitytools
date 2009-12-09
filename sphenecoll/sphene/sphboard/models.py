@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.core.cache import cache
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.template.context import RequestContext
 from django.template import loader
 from django.conf import settings
@@ -469,6 +469,8 @@ class Category(models.Model):
         return self.name;
 
     class Meta:
+        verbose_name = ugettext_lazy('Category')
+        verbose_name_plural = ugettext_lazy('Categories')
         ordering = ['sortorder']
 
 
@@ -479,6 +481,8 @@ class ThreadLastVisit(models.Model):
     thread = models.ForeignKey('Post')
 
     class Meta:
+        verbose_name = ugettext_lazy('Thread last visit')
+        verbose_name_plural = ugettext_lazy('Thread last visits')
         unique_together = (( "user", "thread", ),)
 
 
@@ -494,6 +498,8 @@ class CategoryLastVisit(models.Model):
                   )
 
     class Meta:
+        verbose_name = ugettext_lazy('Category last visit')
+        verbose_name_plural = ugettext_lazy('Category last visits')
         unique_together = ('user', 'category')
 
 
@@ -963,6 +969,9 @@ class Post(models.Model):
         return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
     get_absolute_annotate_url = sphpermalink(get_absolute_annotate_url)
 
+    class Meta:
+        verbose_name = ugettext_lazy('Post')
+        verbose_name_plural = ugettext_lazy('Posts')
 
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
@@ -970,6 +979,10 @@ class PostAttachment(models.Model):
     fileupload = models.FileField( _(u'File'),
                                    upload_to = get_sph_setting( 'board_attachments_upload_to' ),
                                    blank = True )
+
+    class Meta:
+        verbose_name = ugettext_lazy('Post attachment')
+        verbose_name_plural = ugettext_lazy('Post attachments')
 
 
 class PostAnnotation(models.Model):
@@ -1006,6 +1019,10 @@ class PostAnnotation(models.Model):
         if not markup:
             markup = POST_MARKUP_CHOICES[0][0]
         return mark_safe( render_body( body, markup ) )
+
+    class Meta:
+        verbose_name = ugettext_lazy('Post annotation')
+        verbose_name_plural = ugettext_lazy('Post annotations')
 
 THREAD_TYPE_DEFAULT = 1
 THREAD_TYPE_MOVED = 2
@@ -1167,7 +1184,10 @@ class ThreadInformation(models.Model):
 
     def __unicode__(self):
         return self.root_post.subject
-    
+
+    class Meta:
+        verbose_name = ugettext_lazy('Thread information')
+        verbose_name_plural = ugettext_lazy('Thread informations')
 
 def calculate_heat(thread, postcount, viewcount, age):
     """
@@ -1251,6 +1271,10 @@ class Monitor(models.Model):
     group = models.ForeignKey(Group)
     user = models.ForeignKey(User)
 
+    class Meta:
+        verbose_name = ugettext_lazy('Monitor')
+        verbose_name_plural = ugettext_lazy('Monitors')
+
 
 class Poll(models.Model):
     post = models.ForeignKey(Post, editable = False)
@@ -1288,6 +1312,10 @@ class Poll(models.Model):
         return ('sphboard_edit_poll', (), { 'poll_id': self.id, })
     get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
+    class Meta:
+        verbose_name = ugettext_lazy('Poll')
+        verbose_name_plural = ugettext_lazy('Polls')
+
 
 class PollChoice(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
@@ -1301,6 +1329,8 @@ class PollChoice(models.Model):
                   )
 
     class Meta:
+        verbose_name = ugettext_lazy('Poll choice')
+        verbose_name_plural = ugettext_lazy('Poll choices')
         ordering = [ 'sortorder' ]
 
 
@@ -1308,6 +1338,10 @@ class PollVoters(models.Model):
     poll = models.ForeignKey(Poll, editable = False)
     choice = models.ForeignKey(PollChoice, null = True, blank = True, editable = False)
     user = models.ForeignKey(User, editable = False)
+
+    class Meta:
+        verbose_name = ugettext_lazy('Poll voter')
+        verbose_name_plural = ugettext_lazy('Poll voters')
 
 
 class BoardUserProfile(models.Model):
@@ -1324,6 +1358,10 @@ class BoardUserProfile(models.Model):
         if self.signature == '':
             return ''
         return render_body(self.signature, self.markup)
+
+    class Meta:
+        verbose_name = ugettext_lazy('Board user profile')
+        verbose_name_plural = ugettext_lazy('Board user profiles')
 
 
 class UserPostCountManager(models.Manager):
@@ -1365,6 +1403,8 @@ class UserPostCount(models.Model):
         self.post_count = qry.count()
 
     class Meta:
+        verbose_name = ugettext_lazy('User post count')
+        verbose_name_plural = ugettext_lazy('User post counts')
         unique_together = ( 'user', 'group' )
 
 
@@ -1385,6 +1425,10 @@ class ExtendedCategoryConfig(models.Model):
     
     post_new_thread_label = models.CharField( max_length = 250, blank = True)
     above_thread_list_block = models.TextField(blank = True, help_text = 'HTML which will be displayed above the thread list.')
+
+    class Meta:
+        verbose_name = ugettext_lazy('Extended category config')
+        verbose_name_plural = ugettext_lazy('Extended category configs')
 
 
 def __get_signature_cachekey(user_id):

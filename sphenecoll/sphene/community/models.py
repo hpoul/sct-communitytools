@@ -48,7 +48,9 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-
+    class Meta:
+        verbose_name = ugettext_lazy('Group')
+        verbose_name_plural = ugettext_lazy('Groups')
 
 USERLEVEL_CHOICES = (
     (0, ugettext_lazy('Normal User')),
@@ -71,6 +73,9 @@ class GroupMember(models.Model):
                 if value == self.userlevel:
                     return str;
 
+        class Meta:
+            verbose_name = ugettext_lazy('Group member')
+            verbose_name_plural = ugettext_lazy('Group members')
 
 
 class Theme(models.Model):
@@ -80,6 +85,9 @@ class Theme(models.Model):
         def __unicode__(self):
                 return self.name;
 
+        class Meta:
+            verbose_name = ugettext_lazy('Theme')
+            verbose_name_plural = ugettext_lazy('Themes')
 
 NAVIGATION_URL_TYPES = (
         (0, 'Relative (e.g. /wiki/show/Start)'),
@@ -104,6 +112,8 @@ class Navigation(models.Model):
                 return self.label
 
         class Meta:
+                verbose_name = ugettext_lazy('Navigation')
+                verbose_name_plural = ugettext_lazy('Navigations')
                 ordering = ['sortorder']
         
 
@@ -114,6 +124,8 @@ class ApplicationChangelog(models.Model):
         applied = models.DateTimeField()
 
         class Meta:
+                verbose_name = ugettext_lazy('Application change log')
+                verbose_name_plural = ugettext_lazy('Application change logs')
                 get_latest_by = 'applied'
 
 
@@ -141,6 +153,10 @@ class CommunityUserProfile(models.Model):
                   ( '2008-04-10 02', 'alter', 'ALTER displayname SET NOT NULL' ),
                 )
 
+    class Meta:
+        verbose_name = ugettext_lazy('Community user profile')
+        verbose_name_plural = ugettext_lazy('Community user profiles')
+
 class CommunityUserProfileField(models.Model):
     """ User profile fields, configurable through the django admin
     interface. """
@@ -151,6 +167,8 @@ class CommunityUserProfileField(models.Model):
     sortorder = models.IntegerField()
 
     class Meta:
+        verbose_name = ugettext_lazy('Community user profile field')
+        verbose_name_plural = ugettext_lazy('Community user profile fields')
         ordering = [ 'sortorder' ]
 
 
@@ -161,6 +179,8 @@ class CommunityUserProfileFieldValue(models.Model):
     value = models.CharField( max_length = 250 )
 
     class Meta:
+        verbose_name = ugettext_lazy('Community user profile field value')
+        verbose_name_plural = ugettext_lazy('Community user profile field values')
         unique_together = (("user_profile", "profile_field"),)
 
 class GroupTemplate(models.Model):
@@ -176,6 +196,8 @@ class GroupTemplate(models.Model):
         return self.template_name
     
     class Meta:
+        verbose_name = ugettext_lazy('Group template')
+        verbose_name_plural = ugettext_lazy('Group templates')
         unique_together = (("group", "template_name"),)
 
 
@@ -202,6 +224,10 @@ class PermissionFlag(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        verbose_name = ugettext_lazy('Permission flag')
+        verbose_name_plural = ugettext_lazy('Permission flags')
 
 class Role(models.Model):
     """
@@ -236,6 +262,8 @@ class Role(models.Model):
     get_absolute_groupmemberaddurl = sphpermalink(get_absolute_groupmemberaddurl)
 
     class Meta:
+        verbose_name = ugettext_lazy('Role')
+        verbose_name_plural = ugettext_lazy('Roles')
         unique_together = (('name', 'group'),)
 
 
@@ -268,7 +296,9 @@ class RoleMember(models.Model):
         limitation = self.rolememberlimitation_set.get()
         return "%s: %s" % (limitation.object_type.model_class()._meta.object_name, unicode(limitation.content_object))
 
-
+    class Meta:
+        verbose_name = ugettext_lazy('Role member')
+        verbose_name_plural = ugettext_lazy('Role members')
 
 class RoleMemberLimitation(models.Model):
     """
@@ -283,6 +313,8 @@ class RoleMemberLimitation(models.Model):
     content_object = generic.GenericForeignKey(ct_field = 'object_type')
 
     class Meta:
+        verbose_name = ugettext_lazy('Role member limitation')
+        verbose_name_plural = ugettext_lazy('Role member limitations')
         unique_together = (('role_member', 'object_type', 'object_id'),)
 
 
@@ -304,6 +336,8 @@ class RoleGroup(models.Model):
     get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     class Meta:
+        verbose_name = ugettext_lazy('Role group')
+        verbose_name_plural = ugettext_lazy('Role groups')
         unique_together = ('group', 'name',)
 
 
@@ -312,6 +346,8 @@ class RoleGroupMember(models.Model):
     user = models.ForeignKey(User)
 
     class Meta:
+        verbose_name = ugettext_lazy('Role group member')
+        verbose_name_plural = ugettext_lazy('Role group members')
         unique_together = ('rolegroup', 'user',)
 
 
@@ -470,6 +506,8 @@ class Tag(models.Model):
         return self.name
 
     class Meta:
+        verbose_name = ugettext_lazy('Tag')
+        verbose_name_plural = ugettext_lazy('Tags')
         unique_together = (("group", "name"))
 
 class TagLabel(models.Model):
@@ -484,6 +522,8 @@ class TagLabel(models.Model):
         return self.label
 
     class Meta:
+        verbose_name = ugettext_lazy('Tag label')
+        verbose_name_plural = ugettext_lazy('Tag labels')
         unique_together = (("tag", "label"))
 
 class TaggedItem(models.Model):
@@ -496,6 +536,8 @@ class TaggedItem(models.Model):
     object = generic.GenericForeignKey('content_type', 'object_id')
 
     class Meta:
+        verbose_name = ugettext_lazy('Tagged item')
+        verbose_name_plural = ugettext_lazy('Tagged items')
         unique_together = (('tag_label', 'content_type', 'object_id'))
 
 #########################################################
