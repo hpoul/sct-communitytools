@@ -71,7 +71,7 @@ try:
 
     def captcha_request_get_absolute_url(self):
         return ('sphene.community.views.captcha_image', (), { 'token_id': self.id })
-    get_absolute_captcha_url = sphpermalink(captcha_request_get_absolute_url, get_current_request)
+    get_absolute_captcha_url = sphpermalink(captcha_request_get_absolute_url)
     
     # update the captcha settings defaults (which can still be overridden by a set_sph_setting)
     sphsettings.add_setting_defaults({'community_email_anonymous_require_captcha': True})
