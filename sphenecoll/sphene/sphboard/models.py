@@ -882,7 +882,8 @@ class Post(models.Model):
                     monitors = monitors | allmonitors.filter( group = self.category.group, category__isnull = True, thread__isnull = True )
                     #monitors = Monitor.objects.filter(myQ)
                     
-                subject = 'New Forum Post in "%s": %s' % (self.category.name, self.subject,)
+                subject = _('New Forum Post in "%(category_name)s": %(subject)s') % {'category_name':self.category.name,
+                                                                                     'subject':self.subject}
                 group = get_current_group() or self.category.group
                 t = loader.get_template('sphene/sphboard/new_post_email.txt')
                 c = {
