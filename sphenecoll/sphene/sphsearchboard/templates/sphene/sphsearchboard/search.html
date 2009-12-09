@@ -1,12 +1,12 @@
 {% extends "sphene/sphsearchboard/base.html" %}
-
+{% load i18n %}
 {% load sph_extras %}
 {% load sphsearch_extras %}
 {% load sphboard_extras %}
 
 {% block content %}
 
-  <p>{% sphboard_displayBreadcrumbsForCategory category 1 1 %} &gt;&gt; Search</p>
+  <p>{% sphboard_displayBreadcrumbsForCategory category 1 1 %} &gt;&gt; {% trans "Search" %}</p>
 
 
   <form method="get" action=".">
@@ -16,7 +16,7 @@
   </form>
 
   {% if results %}
-    <h2>Search Results for {{ query }}</h2>
+    <h2>{% blocktrans %}Search Results for {{ query }}{% endblocktrans %}</h2>
 
     <ul class="sphsearch">
       {% for result in results %}
@@ -30,12 +30,14 @@
                 {% endsearchexcerpt %}
               {% endhighlight %}
             </p>
-            <div class="sphsearch_meta">{{ result.get_score }} - Posted by {{ post.author|sph_html_user }} at {{ post.postdate|sph_date }}</div>
+            <div class="sphsearch_meta">
+            {% blocktrans with result.get_score as result_score and post.author|sph_html_user as post_author and post.postdate|sph_date as postdate %}{{ result_score }} - Posted by {{ post_author }} at {{ postdate }}{% endblocktrans %}
+            </div>
           {% endwith %}
         </li>
       {% endfor %}
-      <p>Displaying {{ start }} - {{ end }} (Of about {{ count }})</p>
-      <p>{% if prev %}<a href="{{ prev }}">Previous {% endif %}{% if next %}<a href="{{ next }}">Next{% endif %}</p>
+      <p>{% blocktrans %}Displaying {{ start }} - {{ end }} (Of about {{ count }}){% endblocktrans %}</p>
+      <p>{% if prev %}<a href="{{ prev }}">{% trans "Previous" %} {% endif %}{% if next %}<a href="{{ next }}">{% trans "Next" %}{% endif %}</p>
     </ul>
   {% endif %}
 
