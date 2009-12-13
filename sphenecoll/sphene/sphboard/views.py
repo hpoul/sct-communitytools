@@ -455,7 +455,7 @@ def edit_poll(request, group, poll_id):
 def annotate(request, group, post_id):
     post = Post.objects.get( pk = post_id )
     thread = post.get_thread()
-    if not thread.allow_moving():
+    if not thread.allow_annotating():
         raise PermissionDenied()
 
     annotation = None
@@ -496,6 +496,27 @@ def annotate(request, group, post_id):
                                  'form': form,
                                  },
                                context_instance = RequestContext(request) )
+
+def hide(request, group, post_id):
+    post = Post.objects.get( pk = post_id )
+    thread = post.get_thread()
+    if not post.allow_hiding():
+        raise PermissionDenied()
+
+    if request.method == 'POST' and 'hide-post' in request.POST.keys():
+        post.is_hidden = True
+        post.save()
+        request.user.message_set.create( message = ugettext(u'Post deleted') )
+        if post == thread:
+            return HttpResponseRedirect( post.category.get_absolute_url() )
+        return HttpResponseRedirect( thread.get_absolute_url() )
+
+    return render_to_response( "sphene/sphboard/hide.html",
+                               { 'thread': thread,
+                                 'post': post
+                                 },
+                               context_instance = RequestContext(request) )
+
 
 def move(request, group, thread_id):
     thread = get_object_or_404(Post, pk = thread_id)

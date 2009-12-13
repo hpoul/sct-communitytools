@@ -1,0 +1,23 @@
+{% extends "sphene/sphboard/base.html" %}
+{% load i18n %}
+
+{% load sphboard_extras %}
+
+{% block content %}
+
+  {% sphboard_displayBreadcrumbsForThread thread 1 %}
+  <br/><br/>
+  <b>{% blocktrans with post.subject|escape as subject %}Delete post: {{ subject }} by {% endblocktrans %}{% sphboard_displayUserName post.author %}</b>
+  <br/><br/>
+
+  <form method="POST" action=".">
+    <table class="sphboard form">
+      <tr>
+          <td>{% trans "Deleted post won't be visible to anyone. Are you sure you want to do that?" %}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><input type="submit" name="hide-post" value="{% trans "Delete" %}" /> {% blocktrans with post.get_absolute_url as posturl %}or <a href="{{ posturl}}">go back</a> to thread{% endblocktrans %}</td>
+      </tr>
+    </table>
+  </form>
+{% endblock %}

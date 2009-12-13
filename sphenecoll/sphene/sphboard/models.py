@@ -223,6 +223,9 @@ class Category(models.Model):
 
                              'sphboard_view':
                              'Allows viewing of threads.',
+
+                             'sphboard_hideallposts':
+                             'Allows hiding of all posts.',
                              }
 
     def get_category_type(self):
@@ -685,6 +688,63 @@ class Post(models.Model):
 
     allowEditing = allow_editing
 
+    def allow_hiding(self, user = None):
+        """
+        Returns True if the user is allowed to hide (set is_hidden=True) this post.
+
+        if user is None, the current user is taken into account.
+        """
+        if user == None: user = get_current_user()
+
+        if not user or not user.is_authenticated():
+            return False
+
+        if user.is_superuser \
+               or has_permission_flag( user, 'sphboard_hideallposts', self.category ):
+            return True
+
+        if user == self.author:
+            # Check edit timeout
+            remaining = self.remaining_hide_seconds(user)
+            if remaining == -1 or remaining > 0:
+                # if there are newer posts (that may have quoted current post)
+                # don't allow to hide post
+                if self.thread_has_newer_posts():
+                    return False
+                return True
+
+        return False
+
+    def thread_has_newer_posts(self, post):
+        """
+        Check if there are posts newer than 'post'
+        """
+        if post.pk == thread.latest().pk:
+            return True
+        return False
+
+    def remaining_hide_seconds(self, user = None):
+        """
+        Returns the number of seconds the user is allowed to hide the post
+        returns -1 for unlimited (Not checking user permissions !!)
+        """
+        if user is None: user = get_current_user()
+
+        timeout = get_sph_setting( 'board_hide_timeout' )
+
+        if timeout < 0:
+            return timeout
+
+        delta = (datetime.today() - self.postdate)
+        totalseconds = delta.days * 24 * 60 * 60 + delta.seconds
+
+        if timeout >= totalseconds:
+            return timeout - totalseconds
+
+        # Timed out ....
+        return 0
+    allowHiding = allow_hiding
+
     def _allow_adminfunctionality(self, flag, user = None):
         if user == None:
             user = get_current_user()
@@ -961,6 +1021,10 @@ class Post(models.Model):
     def get_absolute_editurl(self):
         return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
     get_absolute_editurl = sphpermalink(get_absolute_editurl)
+
+    def get_absolute_hideurl(self):
+        return ('sphene.sphboard.views.hide', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+    get_absolute_hideurl = sphpermalink(get_absolute_hideurl)
 
     def get_absolute_postreplyurl(self):
         return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })

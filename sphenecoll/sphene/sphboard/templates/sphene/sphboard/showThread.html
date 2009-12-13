@@ -96,6 +96,9 @@
             {% if post.allowEditing %}
               [ <a href="{{ post.get_absolute_editurl }}">{% trans "Edit" %}</a> ]
             {% endif %}
+            {% if post.allowHiding %}
+              [ <a href="{{ post.get_absolute_hideurl }}">{% trans "Delete" %}</a> ]
+            {% endif %}
             {% if allowPosting %}
               [ <a href="{{ post.get_absolute_postreplyurl }}?quote={{ post.id }}">{% trans "Quote" %}</a> ]
             {% endif %}

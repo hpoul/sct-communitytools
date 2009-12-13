@@ -18,6 +18,11 @@ add_setting_defaults( {
     # 0: never
     'board_edit_timeout': -1, #30 * 60,
 
+    # How long a user is allowed to hide his post in seconds.
+    # -1: forever,
+    # 0: never
+    'board_hide_timeout': -1, #30 * 60,
+
     # Timeout for the rendered body in the cache
     # Default 6 hours
     'board_body_cache_timeout': 6 * 3600,
