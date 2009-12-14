@@ -28,7 +28,7 @@ class TagWidget(forms.TextInput):
           var r=[];
           $(data).find('taglabel').each(function(){
             r.push( { id: $(this).find('id').text(),
-                      value: $(this).find('label').text(), } );
+                      value: $(this).find('label').text() } );
           });
           callback( r );
         });
