@@ -535,10 +535,15 @@ def move(request, group, thread_id):
         if form.is_valid():
             data = form.cleaned_data
             newcategory = data['category']
+            info_link = data['info_link']
 
             threadinfo = thread.get_threadinformation()
-            threadinfo.thread_type = THREAD_TYPE_MOVED
-            threadinfo.save()
+
+            if info_link:
+                threadinfo.thread_type = THREAD_TYPE_MOVED
+                threadinfo.save()
+            else:
+                threadinfo.delete()
 
             try:
                 newthreadinfo = ThreadInformation.objects.get( root_post = thread,

@@ -130,6 +130,10 @@ class MoveForm(forms.Form):
     """
     category = boardforms.SelectCategoryField(label = _(u'Category'),
                                               help_text = _(u'Select target category'))
+    info_link = forms.BooleanField(label = _('Information link'),
+                                   initial = True,
+                                   required = False,
+                                   help_text=_('If checked then information about moved thread will be left in the current category'))
 
 
 class MoveAndAnnotateForm(MoveForm, AnnotateForm):
