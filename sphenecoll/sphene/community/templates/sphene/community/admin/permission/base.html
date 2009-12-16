@@ -6,7 +6,7 @@
 
 <a href="{% sph_url 'community_admin_permission_role_list' %}">{% trans "Role List" %}</a>
 {% if role %}
-  &gt;&gt; <a href="{{ role.get_absolute_rolememberlist }}">{% trans "Members" %}</a>
+  &gt;&gt; <a href="{{ role.get_absolute_memberlisturl }}">{% trans "Members" %}</a>
 {% endif %}<br/><br/>
 
 {% endblock %}
