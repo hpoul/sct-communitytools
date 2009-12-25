@@ -46,7 +46,7 @@ class Group(models.Model):
         return url
 
     def __unicode__(self):
-        return self.name;
+        return self.get_name();
 
     class Meta:
         verbose_name = ugettext_lazy('Group')
