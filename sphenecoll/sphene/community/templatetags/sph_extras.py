@@ -260,31 +260,47 @@ from django.utils.encoding import smart_str
 
 class SphURLNode(Node):
     " copied from django.template.defaulttags "
-    def __init__(self, view_name, args, kwargs):
+    def __init__(self, view_name, args, kwargs, asvar):
         self.view_name = view_name
         self.args = args
         self.kwargs = kwargs
+        self.asvar = asvar
 
     def render(self, context):
         from django.core.urlresolvers import reverse, NoReverseMatch
         args = [arg.resolve(context) for arg in self.args]
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
-
+        
+        url = ''
         try:
-            return sph_reverse(self.view_name,
-                               args=args, kwargs=kwargs)
-        except NoReverseMatch:
-            try:
+            url = sph_reverse(self.view_name,
+                              args=args, kwargs=kwargs)
+        except NoReverseMatch, e:
+            if settings.SETTINGS_MODULE:
                 project_name = settings.SETTINGS_MODULE.split('.')[0]
-                return sph_reverse(project_name + '.' + self.view_name,
-                                   args=args, kwargs=kwargs)
-            except NoReverseMatch:
-                return ''
+                try:
+                    url = sph_reverse(project_name + '.' + self.view_name,
+                                       args=args, kwargs=kwargs)
+                except NoReverseMatch:
+                    if self.asvar is None:
+                        # Re-raise the original exception, not the one with
+                        # the path relative to the project. This makes a
+                        # better error message.
+                        raise e
+            else:
+                if self.asvar is None:
+                    raise e
+
+        if self.asvar:
+            context[self.asvar] = url
+            return ''
+        else:
+            return url
 
 def sph_url2(*args, **kwargs):
     node = defaulttags.url(*args, **kwargs)
-    return SphURLNode(node.view_name, node.args, node.kwargs)
+    return SphURLNode(node.view_name, node.args, node.kwargs, node.asvar)
 sph_url2 = register.tag(sph_url2)
 
 

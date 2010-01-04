@@ -1,0 +1,32 @@
+{% extends "sphene/sphboard/base.html" %}
+{% load i18n %}
+{% load sph_extras %}
+{% load sphboard_extras %}
+{% load sph_pagination %}
+
+{% block content %}
+  {% sphboard_displayBreadcrumbsForThread post 1 %}
+  <br /><br />
+  {% blocktrans with post.subject|escape as subject and post.author|sph_user_displayname as postauthor and category.name as categoryname %}Moving post: <strong>{{ subject }}</strong> by <strong>{{ postauthor }}</strong> into category <strong>{{ categoryname }}</strong>{% endblocktrans %}
+  <div><a href="{% sph_url2 move_post_1 post.pk %}">{% trans "Step 1" %}</a> -&gt; <strong>{% trans "Step 2" %}</strong> -&gt; <span class="inactive-step">{% trans "Step 3" %}</span></div>
+  <br />
+  <p>{% sph_url2 move_post_3 post.pk category.pk as move_post_3_ic_url %}
+      {% blocktrans with post.subject|escape as subject and category.name as categoryname %}Click <strong><a href="{{ move_post_3_ic_url }}">here</a></strong> to move post <strong>{{ subject }}</strong>
+      directly into category <strong>{{ categoryname }}</strong> (new thread will be created if necessary)
+      or select target thread below to append post <strong>{{ subject }}</strong> to it:{% endblocktrans %}</p>
+  <form method="POST" action=".">
+    <table class="sphboard form">
+      <tr>
+          <th>{% trans "Thread" %}</th>
+          <th>{% trans "Action" %}</th>
+      </tr>
+      {% for threadinfo in thread_list %}
+      <tr>
+          <td>{{ threadinfo.subject|escape }}</td>
+          <td><a href="{% sph_url2 move_post_3 post.pk category.pk threadinfo.root_post.pk %}">{% trans "select" %}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <p class="pagination-links">{% sph_pagination pages page %}</p>
+  </form>
+{% endblock %}

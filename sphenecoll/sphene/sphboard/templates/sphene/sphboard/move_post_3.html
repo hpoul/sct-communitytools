@@ -1,0 +1,28 @@
+{% extends "sphene/sphboard/base.html" %}
+{% load i18n %}
+{% load sphboard_extras %}
+{% load sph_extras %}
+
+{% block content %}
+
+  {% sphboard_displayBreadcrumbsForThread thread 1 %}
+  <br/><br/>
+  {% if target_thread %}
+      {% blocktrans with post.subject|escape as subject and post.author|sph_user_displayname as postauthor and target_thread.subject|escape as targetthreadsubject %}Moving post: <strong>{{ subject }}</strong> by <strong>{{ postauthor }}</strong> into thread <strong>{{ targetthreadsubject }}</strong>{% endblocktrans %}
+  {% else %}
+      {% blocktrans with post.subject|escape as subject and post.author|sph_user_displayname as postauthor and category.name as categoryname %}Moving post: <strong>{{ subject }}</strong> by <strong>{{ postauthor }}</strong> into category <strong>{{ categoryname }}</strong>{% endblocktrans %}
+  {% endif %}
+  <div><a href="{% sph_url2 move_post_1 post.pk %}">{% trans "Step 1" %}</a> -&gt; <a href="{% sph_url2 move_post_2 post.pk category.pk %}">{% trans "Step 2" %}</a> -&gt; <strong>{% trans "Step 3" %}</strong></div>
+
+  <b>{% blocktrans with post.subject|escape as subject %}Move post: {{ subject }} by {% endblocktrans %}{% sphboard_displayUserName thread.author %}</b>
+  <br/><br/>
+
+  <form method="POST" action=".">
+    <table class="sphboard form">
+      {{ form }}
+      <tr>
+        <td colspan="2"><input type="submit" value="{% trans "Move Post" %}" /></td>
+      </tr>
+    </table>
+  </form>
+{% endblock %}

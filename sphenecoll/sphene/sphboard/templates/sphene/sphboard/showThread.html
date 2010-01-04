@@ -99,6 +99,9 @@
             {% if post.allowHiding %}
               [ <a href="{{ post.get_absolute_hideurl }}">{% trans "Delete" %}</a> ]
             {% endif %}
+            {% if post.allowMovingPost %}
+              [ <a href="{{ post.get_absolute_moveposturl }}">{% trans "Move" %}</a> ]
+            {% endif %}
             {% if allowPosting %}
               [ <a href="{{ post.get_absolute_postreplyurl }}?quote={{ post.id }}">{% trans "Quote" %}</a> ]
             {% endif %}

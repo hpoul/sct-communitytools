@@ -137,11 +137,16 @@ class MoveForm(forms.Form):
 
 
 class MoveAndAnnotateForm(MoveForm, AnnotateForm):
-
-
     def __init__(self, *args, **kwargs):
         super(MoveAndAnnotateForm, self).__init__(*args, **kwargs)
 
         del self.fields['hide_post']
 
         self.fields['body'].help_text = string_concat(_(u'Please describe why this thread had to be moved.'), ' ', self.fields['body'].help_text)
+
+
+class MovePostForm(AnnotateForm):
+    def __init__(self, *args, **kwargs):
+        super(MovePostForm, self).__init__(*args, **kwargs)
+        del self.fields['hide_post']
+        self.fields['body'].help_text = string_concat(_(u'Please describe why this post had to be moved.'), ' ', self.fields['body'].help_text)

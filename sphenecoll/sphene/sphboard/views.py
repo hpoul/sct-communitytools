@@ -1,21 +1,21 @@
-# Create your views here.
+from datetime import datetime
+
 from django import template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django.core.urlresolvers import reverse
-
-from datetime import datetime
 
 from sphene.community import PermissionDenied
-from sphene.community.middleware import get_current_sphdata, get_current_urlconf
+from sphene.community.middleware import get_current_sphdata
 from sphene.community.sphutils import sph_reverse, get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
 
 from sphene.generic import advanced_object_list as objlist
 
-from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, PostPollForm, PostAttachmentForm, AnnotateForm, MoveAndAnnotateForm
+from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, \
+                                  PostPollForm, PostAttachmentForm, \
+                                  AnnotateForm, MoveAndAnnotateForm, MovePostForm
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
 
 
@@ -504,7 +504,7 @@ def hide(request, group, post_id):
         raise PermissionDenied()
 
     if request.method == 'POST' and 'hide-post' in request.POST.keys():
-        post.is_hidden = True
+        post.is_hidden = 1
         post.save()
         request.user.message_set.create( message = ugettext(u'Post deleted') )
         if post == thread:
@@ -517,6 +517,161 @@ def hide(request, group, post_id):
                                  },
                                context_instance = RequestContext(request) )
 
+def move_post_1(request, group, post_id):
+    """
+        Display list of categories where the post can be moved to.
+    """
+    post = Post.objects.get(pk=post_id)
+    if not post.allow_moving_post():
+        raise PermissionDenied()
+    categories = get_all_viewable_categories(group, request.user)
+    categories = Category.objects.filter(pk__in=categories)
+    return render_to_response("sphene/sphboard/move_post_1.html",
+                              {'categories': categories,
+                               'post': post},
+                              context_instance = RequestContext(request))
+
+def move_post_2(request, group, post_id, category_id):
+    """
+        Display threads in category (category_id) where the post
+        can be moved to
+    """
+    post = Post.objects.get(pk=post_id)
+    if not post.allow_moving_post():
+        raise PermissionDenied()
+
+    thread = post.get_thread()
+    category = Category.objects.get(pk=category_id)
+    thread_list = category.get_thread_list().exclude(root_post=thread.pk).order_by('-thread_latest_postdate')
+
+    res =  object_list(request = request,
+                       queryset = thread_list,
+                       allow_empty = True,
+                       template_name = "sphene/sphboard/move_post_2.html",
+                       extra_context = {'post': post,
+                                        'category':category},
+                       template_object_name = 'thread',
+                       paginate_by = get_sph_setting('board_post_paging')
+                      )
+    return res
+
+def move_post_3(request, group, post_id, category_id, thread_id=None):
+    """
+        @post_id - moved post id
+        @category_id - target category id
+        @thread_id - target thread id (if exists)
+
+        Post might be moved direclty into category - in this case post becomes
+        thread or post might be inserted into another thread.
+    """
+    post = Post.objects.get(pk=post_id)
+
+    # determine if moved post is root post of thread
+    thread = post.get_thread()
+    is_root_post = thread.pk == post.pk
+
+    target_thread = None
+    if thread_id:
+        target_thread = get_object_or_404(Post, pk=thread_id)
+    
+    if not post.allow_moving_post() or thread == target_thread:
+        raise PermissionDenied()
+
+    target_category = Category.objects.get(pk=category_id)
+
+    # moved post will be annotated
+    annotation = None
+    if post.is_annotated():
+        try:
+            annotation = post.annotation.get()
+        except PostAnnotation.DoesNotExist:
+            pass
+    if request.method == 'POST':
+        form = MovePostForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            body = data['body']
+
+            # information about thread from which moved post is taken
+            threadinfo = post.get_threadinformation()
+
+            # if moved post is root post of the thread then detach rest of
+            # the posts
+            if is_root_post:
+                posts = Post.objects.filter(thread=post).order_by('postdate')
+                # if there are subsequent posts
+                if posts.count()>0:
+                    # prepare new root_post
+                    new_root = posts[0]
+                    new_root.thread = None
+                    posts.exclude(pk=new_root.pk).update(thread=new_root)
+                    new_root.save()
+                    # new threadinfo is automatically created by signal while saving Post
+
+                if target_thread:
+                    # if root post is moved into another thread then
+                    # remove threadinfo
+                    threadinfo.delete()
+                else:
+                    # if post is moved to new category
+                    # just update threadinfo
+                    threadinfo.category=target_category
+                    #threadinfo.update_cache()
+                    #threadinfo.save()
+
+            post.category = target_category
+            post.thread = target_thread  # this might be None if post was moved into category
+            if target_thread:
+                # update postdate if necessary to achieve proper ordering (post is always added at the end)
+                if target_thread.get_latest_post().postdate>post.postdate:
+                    post.postdate = datetime.now()
+
+            if body:
+                post.set_annotated(True)
+                if annotation is None:
+                    annotation = PostAnnotation(post=post)
+                annotation.body = body
+                annotation.hide_post = False
+                annotation.markup = data['markup']
+                annotation.save()
+            post.save()
+
+            # update information about thread from which post was moved
+            threadinfo.update_cache()
+            threadinfo.save()
+
+            if target_thread:
+                request.user.message_set.create(message=ugettext(u'Post has been appended to thread.'))
+            else:
+                request.user.message_set.create(message=ugettext(u'Post has been moved into category.'))
+
+            return HttpResponseRedirect(post.get_absolute_url())
+    else:
+        form = MovePostForm()
+
+    if POST_MARKUP_CHOICES[0][0] == 'bbcode':
+        category_name = '[url=%s]%s[/url].' % (post.category.get_absolute_url(),
+                                               post.category.name)
+        thread_name = '[url=%s]%s[/url].' % (thread.get_absolute_url(),
+                                             thread.subject)
+    else:
+        category_name = post.category.name
+        thread_name = thread.subject
+
+    if not is_root_post:
+        form.fields['body'].initial = _(u'This post was moved from the thread %(thread_name)s') % {'thread_name':thread_name}
+    else:
+        form.fields['body'].initial = _(u'This post was moved from the category %(category_name)s') % {'category_name':category_name}
+
+    return render_to_response( "sphene/sphboard/move_post_3.html",
+                               { 'thread': thread,
+                                 'form': form,
+                                 'post':post,
+                                 'target_thread':target_thread,
+                                 'is_root_post':is_root_post,
+                                 'category':target_category
+                                 },
+                               context_instance = RequestContext(request))
 
 def move(request, group, thread_id):
     thread = get_object_or_404(Post, pk = thread_id)
@@ -572,7 +727,7 @@ def move(request, group, thread_id):
             request.user.message_set.create( message = ugettext(u'Moved thread into new category.') )
 
             return HttpResponseRedirect( thread.get_absolute_url() )
-        
+
     else:
         form = MoveAndAnnotateForm()
 

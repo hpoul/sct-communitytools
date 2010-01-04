@@ -1,0 +1,28 @@
+{% extends "sphene/sphboard/base.html" %}
+{% load i18n %}
+{% load sph_extras %}
+{% load sphboard_extras %}
+
+{% block content %}
+
+  {% sphboard_displayBreadcrumbsForThread post 1 %}
+  <br /><br />
+  {% blocktrans with post.subject|escape as subject and post.author|sph_user_displayname as postauthor %}Moving post: <strong>{{ subject }}</strong> by <strong>{{ postauthor }}</strong>{% endblocktrans %}
+  <div><strong>{% trans "Step 1" %}</strong> -&gt; <span class="inactive-step">{% trans "Step 2" %}</span> -&gt; <span class="inactive-step">{% trans "Step 3" %}</span></div>
+
+  <p>{% blocktrans with post.subject|escape as subject %}Select target category to move post <strong>{{ subject }}</strong> into. Later you'll be able to select destination thread.{% endblocktrans %}</p>
+  <form method="POST" action=".">
+    <table class="sphboard form">
+      <tr>
+          <th>{% trans "Category name" %}</th>
+          <th>{% trans "Action" %}</th>
+      </tr>
+      {% for category in categories %}
+      <tr>
+          <td>{% ifequal category.pk post.category.pk %}{{ category.name }} <i>({% trans "source category" %})</i>{% else %}{{ category.name }}{% endifequal %}</td>
+          <td><a href="{% sph_url2 move_post_2 post.pk category.pk %}">{% trans "select" %}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </form>
+{% endblock %}

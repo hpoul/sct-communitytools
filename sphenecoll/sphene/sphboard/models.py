@@ -226,6 +226,9 @@ class Category(models.Model):
 
                              'sphboard_hideallposts':
                              'Allows hiding of all posts.',
+
+                             'sphboard_moveallposts':
+                             'Allows moving of all posts.',
                              }
 
     def get_category_type(self):
@@ -262,10 +265,10 @@ class Category(models.Model):
         return self.threadinformation_set.count()
 
     def postCount(self):
-        return self.posts.count()
+        return self.posts.filter(is_hidden=False).count()
 
     def get_latest_post(self):
-        return self.posts.latest( 'postdate' )
+        return self.posts.filter(is_hidden=False).latest( 'postdate' )
 
     # For backward compatibility ...
     latestPost = get_latest_post
@@ -745,6 +748,23 @@ class Post(models.Model):
         return 0
     allowHiding = allow_hiding
 
+    def allow_moving_post(self, user = None):
+        """
+        Returns True if the user is allowed to move the post
+        """
+        if user == None: user = get_current_user()
+
+        if not user or not user.is_authenticated():
+            return False
+        if user.is_authenticated() and \
+           (user.is_superuser or \
+            has_permission_flag(user,
+                                'sphboard_moveallposts',
+                                self.category)):
+            return True
+        return False
+    allowMovingPost = allow_moving_post
+
     def _allow_adminfunctionality(self, flag, user = None):
         if user == None:
             user = get_current_user()
@@ -1025,6 +1045,10 @@ class Post(models.Model):
     def get_absolute_hideurl(self):
         return ('sphene.sphboard.views.hide', (), { 'groupName': self.category.group.name, 'post_id': self.id })
     get_absolute_hideurl = sphpermalink(get_absolute_hideurl)
+
+    def get_absolute_moveposturl(self):
+        return ('sphene.sphboard.views.move_post_1', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+    get_absolute_moveposturl = sphpermalink(get_absolute_moveposturl)
 
     def get_absolute_postreplyurl(self):
         return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })
