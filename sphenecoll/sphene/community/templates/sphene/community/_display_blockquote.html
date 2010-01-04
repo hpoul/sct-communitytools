@@ -1,0 +1,14 @@
+{% load i18n %}
+<blockquote>
+    {% if memberlink %}
+        <div class="memberquote">
+            <strong>{{ memberlink }}</strong>
+            {% if post %}
+                <a href="{{ post.get_absolute_url }}">{% blocktrans with post.postdate|date:"Y-m-d H:i:s" as postdate %}said @ {{ postdate }}{% endblocktrans %}</a>:
+            {% else %}
+                {% trans "said:" %}
+            {% endif %}
+        </div>
+    {% endif %}
+    {{ citation }}
+</blockquote>

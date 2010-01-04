@@ -1,15 +1,18 @@
-
 import re
+import logging
+
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
+from django.template import loader
+from django.utils.translation import ugettext as _
+from django.template import RequestContext
+from django.utils.safestring import mark_safe
+
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
 from sphene.community import sphsettings
-from django.utils.translation import ugettext as _
-from django.template import RequestContext
-import logging
 
 logger = logging.getLogger('sphene.community.sphutils')
 
@@ -62,6 +65,13 @@ def get_user_link_for_username(username):
         return username
     # TODO add a link to user profiles
     return get_user_displayname(user)
+
+def render_blockquote(citation, membername, post):
+    memberlink = get_user_link_for_username(membername)
+    return loader.render_to_string('sphene/community/_display_blockquote.html',
+                                    {'citation':mark_safe(citation),
+                                     'post':post,
+                                     'memberlink':memberlink})
 
 usecaptcha = True
 try:

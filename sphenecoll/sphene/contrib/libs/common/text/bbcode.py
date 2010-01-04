@@ -68,7 +68,7 @@ import re
 #### CCIW specific imports #####
 #from zilbo.common.text.utils import get_member_link, obfuscate_email
 #from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
-from sphene.community.sphutils import get_user_link_for_username, format_date
+from sphene.community.sphutils import render_blockquote
 from django.conf import settings 
 EMOTICONS_ROOT = settings.MEDIA_URL + 'emoticons/'
 
@@ -255,29 +255,20 @@ class QuoteTag(BBTag):
             node.parameter = ''
         else:
             node.parameter = node.parameter.strip()
+ 
+        citation = node.render_children_xhtml()
+        post = None
+        membername = None
 
         match = _MEMBER_REGEXP.search(node.parameter)
         if not match is None:
-            membername= match.group('username')
-            ret = '<blockquote><div class="memberquote"><strong>' + \
-                get_user_link_for_username(membername)
-            ret += '</strong>'
+            membername = match.group('username')
             if match.group('post_id'):
                 try:
                     post = sphboard.models.Post.objects.get( pk = match.group('post_id') )
-                    # TODO check if we are currently on this page ...
-                    url = post.get_absolute_url()
-                    ret += ' <a href="%s">said @ %s</a>:' % (url, format_date(post.postdate))
                 except sphboard.models.Post.DoesNotExist:
-                    ret += ' said: '
-            else:
-                ret += ' said: '
-            ret += '</div>'
-            ret += node.render_children_xhtml() + '</blockquote>'
-            return ret
-        else:
-            return '<blockquote>' + node.render_children_xhtml() + \
-                '</blockquote>'
+                    pass
+        return render_blockquote(citation, membername, post)
             
 
 ###### DATA ######
