@@ -3,7 +3,7 @@
 
 # A very simple bash script to create a release.
 
-VERSION="0.5"
+VERSION="0.6"
 
 DISTDIR="/var/tmp/sct"
 DISTNAME="sct-$VERSION"

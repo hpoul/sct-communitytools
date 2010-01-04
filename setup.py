@@ -21,7 +21,7 @@ for path in static['sphene']:
  
 setup(
  name='Sphene Community Tools',
- version='0.6dev',
+ version='0.6',
  author = 'Herbert Poul',
  author_email = 'herbert.poul@gmail.com',
  url = 'http://sct.sphene.net/',
