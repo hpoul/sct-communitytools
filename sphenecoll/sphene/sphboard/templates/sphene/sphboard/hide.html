@@ -13,7 +13,11 @@
   <form method="POST" action=".">
     <table class="sphboard form">
       <tr>
-          <td>{% trans "Deleted post won't be visible to anyone. Are you sure you want to do that?" %}</td>
+          <td>{% if post.thread %}
+                  {% trans "Deleted post won't be visible to anyone. Are you sure you want to do that?" %}
+              {% else %}
+                  {% trans "You're trying to delete the root post of thread. All posts under it will be deleted too. Deleted post won't be visible to anyone. Are you sure you want to do that?" %}
+              {% endif %}</td>
       </tr>
       <tr>
         <td colspan="2"><input type="submit" name="hide-post" value="{% trans "Delete" %}" /> {% blocktrans with post.get_absolute_url as posturl %}or <a href="{{ posturl}}">go back</a> to thread{% endblocktrans %}</td>

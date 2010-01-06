@@ -504,6 +504,8 @@ def hide(request, group, post_id):
         raise PermissionDenied()
 
     if request.method == 'POST' and 'hide-post' in request.POST.keys():
+        if post.thread is None: # this is root post of thread
+            Post.objects.filter(thread = post).update(is_hidden = 1)
         post.is_hidden = 1
         post.save()
         request.user.message_set.create( message = ugettext(u'Post deleted') )
