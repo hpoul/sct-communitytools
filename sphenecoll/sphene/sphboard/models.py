@@ -262,13 +262,13 @@ class Category(models.Model):
         return self.threadinformation_set.filter(root_post__is_hidden = 0).select_related( depth = 1 )
 
     def threadCount(self):
-        return self.threadinformation_set.count()
+        return self.threadinformation_set.filter(root_post__is_hidden=0).count()
 
     def postCount(self):
-        return self.posts.filter(is_hidden=False).count()
+        return self.posts.filter(is_hidden=0).count()
 
     def get_latest_post(self):
-        return self.posts.filter(is_hidden=False).latest( 'postdate' )
+        return self.posts.filter(is_hidden=0).latest( 'postdate' )
 
     # For backward compatibility ...
     latestPost = get_latest_post
