@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-10 10:48+0100\n"
-"PO-Revision-Date: 2009-12-10 10:54+0100\n"
+"POT-Creation-Date: 2010-01-04 14:09+0100\n"
+"PO-Revision-Date: 2010-01-04 14:23+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgid "Hide Post"
 msgstr "Ukryj wiadomość"
 
 #: forms.py:131
-#: models.py:475
+#: models.py:478
 msgid "Category"
 msgstr "Kategoria"
 
@@ -82,9 +82,21 @@ msgstr "Kategoria"
 msgid "Select target category"
 msgstr "Wybierz kategorię docelową"
 
-#: forms.py:143
+#: forms.py:133
+msgid "Information link"
+msgstr "Link informacyjny"
+
+#: forms.py:136
+msgid "If checked then information about moved thread will be left in the current category"
+msgstr "Jeśli zaznaczone, wówczas informacja o przeniesionym wątku będzie widoczna w bieżącej kategorii."
+
+#: forms.py:145
 msgid "Please describe why this thread had to be moved."
 msgstr "Opisz dlaczego ten wątek musiał zostać przeniesiony."
+
+#: forms.py:152
+msgid "Please describe why this post had to be moved."
+msgstr "Opisz dlaczego ta wiadomość została przeniesiona."
 
 #: lists.py:34
 msgid "Author"
@@ -96,8 +108,8 @@ msgid "Views"
 msgstr "Spojrzeń"
 
 #: lists.py:45
-#: models.py:1039
-#: models.py:1569
+#: models.py:1063
+#: models.py:1593
 #: templates/sphene/sphboard/_post_authorinfo.html:10
 #: templates/sphene/sphboard/listCategories.html:32
 #: templates/sphene/sphboard/listCategories.html:61
@@ -116,138 +128,138 @@ msgstr "Autor najnowszej wiadomości"
 msgid "Heat"
 msgstr "Temperatura"
 
-#: models.py:476
+#: models.py:479
 msgid "Categories"
 msgstr "Kategorie"
 
-#: models.py:487
+#: models.py:490
 msgid "Thread last visit"
 msgstr "Ostatnie odwiedziny wątku"
 
-#: models.py:488
+#: models.py:491
 msgid "Thread last visits"
 msgstr "Ostatnie odwiedziny wątków"
 
-#: models.py:504
+#: models.py:507
 msgid "Category last visit"
 msgstr "Ostatnie odwiedziny kategorii"
 
-#: models.py:505
+#: models.py:508
 msgid "Category last visits"
 msgstr "Ostatnie odwiedziny kategorii"
 
-#: models.py:945
+#: models.py:965
 #, python-format
 msgid "New Forum Post in \"%(category_name)s\": %(subject)s"
 msgstr "Nowa wiadomość na forum w kategorii \"%(category_name)s\": %(subject)s"
 
-#: models.py:1038
+#: models.py:1062
 #: templates/sphene/sphboard/_displayPostForm.html:88
 msgid "Post"
 msgstr "Opublikuj"
 
-#: models.py:1044
+#: models.py:1068
 msgid "File"
 msgstr "Plik"
 
-#: models.py:1049
+#: models.py:1073
 msgid "Post attachment"
 msgstr "Załącznik do wiadomości"
 
-#: models.py:1050
+#: models.py:1074
 msgid "Post attachments"
 msgstr "Załączniki do wiadomości"
 
-#: models.py:1089
+#: models.py:1113
 msgid "Post annotation"
 msgstr "Komentarz do wiadomości"
 
-#: models.py:1090
+#: models.py:1114
 msgid "Post annotations"
 msgstr "Komentarze do wiadomości"
 
-#: models.py:1254
+#: models.py:1278
 msgid "Thread information"
 msgstr "Informacja o wątku"
 
-#: models.py:1255
+#: models.py:1279
 msgid "Thread informations"
 msgstr "Informacje o wątkach"
 
-#: models.py:1340
+#: models.py:1364
 msgid "Monitor"
 msgstr "Monitor"
 
-#: models.py:1341
+#: models.py:1365
 msgid "Monitors"
 msgstr "Monitory"
 
-#: models.py:1381
+#: models.py:1405
 #: templates/sphene/sphboard/_displayPostForm.html:58
 msgid "Poll"
 msgstr "Ankieta"
 
-#: models.py:1382
+#: models.py:1406
 msgid "Polls"
 msgstr "Ankiety"
 
-#: models.py:1397
+#: models.py:1421
 msgid "Poll choice"
 msgstr "Odpowiedź w ankiecie"
 
-#: models.py:1398
+#: models.py:1422
 msgid "Poll choices"
 msgstr "Odpowiedzi w ankiecie"
 
-#: models.py:1408
+#: models.py:1432
 msgid "Poll voter"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1409
+#: models.py:1433
 msgid "Poll voters"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1428
+#: models.py:1452
 msgid "Board user profile"
 msgstr "Profil użytkownika forum"
 
-#: models.py:1429
+#: models.py:1453
 msgid "Board user profiles"
 msgstr "Profile użytkowników forum"
 
-#: models.py:1471
+#: models.py:1495
 msgid "User post count"
 msgstr "Licznik wiadomości użytkownika"
 
-#: models.py:1472
+#: models.py:1496
 msgid "User post counts"
 msgstr "Liczniki wiadomości użytkowników"
 
-#: models.py:1495
+#: models.py:1519
 msgid "Extended category config"
 msgstr "Rozszerzona konfiguracja kategorii"
 
-#: models.py:1496
+#: models.py:1520
 msgid "Extended category configs"
 msgstr "Rozszerzone konfiguracje kategorii"
 
-#: models.py:1536
+#: models.py:1560
 msgid "Board settings"
 msgstr "Ustawienia forum"
 
-#: models.py:1537
+#: models.py:1561
 msgid "Signature"
 msgstr "Sygnaturka"
 
-#: models.py:1545
+#: models.py:1569
 msgid "Default Notify Me - Value"
 msgstr "Powiadamianie emailowe - domyślnie"
 
-#: models.py:1565
+#: models.py:1589
 msgid "Successfully saved board profile."
 msgstr "Pomyślnie zapisano profil dla forum."
 
-#: models.py:1575
+#: models.py:1599
 msgid "Board Signature"
 msgstr "Sygnaturka dla forum"
 
@@ -306,50 +318,68 @@ msgstr "Skomentowano wiadomość użytkownika."
 msgid "Post deleted"
 msgstr "Wiadomość usunięta"
 
-#: views.py:565
+#: views.py:644
+msgid "Post has been appended to thread."
+msgstr "Wiadomość została dołączona do wątku."
+
+#: views.py:646
+msgid "Post has been moved into category."
+msgstr "Wiadomość została przeniesiona do kategorii."
+
+#: views.py:662
+#, python-format
+msgid "This post was moved from the thread %(thread_name)s"
+msgstr "Ta wiadomość została przeniesiona z wątku %(thread_name)s"
+
+#: views.py:664
+#, python-format
+msgid "This post was moved from the category %(category_name)s"
+msgstr "Ta wiadomość została przeniesiona z kategorii %(category_name)s"
+
+#: views.py:727
 msgid "Moved thread into new category."
 msgstr "Przeniesiono wątek do nowej kategorii."
 
-#: views.py:576
+#: views.py:738
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
 msgstr "Ten wątek został przeniesiony z kategorii %(category_name)s"
 
-#: views.py:589
+#: views.py:751
 msgid "You have already voted."
 msgstr "Już głosowałeś."
 
-#: views.py:593
+#: views.py:755
 msgid "Please select at least one answer."
 msgstr "Wybierz co najmniej jedną odpowiedź."
 
-#: views.py:599
+#: views.py:761
 #, python-format
 msgid "Please only select %(choices)d answers."
 msgstr "Wybierz %(choices)d odpowiedzi."
 
-#: views.py:603
+#: views.py:765
 msgid "You cannot abstain from voting and at the same time select a valid answer."
 msgstr "Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć właściwą odpowiedź."
 
-#: views.py:612
+#: views.py:774
 msgid "You've selected an invalid choice."
 msgstr "Wybrałeś niewłaściwą opcję."
 
-#: views.py:620
+#: views.py:782
 #, python-format
 msgid "Voted for '%(choice)s'."
 msgstr "Zagłosowałeś na '%(choice)s'."
 
-#: views.py:620
+#: views.py:782
 msgid "You selected to abstain from voting"
 msgstr "Zaznaczyłeś, że nie będziesz głosować"
 
-#: views.py:638
+#: views.py:800
 msgid "Successfully created email notification monitor."
 msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
 
-#: views.py:640
+#: views.py:802
 msgid "Removed email notification monitor."
 msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
 
@@ -518,7 +548,7 @@ msgid "Hot:"
 msgstr "Gorący:"
 
 #: templates/sphene/sphboard/listCategories.html:73
-#: templates/sphene/sphboard/showThread.html:144
+#: templates/sphene/sphboard/showThread.html:147
 msgid "Poll:"
 msgstr "Ankieta:"
 
@@ -552,6 +582,87 @@ msgstr "Przenieś wątek: %(subject)s założony przez "
 #: templates/sphene/sphboard/showThread.html:54
 msgid "Move Thread"
 msgstr "Przenieś wątek"
+
+#: templates/sphene/sphboard/move_post_1.html:10
+#, python-format
+msgid "Moving post: <strong>%(subject)s</strong> by <strong>%(postauthor)s</strong>"
+msgstr "Przenoszenie wiadomości: <strong>%(subject)s</strong> napisanej przez <strong>%(postauthor)s</strong>"
+
+#: templates/sphene/sphboard/move_post_1.html:11
+#: templates/sphene/sphboard/move_post_2.html:11
+#: templates/sphene/sphboard/move_post_3.html:15
+msgid "Step 1"
+msgstr "Krok 1"
+
+#: templates/sphene/sphboard/move_post_1.html:11
+#: templates/sphene/sphboard/move_post_2.html:11
+#: templates/sphene/sphboard/move_post_3.html:15
+msgid "Step 2"
+msgstr "Krok 2"
+
+#: templates/sphene/sphboard/move_post_1.html:11
+#: templates/sphene/sphboard/move_post_2.html:11
+#: templates/sphene/sphboard/move_post_3.html:15
+msgid "Step 3"
+msgstr "Krok 3"
+
+#: templates/sphene/sphboard/move_post_1.html:13
+#, python-format
+msgid "Select target category to move post <strong>%(subject)s</strong> into. Later you'll be able to select destination thread."
+msgstr "Wybierz kategorię docelową aby umieścić w niej wiadomość: <strong>%(subject)s</strong>. Później będziesz miał możliwość wybrania docelowego wątku."
+
+#: templates/sphene/sphboard/move_post_1.html:17
+msgid "Category name"
+msgstr "Nazwa kategorii"
+
+#: templates/sphene/sphboard/move_post_1.html:18
+#: templates/sphene/sphboard/move_post_2.html:21
+msgid "Action"
+msgstr "Akcja"
+
+#: templates/sphene/sphboard/move_post_1.html:22
+msgid "source category"
+msgstr "kategoria źródłowa"
+
+#: templates/sphene/sphboard/move_post_1.html:23
+#: templates/sphene/sphboard/move_post_2.html:26
+msgid "select"
+msgstr "wybierz"
+
+#: templates/sphene/sphboard/move_post_2.html:10
+#: templates/sphene/sphboard/move_post_3.html:13
+#, python-format
+msgid "Moving post: <strong>%(subject)s</strong> by <strong>%(postauthor)s</strong> into category <strong>%(categoryname)s</strong>"
+msgstr "Przenoszenie wiadomości: <strong>%(subject)s</strong> napisanej przez <strong>%(postauthor)s</strong> do kategorii <strong>%(categoryname)s</strong>"
+
+#: templates/sphene/sphboard/move_post_2.html:14
+#, python-format
+msgid ""
+"Click <strong><a href=\"%(move_post_3_ic_url)s\">here</a></strong> to move post <strong>%(subject)s</strong>\n"
+"      directly into category <strong>%(categoryname)s</strong> (new thread will be created if necessary)\n"
+"      or select target thread below to append post <strong>%(subject)s</strong> to it:"
+msgstr ""
+"Kliknij <strong><a href=\"%(move_post_3_ic_url)s\">tutaj</a></strong> aby przenieść wiadomość <strong>%(subject)s</strong>\n"
+"      bezpośrednio do kategorii <strong>%(categoryname)s</strong> (jeśli trzeba zostanie utworzony nowy wątek)\n"
+"      lub wybierz docelowy wątek z listy poniżej aby dołączyć do niego wiadomość: <strong>%(subject)s</strong>"
+
+#: templates/sphene/sphboard/move_post_2.html:20
+msgid "Thread"
+msgstr "Wątek"
+
+#: templates/sphene/sphboard/move_post_3.html:11
+#, python-format
+msgid "Moving post: <strong>%(subject)s</strong> by <strong>%(postauthor)s</strong> into thread <strong>%(targetthreadsubject)s</strong>"
+msgstr "Przenoszenie wiadomości: <strong>%(subject)s</strong> napisanej przez <strong>%(postauthor)s</strong> do wątku <strong>%(targetthreadsubject)s</strong>"
+
+#: templates/sphene/sphboard/move_post_3.html:17
+#, python-format
+msgid "Move post: %(subject)s by "
+msgstr "Przenieś wiadomość: %(subject)s napisaną przez"
+
+#: templates/sphene/sphboard/move_post_3.html:24
+msgid "Move Post"
+msgstr "Przenieś wiadomość"
 
 #: templates/sphene/sphboard/new_post_email.txt:3
 #, python-format
@@ -612,68 +723,72 @@ msgid "Edit"
 msgstr "Edytuj"
 
 #: templates/sphene/sphboard/showThread.html:103
+msgid "Move"
+msgstr "Przenieś"
+
+#: templates/sphene/sphboard/showThread.html:106
 msgid "Quote"
 msgstr "Cytuj"
 
-#: templates/sphene/sphboard/showThread.html:114
+#: templates/sphene/sphboard/showThread.html:117
 msgid "Post hidden by"
 msgstr "Wiadomość ukryta przez"
 
-#: templates/sphene/sphboard/showThread.html:117
+#: templates/sphene/sphboard/showThread.html:120
 msgid "Post annotated by"
 msgstr "Wiadomość skomentowana przez"
 
-#: templates/sphene/sphboard/showThread.html:126
+#: templates/sphene/sphboard/showThread.html:129
 msgid "Attachments"
 msgstr "Załączniki"
 
-#: templates/sphene/sphboard/showThread.html:146
+#: templates/sphene/sphboard/showThread.html:149
 msgid "Edit this poll"
 msgstr "Edytuj tą ankietę"
 
-#: templates/sphene/sphboard/showThread.html:149
+#: templates/sphene/sphboard/showThread.html:152
 msgid "You already voted. Here are the results"
 msgstr "Już głosowałeś. Wyniki są następujące"
 
-#: templates/sphene/sphboard/showThread.html:149
+#: templates/sphene/sphboard/showThread.html:152
 msgid "votes total"
 msgstr "głosów łącznie"
 
-#: templates/sphene/sphboard/showThread.html:149
+#: templates/sphene/sphboard/showThread.html:152
 msgid "did not answer"
 msgstr "nie udzieliło odpowiedzi"
 
-#: templates/sphene/sphboard/showThread.html:161
+#: templates/sphene/sphboard/showThread.html:164
 msgid "Error:"
 msgstr "Błąd:"
 
-#: templates/sphene/sphboard/showThread.html:164
+#: templates/sphene/sphboard/showThread.html:167
 #, python-format
 msgid "You may select up to %(choices_per_user)s answers: "
 msgstr "Możesz zaznaczyć %(choices_per_user)s odpowiedzi: "
 
-#: templates/sphene/sphboard/showThread.html:169
-#: templates/sphene/sphboard/showThread.html:176
+#: templates/sphene/sphboard/showThread.html:172
+#: templates/sphene/sphboard/showThread.html:179
 msgid "Show Results (You won't be able to vote.)"
 msgstr "Pokaż wyniki (nie będziesz już mógł zagłosować)."
 
-#: templates/sphene/sphboard/showThread.html:182
+#: templates/sphene/sphboard/showThread.html:185
 msgid "You need to be logged in to vote."
 msgstr "Musisz być zalogowany aby móc głosować."
 
-#: templates/sphene/sphboard/showThread.html:201
+#: templates/sphene/sphboard/showThread.html:204
 msgid "Post Reply"
 msgstr "Odpowiedz"
 
-#: templates/sphene/sphboard/showThread.html:206
+#: templates/sphene/sphboard/showThread.html:209
 msgid "Thread is locked."
 msgstr "Wątek jest zablokowany."
 
-#: templates/sphene/sphboard/showThread.html:209
+#: templates/sphene/sphboard/showThread.html:212
 msgid "You have no permission to post a reply."
 msgstr "Nie masz uprawnień aby napisać odpowiedź."
 
-#: templates/sphene/sphboard/showThread.html:211
+#: templates/sphene/sphboard/showThread.html:214
 msgid "Please login to post a reply."
 msgstr "Zaloguj się aby napisać odpowiedź."
 
