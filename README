@@ -38,7 +38,7 @@ static/ needs to be served from your django installation.
 To recaulcate heat for forum threads and similar, you should add the following
 cronjob to run once a day (or similar)
 
-    echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
+    /path/to/your/django/project/manage.py sph_maintenance
 
 ### Cache
 
