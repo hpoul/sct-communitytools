@@ -14,8 +14,8 @@ rm -rf "$DISTDIR"
 mkdir -p "$DISTDIR/$DISTNAME"
 cd "$DISTDIR/$DISTNAME"
 
-svn export http://yourhell.com/svn/root/django/communitytools/$SVNDIR communitytools >> tmp
-svn export http://yourhell.com/svn/root/django/communitydraft/$SVNDIR communitydraft >> tmp
+svn export http://source.sphene.net/svn/root/django/communitytools/$SVNDIR communitytools >> tmp
+svn export http://source.sphene.net/svn/root/django/communitydraft/$SVNDIR communitydraft >> tmp
 
 revision=`cat tmp |grep revision -m 1 | sed "s/.* \([0-9]\+\).*/\1/"`
 
