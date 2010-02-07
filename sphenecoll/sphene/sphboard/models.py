@@ -722,7 +722,7 @@ class Post(models.Model):
         """
         Check if there are posts newer than 'post'
         """
-        if post.pk == thread.latest().pk:
+        if post.pk == self.latest().pk:
             return True
         return False
 
@@ -875,7 +875,7 @@ class Post(models.Model):
             return threadLastVisit.lastvisit < latestPost.postdate
         except IndexError:
             return True
-        
+
 
     def poll(self):
         try:
@@ -1058,6 +1058,34 @@ class Post(models.Model):
         return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
     get_absolute_annotate_url = sphpermalink(get_absolute_annotate_url)
 
+    def get_absolute_lastvisit_url(self):
+        user = get_current_user()
+        session = get_current_session()
+        # not authenticated users always see first post in thread
+        new_post = self
+        if user.is_authenticated():
+            # for authenticated users
+            latest_post = self.get_latest_post()
+            categoryLastVisit = self.category.touch(session, user)
+            if categoryLastVisit > latest_post.postdate:
+                # no new posts in thread - return latest post
+                new_post = latest_post
+            else:
+                try:
+                    threadLastVisit = ThreadLastVisit.objects.filter(user=user,
+                                                                     thread__id=self.id)[0]
+                    new_posts = self.replies().filter(postdate__gt=threadLastVisit.lastvisit)
+                    if new_posts.count()>0:
+                        # return first post added after last visit
+                        new_post = new_posts[0]
+                    else:
+                        # no new posts so return latest post
+                        new_post = latest_post
+                except IndexError:
+                    # whole thread not seen, show first post
+                    new_post = self
+        return new_post.get_absolute_url()
+    
     class Meta:
         verbose_name = ugettext_lazy('Post')
         verbose_name_plural = ugettext_lazy('Posts')
@@ -1258,6 +1286,9 @@ class ThreadInformation(models.Model):
         if cturl:
             return cturl
         return self._get_absolute_url()
+
+    def get_absolute_lastvisit_url(self):
+        return self.root_post.get_absolute_lastvisit_url()
 
     def _get_absolute_url(self):
         kwargs = { 'groupName': self.category.group.name,
