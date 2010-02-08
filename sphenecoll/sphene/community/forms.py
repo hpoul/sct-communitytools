@@ -6,21 +6,21 @@ from sphene.community.signals import profile_edit_init_form
 class Separator(forms.Field):
     def __init__(self, *args, **kwargs):
         super(Separator, self).__init__( required = False, *args, **kwargs)
-    
+
     def is_separator(self):
         return True
 
 class EditProfileForm(forms.Form):
-    first_name = forms.CharField(label=_(u'First name'))
-    last_name = forms.CharField(label=_(u'Last name'))
+    first_name = forms.CharField(label=_(u'First name'), required=False)
+    last_name = forms.CharField(label=_(u'Last name'), required=False)
     email_address = forms.CharField(label=_(u'Email address'))
 
     change_password = Separator(label=_(u'Change password'),
                                 help_text = _(u'To modify your password fill out the following three fields.') )
-    current_password = forms.CharField(widget = forms.PasswordInput(), 
+    current_password = forms.CharField(widget = forms.PasswordInput(),
                                        label=_(u'Current password'),
                                        required = False)
-    new_password = forms.CharField(widget = forms.PasswordInput(), 
+    new_password = forms.CharField(widget = forms.PasswordInput(),
                                    label=_(u'New password'),
                                    required = False )
     repassword = forms.CharField( widget = forms.PasswordInput(),
@@ -45,7 +45,7 @@ class EditProfileForm(forms.Form):
         if not password == repassword:
             raise forms.ValidationError(_(u'Passwords do not match.'))
         return self.cleaned_data
-    
+
 
 from django.contrib.auth.models import User
 from django.db.models import signals, get_apps, get_models
@@ -97,7 +97,7 @@ class EditRoleForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EditRoleForm, self).__init__( *args, **kwargs )
         self.fields['permission_flags'].choices = get_permission_flag_choices()
-        
+
 
 autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.submit();' }
 
