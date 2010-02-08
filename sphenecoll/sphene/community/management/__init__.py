@@ -131,7 +131,7 @@ def do_changelog(app, created_models, verbosity, **kwargs):
         else:
             print "Not updating database. You have to do this by hand !"
 
-signals.post_syncdb.connect(init_data, sender=models)
+signals.post_syncdb.connect(init_data, sender=models, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
 signals.post_syncdb.connect(do_changelog)
 
 def create_permission_flags(app, created_models, verbosity, **kwargs):
