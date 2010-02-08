@@ -47,6 +47,9 @@ add_setting_defaults( {
     # default location of emoticons
     'board_emoticons_root': settings.MEDIA_URL + 'sphene/emoticons/',
 
+    # default link in board posts
+    'board_post_link':'<a href="%(url)s">%(text)s</a>',
+
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
 
     'board_slugify_links': True,
@@ -54,9 +57,9 @@ add_setting_defaults( {
     # Display the reply form directly below a thread instead of just a 'Post Reply' link.
     'board_quick_reply': False,
 
-    # Activates the experimental WYSIWYG editor - 
+    # Activates the experimental WYSIWYG editor -
     #   only if 'bbcode' is the only markup choice.
-    # If you are using it, please provide feedback in the 
+    # If you are using it, please provide feedback in the
     # forums at http://sct.spene.net !
     'board_wysiwyg': False,
     # This options let users test the wysiwyg editor by appending

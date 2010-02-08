@@ -243,9 +243,8 @@ class UrlTag(BBTag):
         if len(url) == 0:
             return ''
         else:
-            # removed 'nowfollow' for now
-            #return '<a rel="nofollow" href="' + escape(url) + '">' + linktext + '</a>'
-            return '<a href="' + escape(url) + '">' + linktext + '</a>'
+            post_link = get_sph_setting('board_post_link')
+            return post_link % {'url':escape(url), 'text':linktext}
 
 from sphene import sphboard
 
