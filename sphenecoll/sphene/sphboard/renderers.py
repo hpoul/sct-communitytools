@@ -9,7 +9,6 @@ from sphene.community.sphutils import get_sph_setting, get_method_by_name
 from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.contrib.libs.common.text import bbcode
 from sphene.sphwiki import wikilink_utils
-bbcode.EMOTICONS_ROOT = settings.MEDIA_URL + 'sphene/emoticons/'
 
 class BaseRenderer(object):
     """ base class for all board renderers.

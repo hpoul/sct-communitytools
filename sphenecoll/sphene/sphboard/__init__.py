@@ -44,6 +44,8 @@ add_setting_defaults( {
     # into the posts. It is better to turn this off and use the
     # sph extended BBCODE wiki label.
     'board_auto_wiki_link_enabled': True,
+    # default location of emoticons
+    'board_emoticons_root': settings.MEDIA_URL + 'sphene/emoticons/',
 
     'board_attachments_upload_to': 'var/sphene/sphwiki/attachment/%Y/%m/%d',
 

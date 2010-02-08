@@ -68,9 +68,9 @@ import re
 #### CCIW specific imports #####
 #from zilbo.common.text.utils import get_member_link, obfuscate_email
 #from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
-from sphene.community.sphutils import render_blockquote
+from sphene.community.sphutils import render_blockquote, get_sph_setting
 from django.conf import settings 
-EMOTICONS_ROOT = settings.MEDIA_URL + 'emoticons/'
+EMOTICONS_ROOT = get_sph_setting('board_emoticons_root')
 
 ##### UTILITY FUNCTIONS #####
 def get_member_link( member ):
