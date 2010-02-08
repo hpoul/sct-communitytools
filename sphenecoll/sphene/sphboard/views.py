@@ -25,7 +25,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
     the contents of a category could be other categories or forum threads.
 
     TODO: clean this mess up - sorry for everyone who trys to understand
-    this function - this is is probably the oldest and ugliest in 
+    this function - this is is probably the oldest and ugliest in
     the whole SCT source.
 
     We no longer support having no group !!
@@ -35,9 +35,9 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         'parent__isnull': True,
         }
     categoryObject = None
-    
+
     sphdata = get_current_sphdata()
-    
+
     if category_id != None and category_id != '0':
         args['parent__isnull'] = False
         args['parent'] = category_id
@@ -68,7 +68,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
             categories = [ category for category in categories if category.has_view_permission( request.user ) ]
         else:
             categories = Category.objects.filter( **args )
-    
+
     context = { 'rootCategories': categories,
                 'category': categoryObject,
                 'allowPostThread': categoryObject and categoryObject.allowPostThread( request.user ),
@@ -84,10 +84,10 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         if showType != 'threads':
             return render_to_response( templateName, context,
                                        context_instance = RequestContext(request) )
-        
+
         ## Show the latest threads from all categories.
         allowed_categories = get_all_viewable_categories( group, request.user )
-        
+
         if group != None: thread_args = { 'category__group': group }
         else: thread_args = { 'category__group__isnull': True }
         #thread_args[ 'thread__isnull'] = True
@@ -113,7 +113,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
                         allow_empty = True,
                         paginate_by = 10,
                         )
-    
+
     res.sph_lastmodified = True
     return res
 
@@ -136,7 +136,7 @@ def listThreads(request, group, category_id):
                                                  ( 'subject',
                                                    'author', ),
                                                  'views',
-                                                 'posts', 
+                                                 'posts',
                                                  ( 'latestpostdate',
                                                    'latestpostauthor', ), ), )
     return sph_render_to_response( 'sphene/sphboard/new_list_threads.html',
@@ -154,7 +154,7 @@ def showThread(request, thread_id, group = None, slug = None):
 
     category_type = thread.category.get_category_type()
     template_name = category_type.get_show_thread_template()
-    
+
     res =  object_list( request = request,
                         #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
                         queryset = thread.get_all_posts().order_by('postdate'),
@@ -190,7 +190,7 @@ def options(request, thread_id, group = None):
         Tag.objects.update_tags( thread.get_threadinformation(), [request.POST['tags'], ] )
 
     thread.save()
-    
+
     return HttpResponseRedirect( thread.get_absolute_url() )
 
 def reply(*args, **kwargs):
@@ -211,7 +211,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     - reply to threads (post_id is None)
     - edit posts (post_id is the post which should be edited, thread_id is None)
 
-    post_id and thread_id can either be passed in by URL (named parameters 
+    post_id and thread_id can either be passed in by URL (named parameters
     to this method) or by request.REQUEST parameters.
     """
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
@@ -229,7 +229,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         'bbcodewysiwyg': enable_wysiwyg_editor() \
             or (get_sph_setting('board_wysiwyg_testing') \
                     and request.REQUEST.get('wysiwyg', False)) }
-    
+
     if post_id is None and 'post_id' in request.REQUEST:
         # if no post_id is given take it from the request.
         post_id = request.REQUEST['post_id']
@@ -245,7 +245,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
             raise PermissionDenied()
         thread = post.thread
         category = post.category
-    
+
     else:
         # User wants to create a new post (thread or reply)
         if 'thread' in request.REQUEST:
@@ -259,7 +259,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 raise Http404
 
             category = thread.category
-        
+
             if not thread.allowPosting( request.user ):
                 raise PermissionDenied()
         else:
@@ -337,10 +337,10 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                                 )
             if 'markup' in data:
                 newpost.markup = data['markup']
-                
+
             elif len( POST_MARKUP_CHOICES ) == 1:
                 newpost.markup = POST_MARKUP_CHOICES[0][0]
-                
+
             newpost.save(additional_data = data)
 
             #category_type.save_post( newpost, data )
@@ -479,7 +479,7 @@ def annotate(request, group, post_id):
             annotation.save()
             request.user.message_set.create( message = ugettext(u'Annotated a users post.') )
             return HttpResponseRedirect( post.get_absolute_url() )
-        
+
     else:
         form = AnnotateForm()
 
@@ -489,7 +489,7 @@ def annotate(request, group, post_id):
         if 'markup' in form.fields:
             form.fields['markup'].initial = annotation.markup
 
-    
+
     return render_to_response( "sphene/sphboard/annotate.html",
                                { 'thread': thread,
                                  'post': post,
@@ -575,7 +575,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
     target_thread = None
     if thread_id:
         target_thread = get_object_or_404(Post, pk=thread_id)
-    
+
     if not post.allow_moving_post() or thread == target_thread:
         raise PermissionDenied()
 
@@ -726,6 +726,9 @@ def move(request, group, thread_id):
             thread.category = newcategory
             thread.save()
 
+            # update category of thread's posts
+            thread.replies().update(category=newcategory)
+
             request.user.message_set.create( message = ugettext(u'Moved thread into new category.') )
 
             return HttpResponseRedirect( thread.get_absolute_url() )
@@ -758,7 +761,7 @@ def vote(request, group = None, thread_id = None):
         return showThread(request, thread_id, group)
 
     pollchoices = request.REQUEST.getlist('pollchoice')
-    
+
     if poll.choices_per_user < len( pollchoices ):
         request.attributes['voteerror'] = _(u'Please only select %(choices)d answers.') % {'choices':poll.choices_per_user}
         return showThread(request, thread_id, group)
@@ -782,7 +785,7 @@ def vote(request, group = None, thread_id = None):
                             user = request.user, )
         voter.save()
         request.user.message_set.create( message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
-    
+
 
     return HttpResponseRedirect( thread.get_absolute_url() )
 
@@ -811,7 +814,7 @@ def toggle_monitor(request, group, monitortype, object_id):
 
 def catchup(request, group, category_id):
     if category_id == '0':
-        ThreadLastVisit.objects.filter(user = request.user).delete() 
+        ThreadLastVisit.objects.filter(user = request.user).delete()
         CategoryLastVisit.objects.filter(user = request.user).update(lastvisit = datetime.today(), oldlastvisit = None)
         req = HttpResponseRedirect(sph_reverse('sphboard-index'))
     else:
