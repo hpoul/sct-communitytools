@@ -147,7 +147,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
             raise template.TemplateSyntaxError, "Error in {% markdown %} filter: The Python markdown library isn't installed."
         return value
     else:
-        save_mode = arg == 'safe'
+        safe_mode = arg == 'safe'
         macros = { 'helloWorld': SimpleHelloWorldMacro(),
                    'news': NewsMacro(),
                    'newsrss': NewsRSSLinkMacro(),
@@ -163,6 +163,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
                                                                ],
                                                      'toc': { 'include_header_one_in_toc': True, },
                                                      },
+                               safe_mode = safe_mode,
                                  )
         md.number_headings = get_sph_setting('markdown_number_headings', True)
         md.top_heading_level = get_sph_setting('markdown_top_heading_level', 1)
