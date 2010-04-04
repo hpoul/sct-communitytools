@@ -380,10 +380,11 @@ def resize(file, size='200x200'):
     miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
     miniature_url = os.path.join(settings.MEDIA_URL, miniature)
 
+    image = Image.open(file)
+
     # always calculate the width/height
     if width == 'X' or height == 'X':
         #filename = os.path.join(settings.MEDIA_ROOT, file)
-        image = Image.open(file)
         ox, oy = image.size
         
         if width != 'X':
