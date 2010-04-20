@@ -223,7 +223,7 @@ class RecursiveCategoryIteratorNode(template.Node):
 
         if self.categorytypevar is not None:
             categorytype = self.categorytypevar.resolve(context)
-            
+
             filter = filter.filter(category_type__in = categorytype.split(','))
             #(TaskCategoryType.name, DivisionCategoryType.name),)
         if parent is None:
@@ -269,3 +269,11 @@ def sphboard_recursive_category_iterator(parser, token):
     return RecursiveCategoryIteratorNode(nodelist, categorytypevar)
 
 
+@register.inclusion_tag('sphene/sphboard/_displayThreadSummary.html', takes_context=True)
+def sphboard_displayThreadSummary(context, thread):
+    """
+        Display last 10 posts in thread
+    """
+    posts = thread.get_all_posts().order_by('-postdate')[:11]
+    return { 'posts': posts,
+             'thread': thread}

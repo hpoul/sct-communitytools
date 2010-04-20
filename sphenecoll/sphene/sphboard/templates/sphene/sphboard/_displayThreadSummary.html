@@ -1,0 +1,25 @@
+{% load sphboard_extras %}
+{% load i18n %}
+
+<div id="thread-summary-title">
+    {% trans "Thread summary" %}
+</div>
+<div id="thread-summary">
+    <table>
+    {% for post in posts %}
+    <tr>
+        {% ifequal forloop.counter 11 %}
+        <td colspan="2" class="more-posts">(...) - {% trans "older posts not shown..." %}</td>
+        {% else %}
+        <th>
+            <div>{% sphboard_displayUserName post.author %}</div>
+            <span class="postdate">{{ post.postdate|date:"Y-m-d H:i:s" }}</span>
+        </th>
+        <td>
+            {{ post.body_rendered_without_signature }}
+        </td>
+        {% endifequal %}
+    </tr>
+    {% endfor %}
+    </table>
+</div>

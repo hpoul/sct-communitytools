@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-04 14:09+0100\n"
-"PO-Revision-Date: 2010-01-04 14:23+0100\n"
+"POT-Creation-Date: 2010-04-20 22:24+0200\n"
+"PO-Revision-Date: 2010-04-20 22:27+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -108,8 +108,8 @@ msgid "Views"
 msgstr "Spojrzeń"
 
 #: lists.py:45
-#: models.py:1063
-#: models.py:1593
+#: models.py:1091
+#: models.py:1624
 #: templates/sphene/sphboard/_post_authorinfo.html:10
 #: templates/sphene/sphboard/listCategories.html:32
 #: templates/sphene/sphboard/listCategories.html:61
@@ -153,132 +153,132 @@ msgstr "Ostatnie odwiedziny kategorii"
 msgid "New Forum Post in \"%(category_name)s\": %(subject)s"
 msgstr "Nowa wiadomość na forum w kategorii \"%(category_name)s\": %(subject)s"
 
-#: models.py:1062
+#: models.py:1090
 #: templates/sphene/sphboard/_displayPostForm.html:88
 msgid "Post"
 msgstr "Opublikuj"
 
-#: models.py:1068
+#: models.py:1096
 msgid "File"
 msgstr "Plik"
 
-#: models.py:1073
+#: models.py:1101
 msgid "Post attachment"
 msgstr "Załącznik do wiadomości"
 
-#: models.py:1074
+#: models.py:1102
 msgid "Post attachments"
 msgstr "Załączniki do wiadomości"
 
-#: models.py:1113
+#: models.py:1141
 msgid "Post annotation"
 msgstr "Komentarz do wiadomości"
 
-#: models.py:1114
+#: models.py:1142
 msgid "Post annotations"
 msgstr "Komentarze do wiadomości"
 
-#: models.py:1278
+#: models.py:1309
 msgid "Thread information"
 msgstr "Informacja o wątku"
 
-#: models.py:1279
+#: models.py:1310
 msgid "Thread informations"
 msgstr "Informacje o wątkach"
 
-#: models.py:1364
+#: models.py:1395
 msgid "Monitor"
 msgstr "Monitor"
 
-#: models.py:1365
+#: models.py:1396
 msgid "Monitors"
 msgstr "Monitory"
 
-#: models.py:1405
+#: models.py:1436
 #: templates/sphene/sphboard/_displayPostForm.html:58
 msgid "Poll"
 msgstr "Ankieta"
 
-#: models.py:1406
+#: models.py:1437
 msgid "Polls"
 msgstr "Ankiety"
 
-#: models.py:1421
+#: models.py:1452
 msgid "Poll choice"
 msgstr "Odpowiedź w ankiecie"
 
-#: models.py:1422
+#: models.py:1453
 msgid "Poll choices"
 msgstr "Odpowiedzi w ankiecie"
 
-#: models.py:1432
+#: models.py:1463
 msgid "Poll voter"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1433
+#: models.py:1464
 msgid "Poll voters"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1452
+#: models.py:1483
 msgid "Board user profile"
 msgstr "Profil użytkownika forum"
 
-#: models.py:1453
+#: models.py:1484
 msgid "Board user profiles"
 msgstr "Profile użytkowników forum"
 
-#: models.py:1495
+#: models.py:1526
 msgid "User post count"
 msgstr "Licznik wiadomości użytkownika"
 
-#: models.py:1496
+#: models.py:1527
 msgid "User post counts"
 msgstr "Liczniki wiadomości użytkowników"
 
-#: models.py:1519
+#: models.py:1550
 msgid "Extended category config"
 msgstr "Rozszerzona konfiguracja kategorii"
 
-#: models.py:1520
+#: models.py:1551
 msgid "Extended category configs"
 msgstr "Rozszerzone konfiguracje kategorii"
 
-#: models.py:1560
+#: models.py:1591
 msgid "Board settings"
 msgstr "Ustawienia forum"
 
-#: models.py:1561
+#: models.py:1592
 msgid "Signature"
 msgstr "Sygnaturka"
 
-#: models.py:1569
+#: models.py:1600
 msgid "Default Notify Me - Value"
 msgstr "Powiadamianie emailowe - domyślnie"
 
-#: models.py:1589
+#: models.py:1620
 msgid "Successfully saved board profile."
 msgstr "Pomyślnie zapisano profil dla forum."
 
-#: models.py:1599
+#: models.py:1630
 msgid "Board Signature"
 msgstr "Sygnaturka dla forum"
 
-#: renderers.py:96
-#: renderers.py:98
+#: renderers.py:95
+#: renderers.py:97
 msgid "Markdown"
 msgstr "Autor"
 
-#: renderers.py:124
+#: renderers.py:123
 #, python-format
 msgid "Custom renderer '%(renderer)s' needs a matching Render Class entry in your sphene settings 'board_custom_markup'"
 msgstr ""
 
-#: renderers.py:146
+#: renderers.py:145
 #, python-format
 msgid "Can't render markup '%(markup)s'"
 msgstr "Can't render markup '%(markup)s'"
 
-#: renderers.py:160
+#: renderers.py:159
 #, python-format
 msgid "You can use %(description)s in your posts"
 msgstr "Możesz używać %(description)s w swoich wiadomościach"
@@ -314,72 +314,72 @@ msgstr "Wiadomość została pomyślnie opublikowana."
 msgid "Annotated a users post."
 msgstr "Skomentowano wiadomość użytkownika."
 
-#: views.py:509
+#: views.py:511
 msgid "Post deleted"
 msgstr "Wiadomość usunięta"
 
-#: views.py:644
+#: views.py:646
 msgid "Post has been appended to thread."
 msgstr "Wiadomość została dołączona do wątku."
 
-#: views.py:646
+#: views.py:648
 msgid "Post has been moved into category."
 msgstr "Wiadomość została przeniesiona do kategorii."
 
-#: views.py:662
+#: views.py:664
 #, python-format
 msgid "This post was moved from the thread %(thread_name)s"
 msgstr "Ta wiadomość została przeniesiona z wątku %(thread_name)s"
 
-#: views.py:664
+#: views.py:666
 #, python-format
 msgid "This post was moved from the category %(category_name)s"
 msgstr "Ta wiadomość została przeniesiona z kategorii %(category_name)s"
 
-#: views.py:727
+#: views.py:732
 msgid "Moved thread into new category."
 msgstr "Przeniesiono wątek do nowej kategorii."
 
-#: views.py:738
+#: views.py:743
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
 msgstr "Ten wątek został przeniesiony z kategorii %(category_name)s"
 
-#: views.py:751
+#: views.py:756
 msgid "You have already voted."
 msgstr "Już głosowałeś."
 
-#: views.py:755
+#: views.py:760
 msgid "Please select at least one answer."
 msgstr "Wybierz co najmniej jedną odpowiedź."
 
-#: views.py:761
+#: views.py:766
 #, python-format
 msgid "Please only select %(choices)d answers."
 msgstr "Wybierz %(choices)d odpowiedzi."
 
-#: views.py:765
+#: views.py:770
 msgid "You cannot abstain from voting and at the same time select a valid answer."
 msgstr "Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć właściwą odpowiedź."
 
-#: views.py:774
+#: views.py:779
 msgid "You've selected an invalid choice."
 msgstr "Wybrałeś niewłaściwą opcję."
 
-#: views.py:782
+#: views.py:787
 #, python-format
 msgid "Voted for '%(choice)s'."
 msgstr "Zagłosowałeś na '%(choice)s'."
 
-#: views.py:782
+#: views.py:787
 msgid "You selected to abstain from voting"
 msgstr "Zaznaczyłeś, że nie będziesz głosować"
 
-#: views.py:800
+#: views.py:805
 msgid "Successfully created email notification monitor."
 msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
 
-#: views.py:802
+#: views.py:807
 msgid "Removed email notification monitor."
 msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
 
@@ -457,6 +457,14 @@ msgstr "Wczytaj plik"
 msgid "Preview"
 msgstr "Podgląd"
 
+#: templates/sphene/sphboard/_displayThreadSummary.html:5
+msgid "Thread summary"
+msgstr "Podgląd wątku"
+
+#: templates/sphene/sphboard/_displayThreadSummary.html:12
+msgid "older posts not shown..."
+msgstr "starsze wiadomości nie są wyświetlane..."
+
 #: templates/sphene/sphboard/_new_thread_link.html:5
 msgid "Post New Thread"
 msgstr "Rozpocznij nowy wątek"
@@ -499,16 +507,20 @@ msgstr "Zapisz"
 msgid "Delete post: %(subject)s by "
 msgstr "Usuń wiadomość: %(subject)s napisaną przez "
 
-#: templates/sphene/sphboard/hide.html:16
+#: templates/sphene/sphboard/hide.html:17
 msgid "Deleted post won't be visible to anyone. Are you sure you want to do that?"
 msgstr "Usunięta wiadomość nie będzie dla nikogo widoczna. Czy na pewno chcesz ją usunąć?"
 
 #: templates/sphene/sphboard/hide.html:19
+msgid "You're trying to delete the root post of thread. All posts under it will be deleted too. Deleted post won't be visible to anyone. Are you sure you want to do that?"
+msgstr "Chcesz usunąć pierwszą wiadomość w wątku. Wszystkie wiadomości poniżej także zostaną usunięte. Wiadomości usunięte nie będą już dla nikogo widoczne. Czy na pewno chcesz to zrobić?"
+
+#: templates/sphene/sphboard/hide.html:23
 #: templates/sphene/sphboard/showThread.html:100
 msgid "Delete"
 msgstr "Usuń"
 
-#: templates/sphene/sphboard/hide.html:19
+#: templates/sphene/sphboard/hide.html:23
 #, python-format
 msgid "or <a href=\"%(posturl)s\">go back</a> to thread"
 msgstr "lub <a href=\"%(posturl)s\">wróć</a> do wątku"

@@ -244,3 +244,52 @@ div.sortorder_asc::after {
   display:block;
   float:right;
 }
+
+/* styles for thread summary used while replying to post */
+div#thread-summary{
+    max-height:200px;
+    overflow:auto;
+    border:1px solid #444444;
+    border-top:2px solid #000000;
+    border-left:2px solid #000000;
+    margin:20px;
+    margin-top:5px;
+}
+
+div#thread-summary-title{
+    margin:20px;
+    margin-bottom:0px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+div#thread-summary table{
+    border-collapse:collapse;
+    width:90%;
+    margin:10px auto;
+}
+
+div#thread-summary table th{
+    width:15%;
+    border:1px solid #888888;
+    vertical-align:top;
+    padding:5px;
+}
+
+div#thread-summary table th span.postdate{
+    font-style:italic;
+    font-size:10px;
+    font-weight:normal;
+}
+
+div#thread-summary table td{
+    padding:5px;
+    padding-top:0px;
+    border:1px solid #888888;
+}
+
+div#thread-summary table td.more-posts{
+    padding:5px;
+    font-size:10px;
+    font-style:italic;
+}

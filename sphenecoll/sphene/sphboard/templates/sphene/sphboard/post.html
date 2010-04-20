@@ -22,4 +22,10 @@
 
   {% include "sphene/sphboard/_displayPostForm.html" %}
 
+  {% if not post %}
+    {% if thread %}
+      {% sphboard_displayThreadSummary thread %}
+    {% endif %}
+  {% endif %}
+
 {% endblock %}
