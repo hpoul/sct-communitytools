@@ -816,7 +816,8 @@ class Post(models.Model):
         if self.author_id and with_signature:
             signature = get_rendered_signature( self.author_id )
             if signature:
-                bodyhtml += '<div class="signature">%s</div>' % signature
+                board_signature_tag = get_sph_setting('board_signature_tag')
+                bodyhtml += board_signature_tag % {'signature':signature}
         return mark_safe(bodyhtml)
 
     def body_rendered_without_signature(self):

@@ -47,6 +47,9 @@ add_setting_defaults( {
     # default location of emoticons
     'board_emoticons_root': settings.MEDIA_URL + 'sphene/emoticons/',
 
+    # default tag used when rendering user signatures in posts
+    'board_signature_tag':'<div class="signature">%(signature)s</div>',
+
     # default link in board posts
     'board_post_link':'<a href="%(url)s">%(text)s</a>',
 
