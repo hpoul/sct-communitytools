@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load sph_extras %}
 {% load sphboard_extras %}
 <ul class="sphboard_post_summary">
@@ -7,7 +8,20 @@
 	<dt class="postdate">{{ post.postdate|sph_date }}</dt>
 	<dd class="subject"><a href="{{ post.get_absolute_url }}">{{ post.subject }}</a></dd>
         <dd class="category">{% sphboard_displayBreadcrumbsForCategory post.category 1 %}</dd>
-	<dd class="body">{{ post.body_escaped }}</dd>
+	<dd class="body">
+            {% if post.is_annotated %}
+                {% if post.annotation.get.hide_post %}
+                    <div class="annotation annotation_post_hidden">
+                        <strong>{% trans "Post hidden by" %} {% sphboard_displayUserName post.annotation.get.author %}:</strong><br/>{{ post.annotation.get.body_escaped }}
+                    </div>
+                {% else %}
+                    <div class="annotation annotation_not_hidden"><strong>{% trans "Post annotated by" %} {% sphboard_displayUserName post.annotation.get.author %}:</strong> {{ post.annotation.get.body_escaped }}</small></div>
+                    {{ post.body_escaped }}
+                {% endif %}
+            {% else %}
+                {{ post.body_escaped }}
+            {% endif %}
+        </dd>
       </dl>
     </li>
   {% endfor %}
