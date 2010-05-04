@@ -19,8 +19,10 @@ import logging
 logger = logging.getLogger('sphene.community.middleware')
 
 def my_get_current(self):
-    group = get_current_group()
-    from django.conf import settings
+    try:
+        group = get_current_group()
+    except AttributeError, e:
+        group = None
     if not group:
         return self.get(pk=settings.SITE_ID)
     else:
