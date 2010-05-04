@@ -18,9 +18,14 @@ def view_search_posts(request, group):
     next = False
     count = 0
     category = None
-    category_id = request.GET.get('category_id', '')
-    if category_id:
-        category = Category.objects.get(pk = category_id)
+    try:
+        category_id = int(request.GET.get('category_id', 0))
+        try:
+            category = Category.objects.get(pk = category_id)
+        except Category.DoesNotExist:
+            category_id = ''
+    except ValueError:
+        pass
 
     if query:
         results = search_posts(query=query, category=category)
