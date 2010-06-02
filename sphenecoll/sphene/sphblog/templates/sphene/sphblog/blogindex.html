@@ -27,12 +27,12 @@
   {% endif %}
 
   {% if category %}
-    <center><h1>{{ category.name }}</h1></center>
+    <h1>{{ category.name }}</h1>
     <p>
     {% if user.is_authenticated %}
       {% include "sphene/sphboard/_category_monitor.html" %}
     {% else %}
-      Log in to add email notification.
+      <!-- Log in to add email notification. -->
     {% endif %}
     </p>
   {% endif %}
