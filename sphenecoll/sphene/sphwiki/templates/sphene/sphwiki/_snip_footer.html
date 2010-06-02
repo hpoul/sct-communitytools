@@ -1,0 +1,3 @@
+{% load i18n %}{% load sph_extras %}
+<p>{% blocktrans with snip.changed|sph_date as snip_changedate and snip.editor|sph_html_user as snip_editor %}Last Modified: {{ snip_changedate }} by {{ snip_editor }}{% endblocktrans %} - [ <a href="{{ snip.get_absolute_historyurl }}">{% trans "Snip Changes" %}</a> ] [ <a href="{{ snip.get_absolute_recentchangesurl }}">{% tr
+ans "Wiki History" %}</a> ]</p>
