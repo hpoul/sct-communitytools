@@ -3,11 +3,16 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from sphene.community.sphpermalink import sphpermalink
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
+
+
+from sphene.community.sphpermalink import sphpermalink
+
 import logging
 import re
+
+
 logger = logging.getLogger('sphene.community.models')
 # Create your models here.
 
@@ -109,7 +114,17 @@ class Navigation(models.Model):
 
 
         def __unicode__(self):
-                return self.label
+            return self.label
+
+        def is_active(self):
+            from sphene.community.middleware import get_current_request
+            req = get_current_request()
+            if not req:
+                return False
+            nav = getattr(req, 'nav', req.path)
+            if self.href == '/':
+                return self.href == nav or nav == ''
+            return nav.startswith(self.href)
 
         class Meta:
                 verbose_name = ugettext_lazy('Navigation')
