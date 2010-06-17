@@ -1103,9 +1103,7 @@ class PostAttachment(models.Model):
                                    blank = True )
 
     def is_image(self):
-        print "asdf %s" % self.fileupload.name
         (type, encoding) = mimetypes.guess_type(self.fileupload.name)
-        print "xx"
         if type is None:
             return False
         return type.startswith('image/')
