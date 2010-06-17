@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 
 from sphene.community.models import Group
-from sphene.community.middleware import get_current_group, get_current_request
+from sphene.community.middleware import get_current_group, get_current_request, get_current_user
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
 
@@ -212,10 +212,16 @@ class LatestThreadsNode(template.Node):
         # TODO check permissions
         category_id = self.categoryvar.resolve(context)
         if not category_id:
-            return ''
-        category = Category.objects.get( pk = category_id )
-        threads = Post.objects.filter(category = category,
-                                      thread__isnull = True,).order_by('-postdate')
+            # if no category id is given simply display all categories
+            # of the current group.
+            category = None
+            categories = get_all_viewable_categories(get_current_group(), get_current_user())
+            threads = Post.objects.filter(category__id__in = categories,
+                                          thread__isnull = True,).order_by('-postdate')
+        else:
+            category = Category.objects.get( pk = category_id )
+            threads = Post.objects.filter(category = category,
+                                          thread__isnull = True,).order_by('-postdate')
         context.push()
         context['threads'] = threads
         context['category'] = category

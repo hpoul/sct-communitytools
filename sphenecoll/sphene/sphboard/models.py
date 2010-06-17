@@ -1,4 +1,8 @@
+
 from datetime import datetime, timedelta
+import mimetypes
+
+
 from django.db import models
 from django.db.models import Q
 from django.db.models import signals
@@ -1097,6 +1101,14 @@ class PostAttachment(models.Model):
     fileupload = models.FileField( _(u'File'),
                                    upload_to = get_sph_setting( 'board_attachments_upload_to' ),
                                    blank = True )
+
+    def is_image(self):
+        print "asdf %s" % self.fileupload.name
+        (type, encoding) = mimetypes.guess_type(self.fileupload.name)
+        print "xx"
+        if type is None:
+            return False
+        return type.startswith('image/')
 
     class Meta:
         verbose_name = ugettext_lazy('Post attachment')

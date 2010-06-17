@@ -277,7 +277,13 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         MyPostForm = category_type.get_post_form_class(thread, post)
 
     attachmentForm = None
+    attachmentForms = list()
     allow_attachments = get_sph_setting('board_allow_attachments')
+    allowedattachments = 0
+    if allow_attachments:
+        allowedattachments = 1
+        if isinstance(allow_attachments, int):
+            allowedattachments = allow_attachments
     if request.method == 'POST':
         postForm = MyPostForm(request.POST)
         postForm.init_for_category_type(category_type, post)
@@ -285,10 +291,12 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
 
         create_post = True
 
-        if allow_attachments:
+        #if allow_attachments:
+        for i in range(allowedattachments):
             attachmentForm = PostAttachmentForm(request.POST,
                                                 request.FILES,
-                                                prefix = 'attachment')
+                                                prefix = 'attachment%d' % i)
+            attachmentForms.append(attachmentForm)
 
             if 'cmd_addfile' in request.POST:
                 create_post = False
@@ -387,8 +395,10 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm()
 
-        if allow_attachments:
-            attachmentForm = PostAttachmentForm(prefix = 'attachment')
+        for i in range(allowedattachments):
+            attachmentForms.append(PostAttachmentForm(prefix = 'attachment%d' % i))
+            if attachmentForm is None:
+                attachmentForm = attachmentForms[0]
 
     if post:
         postForm.fields['subject'].initial = post.subject
@@ -413,6 +423,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     if (not thread and not post) or (post and post.is_new() and post.thread is None):
         context['pollform'] = pollForm
     context['attachmentForm'] = attachmentForm
+    context['attachmentForms'] = attachmentForms
     if 'createpoll' in request.REQUEST:
         context['createpoll'] = request.REQUEST['createpoll']
 

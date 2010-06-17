@@ -78,7 +78,9 @@
 	</tr>
       {% endfor %}
     {% endif %}
-    {{ attachmentForm }}
+    {% for aform in attachmentForms %}
+        {{ aform }}
+    {% endfor %}
     <tr>
       <td colspan="2"><input type="submit" name="cmd_addfile" value="{% trans "Upload File" %}" style="width: auto;" /></td>
     </tr>
