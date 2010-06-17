@@ -51,6 +51,8 @@ from django.contrib.auth.views import login as view_login, logout as view_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 def accounts_login(request, group = None):
+    if request.user.is_authenticated() and 'next' in request.GET:
+        return HttpResponseRedirect(request.GET['next'])
     return view_login( request, template_name = 'sphene/community/accounts/login.html', )
 
 def accounts_logout(request, group = None):

@@ -75,8 +75,33 @@ def sphboard_displayUserName( user ):
     return { 'user': user }
 
 @register.inclusion_tag('sphene/sphboard/_displayPostForm.html')
+def sphboard_quick_thread( category ):
+    return quick_post(category)
+
+
+@register.inclusion_tag('sphene/sphboard/_displayPostForm.html')
 def sphboard_quick_reply( thread ):
-    return { 'form': PostForm(initial={'subject': u'Re: ' + thread.subject} ), 'form_action': thread.get_absolute_postreplyurl() }
+    return quick_post(thread.category, thread)
+
+def quick_post(category, thread = None):
+    subject = u''
+    if thread is not None:
+        subject = u'Re: ' + thread.subject
+        form_action = thread.get_absolute_postreplyurl()
+    else:
+        form_action = category.get_absolute_post_thread_url()
+
+    MyPostForm = PostForm
+    category_type = category.get_category_type()
+    print "category type: %s" % str(category_type)
+    if category_type is not None:
+        MyPostForm = category_type.get_post_form_class(thread, None)
+
+    form = MyPostForm(initial={'subject': subject} )
+    form.init_for_category_type(category_type, None)
+    return { 
+        'form': form,
+        'form_action': form_action }
 
 ### sphboard_displayPostForm is deprecated, there is a view function for this !!
 @register.inclusion_tag('sphene/sphboard/_displayPostForm.html', takes_context=True)

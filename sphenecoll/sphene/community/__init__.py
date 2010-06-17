@@ -40,6 +40,7 @@ def clean_community_advprofile_avatar(self):
     try:
         # Verify image dimensions ..
         image = Image.open(f)
+        format = image.format
         width = image.size[0]
         height = image.size[1]
 
@@ -49,9 +50,18 @@ def clean_community_advprofile_avatar(self):
         max_height = get_sph_setting( 'community_avatar_max_height' )
 
         if width > max_width or height > max_height:
-            raise djangoforms.ValidationError( "Max size of %dx%d exceeded (Your upload was %dx%d)" % (max_width, max_height, width, height) )
+            # Instead of creating a validation error, simply resize the image.
+            image.thumbnail( (max_width, max_height), Image.ANTIALIAS )
+            from tempfile import NamedTemporaryFile
+            from django.core.files.base import File
+            import os
+            tmpfile = NamedTemporaryFile()
+            image.save(tmpfile, format = format)
+            f = File(tmpfile, f.name)
+            #raise djangoforms.ValidationError( "Max size of %dx%d exceeded (Your upload was %dx%d)" % (max_width, max_height, width, height) )
         
-    except IOError:
+    except IOError, e:
+        print e
         raise ValidationError( _(u"Uploaded an invalid image.") )
     
     return f
@@ -66,7 +76,9 @@ def community_advprofile_edit_init_form(sender, instance, signal, *args, **kwarg
     if profile.avatar:
         instance.fields['community_advprofile_avatar_remove'] = djangoforms.BooleanField( label = _(u'Delete avatar'), required = False )
 
-    instance.fields['community_advprofile_avatar'] = djangoforms.ImageField( label = _(u'Avatar'), required = False, )
+    max_width = get_sph_setting( 'community_avatar_max_width' )
+    max_height = get_sph_setting( 'community_avatar_max_height' )
+    instance.fields['community_advprofile_avatar'] = djangoforms.ImageField( label = _(u'Avatar'), help_text = _(u'Avatar with maximum size of %(max_width)sx%(max_height)s' % { 'max_width': max_width, 'max_height': max_height }), required = False, )
     instance.clean_community_advprofile_avatar = lambda : clean_community_advprofile_avatar(instance)
 
 def community_advprofile_edit_save_form(sender, instance, signal, request, **kwargs):
@@ -82,7 +94,10 @@ def community_advprofile_edit_save_form(sender, instance, signal, request, **kwa
         profile.avatar = None
 
     if data['community_advprofile_avatar']:
-        profile.avatar.save( data['community_advprofile_avatar'].name, data['community_advprofile_avatar'] )
+        f = getattr(data['community_advprofile_avatar'], 'tmpfile', None)
+        if f is None:
+            f = data['community_advprofile_avatar']
+        profile.avatar.save( data['community_advprofile_avatar'].name, f )
     #profile.avat = data['public_emailaddress']
     profile.save()
 
