@@ -33,9 +33,10 @@ class BlogPostExtension(models.Model):
         post = self.post
         date = post.postdate
         return ('sphene.sphblog.views.show_thread', (), { 'groupName': post.category.group.name,
-                                                          'year': date.year,
-                                                          'month': date.month,
-                                                          'day': date.day,
+                                                          'category_slug': post.category.slug,
+                                                          #'year': date.year,
+                                                          #'month': date.month,
+                                                          #'day': date.day,
                                                           'slug': self.slug,
                                                           })
     get_absolute_url = sphpermalink(get_absolute_url)

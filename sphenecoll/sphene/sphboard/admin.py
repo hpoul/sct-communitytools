@@ -4,9 +4,10 @@ from sphene.sphboard import models
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'group', 'parent', 'allowview', 'category_type' )
-    list_filter = ('group', 'parent', )
-    search_fields = ('name',)
+    list_display = ('name', 'group', 'parent', 'allowview', 'category_type', 'slug', )
+    list_filter = ('group', 'parent',)
+    prepopulated_fields = {"slug": ('name',)}
+    search_fields = ('name','slug',)
 
 admin.site.register(models.Category, CategoryAdmin)
 

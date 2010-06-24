@@ -6,7 +6,7 @@
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
@@ -82,7 +82,7 @@ def get_paged_objects(objects, page):
 
     return paged_objects
 
-def get_category_info(category_id, group):
+def get_category_info(group, category_id = None, category_slug = None):
     categories = get_board_categories(group)
     category = None
     if category_id is not None:
@@ -91,17 +91,36 @@ def get_category_info(category_id, group):
                       if category.id == category_id]
         if categories:
             category = categories[0]
+
+    if category_slug is not None:
+        categories = [category for category in categories
+                      if category.slug == category_slug]
+        if categories:
+            category = categories[0]
+
     if not categories:
         return None
     return (categories, category)
 
-def blogindex(request, group, category_id = None, page = 1, year=None, month=None):
+
+def blogindex_redirect(request, group, category_id = None, page = 1, year=None, month=None):
+    category_info = get_category_info(category_id = category_id,
+                                      group = group)
+    if not category_info:
+        return Http404
+    category = category_info[1]
+    return HttpResponsePermanentRedirect(category.get_absolute_url())
+
+
+def blogindex(request, group, category_id = None, category_slug = None, page = 1, year=None, month=None):
     """
     shows a blog posts list. year and month parameters
     are used for archive functionality.
     """
 
-    category_info = get_category_info(category_id, group)
+    category_info = get_category_info(category_id = category_id,
+                                      category_slug = category_slug,
+                                      group = group)
     if not category_info:
         return render_to_response('sphene/sphblog/nocategory.html',
                                   {},
@@ -169,8 +188,14 @@ def postthread(request, group):
 
     return HttpResponseRedirect( category.get_absolute_post_thread_url() )
 
+def show_thread_redirect(request, group, slug, category_slug = None, year = None, month = None, day = None):
+    try:
+        blogpost = BlogPostExtension.objects.get( slug__exact = slug)
+    except BlogPostExtension.DoesNotExist:
+        raise Http404
+    return HttpResponsePermanentRedirect(blogpost.get_absolute_url())
 
-def show_thread(request, group, slug, year = None, month = None, day = None):
+def show_thread(request, group, slug, category_slug = None, year = None, month = None, day = None):
     try:
         blogpost = BlogPostExtension.objects.get( slug__exact = slug )
     except BlogPostExtension.DoesNotExist:

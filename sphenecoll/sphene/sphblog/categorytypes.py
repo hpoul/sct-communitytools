@@ -110,7 +110,7 @@ class BlogCategoryType(CategoryType):
 
     def get_absolute_url_for_category(self):
         try:
-            blog_url = sph_reverse('sphblog_category_index', kwargs = { 'category_id': self.category.id })
+            blog_url = sph_reverse('sphblog_category_index_slug', kwargs = { 'category_slug': self.category.slug })
             return blog_url
         except Exception, e:
             #print "err.. argl %s" % str(e)

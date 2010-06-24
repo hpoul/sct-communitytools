@@ -189,6 +189,8 @@ class Category(models.Model):
     allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
     sortorder = models.IntegerField( default = 0, null = False )
 
+    slug = models.CharField(max_length = 250, unique = True, db_index = True)
+
     category_type = models.CharField(max_length = 250, blank = True, db_index = True, choices = get_category_type_choices())
 
     objects = AccessCategoryManager()#models.Manager()
@@ -202,6 +204,10 @@ class Category(models.Model):
                   ( '2007-09-03 00', 'alter', 'ADD category_type varchar(250)' ),
                   ( '2007-09-03 01', 'update', "SET category_type = ''" ),
                   ( '2007-09-03 02', 'alter', 'ALTER category_type SET NOT NULL' ),
+
+                  ( '2010-06-23 01', 'alter', 'ADD slug varchar(250)' ),
+                  ( '2010-06-23 02', 'update', 'SET slug = id' ),
+                  ( '2010-06-23 03', 'alter', 'ALTER slug SET NOT NULL'),
                   )
 
     sph_permission_flags = { 'sphboard_editallposts':
