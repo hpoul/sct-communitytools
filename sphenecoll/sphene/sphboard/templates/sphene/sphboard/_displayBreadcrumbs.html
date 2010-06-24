@@ -6,7 +6,7 @@
 {% endif %}
 {% if categories %}
   {% for category in categories %}
-    &gt;&gt; 
+    &raquo; 
     {% ifnotequal category current %}
       <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
     {% else %}
@@ -15,7 +15,7 @@
   {% endfor %}
 {% endif %}
 {% if thread %}
-  &gt;&gt;
+  &raquo;
   {% if linkall %}
     <a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a>
   {% else %}

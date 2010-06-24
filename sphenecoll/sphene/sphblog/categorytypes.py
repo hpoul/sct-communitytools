@@ -106,7 +106,7 @@ class BlogCategoryType(CategoryType):
         return post.thread is not None
 
     def get_show_thread_template(self):
-        return 'sphene/sphblog/show_blogentry.html'
+        return 'sphene/sphblog/show_blogentry_layer.html'
 
     def get_absolute_url_for_category(self):
         try:

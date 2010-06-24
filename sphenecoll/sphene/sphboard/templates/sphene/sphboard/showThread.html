@@ -35,7 +35,6 @@
   {% block sphboard_breadcrumb %}
     {% sphboard_displayBreadcrumbsForThread thread %}
   {% endblock %}
-  <br/>
   {% if thread.allow_sticking or thread.allow_locking or thread.allow_moving %}
     {% trans "Thread Options:" %} 
       {% if thread.allow_sticking %}
@@ -193,9 +192,8 @@
       {% endblock %}
     {% endfor %}
   </table>
-  <br/><br/>
-  {% sph_pagination pages page %}<br/><br/>
-  <br/><br/>
+
+  <p class="sphboard_pagination">{% sph_pagination pages page %}</p>
   
   {% if allowPosting %}
     {% if sph_settings.board_quick_reply %}
@@ -208,10 +206,12 @@
     {% if thread.is_closed %}
       {% trans "Thread is locked." %}
     {% else %}
-      {% if user.is_authenticated %}
-        {% trans "You have no permission to post a reply." %}
-      {% else %}
-        {% trans "Please login to post a reply." %}
+      {% if thread.category.allows_replies %}
+        {% if user.is_authenticated %}
+          {% trans "You have no permission to post a reply." %}
+        {% else %}
+          {% trans "Please login to post a reply." %}
+        {% endif %}
       {% endif %}
     {% endif %}
   {% endif %}

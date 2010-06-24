@@ -44,5 +44,8 @@
 .sphboard_post_list th.sphblog_comments_heading {
   border: none;
 }
-
+.sphboard_pagination {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
 

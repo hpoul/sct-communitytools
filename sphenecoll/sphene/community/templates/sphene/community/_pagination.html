@@ -1,4 +1,5 @@
 {% load i18n %}
+{% if pages != 1 %}
 {% trans "Page:" %}
 {% if has_prev %}
   <a href="{{ url }}?{{ getparam }}={{ prev }}">{% trans "Previous" %}</a>
@@ -12,4 +13,5 @@
 {% endfor %}
 {% if has_next %}
   <a href="{{ url }}?{{ getparam }}={{ next }}">{% trans "Next" %}</a>
+{% endif %}
 {% endif %}

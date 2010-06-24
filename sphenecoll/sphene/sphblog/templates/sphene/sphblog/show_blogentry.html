@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block sphboard_breadcrumb %}
-  <a href="{% sph_url2 sphblog_index %}">Blog</a>{% sphboard_displayBreadcrumbsForThread thread 0 0 %}
+  <a href="{% sph_url2 sphblog_index %}">{% trans "Blog" %}</a>{% sphboard_displayBreadcrumbsForThread thread 0 0 %}
 {% endblock %}
 
 
@@ -25,8 +25,10 @@
     <tr>
       <td colspan="2" class="sphblog_post">{% sphblog_showblogpost post %}</td>
     </tr>
+    {% if post_list|length > 1 %}
     <tr>
       <th colspan="2" class="sphblog_comments_heading">{% trans "Comments" %}:</th>
     </tr>
+    {% endif %}
   {% endif %}
 {% endblock %}

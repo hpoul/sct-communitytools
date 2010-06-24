@@ -290,6 +290,12 @@ class Category(models.Model):
                or has_permission_flag(user, 'sphboard_post_threads', self)
     allowPostThread = has_post_thread_permission
 
+    def allows_replies(self):
+        """
+        Returns True if _anyone_ is allowed to post replies
+        """
+        return self.allowrepies != 3
+
     def has_view_permission(self, user = None):
         if not user:
             user = get_current_user()
