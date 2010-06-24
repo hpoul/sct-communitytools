@@ -210,7 +210,9 @@ class LatestThreadsNode(template.Node):
 
     def render(self, context):
         # TODO check permissions
-        category_id = self.categoryvar.resolve(context)
+        category_id = None
+        if self.categoryvar:
+            category_id = self.categoryvar.resolve(context)
         if not category_id:
             # if no category id is given simply display all categories
             # of the current group.
@@ -234,10 +236,13 @@ class LatestThreadsNode(template.Node):
 @register.tag(name='sphboard_latest_threads')
 def sphboard_latest_threads(parser, token):
     bits = list(token.split_contents())
-    if len(bits) != 2:
-        raise template.TemplateSyntaxError("%r requires a category as first argument." % bits[0])
+    #if len(bits) != 2:
+    #    raise template.TemplateSyntaxError("%r requires a category as first argument." % bits[0])
 
-    categoryvar = parser.compile_filter(bits[1])
+    if len(bits) == 2:
+        categoryvar = parser.compile_filter(bits[1])
+    else:
+        categoryvar = None
     nodelist = parser.parse(('endsphboard_latest_threads',))
     parser.delete_first_token()
     return LatestThreadsNode(nodelist, categoryvar)
