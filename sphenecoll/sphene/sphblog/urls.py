@@ -6,7 +6,14 @@ feeds = {
     'latestposts': LatestBlogPosts,
 }
 
-urlpatterns = patterns('sphene.sphblog.views',
+urlpatterns = patterns('',
+                        url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
+                            { 'feed_dict': feeds,
+                              'noGroup': True,
+                              },
+                            name = 'sphblog-feeds'),
+                       )
+urlpatterns += patterns('sphene.sphblog.views',
                        url(r'^$', 'blogindex', name='sphblog_index'),
                        url(r'^(?P<category_id>\d+)/$', 'blogindex_redirect', name='sphblog_category_index'),
                        url(r'^(?P<category_slug>[\w\-]+)/$', 'blogindex', name='sphblog_category_index_slug'),
@@ -20,15 +27,9 @@ urlpatterns = patterns('sphene.sphblog.views',
                        url(r'^archive/(?P<year>\d{4})/page/(?P<page>\d+)/$', 'blogindex', name='sphblog_archive_year_paged'),
                        url(r'^archive/(?P<year>\d{4})/(?P<month>\d{1,2})/page/(?P<page>\d+)/$', 'blogindex', name='sphblog_archive_month_paged'),
 
-                       (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.*)/$', 'show_thread_redirect'),
-                       (r'^(?P<category_slug>[\w\-]+?)/(?P<slug>.*)/$', 'show_thread'),
                        url(r'^page/(?P<page>\d+)/$', 'blogindex', name='sphblog_paged_index'),
-                       )
-urlpatterns += patterns('',
-                        url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
-                            { 'feed_dict': feeds,
-                              'noGroup': True,
-                              },
-                            name = 'sphblog-feeds'),
+
+                       (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.*)/$', 'show_thread_redirect'),
+                       (r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', 'show_thread'),
                        )
 
