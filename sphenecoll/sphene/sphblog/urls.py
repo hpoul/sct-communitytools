@@ -15,8 +15,6 @@ urlpatterns = patterns('',
                        )
 urlpatterns += patterns('sphene.sphblog.views',
                        url(r'^$', 'blogindex', name='sphblog_index'),
-                       url(r'^(?P<category_id>\d+)/$', 'blogindex_redirect', name='sphblog_category_index'),
-                       url(r'^(?P<category_slug>[\w\-]+)/$', 'blogindex', name='sphblog_category_index_slug'),
                        url(r'^postthread/$', 'postthread', name = 'sphblog_postthread'),
                        url(r'^tag/(?P<tag_name>\w+)/(?:page/(?P<page>\d+)/)?$', 'show_tag_posts', name = 'sphblog_show_tag_posts'),
 
@@ -30,6 +28,8 @@ urlpatterns += patterns('sphene.sphblog.views',
                        url(r'^page/(?P<page>\d+)/$', 'blogindex', name='sphblog_paged_index'),
 
                        (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.*)/$', 'show_thread_redirect'),
+                       url(r'^(?P<category_id>\d+)/$', 'blogindex_redirect', name='sphblog_category_index'),
+                       url(r'^(?P<category_slug>[\w\-]+)/$', 'blogindex', name='sphblog_category_index_slug'),
                        (r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', 'show_thread'),
                        )
 
