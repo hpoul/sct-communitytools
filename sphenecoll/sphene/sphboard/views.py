@@ -408,7 +408,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         context['post'] = post
         context['thread'] = post.thread or post
     elif 'quote' in request.REQUEST:
-        quotepost = Post.objects.get( pk = request.REQUEST['quote'] )
+        quotepost = get_object_or_404(Post, pk = request.REQUEST['quote'] )
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
         if quotepost.author == None:
             username = 'anonymous'
