@@ -444,6 +444,8 @@ def tag_get_labels(model_instance):
 
     tag_labels = list()
     for tagged_item in tagged_items:
+        if tagged_item.tag_label == '':
+            continue
         tag_labels.append( tagged_item.tag_label )
 
     return tag_labels
