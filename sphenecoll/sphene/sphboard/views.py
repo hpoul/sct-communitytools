@@ -509,7 +509,7 @@ def annotate(request, group, post_id):
                                context_instance = RequestContext(request) )
 
 def hide(request, group, post_id):
-    post = Post.objects.get( pk = post_id )
+    post = get_object_or_404(Post, pk = post_id )
     thread = post.get_thread()
     if not post.allow_hiding():
         raise PermissionDenied()
