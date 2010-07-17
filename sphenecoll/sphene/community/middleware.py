@@ -114,7 +114,7 @@ class GroupMiddleware(object):
                     group = get_object_or_404(Group, name = groupName)
                 except Http404, e:
                     # We allow access to admin site without group.
-                    if view_func.__module__ != 'django.contrib.admin.sites':
+                    if not view_func.__module__.startswith('django.contrib.admin.'):
                         raise e
         if 'groupName' in view_kwargs:
             if view_kwargs.get( 'noGroup', False ):
