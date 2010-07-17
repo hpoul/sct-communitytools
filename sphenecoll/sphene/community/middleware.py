@@ -110,7 +110,12 @@ class GroupMiddleware(object):
             # middleware.
             group = get_current_group()
             if group is None or group.name != groupName:
-                group = get_object_or_404(Group, name = groupName)
+                try:
+                    group = get_object_or_404(Group, name = groupName)
+                except Http404, e:
+                    # We allow access to admin site without group.
+                    if view_func.__module__ != 'django.contrib.admin.sites':
+                        raise e
         if 'groupName' in view_kwargs:
             if view_kwargs.get( 'noGroup', False ):
                 del view_kwargs['groupName']
