@@ -1,6 +1,8 @@
 # Create your views here.
 
 from time import time
+from urllib import quote, unquote
+from hashlib import md5
 
 from django import forms
 from django.conf import settings
@@ -25,7 +27,8 @@ from sphene.community.permissionutils import has_permission_flag
 from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
-from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
+#from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
+
 
 class RegisterEmailAddress(forms.Form):
     email_address = forms.EmailField(label=ugettext_lazy(u'Email address'))
@@ -124,12 +127,12 @@ def register(request, group = None):
                 subject = ugettext(u'Email verification required')
             else:
                 subject = ugettext(u'Email verification required for site %(site_name)s') % {'site_name': group.get_name()}
-            validationcode = cryptString( settings.SECRET_KEY, email_address )
+            validationcode = md5(settings.SECRET_KEY + email_address).hexdigest() ## cryptString( settings.SECRET_KEY, email_address )
             mail_context = RequestContext(request,
                                           {
                     'email': email_address,
                     'baseurl': group.baseurl,
-                    'path': sph_reverse( 'sphene.community.views.register_hash', (), { 'emailHash': validationcode, } ),
+                    'path': sph_reverse( 'sphene.community.views.register_hash', (), { "email": quote(email_address), 'emailHash': validationcode, } ),
                     'validationcode': validationcode,
                     'group': group,
                     })
@@ -160,7 +163,7 @@ class UserForm(forms.Form):
     username = forms.RegexField( username_re, label=ugettext_lazy(u'Username'))
     email_address = forms.CharField(label=ugettext_lazy(u'Email address'),
                                     widget = forms.TextInput(attrs={'disabled': 'disabled'}))
-    
+    email_hash = forms.CharField(widget=forms.HiddenInput)
 
     def clean_username(self):
         if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
@@ -190,8 +193,8 @@ class RegisterForm(UserForm):
 
 
 
-def register_hash(request, emailHash, group = None):
-    email_address = decryptString( settings.SECRET_KEY, emailHash )
+def register_hash(request, email, emailHash, group = None):
+    email_address = unquote(email) #decryptString( settings.SECRET_KEY, emailHash )
     if request.method == 'POST':
         post = request.POST.copy()
         post.update( { 'email_address': email_address } )
@@ -206,12 +209,18 @@ def register_hash(request, emailHash, group = None):
             return render_to_response( 'sphene/community/register_hash_success.html',
                                        { },
                                        context_instance = RequestContext(request) )
-    else:
+    
+    elif md5(settings.SECRET_KEY + email_address).hexdigest() == emailHash:
         form = RegisterForm( )
         form.fields['email_address'].initial = email_address
-    return render_to_response( 'sphene/community/register_hash.html',
-                               { 'form': form },
-                               context_instance = RequestContext(request) )
+        form.fields['email_hash'].initial = emailHash
+        return render_to_response( 'sphene/community/register_hash.html',
+                                   { 'form': form },
+                                   context_instance = RequestContext(request) )
+    else:
+        print email_address
+        print md5(settings.SECRET_KEY + email_address).hexdigest(), emailHash
+        raise Http404("No Outstanding registrations for this user.")
 
 
 
