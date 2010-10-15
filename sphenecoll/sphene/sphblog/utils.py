@@ -5,6 +5,7 @@ import re
 import unicodedata
 from htmlentitydefs import name2codepoint
 from django.utils.encoding import smart_unicode, force_unicode
+from slughifi import slughifi
 
 
 def slugify(s, entities=True, decimal=True, hexadecimal=True, model=None, slug_field='slug', pk=None):
@@ -13,32 +14,7 @@ def slugify(s, entities=True, decimal=True, hexadecimal=True, model=None, slug_f
     if len(s) > 40:
         s = s[:40]
 
-    #character entity reference
-    if entities:
-        s = re.sub('&(%s);' % '|'.join(name2codepoint), lambda m: unichr(name2codepoint[m.group(1)]), s)
-
-    #decimal character reference
-    if decimal:
-        try:
-            s = re.sub('&#(\d+);', lambda m: unichr(int(m.group(1))), s)
-        except:
-            pass
-
-    #hexadecimal character reference
-    if hexadecimal:
-        try:
-            s = re.sub('&#x([\da-fA-F]+);', lambda m: unichr(int(m.group(1), 16)), s)
-        except:
-            pass
-
-    #translate
-    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
-
-    #replace unwanted characters
-    s = re.sub(r'[^-a-z0-9]+', '-', s.lower())
-
-    #remove redundant -
-    s = re.sub('-{2,}', '-', s).strip('-')
+    s = slughifi(s)
 
     slug = s
     if model:  
