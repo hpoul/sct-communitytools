@@ -54,6 +54,8 @@ sph_settings_defaults = {
     # 1. sequence for 'username': displayfield (if set) - username
     # 2. sequence for 'fullname': displayfield (if set) - fullname (if first or last name are set) - username
     'community_user_displayname_fallback': 'fullname',
+    # name of default group created by sphene
+    'default_group_name':'example'
     }
 
 

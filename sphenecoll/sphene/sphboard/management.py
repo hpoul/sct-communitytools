@@ -1,17 +1,19 @@
-from django.db.models import signals
-
+from django.db.models import get_app, get_models
 from sphene.sphboard import models
+from django.conf import settings
 
 def init_data(app, created_models, verbosity, **kwargs):
     from sphene.community.models import Group
-    from sphene.sphboard.models import Category, ThreadInformation, Post
+    from sphene.sphboard.models import Category, ThreadInformation
     if Category in created_models:
-        group = Group.objects.get( name = 'example' )
-        category = Category( name = 'Example Category',
-                             group = group,
-                             description = 'This is just an example Category. You can modify categories in the django admin interface.',
+        group, created = Group.objects.get_or_create( name = 'example',
+                                                      longname = 'Example Group',
+                                                      baseurl = 'www.example.com', )
+
+        category, created = Category.objects.get_or_create( name = 'Example Category',
+                                                   group = group,
+                                                   description = 'This is just an example Category. You can modify categories in the django admin interface.',
                              )
-        category.save()
 
     if ThreadInformation in created_models:
         # Synchronize ThreadInformation with all posts ..
@@ -22,7 +24,7 @@ def init_data(app, created_models, verbosity, **kwargs):
 def synchronize_threadinformation(verbosity = -1):
     """ Will synchronize the 'ThreadInformation' objects. """
     from sphene.sphboard.models import Category, ThreadInformation, Post, THREAD_TYPE_DEFAULT
-    
+
     # First find all threads ...
     if verbosity >= 2:
         print "Synchronizing ThreadInformation ..."
@@ -42,5 +44,25 @@ def synchronize_threadinformation(verbosity = -1):
 
 
 from sphene.community.management import do_changelog
-signals.post_syncdb.connect(do_changelog, sender=models)
-signals.post_syncdb.connect(init_data, sender=models)
+
+# handle both post_syncdb and post_migrate (if south is used)
+def syncdb_compat(app_label, handler=None, *args, **kwargs):
+    if app_label=='sphboard':
+        app = get_app(app_label)
+        models = get_models(app)
+        handler(app=app, created_models=models, verbosity=1, **kwargs)
+
+def syncdb_compat_init_data(app, *args, **kwargs):
+    syncdb_compat(app, handler=init_data, *args, **kwargs)
+
+def syncdb_compat_do_changelog(app, *args, **kwargs):
+    syncdb_compat(app, handler=do_changelog, *args, **kwargs)
+
+if 'south' in settings.INSTALLED_APPS:
+    from south.signals import post_migrate
+    post_migrate.connect(syncdb_compat_init_data)
+    post_migrate.connect(syncdb_compat_do_changelog)
+else:
+    from django.db.models.signals import post_syncdb
+    post_syncdb.connect(do_changelog, sender=models)
+    post_syncdb.connect(init_data, sender=models)

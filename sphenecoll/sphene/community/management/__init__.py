@@ -1,13 +1,13 @@
-
-from django.db.models import signals, get_apps, get_models
+from django.db.models import signals, get_app, get_apps, get_models
 from sphene.community import models
+from django.conf import settings
 
 def init_data(app, created_models, verbosity, **kwargs):
     from sphene.community.models import Group, Navigation, CommunityUserProfileField
     if Group in created_models:
-        group = Group( name = 'example',
-                       longname = 'Example Group',
-                       baseurl = 'www.example.com', )
+        group, created = Group.objects.get_or_create( name = 'example',
+                                                      longname = 'Example Group',
+                                                      baseurl = 'www.example.com', )
         group.save()
 
         if Navigation in created_models:
@@ -40,7 +40,7 @@ def init_data(app, created_models, verbosity, **kwargs):
                                    regex = 'http://.*',
                                    sortorder = 300,
                                    renderstring = '<a href="%(value)s">%(value)s</a>', ).save()
-        
+
 
 from django.db import backend, connection, transaction
 from sphene.community.models import PermissionFlag, Role, Group
@@ -87,7 +87,7 @@ def do_changelog(app, created_models, verbosity, **kwargs):
             if version != None and version >= date:
                 # This change was already applied ...
                 continue
-            
+
             if changetype == 'alter':
                 sqlstmt = 'ALTER TABLE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
                 sql += (sqlstmt,)
@@ -131,9 +131,6 @@ def do_changelog(app, created_models, verbosity, **kwargs):
         else:
             print "Not updating database. You have to do this by hand !"
 
-signals.post_syncdb.connect(init_data, sender=models, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
-signals.post_syncdb.connect(do_changelog)
-
 def create_permission_flags(app, created_models, verbosity, **kwargs):
     """
     Creates permission flags by looking at the Meta class of all models.
@@ -145,22 +142,22 @@ def create_permission_flags(app, created_models, verbosity, **kwargs):
     to be assigned to one so it can be found, but it can be used in any
     context.
     """
-    
+
     for myapp in get_apps():
         app_models = get_models(myapp)
         if not app_models:
             continue
-        
+
         for klass in app_models:
             if hasattr(klass, 'sph_permission_flags'):
                 sph_permission_flags = klass.sph_permission_flags
-                
+
                 # permission flags can either be a dictionary with keys beeing
                 # flag names, values beeing the description
                 # or lists in the form: ( ( 'flagname', 'description' ), ... )
                 if isinstance(sph_permission_flags, dict):
                     sph_permission_flags = sph_permission_flags.iteritems()
-                
+
                 for (flag, description) in sph_permission_flags:
                     flag, created = PermissionFlag.objects.get_or_create(name = flag)
                     if created and verbosity >= 2:
@@ -175,7 +172,7 @@ def create_permission_flags(app, created_models, verbosity, **kwargs):
             role, created = Role.objects.get_or_create( name = rolename, group = group )
             if not created:
                 continue
-            
+
             role.save()
             role.permission_flags.add(permissionflag)
             role.save()
@@ -183,7 +180,29 @@ def create_permission_flags(app, created_models, verbosity, **kwargs):
             if verbosity >= 2:
                 print "Created new role '%s' for group '%s' and assigned permission '%s'" % (rolename, group.name, permissionflag.name)
 
-            
+# handle both post_syncdb and post_migrate (if south is used)
+def syncdb_compat(app_label, handler=None, *args, **kwargs):
+    if app_label=='community':
+        app = get_app(app_label)
+        models = get_models(app)
+        handler(app=app, created_models=models, verbosity=1, **kwargs)
 
+def syncdb_compat_init_data(app, *args, **kwargs):
+    syncdb_compat(app, handler=init_data, *args, **kwargs)
 
-signals.post_syncdb.connect(create_permission_flags)
+def syncdb_compat_do_changelog(app, *args, **kwargs):
+    syncdb_compat(app, handler=do_changelog, *args, **kwargs)
+
+def syncdb_compat_create_permission_flags(app, *args, **kwargs):
+    syncdb_compat(app, handler=create_permission_flags, *args, **kwargs)
+
+if 'south' in settings.INSTALLED_APPS:
+    from south.signals import post_migrate
+    post_migrate.connect(syncdb_compat_init_data, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
+    post_migrate.connect(syncdb_compat_do_changelog)
+    post_migrate.connect(syncdb_compat_create_permission_flags)
+else:
+    from django.db.models.signals import post_syncdb
+    post_syncdb.connect(init_data, sender=models, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
+    post_syncdb.connect(do_changelog)
+    post_syncdb.connect(create_permission_flags)
