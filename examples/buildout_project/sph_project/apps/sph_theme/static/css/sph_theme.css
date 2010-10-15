@@ -1,0 +1,3 @@
+body { margin-top: 30px; }
+#leftblock { float: left; padding: 20px; border: 1px solid gray; }
+#content { margin-left: 250px; border: 1px solid black; padding: 10px; min-height: 300px; }
