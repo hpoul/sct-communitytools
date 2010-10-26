@@ -321,9 +321,9 @@ class RoleMemberLimitation(models.Model):
     Limits the membership of a user to a role by only applying to a
     specific object.
     """
-    role_member = models.ForeignKey( ugettext_lazy(u'Role member'), RoleMember )
+    role_member = models.ForeignKey( RoleMember )
 
-    object_type = models.ForeignKey(ugettext_lazy(u'Object type'), ContentType)
+    object_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField(db_index = True)
 
     content_object = generic.GenericForeignKey(ct_field = 'object_type')
