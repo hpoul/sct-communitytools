@@ -147,7 +147,7 @@ from sphene.community.sphsettings import get_sph_setting
 #from sphene.community import sphutils
 
 class CommunityUserProfile(models.Model):
-    user = models.ForeignKey( ugettext_lazy(u'User'), User, unique = True)
+    user = models.ForeignKey( User, unique = True)
     displayname = models.CharField(ugettext_lazy(u'Display name'), max_length = 250)
     public_emailaddress = models.CharField(ugettext_lazy(u'Public email address'), max_length = 250)
     
