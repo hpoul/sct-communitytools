@@ -62,8 +62,8 @@ USERLEVEL_CHOICES = (
     )
 
 class GroupMember(models.Model):
-        group = models.ForeignKey( Group )
-        user = models.ForeignKey( User, )
+        group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
+        user = models.ForeignKey( User, verbose_name=ugettext_lazy(u'User'))
         userlevel = models.IntegerField( choices = USERLEVEL_CHOICES )
 
 
@@ -104,7 +104,7 @@ NAVIGATION_TYPES = (
         )
 
 class Navigation(models.Model):
-        group = models.ForeignKey(Group)
+        group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
         label = models.CharField(max_length = 250)
         href  = models.CharField(max_length = 250)
         urltype = models.IntegerField( default = 0, choices = NAVIGATION_URL_TYPES )
@@ -147,7 +147,7 @@ from sphene.community.sphsettings import get_sph_setting
 #from sphene.community import sphutils
 
 class CommunityUserProfile(models.Model):
-    user = models.ForeignKey( User, unique = True)
+    user = models.ForeignKey( User, unique = True, verbose_name=ugettext_lazy(u'User'))
     displayname = models.CharField(ugettext_lazy(u'Display name'), max_length = 250)
     public_emailaddress = models.CharField(ugettext_lazy(u'Public email address'), max_length = 250)
     
@@ -188,8 +188,8 @@ class CommunityUserProfileField(models.Model):
 
 
 class CommunityUserProfileFieldValue(models.Model):
-    user_profile = models.ForeignKey( CommunityUserProfile )
-    profile_field = models.ForeignKey( CommunityUserProfileField )
+    user_profile = models.ForeignKey( CommunityUserProfile, verbose_name=ugettext_lazy(u'User profile'))
+    profile_field = models.ForeignKey( CommunityUserProfileField, verbose_name=ugettext_lazy(u'Profile field') )
 
     value = models.CharField( max_length = 250 )
 
@@ -204,7 +204,7 @@ class GroupTemplate(models.Model):
     Represents a group specific template which can be used to overload
     any django template from the filesystem.
     """
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
     template_name = models.CharField( max_length = 250, db_index = True )
     source = models.TextField()
 
@@ -250,7 +250,7 @@ class Role(models.Model):
     A role is a user defined collection of so called permission flags.
     """
     name = models.CharField(ugettext_lazy(u'Name'), max_length = 250)
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
 
     permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles' )
 
@@ -295,9 +295,9 @@ class RoleMember(models.Model):
     If there are no limitations (has_limitations = False) then the role
     is active for the user globally within the role's group.
     """
-    role = models.ForeignKey( Role )
-    user = models.ForeignKey( User, null = True )
-    rolegroup = models.ForeignKey( 'RoleGroup', null = True )
+    role = models.ForeignKey(Role, verbose_name=ugettext_lazy(u'Role'))
+    user = models.ForeignKey(User, null=True, verbose_name=ugettext_lazy(u'User'))
+    rolegroup = models.ForeignKey('RoleGroup', null=True, verbose_name=ugettext_lazy(u'Role group'))
 
     has_limitations = models.BooleanField(ugettext_lazy(u'Has limitations'))
 
@@ -321,9 +321,9 @@ class RoleMemberLimitation(models.Model):
     Limits the membership of a user to a role by only applying to a
     specific object.
     """
-    role_member = models.ForeignKey( RoleMember )
+    role_member = models.ForeignKey(RoleMember, verbose_name=ugettext_lazy(u'Role member'))
 
-    object_type = models.ForeignKey(ContentType)
+    object_type = models.ForeignKey(ContentType, verbose_name=ugettext_lazy(u'Object type'))
     object_id = models.PositiveIntegerField(db_index = True)
 
     content_object = generic.GenericForeignKey(ct_field = 'object_type')
@@ -339,7 +339,7 @@ class RoleGroup(models.Model):
     a role group can be used to add common restrictions for a given group 
     of users.
     """
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
     name = models.CharField(max_length = 250)
 
     def __unicode__(self):
@@ -356,8 +356,8 @@ class RoleGroup(models.Model):
 
 
 class RoleGroupMember(models.Model):
-    rolegroup = models.ForeignKey(RoleGroup)
-    user = models.ForeignKey(User)
+    rolegroup = models.ForeignKey(RoleGroup, verbose_name=ugettext_lazy(u'Role group'))
+    user = models.ForeignKey(User, verbose_name=ugettext_lazy(u'User'))
 
     class Meta:
         verbose_name = ugettext_lazy('Role group member')
@@ -515,7 +515,7 @@ class Tag(models.Model):
     A tag name only allows alpha numeric characters without spaces, etc. and only stores
     lower case letters !
     """
-    group = models.ForeignKey( Group )
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
     name = models.CharField( max_length = 250, )
 
     def __unicode__(self):

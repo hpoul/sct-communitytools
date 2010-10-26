@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 22:18+0200\n"
-"PO-Revision-Date: 2010-10-26 22:19+0100\n"
+"POT-Creation-Date: 2010-10-26 22:31+0200\n"
+"PO-Revision-Date: 2010-10-26 22:32+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "Language: \n"
@@ -114,6 +114,12 @@ msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
 #: models.py:56
+#: models.py:65
+#: models.py:107
+#: models.py:207
+#: models.py:253
+#: models.py:342
+#: models.py:518
 msgid "Group"
 msgstr "Grupa"
 
@@ -128,6 +134,14 @@ msgstr "Zwykły użytkownik"
 #: models.py:61
 msgid "Administrator"
 msgstr "Administrator"
+
+#: models.py:66
+#: models.py:150
+#: models.py:299
+#: models.py:360
+#: templates/sphene/community/admin/permission/role_member_list.html:13
+msgid "User"
+msgstr "Użytkownik"
 
 #: models.py:81
 msgid "Group member"
@@ -160,11 +174,6 @@ msgstr "Log zmian aplikacji"
 #: models.py:142
 msgid "Application change logs"
 msgstr "Logi zmian aplikacji"
-
-#: models.py:150
-#: templates/sphene/community/admin/permission/role_member_list.html:13
-msgid "User"
-msgstr "Użytkownik"
 
 #: models.py:151
 #: models.py:589
@@ -200,6 +209,14 @@ msgstr "Pole profilu użytkownika"
 msgid "Community user profile fields"
 msgstr "Pola profilu użytkownika"
 
+#: models.py:191
+msgid "User profile"
+msgstr "Profil użytkownika"
+
+#: models.py:192
+msgid "Profile field"
+msgstr "Pole profilu"
+
 #: models.py:197
 msgid "Community user profile field value"
 msgstr "Wartość pola profilu użytkownika"
@@ -232,12 +249,19 @@ msgid "Permission flags"
 msgstr "Flagi uprawnień"
 
 #: models.py:281
+#: models.py:298
 msgid "Role"
 msgstr "Rola"
 
 #: models.py:282
 msgid "Roles"
 msgstr "Role"
+
+#: models.py:300
+#: models.py:353
+#: models.py:359
+msgid "Role group"
+msgstr "Grupa roli"
 
 #: models.py:302
 msgid "Has limitations"
@@ -263,10 +287,6 @@ msgstr "Ograniczenie dla członka roli"
 #: models.py:333
 msgid "Role member limitations"
 msgstr "Ograniczenia dla członka roli"
-
-#: models.py:353
-msgid "Role group"
-msgstr "Grupa roli"
 
 #: models.py:354
 msgid "Role groups"
@@ -723,7 +743,7 @@ msgstr "Zatwierdź"
 #~ "The request was made by a user with the IP %(remote_addr)s,\n"
 #~ "if you did not make this request you can safely ignore this email."
 #~ msgstr ""
-#~ "Prośba została wygenerowana przez użytkownika z adresem IP "
-#~ "%(remote_addr)s.\n"
+#~ "Prośba została wygenerowana przez użytkownika z adresem IP %(remote_addr)"
+#~ "s.\n"
 #~ "Jeśli to nie ty złożyłeś tą prośbę moższ zignorować ten email."
 
