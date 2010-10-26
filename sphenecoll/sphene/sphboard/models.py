@@ -1110,7 +1110,7 @@ class Post(models.Model):
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
     # This is only blank so the form does not throw errors when it was not entered !
-    fileupload = models.FileField( _(u'File'),
+    fileupload = models.FileField( ugettext_lazy(u'File'),
                                    upload_to = get_sph_setting( 'board_attachments_upload_to' ),
                                    blank = True )
 
@@ -1489,9 +1489,9 @@ class PollVoters(models.Model):
 
 class BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
-    signature = models.TextField(default = '')
+    signature = models.TextField(ugettext_lazy(u'Signature'), default = '')
     
-    markup = models.CharField(max_length = 250,
+    markup = models.CharField(ugettext_lazy(u'Markup'), max_length = 250,
                               null = True,
                               choices = POST_MARKUP_CHOICES, )
 

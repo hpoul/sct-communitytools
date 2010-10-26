@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-16 11:43+0100\n"
-"PO-Revision-Date: 2009-12-16 12:20+0100\n"
+"POT-Creation-Date: 2010-10-26 22:18+0200\n"
+"PO-Revision-Date: 2010-10-26 22:19+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,21 +25,27 @@ msgstr ""
 msgid "Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d bytes)"
 msgstr "Maksymalny rozmiar pliku wynoszący %(max_size)d bajtów został przekroczony. (Twój plik ma %(size)d bajtów)"
 
-#: __init__.py:55
+#: __init__.py:65
 msgid "Uploaded an invalid image."
 msgstr "Załadowano nieprawidłowy obrazek."
 
-#: __init__.py:67
+#: __init__.py:77
 msgid "Delete avatar"
 msgstr "Usuń avatar"
 
-#: __init__.py:69
-#: __init__.py:116
+#: __init__.py:81
+#: __init__.py:131
+#: models.py:154
 msgid "Avatar"
 msgstr "Avatar"
 
-#: __init__.py:116
-#: templatetags/sph_extras.py:344
+#: __init__.py:81
+#, python-format
+msgid "Avatar with maximum size of %(max_width)sx%(max_height)s"
+msgstr "Avatar o maksymalnych rozmiarach %(max_width)sx%(max_height)s"
+
+#: __init__.py:131
+#: templatetags/sph_extras.py:361
 msgid "Users avatar"
 msgstr "Avatar użytkownika"
 
@@ -55,9 +62,9 @@ msgid "Last name"
 msgstr "Nazwisko"
 
 #: forms.py:16
-#: views.py:31
-#: views.py:63
-#: views.py:159
+#: views.py:34
+#: views.py:68
+#: views.py:164
 msgid "Email address"
 msgstr "Adres email"
 
@@ -86,7 +93,7 @@ msgid "Invalid password."
 msgstr "Niewłaściwe hasło."
 
 #: forms.py:46
-#: views.py:185
+#: views.py:190
 msgid "Passwords do not match."
 msgstr "Hasła nie pasują."
 
@@ -106,187 +113,218 @@ msgstr "Niewłaściwy typ obiektu"
 msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
-#: models.py:52
+#: models.py:56
 msgid "Group"
 msgstr "Grupa"
 
-#: models.py:53
+#: models.py:57
 msgid "Groups"
 msgstr "Grupy"
 
-#: models.py:56
+#: models.py:60
 msgid "Normal User"
 msgstr "Zwykły użytkownik"
 
-#: models.py:57
+#: models.py:61
 msgid "Administrator"
 msgstr "Administrator"
 
-#: models.py:77
+#: models.py:81
 msgid "Group member"
 msgstr "Członek grupy"
 
-#: models.py:78
+#: models.py:82
 msgid "Group members"
 msgstr "Członkowie grupy"
 
-#: models.py:89
+#: models.py:93
 msgid "Theme"
 msgstr "Motyw"
 
-#: models.py:90
+#: models.py:94
 msgid "Themes"
 msgstr "Motywy"
 
-#: models.py:115
+#: models.py:129
 msgid "Navigation"
 msgstr "Nawigacja"
 
-#: models.py:116
+#: models.py:130
 msgid "Navigations"
 msgstr "Nawigacje"
 
-#: models.py:127
+#: models.py:141
 msgid "Application change log"
 msgstr "Log zmian aplikacji"
 
-#: models.py:128
+#: models.py:142
 msgid "Application change logs"
 msgstr "Logi zmian aplikacji"
 
-#: models.py:157
+#: models.py:150
+#: templates/sphene/community/admin/permission/role_member_list.html:13
+msgid "User"
+msgstr "Użytkownik"
+
+#: models.py:151
+#: models.py:589
+msgid "Display name"
+msgstr "Nazwa wyświetlana"
+
+#: models.py:152
+#: models.py:594
+msgid "Public email address"
+msgstr "Publiczny adres email"
+
+#: models.py:159
+msgid "Avatar height"
+msgstr "Wysokość avatara"
+
+#: models.py:160
+msgid "Avatar width"
+msgstr "Szerokość avatara"
+
+#: models.py:172
 msgid "Community user profile"
 msgstr "Profil użytkownika"
 
-#: models.py:158
+#: models.py:173
 msgid "Community user profiles"
 msgstr "Profile użytkowników"
 
-#: models.py:170
+#: models.py:185
 msgid "Community user profile field"
 msgstr "Pole profilu użytkownika"
 
-#: models.py:171
+#: models.py:186
 msgid "Community user profile fields"
 msgstr "Pola profilu użytkownika"
 
-#: models.py:182
+#: models.py:197
 msgid "Community user profile field value"
 msgstr "Wartość pola profilu użytkownika"
 
-#: models.py:183
+#: models.py:198
 msgid "Community user profile field values"
 msgstr "Wartości pól w profilu użytkownika"
 
-#: models.py:199
+#: models.py:215
 msgid "Group template"
 msgstr "Szablon grupy"
 
-#: models.py:200
+#: models.py:216
 msgid "Group templates"
 msgstr "Szablony grup"
 
 #: models.py:229
+#: models.py:252
+#: templates/sphene/community/profile.html:9
+#: templates/sphene/community/admin/permission/role_list.html:14
+msgid "Name"
+msgstr "Nazwa"
+
+#: models.py:244
 msgid "Permission flag"
 msgstr "Flaga uprawnień"
 
-#: models.py:230
+#: models.py:245
 msgid "Permission flags"
 msgstr "Flagi uprawnień"
 
-#: models.py:265
+#: models.py:281
 msgid "Role"
 msgstr "Rola"
 
-#: models.py:266
+#: models.py:282
 msgid "Roles"
 msgstr "Role"
 
-#: models.py:300
+#: models.py:302
+msgid "Has limitations"
+msgstr "Czy ma ograniczenia"
+
+#: models.py:315
+#: models.py:324
 msgid "Role member"
 msgstr "Członek roli"
 
-#: models.py:301
+#: models.py:316
 msgid "Role members"
 msgstr "Członkowie roli"
 
-#: models.py:316
+#: models.py:326
+msgid "Object type"
+msgstr "Typ obiektu"
+
+#: models.py:332
 msgid "Role member limitation"
 msgstr "Ograniczenie dla członka roli"
 
-#: models.py:317
+#: models.py:333
 msgid "Role member limitations"
 msgstr "Ograniczenia dla członka roli"
 
-#: models.py:339
+#: models.py:353
 msgid "Role group"
 msgstr "Grupa roli"
 
-#: models.py:340
+#: models.py:354
 msgid "Role groups"
 msgstr "Grupy ról"
 
-#: models.py:349
+#: models.py:363
 msgid "Role group member"
 msgstr "Członek grupy roli"
 
-#: models.py:350
+#: models.py:364
 msgid "Role group members"
 msgstr "Członkowie grupy roli"
 
-#: models.py:509
+#: models.py:525
 msgid "Tag"
 msgstr "Tag"
 
-#: models.py:510
+#: models.py:526
 msgid "Tags"
 msgstr "Tagi"
 
-#: models.py:525
+#: models.py:541
 msgid "Tag label"
 msgstr "Etykieta tag'a"
 
-#: models.py:526
+#: models.py:542
 msgid "Tag labels"
 msgstr "Etykiety tag'ów"
 
-#: models.py:539
+#: models.py:555
 msgid "Tagged item"
 msgstr "Zatagowany element"
 
-#: models.py:540
+#: models.py:556
 msgid "Tagged items"
 msgstr "Zatagowane elementy"
 
-#: models.py:556
+#: models.py:572
 msgid "This email address will be shown to all users. If you leave it black noone will see your email address."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. Jeśli jednak pozostawisz to pole zaznaczone, nikt nie będzie mógł go zobaczyć."
 
-#: models.py:557
+#: models.py:573
 msgid "This email address will be shown to all users. If you leave it blank, your verified email address will be shown."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. jeśli pozostawisz to pole puste, Twój zweryfikowany adres email nie będzie pokazywany."
 
-#: models.py:561
+#: models.py:577
 msgid "This display name will be shown to all users. If you leave it blank then your username will be shown."
 msgstr "Nazwa wyświetlana będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:562
+#: models.py:578
 msgid "This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown."
 msgstr "Ta nazwa będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste wówczas wyświetlane będzie Twoje imię i nazwisko. Jeżeli jednak nie podałeś imienia i nazwiska, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:572
+#: models.py:588
 msgid "Community settings"
 msgstr "Ustawienia społecznościowe"
 
-#: models.py:573
-msgid "Display name"
-msgstr "Nazwa wyświetlana"
-
-#: models.py:578
-msgid "Public email address"
-msgstr "Publiczny adres email"
-
-#: models.py:632
+#: models.py:648
 msgid "Successfully saved community profile."
 msgstr "Pomyślnie zapisano profil społeczny."
 
@@ -303,75 +341,75 @@ msgstr "Wejście Captcha"
 msgid "Invalid Captcha response."
 msgstr "Niewłaściwy kod Captcha."
 
-#: views.py:33
-#: views.py:620
+#: views.py:36
+#: views.py:631
 msgid "Please enter the result of the above calculation."
 msgstr "Proszę wprowadzić rezultat powyższych obliczeń."
 
-#: views.py:46
-#: views.py:170
+#: views.py:49
+#: views.py:175
 #, python-format
 msgid "Another user is already registered with the email address %(email)s."
 msgstr "Inny użytkownik jest już zarejestrowany z adresem email %(email)s."
 
-#: views.py:70
+#: views.py:75
 msgid "No user found with that email address."
 msgstr "Nie znaleziono użytkownika z podanym adresem email."
 
-#: views.py:93
+#: views.py:98
 msgid "Your requested username / password"
 msgstr "Nazwa użytkownika / hasło, o które prosiłeś"
 
-#: views.py:95
+#: views.py:100
 #, python-format
 msgid "Your requested username / password for site %(site_name)s"
 msgstr "Nazwa użytkownika / hasło, o które prosiłeś dla witryny  %(site_name)s"
 
-#: views.py:122
+#: views.py:127
 msgid "Email verification required"
 msgstr "Wymagana weryfikacja adresu email"
 
-#: views.py:124
+#: views.py:129
 #, python-format
 msgid "Email verification required for site %(site_name)s"
 msgstr "Wymagana weryfikacja adresu email dla witryny %(site_name)s"
 
-#: views.py:158
+#: views.py:163
 #: templates/sphene/community/admin/permission/rolegroup_edit.html:33
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
-#: views.py:165
+#: views.py:170
 #, python-format
 msgid "The username %(username)s is already taken."
 msgstr "Nazwa użytkownika %(username)s jest już zajęta."
 
-#: views.py:175
+#: views.py:180
 msgid "Password"
 msgstr "Hasło"
 
-#: views.py:177
+#: views.py:182
 msgid "Verify Password"
 msgstr "Potwierdź Hasło"
 
-#: views.py:393
+#: views.py:404
 msgid "Successfully changed user profile."
 msgstr "Profil użytkownika został pomyślnie zaktualizowany."
 
-#: views.py:450
+#: views.py:461
 #, python-format
 msgid "Removed user %(username)s from rolegroup."
 msgstr "Usunięto użytkownika %(username)s z grupy roli"
 
-#: views.py:498
+#: views.py:509
 msgid "Successfully saved role."
 msgstr "Rola została pomyślnie zapisana."
 
-#: views.py:523
+#: views.py:534
 msgid "Successfully deleted role member."
 msgstr "Pomyślnie usunięto rolę użytkownika."
 
-#: views.py:559
+#: views.py:570
 msgid "Successfully added member."
 msgstr "Pomyślnie dodano użytkownika."
 
@@ -384,15 +422,15 @@ msgstr "napisał w dniu %(postdate)s"
 msgid "said:"
 msgstr "napisał:"
 
-#: templates/sphene/community/_pagination.html:2
+#: templates/sphene/community/_pagination.html:3
 msgid "Page:"
 msgstr "Strona:"
 
-#: templates/sphene/community/_pagination.html:4
+#: templates/sphene/community/_pagination.html:5
 msgid "Previous"
 msgstr "Poprzednia"
 
-#: templates/sphene/community/_pagination.html:14
+#: templates/sphene/community/_pagination.html:15
 msgid "Next"
 msgstr "Następna"
 
@@ -413,11 +451,6 @@ msgstr "Profil dla"
 msgid "Edit"
 msgstr "Zmień"
 
-#: templates/sphene/community/profile.html:9
-#: templates/sphene/community/admin/permission/role_list.html:14
-msgid "Name"
-msgstr "Nazwa"
-
 #: templates/sphene/community/profile.html:13
 msgid "Email Address"
 msgstr "Adres email"
@@ -427,7 +460,7 @@ msgid "Modifying user profile for"
 msgstr "Edycja profilu użytkownika"
 
 #: templates/sphene/community/profile_edit.html:10
-#: templates/sphene/community/accounts/login.html:13
+#: templates/sphene/community/accounts/login.html:12
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
@@ -442,15 +475,15 @@ msgstr "Zapisz"
 msgid "Reveal email address"
 msgstr "Odkryj adres email"
 
-#: templates/sphene/community/register.html:5
+#: templates/sphene/community/register.html:7
 msgid "Please Enter your email address. You will then receive a URL to continue registration."
 msgstr "Podaj swój adres email. Zostanie na niego wysłany URL, który pozwoli na kontynuowanie procesu rejestracji."
 
-#: templates/sphene/community/register.html:11
+#: templates/sphene/community/register.html:14
 msgid "Send Email Validation Code"
 msgstr "Wyślij Kod Walidacyjny"
 
-#: templates/sphene/community/register_emailsent.html:5
+#: templates/sphene/community/register_emailsent.html:6
 #, python-format
 msgid ""
 "An email containing the required validation code has been sent to <b>%(email)s</b>.<br/>\n"
@@ -473,7 +506,6 @@ msgid "Successfully registered user and logged in."
 msgstr "Użytkownik został pomyślnie zarejestrowany i zalogowany w systemie."
 
 #: templates/sphene/community/accounts/account_verification_email.html:6
-#: templates/sphene/community/accounts/account_verification_email.txt:2
 #, python-format
 msgid ""
 "You have requested to register with the email address:\n"
@@ -495,7 +527,6 @@ msgstr ""
 "<a href=\"http://%(baseurl)s%(path)s\">Aby kontynuować rejestrację kliknij ten link</a>."
 
 #: templates/sphene/community/accounts/account_verification_email.html:14
-#: templates/sphene/community/accounts/account_verification_email.txt:10
 #, python-format
 msgid ""
 "\n"
@@ -507,20 +538,8 @@ msgstr ""
 "  Twój %(group_name)s Zespół.\n"
 
 #: templates/sphene/community/accounts/account_verification_email.html:20
-#: templates/sphene/community/accounts/account_verification_email.txt:16
 msgid "If you did not make this request you can safely ignore this email."
 msgstr "Jeśli to nie ty złożyłeś tę prośbę możesz po prostu zignorować ten email."
-
-#: templates/sphene/community/accounts/account_verification_email.txt:5
-#, python-format
-msgid ""
-"\n"
-"To continue registration visit the following link:\n"
-"http://%(baseurl)s%(path)s"
-msgstr ""
-"\n"
-"Aby kontynuować rejestrację odwiedź następujący adres:\n"
-"http://%(baseurl)s%(path)s"
 
 #: templates/sphene/community/accounts/forgot.html:5
 msgid ""
@@ -536,44 +555,6 @@ msgstr ""
 msgid "Send"
 msgstr "Wyślij"
 
-#: templates/sphene/community/accounts/forgot_password_email.txt:2
-#, python-format
-msgid ""
-"\n"
-"You have requested to receive your username and a newly generated password on the %(group_name)s website.\n"
-"\n"
-"\n"
-"     Your Username: %(username)s\n"
-" Your New Password: %(password)s\n"
-" Your Emailaddress: %(currentuser_email)s\n"
-"\n"
-"\n"
-"\n"
-"Thanks for your interest,\n"
-"  Your %(group_name)s Team."
-msgstr ""
-"\n"
-"Poprosiłeś o przesłanie do Ciebie nazwy użytkownika i nowo wygenerowanego hasła w witrynie %(group_name)s.\n"
-"\n"
-"\n"
-"     Twoja nazwa użytkownika: %(username)s\n"
-" Twoje nowe hasło: %(password)s\n"
-" Twój adres e-mail: %(currentuser_email)s\n"
-"\n"
-"\n"
-"\n"
-"Dziękujemy za zainteresowanie,\n"
-"  Zespół %(group_name)s."
-
-#: templates/sphene/community/accounts/forgot_password_email.txt:16
-#, python-format
-msgid ""
-"The request was made by a user with the IP %(remote_addr)s,\n"
-"if you did not make this request you can safely ignore this email."
-msgstr ""
-"Prośba została wygenerowana przez użytkownika z adresem IP %(remote_addr)s.\n"
-"Jeśli to nie ty złożyłeś tą prośbę moższ zignorować ten email."
-
 #: templates/sphene/community/accounts/forgot_sent.html:4
 msgid "A new password was generated for your account."
 msgstr "Nowe hasło zostało wygenerowane dla Twojego konta."
@@ -586,23 +567,23 @@ msgstr "Niedługo powinieneś otrzymać email zawierający Twoją nazwę użytko
 msgid "Successfully logged out."
 msgstr "Pomyślnie wylogowano."
 
-#: templates/sphene/community/accounts/login.html:8
+#: templates/sphene/community/accounts/login.html:7
 msgid "Your username and password didn't match. Please try again."
 msgstr "Twoja nazwa użytkownika i hasło nie pasują. Prosimy spróbować ponownie."
 
-#: templates/sphene/community/accounts/login.html:14
+#: templates/sphene/community/accounts/login.html:13
 msgid "Password:"
 msgstr "Hasło:"
 
-#: templates/sphene/community/accounts/login.html:17
+#: templates/sphene/community/accounts/login.html:16
 msgid "Login"
 msgstr "Zaloguj się"
 
-#: templates/sphene/community/accounts/login.html:22
+#: templates/sphene/community/accounts/login.html:21
 msgid "Cancel"
 msgstr "Anuluj"
 
-#: templates/sphene/community/accounts/login.html:22
+#: templates/sphene/community/accounts/login.html:21
 msgid "Forgot Username/Password ?"
 msgstr "Zapomniałeś nazwy użytkownika/hasła?"
 
@@ -641,10 +622,6 @@ msgstr "Stwórz rolę"
 #, python-format
 msgid "Members of the role '%(role_name)s'."
 msgstr "Członkowie roli '%(role_name)s'."
-
-#: templates/sphene/community/admin/permission/role_member_list.html:13
-msgid "User"
-msgstr "Użytkownik"
 
 #: templates/sphene/community/admin/permission/role_member_list.html:14
 msgid "Role Group"
@@ -698,11 +675,55 @@ msgstr "Rosnąco"
 msgid "Descending"
 msgstr "Malejąco"
 
-#: templatetags/sph_extras.py:193
+#: templatetags/sph_extras.py:194
 msgid "Reveal this emailaddress"
 msgstr "Odkryj ten adres email"
 
-#: templatetags/sph_extras.py:347
+#: templatetags/sph_extras.py:364
 msgid "Submit"
 msgstr "Zatwierdź"
+
+#~ msgid ""
+#~ "\n"
+#~ "To continue registration visit the following link:\n"
+#~ "http://%(baseurl)s%(path)s"
+#~ msgstr ""
+#~ "\n"
+#~ "Aby kontynuować rejestrację odwiedź następujący adres:\n"
+#~ "http://%(baseurl)s%(path)s"
+#~ msgid ""
+#~ "\n"
+#~ "You have requested to receive your username and a newly generated "
+#~ "password on the %(group_name)s website.\n"
+#~ "\n"
+#~ "\n"
+#~ "     Your Username: %(username)s\n"
+#~ " Your New Password: %(password)s\n"
+#~ " Your Emailaddress: %(currentuser_email)s\n"
+#~ "\n"
+#~ "\n"
+#~ "\n"
+#~ "Thanks for your interest,\n"
+#~ "  Your %(group_name)s Team."
+#~ msgstr ""
+#~ "\n"
+#~ "Poprosiłeś o przesłanie do Ciebie nazwy użytkownika i nowo wygenerowanego "
+#~ "hasła w witrynie %(group_name)s.\n"
+#~ "\n"
+#~ "\n"
+#~ "     Twoja nazwa użytkownika: %(username)s\n"
+#~ " Twoje nowe hasło: %(password)s\n"
+#~ " Twój adres e-mail: %(currentuser_email)s\n"
+#~ "\n"
+#~ "\n"
+#~ "\n"
+#~ "Dziękujemy za zainteresowanie,\n"
+#~ "  Zespół %(group_name)s."
+#~ msgid ""
+#~ "The request was made by a user with the IP %(remote_addr)s,\n"
+#~ "if you did not make this request you can safely ignore this email."
+#~ msgstr ""
+#~ "Prośba została wygenerowana przez użytkownika z adresem IP "
+#~ "%(remote_addr)s.\n"
+#~ "Jeśli to nie ty złożyłeś tą prośbę moższ zignorować ten email."
 

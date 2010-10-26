@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -148,16 +147,17 @@ from sphene.community.sphsettings import get_sph_setting
 #from sphene.community import sphutils
 
 class CommunityUserProfile(models.Model):
-    user = models.ForeignKey( User, unique = True)
-    displayname = models.CharField(max_length = 250)
-    public_emailaddress = models.CharField(max_length = 250)
+    user = models.ForeignKey( ugettext_lazy(u'User'), User, unique = True)
+    displayname = models.CharField(ugettext_lazy(u'Display name'), max_length = 250)
+    public_emailaddress = models.CharField(ugettext_lazy(u'Public email address'), max_length = 250)
     
-    avatar = models.ImageField( height_field = 'avatar_height',
+    avatar = models.ImageField( ugettext_lazy(u'Avatar'),
+                                height_field = 'avatar_height',
                                 width_field = 'avatar_width',
                                 upload_to = get_sph_setting('community_avatar_upload_to'),
                                 blank = True, null = True, )
-    avatar_height = models.IntegerField(blank = True, null = True, )
-    avatar_width = models.IntegerField(blank = True, null = True, )
+    avatar_height = models.IntegerField(ugettext_lazy(u'Avatar height'), blank = True, null = True, )
+    avatar_width = models.IntegerField(ugettext_lazy(u'Avatar width'), blank = True, null = True, )
 
 
     changelog = ( ( '2007-08-10 00', 'alter', 'ADD avatar varchar(100)'   ),
@@ -198,6 +198,7 @@ class CommunityUserProfileFieldValue(models.Model):
         verbose_name_plural = ugettext_lazy('Community user profile field values')
         unique_together = (("user_profile", "profile_field"),)
 
+
 class GroupTemplate(models.Model):
     """
     Represents a group specific template which can be used to overload
@@ -216,7 +217,6 @@ class GroupTemplate(models.Model):
         unique_together = (("group", "template_name"),)
 
 
-
 class PermissionFlag(models.Model):
     """
     Permission flags are predefined (in the code) flags of user rights.
@@ -226,7 +226,7 @@ class PermissionFlag(models.Model):
     i don't like the idea of auto generating permissions which aren't used
     in the application code (but only within the django administration))
     """
-    name = models.CharField( max_length = 250, unique = True )
+    name = models.CharField( ugettext_lazy(u'Name'), max_length = 250, unique = True )
 
 
     sph_permission_flags = { 'group_administrator':
@@ -244,12 +244,13 @@ class PermissionFlag(models.Model):
         verbose_name = ugettext_lazy('Permission flag')
         verbose_name_plural = ugettext_lazy('Permission flags')
 
+
 class Role(models.Model):
     """
     A role is a user defined collection of so called permission flags.
     """
-    name = models.CharField( max_length = 250 )
-    group = models.ForeignKey( Group )
+    name = models.CharField(ugettext_lazy(u'Name'), max_length = 250)
+    group = models.ForeignKey(Group)
 
     permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles' )
 
@@ -277,10 +278,9 @@ class Role(models.Model):
     get_absolute_groupmemberaddurl = sphpermalink(get_absolute_groupmemberaddurl)
 
     class Meta:
-        verbose_name = ugettext_lazy('Role')
-        verbose_name_plural = ugettext_lazy('Roles')
+        verbose_name = ugettext_lazy(u'Role')
+        verbose_name_plural = ugettext_lazy(u'Roles')
         unique_together = (('name', 'group'),)
-
 
 
 class RoleMember(models.Model):
@@ -299,7 +299,7 @@ class RoleMember(models.Model):
     user = models.ForeignKey( User, null = True )
     rolegroup = models.ForeignKey( 'RoleGroup', null = True )
 
-    has_limitations = models.BooleanField()
+    has_limitations = models.BooleanField(ugettext_lazy(u'Has limitations'))
 
 
     changelog = ( ( '2008-04-15 00', 'alter', 'ALTER user_id DROP NOT NULL', ),
@@ -315,14 +315,15 @@ class RoleMember(models.Model):
         verbose_name = ugettext_lazy('Role member')
         verbose_name_plural = ugettext_lazy('Role members')
 
+
 class RoleMemberLimitation(models.Model):
     """
     Limits the membership of a user to a role by only applying to a
     specific object.
     """
-    role_member = models.ForeignKey( RoleMember )
+    role_member = models.ForeignKey( ugettext_lazy(u'Role member'), RoleMember )
 
-    object_type = models.ForeignKey(ContentType)
+    object_type = models.ForeignKey(ugettext_lazy(u'Object type'), ContentType)
     object_id = models.PositiveIntegerField(db_index = True)
 
     content_object = generic.GenericForeignKey(ct_field = 'object_type')
@@ -331,8 +332,6 @@ class RoleMemberLimitation(models.Model):
         verbose_name = ugettext_lazy('Role member limitation')
         verbose_name_plural = ugettext_lazy('Role member limitations')
         unique_together = (('role_member', 'object_type', 'object_id'),)
-
-
 
 
 class RoleGroup(models.Model):
