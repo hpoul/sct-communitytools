@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 11:46+0200\n"
-"PO-Revision-Date: 2010-10-27 11:48+0100\n"
+"POT-Creation-Date: 2010-10-27 12:08+0200\n"
+"PO-Revision-Date: 2010-10-27 12:08+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -101,17 +101,58 @@ msgstr "Hasła nie pasują."
 msgid "-- Select Object Type --"
 msgstr "-- Wybierz Typ Obiektu --"
 
+#: forms.py:94
+#: models.py:229
+#: models.py:252
+#: templates/sphene/community/profile.html:9
+#: templates/sphene/community/admin/permission/role_list.html:14
+msgid "Name"
+msgstr "Nazwa"
+
+#: forms.py:95
+#: models.py:245
+#: models.py:255
+msgid "Permission flags"
+msgstr "Flagi uprawnień"
+
+#: forms.py:106
+#: models.py:302
+msgid "Has limitations"
+msgstr "Czy ma ograniczenia"
+
 #: forms.py:106
 msgid "Allows you to limit the given permission to only one specific object."
 msgstr "Umożliwia ograniczenie nadanych uprawnień do jednego wybranego obiektu."
+
+#: forms.py:112
+#: models.py:326
+msgid "Object type"
+msgstr "Typ obiektu"
+
+#: forms.py:116
+msgid "Object"
+msgstr "Obiekt"
 
 #: forms.py:122
 msgid "Invalid Object Type"
 msgstr "Niewłaściwy typ obiektu"
 
+#: forms.py:125
+#: views.py:163
+#: templates/sphene/community/admin/permission/rolegroup_edit.html:33
+msgid "Username"
+msgstr "Nazwa użytkownika"
+
 #: forms.py:132
 msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
+
+#: forms.py:141
+#: models.py:300
+#: models.py:353
+#: models.py:359
+msgid "Role group"
+msgstr "Grupa roli"
 
 #: models.py:56
 #: models.py:65
@@ -233,13 +274,6 @@ msgstr "Szablon grupy"
 msgid "Group templates"
 msgstr "Szablony grup"
 
-#: models.py:229
-#: models.py:252
-#: templates/sphene/community/profile.html:9
-#: templates/sphene/community/admin/permission/role_list.html:14
-msgid "Name"
-msgstr "Nazwa"
-
 #: models.py:233
 msgid "Users with this permission flag have all permissions."
 msgstr "Użytkownicy z tą flagą będą mieli wszystkie uprawnienia."
@@ -252,10 +286,6 @@ msgstr "Użytkownik ma prawo do tworzenia, edycji i przypisywania ról."
 msgid "Permission flag"
 msgstr "Flaga uprawnień"
 
-#: models.py:245
-msgid "Permission flags"
-msgstr "Flagi uprawnień"
-
 #: models.py:281
 #: models.py:298
 msgid "Role"
@@ -265,16 +295,6 @@ msgstr "Rola"
 msgid "Roles"
 msgstr "Role"
 
-#: models.py:300
-#: models.py:353
-#: models.py:359
-msgid "Role group"
-msgstr "Grupa roli"
-
-#: models.py:302
-msgid "Has limitations"
-msgstr "Czy ma ograniczenia"
-
 #: models.py:315
 #: models.py:324
 msgid "Role member"
@@ -283,10 +303,6 @@ msgstr "Członek roli"
 #: models.py:316
 msgid "Role members"
 msgstr "Członkowie roli"
-
-#: models.py:326
-msgid "Object type"
-msgstr "Typ obiektu"
 
 #: models.py:332
 msgid "Role member limitation"
@@ -401,11 +417,6 @@ msgstr "Wymagana weryfikacja adresu email"
 #, python-format
 msgid "Email verification required for site %(site_name)s"
 msgstr "Wymagana weryfikacja adresu email dla witryny %(site_name)s"
-
-#: views.py:163
-#: templates/sphene/community/admin/permission/rolegroup_edit.html:33
-msgid "Username"
-msgstr "Nazwa użytkownika"
 
 #: views.py:170
 #, python-format

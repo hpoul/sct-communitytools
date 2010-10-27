@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 
 from sphene.community.signals import profile_edit_init_form
 
@@ -109,11 +109,11 @@ class BasicRoleMemberForm(forms.Form):
     def __init__(self, group, *args, **kwargs):
         super(BasicRoleMemberForm, self).__init__( *args, **kwargs )
         if self.data.get( 'has_limitations', False ):
-            self.fields['object_type'] = forms.ChoiceField( choices = get_object_type_choices(), widget = forms.Select( attrs = autosubmit_args ) )
+            self.fields['object_type'] = forms.ChoiceField(label=ugettext(u'Object type'), choices = get_object_type_choices(), widget = forms.Select( attrs = autosubmit_args ) )
 
         if self.data.get( 'object_type', ''):
             object_type = ContentType.objects.get( pk = self.data['object_type'] )
-            self.fields['object'] = forms.ChoiceField( choices = get_object_id_choices(object_type, group) )
+            self.fields['object'] = forms.ChoiceField(label=ugettext(u'Object'), choices = get_object_id_choices(object_type, group) )
 
     def clean_object_type(self):
         try:
