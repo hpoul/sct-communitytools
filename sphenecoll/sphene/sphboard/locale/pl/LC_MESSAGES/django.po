@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 11:47+0200\n"
-"PO-Revision-Date: 2010-10-27 11:50+0100\n"
+"POT-Creation-Date: 2010-10-27 14:10+0200\n"
+"PO-Revision-Date: 2010-10-27 14:11+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,7 @@ msgstr "Treść"
 
 #: forms.py:61
 #: forms.py:107
-#: models.py:1494
+#: models.py:1484
 msgid "Markup"
 msgstr "Markup"
 
@@ -109,8 +109,8 @@ msgid "Views"
 msgstr "Spojrzeń"
 
 #: lists.py:45
-#: models.py:1108
-#: models.py:1647
+#: models.py:1098
+#: models.py:1637
 #: templates/sphene/sphboard/_post_authorinfo.html:10
 #: templates/sphene/sphboard/listCategories.html:32
 #: templates/sphene/sphboard/listCategories.html:61
@@ -138,8 +138,8 @@ msgid "Allow annotating users posts."
 msgstr "Może komentować wiadomości użytkowników."
 
 #: models.py:220
-msgid "Allow moving of users posts."
-msgstr "Może przenosić wiadomości użytkowników."
+msgid "Allow moving of threads."
+msgstr "Może przenosić wątki."
 
 #: models.py:223
 msgid "Allow marking threads as sticky."
@@ -162,12 +162,12 @@ msgid "Allows viewing of threads."
 msgstr "Może przeglądać wątki."
 
 #: models.py:238
-msgid "Allows hiding of all posts."
-msgstr "Może ukrywać wszystkie wiadomości."
+msgid "Allows deleting posts."
+msgstr "Może usuwać wiadomości."
 
 #: models.py:241
-msgid "Allows moving of all posts."
-msgstr "Może przenosić wszystkie wiadomości."
+msgid "Allows moving posts."
+msgstr "Może przenosić wiadomości."
 
 #: models.py:495
 msgid "Categories"
@@ -189,119 +189,119 @@ msgstr "Ostatnie odwiedziny kategorii"
 msgid "Category last visits"
 msgstr "Ostatnie odwiedziny kategorii"
 
-#: models.py:982
+#: models.py:972
 #, python-format
 msgid "New Forum Post in \"%(category_name)s\": %(subject)s"
 msgstr "Nowa wiadomość na forum w kategorii \"%(category_name)s\": %(subject)s"
 
-#: models.py:1107
+#: models.py:1097
 #: templates/sphene/sphboard/_displayPostForm.html:90
 msgid "Post"
 msgstr "Opublikuj"
 
-#: models.py:1113
+#: models.py:1103
 msgid "File"
 msgstr "Plik"
 
-#: models.py:1124
+#: models.py:1114
 msgid "Post attachment"
 msgstr "Załącznik do wiadomości"
 
-#: models.py:1125
+#: models.py:1115
 msgid "Post attachments"
 msgstr "Załączniki do wiadomości"
 
-#: models.py:1164
+#: models.py:1154
 msgid "Post annotation"
 msgstr "Komentarz do wiadomości"
 
-#: models.py:1165
+#: models.py:1155
 msgid "Post annotations"
 msgstr "Komentarze do wiadomości"
 
-#: models.py:1332
+#: models.py:1322
 msgid "Thread information"
 msgstr "Informacja o wątku"
 
-#: models.py:1333
+#: models.py:1323
 msgid "Thread informations"
 msgstr "Informacje o wątkach"
 
-#: models.py:1418
+#: models.py:1408
 msgid "Monitor"
 msgstr "Monitor"
 
-#: models.py:1419
+#: models.py:1409
 msgid "Monitors"
 msgstr "Monitory"
 
-#: models.py:1459
+#: models.py:1449
 #: templates/sphene/sphboard/_displayPostForm.html:58
 msgid "Poll"
 msgstr "Ankieta"
 
-#: models.py:1460
+#: models.py:1450
 msgid "Polls"
 msgstr "Ankiety"
 
-#: models.py:1475
+#: models.py:1465
 msgid "Poll choice"
 msgstr "Odpowiedź w ankiecie"
 
-#: models.py:1476
+#: models.py:1466
 msgid "Poll choices"
 msgstr "Odpowiedzi w ankiecie"
 
-#: models.py:1486
+#: models.py:1476
 msgid "Poll voter"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1487
+#: models.py:1477
 msgid "Poll voters"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1492
-#: models.py:1615
+#: models.py:1482
+#: models.py:1605
 msgid "Signature"
 msgstr "Sygnaturka"
 
-#: models.py:1506
+#: models.py:1496
 msgid "Board user profile"
 msgstr "Profil użytkownika forum"
 
-#: models.py:1507
+#: models.py:1497
 msgid "Board user profiles"
 msgstr "Profile użytkowników forum"
 
-#: models.py:1549
+#: models.py:1539
 msgid "User post count"
 msgstr "Licznik wiadomości użytkownika"
 
-#: models.py:1550
+#: models.py:1540
 msgid "User post counts"
 msgstr "Liczniki wiadomości użytkowników"
 
-#: models.py:1573
+#: models.py:1563
 msgid "Extended category config"
 msgstr "Rozszerzona konfiguracja kategorii"
 
-#: models.py:1574
+#: models.py:1564
 msgid "Extended category configs"
 msgstr "Rozszerzone konfiguracje kategorii"
 
-#: models.py:1614
+#: models.py:1604
 msgid "Board settings"
 msgstr "Ustawienia forum"
 
-#: models.py:1623
+#: models.py:1613
 msgid "Default Notify Me - Value"
 msgstr "Powiadamianie emailowe - domyślnie"
 
-#: models.py:1643
+#: models.py:1633
 msgid "Successfully saved board profile."
 msgstr "Pomyślnie zapisano profil dla forum."
 
-#: models.py:1653
+#: models.py:1643
 msgid "Board Signature"
 msgstr "Sygnaturka dla forum"
 
@@ -839,6 +839,10 @@ msgstr "Zaloguj się aby napisać odpowiedź."
 msgid "Comments"
 msgstr "Komentarze"
 
+#~ msgid "Allow moving of users posts."
+#~ msgstr "Może przenosić wiadomości użytkowników."
+#~ msgid "Allows hiding of all posts."
+#~ msgstr "Może ukrywać wszystkie wiadomości."
 #~ msgid ""
 #~ "\n"
 #~ "%(full_name)s just posted in a thread or forum you are monitoring:\n"

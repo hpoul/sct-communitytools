@@ -217,7 +217,7 @@ class Category(models.Model):
                              ugettext_lazy('Allow annotating users posts.'),
 
                              'sphboard_move':
-                             ugettext_lazy('Allow moving of users posts.'),
+                             ugettext_lazy('Allow moving of threads.'),
 
                              'sphboard_sticky':
                              ugettext_lazy('Allow marking threads as sticky.'),
@@ -235,10 +235,10 @@ class Category(models.Model):
                              ugettext_lazy('Allows viewing of threads.'),
 
                              'sphboard_hideallposts':
-                             ugettext_lazy('Allows hiding of all posts.'),
+                             ugettext_lazy('Allows deleting posts.'),
 
                              'sphboard_moveallposts':
-                             ugettext_lazy('Allows moving of all posts.'),
+                             ugettext_lazy('Allows moving posts.'),
                              }
 
     def get_category_type(self):
@@ -764,23 +764,6 @@ class Post(models.Model):
         return 0
     allowHiding = allow_hiding
 
-    def allow_moving_post(self, user = None):
-        """
-        Returns True if the user is allowed to move the post
-        """
-        if user == None: user = get_current_user()
-
-        if not user or not user.is_authenticated():
-            return False
-        if user.is_authenticated() and \
-           (user.is_superuser or \
-            has_permission_flag(user,
-                                'sphboard_moveallposts',
-                                self.category)):
-            return True
-        return False
-    allowMovingPost = allow_moving_post
-
     def _allow_adminfunctionality(self, flag, user = None):
         if user == None:
             user = get_current_user()
@@ -789,6 +772,13 @@ class Post(models.Model):
             return False
 
         return user.is_staff or has_permission_flag( user, flag, self.category )
+
+    def allow_moving_post(self, user = None):
+        """
+        Returns True if the user is allowed to move the post
+        """
+        return self._allow_adminfunctionality( 'sphboard_moveallposts', user )
+    allowMovingPost = allow_moving_post
 
     def allow_annotating(self, user = None):
         """
