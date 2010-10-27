@@ -91,8 +91,8 @@ def get_permission_flag_choices():
     return ret
 
 class EditRoleForm(forms.Form):
-    name = forms.CharField()
-    permission_flags = forms.MultipleChoiceField()
+    name = forms.CharField(label=_(u'Name'))
+    permission_flags = forms.MultipleChoiceField(label=_(u'Permission flags'))
 
     def __init__(self, *args, **kwargs):
         super(EditRoleForm, self).__init__( *args, **kwargs )
@@ -103,7 +103,7 @@ autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.su
 
 class BasicRoleMemberForm(forms.Form):
 #    username = forms.CharField()
-    has_limitations = forms.BooleanField( widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = _(u'Allows you to limit the given permission to only one specific object.') )
+    has_limitations = forms.BooleanField( label=_(u'Has limitations'), widget = forms.CheckboxInput( attrs = autosubmit_args ), required = False, help_text = _(u'Allows you to limit the given permission to only one specific object.') )
     auto_submit = forms.BooleanField(widget = forms.HiddenInput, required = False)
 
     def __init__(self, group, *args, **kwargs):
@@ -122,7 +122,7 @@ class BasicRoleMemberForm(forms.Form):
             raise forms.ValidationError(_(u'Invalid Object Type'))
 
 class UsernameRoleMemberForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(label=_(u'Username'))
 
     def clean_username(self):
         try:
@@ -138,7 +138,7 @@ class UsernameRoleMemberForm(forms.Form):
 #        return obj.name
 
 class RoleGroupMemberForm(forms.Form):
-    rolegroup = forms.ModelChoiceField(queryset = None)
+    rolegroup = forms.ModelChoiceField(queryset=None, label=_(u'Role group'))
 
     def __init__(self, group, *args, **kwargs):
         super(RoleGroupMemberForm, self).__init__( group = group, *args, **kwargs )

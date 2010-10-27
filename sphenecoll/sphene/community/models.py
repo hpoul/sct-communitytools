@@ -252,7 +252,7 @@ class Role(models.Model):
     name = models.CharField(ugettext_lazy(u'Name'), max_length = 250)
     group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
 
-    permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles' )
+    permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles', verbose_name=ugettext_lazy(u'Permission flags'))
 
 
     def get_permission_flag_string(self):
