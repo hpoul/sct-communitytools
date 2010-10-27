@@ -86,7 +86,7 @@ def get_permission_flag_choices():
                     sph_permission_flags = sph_permission_flags.iteritems()
 
                 for (flag, description) in sph_permission_flags:
-                    ret.append( (flag, "%s (%s)" % (flag, description) ) )
+                    ret.append( (flag, "%s (%s)" % (flag, unicode(description)) ) )
 
     return ret
 
