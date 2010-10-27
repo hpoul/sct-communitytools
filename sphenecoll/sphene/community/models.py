@@ -230,10 +230,10 @@ class PermissionFlag(models.Model):
 
 
     sph_permission_flags = { 'group_administrator':
-                             'Users with this permission flag have all permissions.',
+                             ugettext_lazy('Users with this permission flag have all permissions.'),
 
                              'community_manage_roles':
-                             'User have permission to create, edit and assign roles.',
+                             ugettext_lazy('User have permission to create, edit and assign roles.'),
                              }
 
 

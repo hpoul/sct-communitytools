@@ -211,34 +211,34 @@ class Category(models.Model):
                   )
 
     sph_permission_flags = { 'sphboard_editallposts':
-                             'Allow editing of all posts.',
+                             ugettext_lazy('Allow editing of all posts.'),
 
                              'sphboard_annotate':
-                             'Allow annotating users posts.',
+                             ugettext_lazy('Allow annotating users posts.'),
 
                              'sphboard_move':
-                             'Allow moving of users posts.',
+                             ugettext_lazy('Allow moving of users posts.'),
 
                              'sphboard_sticky':
-                             'Allow marking threads as sticky.',
+                             ugettext_lazy('Allow marking threads as sticky.'),
 
                              'sphboard_lock':
-                             'Allow locking of threads.',
+                             ugettext_lazy('Allow locking of threads.'),
 
                              'sphboard_post_threads':
-                             'Allow creating new threads.',
+                             ugettext_lazy('Allow creating new threads.'),
 
                              'sphboard_post_replies':
-                             'Allow posting of replies to existing threads.',
+                             ugettext_lazy('Allow posting of replies to existing threads.'),
 
                              'sphboard_view':
-                             'Allows viewing of threads.',
+                             ugettext_lazy('Allows viewing of threads.'),
 
                              'sphboard_hideallposts':
-                             'Allows hiding of all posts.',
+                             ugettext_lazy('Allows hiding of all posts.'),
 
                              'sphboard_moveallposts':
-                             'Allows moving of all posts.',
+                             ugettext_lazy('Allows moving of all posts.'),
                              }
 
     def get_category_type(self):
