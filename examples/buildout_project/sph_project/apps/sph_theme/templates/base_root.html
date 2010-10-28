@@ -30,13 +30,13 @@
   {% for styleinclude in sph_settings.community_styleincludes %}
     <link rel="stylesheet" href="{{ styleinclude }}" />
   {% endfor %}
-  {% block head %}{% endblock %}
-  {% include "_head.html" %}
   {% block jsincludes %}
     {% for jsinclude in sph_settings.community_jsincludes %}
       <script type="text/javascript" src="{{ jsinclude }}"></script>
     {% endfor %}
   {% endblock %}
+  {% block head %}{% endblock %}
+  {% include "_head.html" %}
   {% block endhead %}{% endblock %}
 
 </head>
