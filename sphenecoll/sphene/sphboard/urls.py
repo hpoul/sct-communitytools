@@ -36,5 +36,8 @@ urlpatterns += patterns('sphene.sphboard.views',
                         url(r'^togglemonitor_(?P<monitortype>\w+)/(?P<object_id>\d+)/$', 'toggle_monitor', name = 'sphboard_toggle_monitor'),
                         (r'^catchup/(?P<category_id>\d+)/$', 'catchup'),
                         url(r'^poll/(?P<poll_id>\d+)/edit/$', 'edit_poll', name = 'sphboard_edit_poll'),
+                        url(r'^admin/(?P<user_id>\d+)/posts/$', 'admin_user_posts', name = 'sphboard_admin_user_posts'),
+                        url(r'^admin/(?P<user_id>\d+)/posts/(?P<post_id>\d+)/delete/$', 'admin_post_delete', name = 'sphboard_admin_post_delete'),
+                        url(r'^admin/(?P<user_id>\d+)/posts/delete/$', 'admin_posts_delete', name = 'sphboard_admin_posts_delete'),
                        )
 

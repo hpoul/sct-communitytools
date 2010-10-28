@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 14:10+0200\n"
-"PO-Revision-Date: 2010-10-27 14:11+0100\n"
+"POT-Creation-Date: 2010-10-28 15:04-0500\n"
+"PO-Revision-Date: 2010-10-28 22:08+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -32,17 +32,19 @@ msgstr "Najnowsze wątki w %(obj_name)s"
 
 #: forms.py:57
 #: lists.py:28
+#: templates/sphene/sphboard/admin_user_posts.html:28
 msgid "Subject"
 msgstr "Temat"
 
 #: forms.py:58
 #: forms.py:104
+#: templates/sphene/sphboard/admin_user_posts.html:29
 msgid "Body"
 msgstr "Treść"
 
 #: forms.py:61
 #: forms.py:107
-#: models.py:1484
+#: models.py:1496
 msgid "Markup"
 msgstr "Markup"
 
@@ -109,8 +111,8 @@ msgid "Views"
 msgstr "Spojrzeń"
 
 #: lists.py:45
-#: models.py:1098
-#: models.py:1637
+#: models.py:1110
+#: models.py:1649
 #: templates/sphene/sphboard/_post_authorinfo.html:10
 #: templates/sphene/sphboard/listCategories.html:32
 #: templates/sphene/sphboard/listCategories.html:61
@@ -189,119 +191,119 @@ msgstr "Ostatnie odwiedziny kategorii"
 msgid "Category last visits"
 msgstr "Ostatnie odwiedziny kategorii"
 
-#: models.py:972
+#: models.py:984
 #, python-format
 msgid "New Forum Post in \"%(category_name)s\": %(subject)s"
 msgstr "Nowa wiadomość na forum w kategorii \"%(category_name)s\": %(subject)s"
 
-#: models.py:1097
+#: models.py:1109
 #: templates/sphene/sphboard/_displayPostForm.html:90
 msgid "Post"
 msgstr "Opublikuj"
 
-#: models.py:1103
+#: models.py:1115
 msgid "File"
 msgstr "Plik"
 
-#: models.py:1114
+#: models.py:1126
 msgid "Post attachment"
 msgstr "Załącznik do wiadomości"
 
-#: models.py:1115
+#: models.py:1127
 msgid "Post attachments"
 msgstr "Załączniki do wiadomości"
 
-#: models.py:1154
+#: models.py:1166
 msgid "Post annotation"
 msgstr "Komentarz do wiadomości"
 
-#: models.py:1155
+#: models.py:1167
 msgid "Post annotations"
 msgstr "Komentarze do wiadomości"
 
-#: models.py:1322
+#: models.py:1334
 msgid "Thread information"
 msgstr "Informacja o wątku"
 
-#: models.py:1323
+#: models.py:1335
 msgid "Thread informations"
 msgstr "Informacje o wątkach"
 
-#: models.py:1408
+#: models.py:1420
 msgid "Monitor"
 msgstr "Monitor"
 
-#: models.py:1409
+#: models.py:1421
 msgid "Monitors"
 msgstr "Monitory"
 
-#: models.py:1449
+#: models.py:1461
 #: templates/sphene/sphboard/_displayPostForm.html:58
 msgid "Poll"
 msgstr "Ankieta"
 
-#: models.py:1450
+#: models.py:1462
 msgid "Polls"
 msgstr "Ankiety"
 
-#: models.py:1465
+#: models.py:1477
 msgid "Poll choice"
 msgstr "Odpowiedź w ankiecie"
 
-#: models.py:1466
+#: models.py:1478
 msgid "Poll choices"
 msgstr "Odpowiedzi w ankiecie"
 
-#: models.py:1476
+#: models.py:1488
 msgid "Poll voter"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1477
+#: models.py:1489
 msgid "Poll voters"
 msgstr "Głosujący w ankiecie"
 
-#: models.py:1482
-#: models.py:1605
+#: models.py:1494
+#: models.py:1617
 msgid "Signature"
 msgstr "Sygnaturka"
 
-#: models.py:1496
+#: models.py:1508
 msgid "Board user profile"
 msgstr "Profil użytkownika forum"
 
-#: models.py:1497
+#: models.py:1509
 msgid "Board user profiles"
 msgstr "Profile użytkowników forum"
 
-#: models.py:1539
+#: models.py:1551
 msgid "User post count"
 msgstr "Licznik wiadomości użytkownika"
 
-#: models.py:1540
+#: models.py:1552
 msgid "User post counts"
 msgstr "Liczniki wiadomości użytkowników"
 
-#: models.py:1563
+#: models.py:1575
 msgid "Extended category config"
 msgstr "Rozszerzona konfiguracja kategorii"
 
-#: models.py:1564
+#: models.py:1576
 msgid "Extended category configs"
 msgstr "Rozszerzone konfiguracje kategorii"
 
-#: models.py:1604
+#: models.py:1616
 msgid "Board settings"
 msgstr "Ustawienia forum"
 
-#: models.py:1613
+#: models.py:1625
 msgid "Default Notify Me - Value"
 msgstr "Powiadamianie emailowe - domyślnie"
 
-#: models.py:1633
+#: models.py:1645
 msgid "Successfully saved board profile."
 msgstr "Pomyślnie zapisano profil dla forum."
 
-#: models.py:1643
+#: models.py:1655
 msgid "Board Signature"
 msgstr "Sygnaturka dla forum"
 
@@ -325,105 +327,114 @@ msgstr "Can't render markup '%(markup)s'"
 msgid "You can use %(description)s in your posts"
 msgstr "Możesz używać %(description)s w swoich wiadomościach"
 
-#: views.py:53
+#: views.py:55
 msgid "Forum Overview"
 msgstr "Przegląd forum"
 
-#: views.py:129
+#: views.py:131
 #: templates/sphene/sphboard/listCategories.html:31
 #: templates/sphene/sphboard/listCategories.html:54
 msgid "Threads"
 msgstr "Wątki"
 
-#: views.py:337
+#: views.py:339
 #, python-format
 msgid "--- Last Edited by %(username)s at %(edit_date)s ---"
 msgstr "--- Ostatnio edytowane %(edit_date)s przez %(username)s ---"
 
-#: views.py:383
+#: views.py:385
 msgid "Vote created successfully."
 msgstr "Ankieta została pomyślnie opublikowana."
 
-#: views.py:387
+#: views.py:389
 msgid "Post edited successfully."
 msgstr "Wiadomość została zmieniona."
 
-#: views.py:389
+#: views.py:391
 msgid "Post created successfully."
 msgstr "Wiadomość została pomyślnie opublikowana."
 
-#: views.py:491
+#: views.py:493
 msgid "Annotated a users post."
 msgstr "Skomentowano wiadomość użytkownika."
 
-#: views.py:522
+#: views.py:521
+#: views.py:883
 msgid "Post deleted"
 msgstr "Wiadomość usunięta"
 
-#: views.py:657
+#: views.py:656
 msgid "Post has been appended to thread."
 msgstr "Wiadomość została dołączona do wątku."
 
-#: views.py:659
+#: views.py:658
 msgid "Post has been moved into category."
 msgstr "Wiadomość została przeniesiona do kategorii."
 
-#: views.py:675
+#: views.py:674
 #, python-format
 msgid "This post was moved from the thread %(thread_name)s"
 msgstr "Ta wiadomość została przeniesiona z wątku %(thread_name)s"
 
-#: views.py:677
+#: views.py:676
 #, python-format
 msgid "This post was moved from the category %(category_name)s"
 msgstr "Ta wiadomość została przeniesiona z kategorii %(category_name)s"
 
-#: views.py:743
+#: views.py:742
 msgid "Moved thread into new category."
 msgstr "Przeniesiono wątek do nowej kategorii."
 
-#: views.py:754
+#: views.py:753
 #, python-format
 msgid "This thread was moved from the category %(category_name)s"
 msgstr "Ten wątek został przeniesiony z kategorii %(category_name)s"
 
-#: views.py:767
+#: views.py:766
 msgid "You have already voted."
 msgstr "Już głosowałeś."
 
-#: views.py:771
+#: views.py:770
 msgid "Please select at least one answer."
 msgstr "Wybierz co najmniej jedną odpowiedź."
 
-#: views.py:777
+#: views.py:776
 #, python-format
 msgid "Please only select %(choices)d answers."
 msgstr "Wybierz %(choices)d odpowiedzi."
 
-#: views.py:781
+#: views.py:780
 msgid "You cannot abstain from voting and at the same time select a valid answer."
 msgstr "Nie możesz powstrzymać się od głosowania i w tym samym czasie zaznaczyć właściwą odpowiedź."
 
-#: views.py:790
+#: views.py:789
 msgid "You've selected an invalid choice."
 msgstr "Wybrałeś niewłaściwą opcję."
 
-#: views.py:798
+#: views.py:797
 #, python-format
 msgid "Voted for '%(choice)s'."
 msgstr "Zagłosowałeś na '%(choice)s'."
 
-#: views.py:798
+#: views.py:797
 msgid "You selected to abstain from voting"
 msgstr "Zaznaczyłeś, że nie będziesz głosować"
 
-#: views.py:816
+#: views.py:815
 msgid "Successfully created email notification monitor."
 msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
 
-#: views.py:818
+#: views.py:817
 msgid "Removed email notification monitor."
 msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
+
+#: views.py:894
+msgid "All posts deleted"
+msgstr "Wszystkie wiadomości zostały usunięte"
+
+#: views.py:896
+msgid "No posts to delete"
+msgstr "Brak wiadomości do usunięcia"
 
 #: templates/sphene/sphboard/_category_monitor.html:4
 #: templates/sphene/sphboard/listCategories.html:17
@@ -537,6 +548,48 @@ msgstr "Napisany przez"
 msgid "Registered at"
 msgstr "Zarejestrowany"
 
+#: templates/sphene/sphboard/admin_user_posts.html:20
+msgid "Back to users list"
+msgstr "Wróć do listy użytkowników"
+
+#: templates/sphene/sphboard/admin_user_posts.html:22
+msgid "Posts submitted by user:"
+msgstr "Wiadomości opublikowane przez użytkownika:"
+
+#: templates/sphene/sphboard/admin_user_posts.html:24
+msgid "Are you sure you want to delete ALL posts of this user?"
+msgstr "Czy na pewno chcesz usunąć WSZYSTKIE wiadomości tego użytkownika?"
+
+#: templates/sphene/sphboard/admin_user_posts.html:24
+msgid "Delete all posts of this user"
+msgstr "Usuń wszystkie wiadomości tego użytkownika"
+
+#: templates/sphene/sphboard/admin_user_posts.html:30
+msgid "Published"
+msgstr "Opublikowana"
+
+#: templates/sphene/sphboard/admin_user_posts.html:31
+msgid "Actions"
+msgstr "Akcje"
+
+#: templates/sphene/sphboard/admin_user_posts.html:39
+msgid "View"
+msgstr "Podgląd"
+
+#: templates/sphene/sphboard/admin_user_posts.html:40
+msgid "Are you sure you want to delete this post?"
+msgstr "Czy na pewno chcesz usunąć tą wiadomość?"
+
+#: templates/sphene/sphboard/admin_user_posts.html:40
+#: templates/sphene/sphboard/hide.html:23
+#: templates/sphene/sphboard/showThread.html:99
+msgid "Delete"
+msgstr "Usuń"
+
+#: templates/sphene/sphboard/admin_user_posts.html:45
+msgid "User didn't publish any posts yet"
+msgstr "Użytkownik nie opublikował jeszcze żadnych wiadomości"
+
 #: templates/sphene/sphboard/annotate.html:10
 #, python-format
 msgid "Annotate post: %(subject)s by "
@@ -566,11 +619,6 @@ msgstr "Usunięta wiadomość nie będzie dla nikogo widoczna. Czy na pewno chce
 #: templates/sphene/sphboard/hide.html:19
 msgid "You're trying to delete the root post of thread. All posts under it will be deleted too. Deleted post won't be visible to anyone. Are you sure you want to do that?"
 msgstr "Chcesz usunąć pierwszą wiadomość w wątku. Wszystkie wiadomości poniżej także zostaną usunięte. Wiadomości usunięte nie będą już dla nikogo widoczne. Czy na pewno chcesz to zrobić?"
-
-#: templates/sphene/sphboard/hide.html:23
-#: templates/sphene/sphboard/showThread.html:99
-msgid "Delete"
-msgstr "Usuń"
 
 #: templates/sphene/sphboard/hide.html:23
 #, python-format

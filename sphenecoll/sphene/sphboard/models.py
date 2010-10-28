@@ -930,6 +930,18 @@ class Post(models.Model):
             self.__monitor = monitor
             return monitor
 
+    def hide(self):
+        """ Hide (delete) the post. If post is root post of the thread then hide all posts below it too
+        """
+        thread = self.get_thread()
+        is_root_post = thread.pk == self.pk
+
+        # if removed post is root post of thread
+        if is_root_post:
+            Post.objects.filter(thread = self).update(is_hidden = 1)
+        self.is_hidden = 1
+        self.save()
+
     def save(self, force_insert=False, force_update=False, additional_data=None):
         isnew = not self.id
 

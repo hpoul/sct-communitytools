@@ -592,11 +592,15 @@ def admin_users(request, group):
         raise PermissionDenied()
     users = User.objects.filter(is_superuser=False)
     templateName = 'sphene/community/admin/users_list.html'
+
+    context = {'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS}
+
     res =  object_list( request = request,
                         queryset = users,
                         template_name = templateName,
                         template_object_name = 'sphuser',
                         allow_empty = True,
+                        extra_context = context,
                         paginate_by = 10,
                         )
 
@@ -617,7 +621,7 @@ def admin_user_switch_active(request, user_id, group):
 
     if not request.is_ajax():
         request.user.message_set.create( message = ugettext(u'Successfully changed user status.') )
-        url = request.REQUEST.get('next', reverse('sph_admin_users'))
+        url = request.REQUEST.get('next', sph_reverse('sph_admin_users'))
         return HttpResponseRedirect(url)
     else:
         return HttpResponse(simplejson.dumps({"user_status":user_status,

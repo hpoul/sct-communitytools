@@ -6,8 +6,10 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from sphene.community import PermissionDenied
+from sphene.community.permissionutils import has_permission_flag
 from sphene.community.middleware import get_current_sphdata
 from sphene.community.sphutils import sph_reverse, get_user_displayname, format_date, get_sph_setting, add_rss_feed, sph_render_to_response
 
@@ -515,10 +517,7 @@ def hide(request, group, post_id):
         raise PermissionDenied()
 
     if request.method == 'POST' and 'hide-post' in request.POST.keys():
-        if post.thread is None: # this is root post of thread
-            Post.objects.filter(thread = post).update(is_hidden = 1)
-        post.is_hidden = 1
-        post.save()
+        post.hide()
         request.user.message_set.create( message = ugettext(u'Post deleted') )
         if post == thread:
             return HttpResponseRedirect( post.category.get_absolute_url() )
@@ -855,3 +854,44 @@ def render_latest_posts_of_user(request, group, user):
 
     return str
 
+def admin_user_posts(request, group, user_id):
+    if not has_permission_flag(request.user, 'community_manage_users'):
+        raise PermissionDenied()
+
+    user = get_object_or_404(User, pk=user_id)
+    post_list = Post.objects.filter( author = user ).order_by( '-postdate' )
+
+    template_name = 'sphene/sphboard/admin_user_posts.html'
+    context = {'author':user}
+
+    res =  object_list( request = request,
+                        queryset = post_list,
+                        template_name = template_name,
+                        template_object_name = 'post',
+                        extra_context = context,
+                        allow_empty = True,
+                        paginate_by = 10,
+                        )
+    return res
+
+
+def admin_post_delete(request, group, user_id, post_id):
+    post = get_object_or_404(Post, author=user_id, pk=post_id)
+    if not post.allow_hiding():
+        raise PermissionDenied()
+    post.hide()
+    request.user.message_set.create( message = ugettext(u'Post deleted') )
+    return HttpResponseRedirect(sph_reverse('sphboard_admin_user_posts' , kwargs = {'user_id': user_id } ))
+
+
+def admin_posts_delete(request, group, user_id):
+    posts = Post.objects.filter(author=user_id)
+    if posts:
+        if not posts[0].allow_hiding():
+            raise PermissionDenied()
+        for post in posts:
+            post.hide()
+        request.user.message_set.create( message = ugettext(u'All posts deleted') )
+    else:
+        request.user.message_set.create( message = ugettext(u'No posts to delete') )
+    return HttpResponseRedirect(sph_reverse('sphboard_admin_user_posts' , kwargs = {'user_id': user_id } ))

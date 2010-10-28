@@ -313,3 +313,7 @@ def sphboard_displayThreadSummary(context, thread):
     posts = thread.get_all_posts().order_by('-postdate')[:11]
     return { 'posts': posts,
              'thread': thread}
+
+@register.simple_tag
+def user_posts_count(user):
+    return user.sphboard_post_author_set.filter(is_hidden=0).count()

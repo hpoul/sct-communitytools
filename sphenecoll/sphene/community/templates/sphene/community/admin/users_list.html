@@ -36,6 +36,9 @@
     <th>{% trans "Username" %}</th>
     <th>{% trans "Full name" %}</th>
     <th>{% trans "E-mail" %}</th>
+    {% if is_sphboard %}
+        <th>{% trans "Board posts" %}</th>
+    {% endif %}
     <th>{% trans "Is active" %}</th>
     <th>{% trans "Actions" %}</th>
   </tr>
@@ -44,12 +47,20 @@
       <td>{{ usr.username }}</td>
       <td>{{ usr.get_full_name }}</td>
       <td>{{ usr.email }}</td>
+      {% if is_sphboard %}
+          {%  load sphboard_extras %}
+          <td>
+              <a href="{% sph_url2 sphboard_admin_user_posts usr.pk %}">{% user_posts_count usr %}</a>
+          </td>
+      {% endif %}
       <td class="user-activity-status">{{ usr.is_active|yesno }}</td>
-      <td><a class="user-activity-switch" href="{% url sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a></td>
+      <td>
+          <a class="user-activity-switch" href="{% sph_url2 sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a>
+      </td>
     </tr>
   {% endfor %}
   {% if not sphuser_list %}
-      <tr><td colspan="5">{% trans "No users to display" %}</td></tr>
+      <tr><td colspan="{% if is_sphboard %}6{% else %}5{% endif %}">{% trans "No users to display" %}</td></tr>
   {% endif %}
 </table>
 
