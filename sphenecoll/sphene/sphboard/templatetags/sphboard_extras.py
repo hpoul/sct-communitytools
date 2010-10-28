@@ -316,4 +316,4 @@ def sphboard_displayThreadSummary(context, thread):
 
 @register.simple_tag
 def user_posts_count(user):
-    return user.sphboard_post_author_set.filter(is_hidden=0).count()
+    return UserPostCount.objects.get_post_count(user, get_current_group())

@@ -1544,6 +1544,7 @@ class UserPostCount(models.Model):
             qry = qry.filter(category__group = self.group)
         except:
             qry = qry.filter(category__group__isnull = True).count()
+        qry = qry.filter(is_hidden=0)
         
         self.post_count = qry.count()
 
