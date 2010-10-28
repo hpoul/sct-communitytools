@@ -63,11 +63,13 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'sphene.community.middleware.ThreadLocals',
     'sphene.community.middleware.GroupMiddleware',
-
+    'sphene.community.middleware.MultiHostMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'sphene.community.middleware.PermissionDeniedMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -102,6 +104,11 @@ INSTALLED_APPS = (
     'sphene.sphwiki',
     #'south'
 )
+
+SPH_HOST_MIDDLEWARE_URLCONF_MAP = {
+    '127.0.0.1:8000': { 'params': { 'groupName': 'example' }
+                      },
+}
 
 # settings_local overwrites a few settings from here, and has to define SECRET_KEY
 try:
