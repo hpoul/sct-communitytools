@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-28 13:00-0500\n"
+"PO-Revision-Date: 2010-10-28 20:02+0100\n"
+"Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
+"Language-Team: Natcam <pigletto@gmai.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: templates/base_root.html:81
+#, python-format
+msgid "You are logged in as %(user)s"
+msgstr "Jesteś zalogowany jako %(user)s"
+
+#: templates/base_root.html:82
+msgid "Edit Profile"
+msgstr "Edytuj profil"
+
+#: templates/base_root.html:83
+msgid "Logout"
+msgstr "Wyloguj się"
+
+#: templates/base_root.html:85
+msgid "You are not logged in."
+msgstr "Nie jesteś zalogowany"
+
+#: templates/base_root.html:86
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: templates/base_root.html:87
+msgid "Register"
+msgstr "Rejestracja"
+
+#: templates/base_root.html:94
+#: templates/base_root.html.py:98
+msgid "Change Language"
+msgstr "Zmień język"
+
+#: templates/base_root.html:110
+msgid "Manage Roles"
+msgstr "Zarządzaj rolami"
+
+#: templates/base_root.html:111
+msgid "Manage Role Groups"
+msgstr "Zarządzaj grupami ról"
+

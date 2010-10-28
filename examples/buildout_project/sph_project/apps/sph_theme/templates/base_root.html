@@ -1,0 +1,150 @@
+{% load sph_extras %}
+{% load i18n %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+
+
+  <title>{% block title %}{% spaceless %}
+    {% block subtitle %}
+      {% if sph.subtitle %}
+        {{ sph.subtitle }}
+      {% else %}
+        {{ group.name }}
+      {% endif %}
+    {% endblock %} |
+    {% if group %}
+      {% if group.longname %}
+        {{ group.longname }}
+      {% else %}
+        {{ group.name }}
+      {% endif %}
+    {% else %}
+      SCT
+    {% endif %}
+  {% endspaceless %}{% endblock %}</title>
+
+  {% block stylesheets %}
+  <link rel="stylesheet" href="{{ MEDIA_URL }}sph_theme/css/sph_theme.css" />
+  {% endblock %}
+  {% for styleinclude in sph_settings.community_styleincludes %}
+    <link rel="stylesheet" href="{{ styleinclude }}" />
+  {% endfor %}
+  {% block head %}{% endblock %}
+  {% include "_head.html" %}
+  {% block jsincludes %}
+    {% for jsinclude in sph_settings.community_jsincludes %}
+      <script type="text/javascript" src="{{ jsinclude }}"></script>
+    {% endfor %}
+  {% endblock %}
+  {% block endhead %}{% endblock %}
+
+</head>
+
+<body>
+{% block body %}
+  <div id="top">
+    {% block top %}
+      <h1>{% if group and group.longname %}{{ group.longname }}{% else %}SCT{% endif %}</h1>
+      <h2>Community</h2>
+    {% endblock %}
+  </div>
+  {# Feel free to modify the copyright for your website. - Although i would appreciate the notice at the bottom about 'Powered by Sphene Community Tools' with a link to sct.sphene.net. (in _footer.html) #}
+  <div id="subhead">Copyright &copy; 2007-2009 by <a href="http://herbert.poul.at" style="color: #fff; font-weight: bold;">Herbert Poul</a></div>
+  <div id="leftblah">
+    <div id="navigation">
+      {% block navigation %}
+        <ul>
+          {% for nav in navigation_left %}
+            <li>
+              {% ifequal nav.urltype 0 %}
+                <a href="{{ urlPrefix }}{{ nav.href }}">{{ nav.label }}</a>
+              {% else %}
+                <a href="{{ nav.href }}">{{ nav.label }}</a>
+              {% endifequal %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endblock %}
+    </div>
+    {% if navigation_sub %}
+      <div id="subnavigation">
+        <ul>
+          {% block subnavigation %}
+          {% endblock %}
+        </ul>
+      </div>
+    {% endif %}
+    <div id="userblock">
+      <p>
+      {% if user.is_authenticated %}
+        {% blocktrans with user|sph_html_user as user %}You are logged in as {{ user }}{% endblocktrans %}<br/>
+        <a href="{% sph_url 'sphene.community.views.profile_edit_mine' %}">{% trans "Edit Profile" %}</a><br/><br/>
+        <a href="{% sph_url 'sphene.community.views.accounts_logout' %}">{% trans "Logout" %}</a>
+      {% else %}
+        {% trans "You are not logged in." %}<br/>
+        <a href="{% sph_url 'sphene.community.views.accounts_login' %}{% if not sph.is_logout %}?next={{ request.path|urlencode }}{% endif %}">{% trans "Login" %}</a><br/>
+        <a href="{% sph_url 'sphene.community.views.register' %}">{% trans "Register" %}</a><br/>
+      {% endif %}
+      </p>
+      {% if sph_settings.community_show_languageswitcher %}
+      <div class="languageswitcher">
+      <form action="{% sph_url2 django.views.i18n.set_language %}" method="post">
+	<!--p class="languageswitcher_link">
+	  <a href="#" onclick="javascript:$('.languageswitcher_link').hide(); $('.languageswitcher_form').show(); return false;">{% trans "Change Language" %}</a>
+	</p-->
+	<p class="languageswitcher_form" >
+	  <input name="next" type="hidden" value="{{ request.path }}" />
+	  {% trans "Change Language" %}: <select name="language" onchange="this.form.submit()">
+	    {% for lang in LANGUAGES %}
+	    <option value="{{ lang.0 }}"{% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>{{ lang.1 }}</option>
+	    {% endfor %}
+	  </select>
+	</p>
+      </form>
+      </div>
+      {% endif %}
+    </div>
+    {% if sph_perms.community_manage_roles %}
+    <ul>
+      <li><a href="{% sph_url 'community_admin_permission_role_list' %}">{% trans "Manage Roles" %}</a></li>
+      <li><a href="{% sph_url 'community_admin_permission_rolegroup_list' %}">{% trans "Manage Role Groups" %}</a></li>
+    </ul>
+    {% endif %}
+    {% if sph.toc %}
+      <div id="toc">
+        {{ sph.toc }}
+      </div>
+    {% endif %}
+    <br/><br/>
+
+    {% include "_below_navigation.html" %}
+  </div>
+  {% block precontent %}
+    
+  {% endblock %}
+  <div id="content">
+{% if messages %}
+  <ul class="messages">
+   {% for message in messages %}
+     <li>{{ message }}</li>
+   {% endfor %}
+  </ul>
+{% endif %}
+{% block content %}
+
+
+
+{% endblock %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+{% block includefooter %}
+<br/><br/>
+{% include "_footer.html" %}
+{% endblock %}
+</body>
+</html>

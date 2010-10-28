@@ -1,3 +1,180 @@
-body { margin-top: 30px; }
-#leftblock { float: left; padding: 20px; border: 1px solid gray; }
-#content { margin-left: 250px; border: 1px solid black; padding: 10px; min-height: 300px; }
+body {
+	background-color: #e1ddd9;
+        font-size: 12px;
+        font-family: Verdana, Arial, SunSans-Regular, Sans-Serif;
+        color:#564b47;
+        padding: 0px 20px;
+        margin:0px;
+}
+
+a {
+        color: blue;
+        text-decoration: none;
+}
+
+
+div#top {
+	padding: 10px;
+	height: 70px;
+        text-align: right;
+}
+
+div#top h1 {
+        margin: 1px;
+}
+
+div#top h2 {
+        margin: 2px;
+}
+
+div#subhead {
+        text-align:right;
+        background-color: gray;
+        color: #ccc;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-right: 10px;
+}
+div#leftblah {
+	left: 20px;
+	width: 200px;
+        min-height: 250px;
+	margin-top: 0px;
+	padding-top: 0px;
+        background-color:#ccc;
+        padding: 20px;
+	position: absolute;
+}
+div#navigation,
+div#subnavigation,
+div#userblock,
+div#toc {
+        margin-top: 20px;
+}
+div#toc {
+	overflow: hidden;
+}
+div#userblock,
+div#toc {
+	background-color: #eee;
+	border: 1px solid gray;
+	padding: 5px;
+}
+div#navigation ul {
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+}
+div#navigation li {
+        padding: 0px;
+        margin: 0px;
+}
+div#navigation a {
+        font-size: 16px;
+        border: 1px solid gray;
+        display: block;
+        padding: 2px;
+        margin-top: 3px;
+	background-color: #eee;
+	color: #000;
+	padding-left: 10px;
+	width: 185px;
+}
+div#navigation a:hover {
+        background-color: #ddd;
+}
+
+div#content {
+	padding: 20px;
+        background-color: #fff;
+        overflow: auto;
+        min-height: 350px;
+	margin-left: 240px;
+}
+
+div#toc h2 {
+        font-size: 1em;
+}
+div#toc ul {
+        padding-left: 10px;
+	margin-left: 0px;
+}
+div#toc li {
+	padding-left: 0px;
+}
+
+
+
+ul.news li {
+        padding-bottom: 20px;
+}
+
+ul.news .subject {
+        font-weight: bold;
+}
+
+ul.news .comments {
+        padding-top: 5px;
+}
+
+.error, .errorlist {
+        color: red;
+        font-weight: bold;
+}
+
+
+.wiki_title {
+	font-size: 2em;
+	background-color: #ddddee;
+	padding: 5px;
+	padding-left: 30px;
+}
+
+.sphwiki_body h1 {
+	font-size: 1.5em;
+	background-color: #e0e0f5;
+	padding: 3px;
+}
+
+.sphwiki_body h2 {
+}
+
+.sphwiki_body h3 {
+}
+
+
+.memberquote {
+  margin-left: 1em;
+  font-size: smaller;
+}
+
+blockquote {
+  border-left: 5px solid #ccc;
+  margin-left: 1.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 5px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  min-height: 2em;
+}
+
+pre code, .code {
+	background-color:#eee;
+	display:block;
+	padding: 5px;
+	border: 1px dotted black;
+	overflow: scroll;
+}
+div.languageswitcher, div.languageswitcher select  {
+  font-size: xx-small;
+}
+div.languageswitcher select {
+  border: 1px solid gray;
+  background: inherit;
+}
+
+#poweredby {
+  display:block;
+  text-align: center;
+}
