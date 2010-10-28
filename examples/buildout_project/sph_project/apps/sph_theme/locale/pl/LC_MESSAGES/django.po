@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-28 13:00-0500\n"
-"PO-Revision-Date: 2010-10-28 20:02+0100\n"
+"POT-Creation-Date: 2010-10-28 13:31-0500\n"
+"PO-Revision-Date: 2010-10-28 20:31+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Natcam <pigletto@gmai.com>\n"
 "Language: \n"
@@ -50,11 +50,15 @@ msgstr "Rejestracja"
 msgid "Change Language"
 msgstr "Zmień język"
 
-#: templates/base_root.html:110
+#: templates/base_root.html:111
 msgid "Manage Roles"
 msgstr "Zarządzaj rolami"
 
-#: templates/base_root.html:111
+#: templates/base_root.html:112
 msgid "Manage Role Groups"
 msgstr "Zarządzaj grupami ról"
+
+#: templates/base_root.html:115
+msgid "Manage users"
+msgstr "Zarządzaj użytkownikami"
 

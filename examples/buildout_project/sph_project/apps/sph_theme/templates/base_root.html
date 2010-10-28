@@ -105,10 +105,15 @@
       </div>
       {% endif %}
     </div>
-    {% if sph_perms.community_manage_roles %}
+    {% if sph_perms.community_manage_roles or sph_perms.community_manage_users %}
     <ul>
-      <li><a href="{% sph_url 'community_admin_permission_role_list' %}">{% trans "Manage Roles" %}</a></li>
-      <li><a href="{% sph_url 'community_admin_permission_rolegroup_list' %}">{% trans "Manage Role Groups" %}</a></li>
+      {% if sph_perms.community_manage_roles %}
+        <li><a href="{% sph_url 'community_admin_permission_role_list' %}">{% trans "Manage Roles" %}</a></li>
+        <li><a href="{% sph_url 'community_admin_permission_rolegroup_list' %}">{% trans "Manage Role Groups" %}</a></li>
+       {% endif %}
+       {% if sph_perms.community_manage_users %}
+        <li><a href="{% sph_url 'sph_admin_users' %}">{% trans "Manage users" %}</a></li>
+    {% endif %}
     </ul>
     {% endif %}
     {% if sph.toc %}
@@ -121,7 +126,7 @@
     {% include "_below_navigation.html" %}
   </div>
   {% block precontent %}
-    
+
   {% endblock %}
   <div id="content">
 {% if messages %}
