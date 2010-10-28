@@ -48,6 +48,9 @@
       <td><a class="user-activity-switch" href="{% url sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a></td>
     </tr>
   {% endfor %}
+  {% if not sphuser_list %}
+      <tr><td colspan="5">{% trans "No users to display" %}</td></tr>
+  {% endif %}
 </table>
 
 <p class="sphboard_pagination">{% sph_pagination pages page %}</p>
