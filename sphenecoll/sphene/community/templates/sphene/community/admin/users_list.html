@@ -1,0 +1,54 @@
+{% extends "sphene/community/admin/base.html" %}
+{% load i18n %}
+{% load sph_extras %}
+{% load sph_pagination %}
+
+{% block head %}
+  {{ block.super }}
+  <script type="text/javascript" src="{{ MEDIA_URL }}sphene/community/jquery-1.2.3.min.js"></script>
+
+  <script type="text/javascript">
+
+      function success_handler(data, self){
+          self.parent().parent().children('.user-activity-status').html(data.user_status);
+          self.html(data.button_label);
+      }
+
+      $(document).ready(function(){
+          $('a.user-activity-switch').click(function(){
+              var url = $(this).attr('href');
+              var self = $(this);
+              $.ajax({url:url,
+                      success: function(data){success_handler(data, self)},
+                      dataType:'json'})
+              return false;
+          })
+      })
+  </script>
+
+
+{% endblock %}
+
+{% block content %}
+
+<table>
+  <tr>
+    <th>{% trans "Username" %}</th>
+    <th>{% trans "Full name" %}</th>
+    <th>{% trans "E-mail" %}</th>
+    <th>{% trans "Is active" %}</th>
+    <th>{% trans "Actions" %}</th>
+  </tr>
+  {% for usr in sphuser_list %}
+    <tr>
+      <td>{{ usr.username }}</td>
+      <td>{{ usr.get_full_name }}</td>
+      <td>{{ usr.email }}</td>
+      <td class="user-activity-status">{{ usr.is_active|yesno }}</td>
+      <td><a class="user-activity-switch" href="{% url sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a></td>
+    </tr>
+  {% endfor %}
+</table>
+
+<p class="sphboard_pagination">{% sph_pagination pages page %}</p>
+{% endblock %}

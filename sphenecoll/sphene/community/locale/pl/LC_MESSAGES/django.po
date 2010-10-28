@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 12:08+0200\n"
-"PO-Revision-Date: 2010-10-27 12:08+0100\n"
+"POT-Creation-Date: 2010-10-28 19:17+0200\n"
+"PO-Revision-Date: 2010-10-28 19:19+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -62,9 +62,9 @@ msgid "Last name"
 msgstr "Nazwisko"
 
 #: forms.py:16
-#: views.py:34
-#: views.py:68
-#: views.py:164
+#: views.py:38
+#: views.py:72
+#: views.py:168
 msgid "Email address"
 msgstr "Adres email"
 
@@ -93,7 +93,7 @@ msgid "Invalid password."
 msgstr "Niewłaściwe hasło."
 
 #: forms.py:46
-#: views.py:190
+#: views.py:194
 msgid "Passwords do not match."
 msgstr "Hasła nie pasują."
 
@@ -103,20 +103,20 @@ msgstr "-- Wybierz Typ Obiektu --"
 
 #: forms.py:94
 #: models.py:229
-#: models.py:252
+#: models.py:255
 #: templates/sphene/community/profile.html:9
 #: templates/sphene/community/admin/permission/role_list.html:14
 msgid "Name"
 msgstr "Nazwa"
 
 #: forms.py:95
-#: models.py:245
-#: models.py:255
+#: models.py:248
+#: models.py:258
 msgid "Permission flags"
 msgstr "Flagi uprawnień"
 
 #: forms.py:106
-#: models.py:302
+#: models.py:305
 msgid "Has limitations"
 msgstr "Czy ma ograniczenia"
 
@@ -125,7 +125,7 @@ msgid "Allows you to limit the given permission to only one specific object."
 msgstr "Umożliwia ograniczenie nadanych uprawnień do jednego wybranego obiektu."
 
 #: forms.py:112
-#: models.py:326
+#: models.py:329
 msgid "Object type"
 msgstr "Typ obiektu"
 
@@ -138,7 +138,8 @@ msgid "Invalid Object Type"
 msgstr "Niewłaściwy typ obiektu"
 
 #: forms.py:125
-#: views.py:163
+#: views.py:167
+#: templates/sphene/community/admin/users_list.html:36
 #: templates/sphene/community/admin/permission/rolegroup_edit.html:33
 msgid "Username"
 msgstr "Nazwa użytkownika"
@@ -148,9 +149,9 @@ msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
 #: forms.py:141
-#: models.py:300
-#: models.py:353
-#: models.py:359
+#: models.py:303
+#: models.py:356
+#: models.py:362
 msgid "Role group"
 msgstr "Grupa roli"
 
@@ -158,9 +159,9 @@ msgstr "Grupa roli"
 #: models.py:65
 #: models.py:107
 #: models.py:207
-#: models.py:253
-#: models.py:342
-#: models.py:518
+#: models.py:256
+#: models.py:345
+#: models.py:521
 msgid "Group"
 msgstr "Grupa"
 
@@ -178,8 +179,8 @@ msgstr "Administrator"
 
 #: models.py:66
 #: models.py:150
-#: models.py:299
-#: models.py:360
+#: models.py:302
+#: models.py:363
 #: templates/sphene/community/admin/permission/role_member_list.html:13
 msgid "User"
 msgstr "Użytkownik"
@@ -217,12 +218,12 @@ msgid "Application change logs"
 msgstr "Logi zmian aplikacji"
 
 #: models.py:151
-#: models.py:589
+#: models.py:592
 msgid "Display name"
 msgstr "Nazwa wyświetlana"
 
 #: models.py:152
-#: models.py:594
+#: models.py:597
 msgid "Public email address"
 msgstr "Publiczny adres email"
 
@@ -279,96 +280,100 @@ msgid "Users with this permission flag have all permissions."
 msgstr "Użytkownicy z tą flagą będą mieli wszystkie uprawnienia."
 
 #: models.py:236
-msgid "User have permission to create, edit and assign roles."
+msgid "User has permission to create, edit and assign roles."
 msgstr "Użytkownik ma prawo do tworzenia, edycji i przypisywania ról."
 
-#: models.py:244
+#: models.py:239
+msgid "User has permission to manage other users"
+msgstr "Użytkownik ma prawo do zarządzania innymi użytkownikami"
+
+#: models.py:247
 msgid "Permission flag"
 msgstr "Flaga uprawnień"
 
-#: models.py:281
-#: models.py:298
+#: models.py:284
+#: models.py:301
 msgid "Role"
 msgstr "Rola"
 
-#: models.py:282
+#: models.py:285
 msgid "Roles"
 msgstr "Role"
 
-#: models.py:315
-#: models.py:324
+#: models.py:318
+#: models.py:327
 msgid "Role member"
 msgstr "Członek roli"
 
-#: models.py:316
+#: models.py:319
 msgid "Role members"
 msgstr "Członkowie roli"
 
-#: models.py:332
+#: models.py:335
 msgid "Role member limitation"
 msgstr "Ograniczenie dla członka roli"
 
-#: models.py:333
+#: models.py:336
 msgid "Role member limitations"
 msgstr "Ograniczenia dla członka roli"
 
-#: models.py:354
+#: models.py:357
 msgid "Role groups"
 msgstr "Grupy ról"
 
-#: models.py:363
+#: models.py:366
 msgid "Role group member"
 msgstr "Członek grupy roli"
 
-#: models.py:364
+#: models.py:367
 msgid "Role group members"
 msgstr "Członkowie grupy roli"
 
-#: models.py:525
+#: models.py:528
 msgid "Tag"
 msgstr "Tag"
 
-#: models.py:526
+#: models.py:529
 msgid "Tags"
 msgstr "Tagi"
 
-#: models.py:541
+#: models.py:544
 msgid "Tag label"
 msgstr "Etykieta tag'a"
 
-#: models.py:542
+#: models.py:545
 msgid "Tag labels"
 msgstr "Etykiety tag'ów"
 
-#: models.py:555
+#: models.py:558
 msgid "Tagged item"
 msgstr "Zatagowany element"
 
-#: models.py:556
+#: models.py:559
 msgid "Tagged items"
 msgstr "Zatagowane elementy"
 
-#: models.py:572
+#: models.py:575
 msgid "This email address will be shown to all users. If you leave it black noone will see your email address."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. Jeśli jednak pozostawisz to pole zaznaczone, nikt nie będzie mógł go zobaczyć."
 
-#: models.py:573
+#: models.py:576
 msgid "This email address will be shown to all users. If you leave it blank, your verified email address will be shown."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. jeśli pozostawisz to pole puste, Twój zweryfikowany adres email nie będzie pokazywany."
 
-#: models.py:577
+#: models.py:580
 msgid "This display name will be shown to all users. If you leave it blank then your username will be shown."
 msgstr "Nazwa wyświetlana będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:578
+#: models.py:581
 msgid "This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown."
 msgstr "Ta nazwa będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste wówczas wyświetlane będzie Twoje imię i nazwisko. Jeżeli jednak nie podałeś imienia i nazwiska, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:588
+#: models.py:591
 msgid "Community settings"
 msgstr "Ustawienia społecznościowe"
 
-#: models.py:648
+#: models.py:651
 msgid "Successfully saved community profile."
 msgstr "Pomyślnie zapisano profil społeczny."
 
@@ -385,72 +390,94 @@ msgstr "Wejście Captcha"
 msgid "Invalid Captcha response."
 msgstr "Niewłaściwy kod Captcha."
 
-#: views.py:36
-#: views.py:631
+#: views.py:40
+#: views.py:673
 msgid "Please enter the result of the above calculation."
 msgstr "Proszę wprowadzić rezultat powyższych obliczeń."
 
-#: views.py:49
-#: views.py:175
+#: views.py:53
+#: views.py:179
 #, python-format
 msgid "Another user is already registered with the email address %(email)s."
 msgstr "Inny użytkownik jest już zarejestrowany z adresem email %(email)s."
 
-#: views.py:75
+#: views.py:79
 msgid "No user found with that email address."
 msgstr "Nie znaleziono użytkownika z podanym adresem email."
 
-#: views.py:98
+#: views.py:102
 msgid "Your requested username / password"
 msgstr "Nazwa użytkownika / hasło, o które prosiłeś"
 
-#: views.py:100
+#: views.py:104
 #, python-format
 msgid "Your requested username / password for site %(site_name)s"
 msgstr "Nazwa użytkownika / hasło, o które prosiłeś dla witryny  %(site_name)s"
 
-#: views.py:127
+#: views.py:131
 msgid "Email verification required"
 msgstr "Wymagana weryfikacja adresu email"
 
-#: views.py:129
+#: views.py:133
 #, python-format
 msgid "Email verification required for site %(site_name)s"
 msgstr "Wymagana weryfikacja adresu email dla witryny %(site_name)s"
 
-#: views.py:170
+#: views.py:174
 #, python-format
 msgid "The username %(username)s is already taken."
 msgstr "Nazwa użytkownika %(username)s jest już zajęta."
 
-#: views.py:180
+#: views.py:184
 msgid "Password"
 msgstr "Hasło"
 
-#: views.py:182
+#: views.py:186
 msgid "Verify Password"
 msgstr "Potwierdź Hasło"
 
-#: views.py:404
+#: views.py:408
 msgid "Successfully changed user profile."
 msgstr "Profil użytkownika został pomyślnie zaktualizowany."
 
-#: views.py:461
+#: views.py:465
 #, python-format
 msgid "Removed user %(username)s from rolegroup."
 msgstr "Usunięto użytkownika %(username)s z grupy roli"
 
-#: views.py:509
+#: views.py:513
 msgid "Successfully saved role."
 msgstr "Rola została pomyślnie zapisana."
 
-#: views.py:534
+#: views.py:538
 msgid "Successfully deleted role member."
 msgstr "Pomyślnie usunięto rolę użytkownika."
 
-#: views.py:570
+#: views.py:574
 msgid "Successfully added member."
 msgstr "Pomyślnie dodano użytkownika."
+
+#: views.py:612
+msgid "no"
+msgstr "nie"
+
+#: views.py:613
+#: templates/sphene/community/admin/users_list.html:48
+msgid "Enable"
+msgstr "Włącz"
+
+#: views.py:615
+msgid "yes"
+msgstr "tak"
+
+#: views.py:616
+#: templates/sphene/community/admin/users_list.html:48
+msgid "Disable"
+msgstr "Wyłącz"
+
+#: views.py:619
+msgid "Successfully changed user status."
+msgstr "Status użytkownika został zmieniony."
 
 #: templates/sphene/community/_display_blockquote.html:7
 #, python-format
@@ -625,6 +652,22 @@ msgstr "Anuluj"
 #: templates/sphene/community/accounts/login.html:21
 msgid "Forgot Username/Password ?"
 msgstr "Zapomniałeś nazwy użytkownika/hasła?"
+
+#: templates/sphene/community/admin/users_list.html:37
+msgid "Full name"
+msgstr "Imię i nazwisko"
+
+#: templates/sphene/community/admin/users_list.html:38
+msgid "E-mail"
+msgstr "E-mail"
+
+#: templates/sphene/community/admin/users_list.html:39
+msgid "Is active"
+msgstr "Czy aktywny"
+
+#: templates/sphene/community/admin/users_list.html:40
+msgid "Actions"
+msgstr "Akcje"
 
 #: templates/sphene/community/admin/permission/base.html:7
 msgid "Role List"

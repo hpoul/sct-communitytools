@@ -4,6 +4,8 @@ from time import time
 from urllib import quote, unquote
 from hashlib import md5
 
+from django.utils import simplejson
+
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -17,6 +19,8 @@ from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
+from django.views.generic.list_detail import object_list
+from django.core.urlresolvers import reverse
 
 from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem, RoleGroup, RoleGroupMember
@@ -582,6 +586,44 @@ def admin_permission_role_groupmember_add(request, group, role_id):
     if not has_permission_flag(request.user, 'community_manage_roles'):
         raise PermissionDenied()
     return admin_permission_role_member_add(request, group, role_id, True)
+
+def admin_users(request, group):
+    if not has_permission_flag(request.user, 'community_manage_users'):
+        raise PermissionDenied()
+    users = User.objects.filter(is_superuser=False)
+    templateName = 'sphene/community/admin/users_list.html'
+    res =  object_list( request = request,
+                        queryset = users,
+                        template_name = templateName,
+                        template_object_name = 'sphuser',
+                        allow_empty = True,
+                        paginate_by = 10,
+                        )
+
+    return res
+
+def admin_user_switch_active(request, user_id, group):
+    if not has_permission_flag(request.user, 'community_manage_users'):
+        raise PermissionDenied()
+    usr = get_object_or_404(User, pk=user_id, is_superuser=False)
+    usr.is_active = not usr.is_active
+    usr.save()
+
+    user_status = _('no')
+    button_label = _('Enable')
+    if usr.is_active:
+        user_status=_('yes')
+        button_label = _('Disable')
+
+    if not request.is_ajax():
+        request.user.message_set.create( message = ugettext(u'Successfully changed user status.') )
+        url = request.REQUEST.get('next', reverse('sph_admin_users'))
+        return HttpResponseRedirect(url)
+    else:
+        return HttpResponse(simplejson.dumps({"user_status":user_status,
+                                              "button_label":button_label}),
+                            mimetype='application/json')
+
 
 def groupaware_redirect_to(request, url, group, **kwargs):
     """

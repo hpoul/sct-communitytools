@@ -233,7 +233,10 @@ class PermissionFlag(models.Model):
                              ugettext_lazy('Users with this permission flag have all permissions.'),
 
                              'community_manage_roles':
-                             ugettext_lazy('User have permission to create, edit and assign roles.'),
+                             ugettext_lazy('User has permission to create, edit and assign roles.'),
+
+                             'community_manage_users':
+                             ugettext_lazy('User has permission to manage other users'),
                              }
 
 
