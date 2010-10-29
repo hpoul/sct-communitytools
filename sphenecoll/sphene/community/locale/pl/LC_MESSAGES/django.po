@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-28 15:09-0500\n"
+"POT-Creation-Date: 2010-10-29 04:32-0500\n"
 "PO-Revision-Date: 2010-10-28 22:05+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
@@ -47,7 +47,7 @@ msgstr "Avatar"
 msgid "Avatar with maximum size of %(max_width)sx%(max_height)s"
 msgstr "Avatar o maksymalnych rozmiarach %(max_width)sx%(max_height)s"
 
-#: __init__.py:131 templatetags/sph_extras.py:361
+#: __init__.py:131 templatetags/sph_extras.py:360
 msgid "Users avatar"
 msgstr "Avatar użytkownika"
 
@@ -385,7 +385,7 @@ msgstr "Wejście Captcha"
 msgid "Invalid Captcha response."
 msgstr "Niewłaściwy kod Captcha."
 
-#: views.py:40 views.py:677
+#: views.py:40 views.py:678
 msgid "Please enter the result of the above calculation."
 msgstr "Proszę wprowadzić rezultat powyższych obliczeń."
 
@@ -433,40 +433,40 @@ msgstr "Potwierdź Hasło"
 msgid "Successfully changed user profile."
 msgstr "Profil użytkownika został pomyślnie zaktualizowany."
 
-#: views.py:465
+#: views.py:466
 #, python-format
 msgid "Removed user %(username)s from rolegroup."
 msgstr "Usunięto użytkownika %(username)s z grupy roli"
 
-#: views.py:513
+#: views.py:514
 msgid "Successfully saved role."
 msgstr "Rola została pomyślnie zapisana."
 
-#: views.py:538
+#: views.py:539
 msgid "Successfully deleted role member."
 msgstr "Pomyślnie usunięto rolę użytkownika."
 
-#: views.py:574
+#: views.py:575
 msgid "Successfully added member."
 msgstr "Pomyślnie dodano użytkownika."
 
-#: views.py:616
+#: views.py:617
 msgid "no"
 msgstr "nie"
 
-#: views.py:617 templates/sphene/community/admin/users_list.html:58
+#: views.py:618 templates/sphene/community/admin/users_list.html:58
 msgid "Enable"
 msgstr "Włącz"
 
-#: views.py:619
+#: views.py:620
 msgid "yes"
 msgstr "tak"
 
-#: views.py:620 templates/sphene/community/admin/users_list.html:58
+#: views.py:621 templates/sphene/community/admin/users_list.html:58
 msgid "Disable"
 msgstr "Wyłącz"
 
-#: views.py:623
+#: views.py:624
 msgid "Successfully changed user status."
 msgstr "Status użytkownika został zmieniony."
 
@@ -770,11 +770,11 @@ msgstr "Rosnąco"
 msgid "Descending"
 msgstr "Malejąco"
 
-#: templatetags/sph_extras.py:194
+#: templatetags/sph_extras.py:193
 msgid "Reveal this emailaddress"
 msgstr "Odkryj ten adres email"
 
-#: templatetags/sph_extras.py:364
+#: templatetags/sph_extras.py:363
 msgid "Submit"
 msgstr "Zatwierdź"
 
