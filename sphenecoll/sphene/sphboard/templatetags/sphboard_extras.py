@@ -1,8 +1,7 @@
 from django import template
-from django import forms
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.db.models import signals
+from django.db.models import signals, Q
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 
@@ -12,8 +11,10 @@ from sphene.community.models import Group
 from sphene.community.middleware import get_current_group, get_current_request, get_current_user
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
+from sphene.community.permissionutils import has_permission_flag
+from sphene.community import PermissionDenied
 
-from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount
+from sphene.sphboard.models import Category, Post, BoardUserProfile, UserPostCount, Monitor
 from sphene.sphboard.views import PostForm, get_all_viewable_categories, enable_wysiwyg_editor
 
 register = template.Library()
@@ -317,3 +318,24 @@ def sphboard_displayThreadSummary(context, thread):
 @register.simple_tag
 def user_posts_count(user):
     return UserPostCount.objects.get_post_count(user, get_current_group())
+
+def show_active_monitors(context, profile_user):
+    user = context['user']
+    request = context['request']
+
+    if user==profile_user:
+        monitors = Monitor.objects.filter(Q(thread=None)|Q(thread__is_hidden=0),
+                                          user = profile_user,
+                                          group = get_current_group()
+                                          )
+    else:
+        if not has_permission_flag(request.user, 'community_manage_users'):
+            raise PermissionDenied()
+        monitors = Monitor.objects.filter(Q(thread=None)|Q(thread__is_hidden=0),
+                                          user = profile_user,
+                                          group = get_current_group()
+                                          )
+    return {'monitors':monitors,
+            'request':request,
+            'is_current_user':user==profile_user}
+register.inclusion_tag('sphene/sphboard/templatetags/_show_active_monitors.html', takes_context=True)(show_active_monitors)

@@ -6,17 +6,16 @@ from time import time
 from django import template
 from django.template.context import RequestContext
 from django.conf import settings
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 from sphene.community.sphutils import HTML, get_sph_setting
 from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group, get_current_user
 from sphene.community.sphutils import add_rss_feed, sph_reverse
-from django.core.urlresolvers import reverse
-from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _, ugettext
-from django.utils.translation import ugettext_lazy
-    
+
 import logging
 log = logging.getLogger('sphene.community.sph_extras')
     
@@ -191,7 +190,7 @@ def sph_publicemailaddress(value):
             # if the timeout is reached or the captcha was never entered
             # provide a link for the user to enter the captcha.
             if validated < time() - get_sph_setting('community_email_anonymous_require_captcha_timeout'):
-                return mark_safe('<a href="%s">%s</a>' % (sph_reverse('sph_reveal_emailaddress', (), { 'user_id': value.id, }), ugettext( 'Reveal this emailaddress')))
+                return mark_safe('<a href="%s">%s</a>' % (sph_reverse('sph_reveal_emailaddress', (), { 'user_id': value.id, }), _( 'Reveal this emailaddress')))
 
     if get_sph_setting('community_email_show_only_public'):
         try:

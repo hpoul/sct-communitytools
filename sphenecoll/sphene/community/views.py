@@ -370,7 +370,7 @@ def profile_edit(request, group, user_id):
         user = requester
 
     if user is None or user != requester or not requester.is_authenticated():
-        if not (requester and requester.is_authenticated() and requester.is_superuser):
+        if not (requester and requester.is_authenticated() and (requester.is_superuser or has_permission_flag(requester, 'community_manage_users'))):
             raise PermissionDenied()
 
     if request.method == 'POST':
@@ -423,8 +423,9 @@ def profile_edit(request, group, user_id):
     """
     
     return render_to_response( 'sphene/community/profile_edit.html',
-                               { 'user': user,
+                               { 'profile_user': user,
                                  'form': form,
+                                 'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS
                                  },
                                context_instance = RequestContext(request) )
 

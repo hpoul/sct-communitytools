@@ -41,14 +41,16 @@ def has_monitor(self):
 def has_direct_monitor(self):
     return self.__get_monitor(get_current_user())
 
-def toggle_monitor(self):
+def toggle_monitor(self, user=None):
     """Toggles monitor and returns the newly created monitor, or None if an
     existing monitor was deleted."""
+    if not user:
+        user = get_current_user()
     if self.has_direct_monitor():
         self.has_direct_monitor().delete()
         if hasattr(self, '__monitor'): delattr(self,'__monitor')
     else:
-        monitor = Monitor(user = get_current_user(),
+        monitor = Monitor(user = user,
                           group = self, )
         monitor.save()
         self.__monitor = monitor
@@ -409,16 +411,18 @@ class Category(models.Model):
         lastVisit.save()
         return False
 
-    def toggle_monitor(self):
+    def toggle_monitor(self, user=None):
         """Either creates a monitor if there is none currently, or deletes an
         existing monitor."""
+        if not user:
+            user = get_current_user()
         
         if self.has_direct_monitor():
-            self.__get_monitor(get_current_user()).delete()
+            self.__get_monitor(user).delete()
             if hasattr(self, '__monitor'): delattr(self,'__monitor')
         else:
             monitor = Monitor(group = self.group,
-                              user = get_current_user(),
+                              user = user,
                               category = self)
             monitor.save()
             self.__monitor = monitor
@@ -916,16 +920,18 @@ class Post(models.Model):
         self.__monitor = monitor
         return self.__monitor
 
-    def toggle_monitor(self):
+    def toggle_monitor(self, user=None):
+        if not user:
+            user = get_current_user()
         if self.has_direct_monitor():
-            self.__get_monitor(get_current_user()).delete()
+            self.__get_monitor(user).delete()
             if hasattr(self, '__monitor'): delattr(self,'__monitor')
         else:
             thread = self.thread or self
             monitor = Monitor( thread = thread,
                                category = thread.category,
                                group = thread.category.group,
-                               user = get_current_user(), )
+                               user = user, )
             monitor.save()
             self.__monitor = monitor
             return monitor

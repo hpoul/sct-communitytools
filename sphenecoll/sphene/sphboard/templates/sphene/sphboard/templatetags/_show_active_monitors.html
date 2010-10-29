@@ -1,0 +1,37 @@
+{% load i18n %}
+<h4>{% trans "Forum monitoring - e-mail notifications" %}</h4>
+<table>
+{% for monitor in monitors %}
+  <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{% if monitor.thread %}
+          <b>{% trans "Thread" %}</b>: {{ monitor.thread }}
+          {% else %}
+              {% if monitor.category %}
+                  <b>{% trans "Category" %}</b>: {{ monitor.category }}
+              {% else %}
+                  {% trans "Whole board monitoring" %}
+              {% endif %}
+          {% endif %}
+      </td>
+      <td>
+          {% if monitor.thread %}
+              <a href="{% url sphboard_toggle_user_monitor "thread" monitor.thread.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+          {% else %}
+              {% if monitor.category %}
+                  <a href="{% url sphboard_toggle_user_monitor "category" monitor.category.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+              {% else %}
+                  <a href="{% url sphboard_toggle_user_monitor "group" 0 monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+              {% endif %}
+          {% endif %}
+      </td>
+  </tr>
+{% endfor %}
+
+{% if not monitors %}
+  <tr>
+      <td>{% if is_current_user %}{% trans "You're not monitoring any threads yet" %}{% else %}{% trans "User is not monitoring any threads yet" %}{% endif %}</td>
+  </tr>
+{% endif %}
+
+</table>
