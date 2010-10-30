@@ -866,10 +866,13 @@ def admin_user_posts(request, group, user_id):
         raise PermissionDenied()
 
     user = get_object_or_404(User, pk=user_id)
-    post_list = Post.objects.filter( author = user ).order_by( '-postdate' )
+
+    orderby = request.GET.get('orderby', '-postdate')
+    post_list = Post.objects.filter( author = user ).order_by(orderby)
 
     template_name = 'sphene/sphboard/admin_user_posts.html'
-    context = {'author':user}
+    context = {'author':user,
+               'orderby':orderby}
 
     res =  object_list( request = request,
                         queryset = post_list,

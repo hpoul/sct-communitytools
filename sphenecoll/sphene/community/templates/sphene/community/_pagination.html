@@ -2,16 +2,16 @@
 {% if pages != 1 %}
 {% trans "Page:" %}
 {% if has_prev %}
-  <a href="{{ url }}?{{ getparam }}={{ prev }}">{% trans "Previous" %}</a>
+  <a href="{{ url }}?{{ getparam }}={{ prev }}{{ getvars }}">{% trans "Previous" %}</a>
 {% endif %}
 {% for p in page_range %}
   {% ifequal p page %}
     {{ p }}
   {% else %}
-    <a href="{{ url }}?{{ getparam }}={{ p }}">{{ p }}</a>
+    <a href="{{ url }}?{{ getparam }}={{ p }}{{ getvars }}">{{ p }}</a>
   {% endifequal %}
 {% endfor %}
 {% if has_next %}
-  <a href="{{ url }}?{{ getparam }}={{ next }}">{% trans "Next" %}</a>
+  <a href="{{ url }}?{{ getparam }}={{ next }}{{ getvars }}">{% trans "Next" %}</a>
 {% endif %}
 {% endif %}

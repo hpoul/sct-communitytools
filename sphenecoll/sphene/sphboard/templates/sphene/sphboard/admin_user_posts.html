@@ -25,9 +25,9 @@
 
 <table>
   <tr>
-    <th>{% trans "Subject" %}</th>
+    <th><a href="?orderby={% get_orderby orderby "subject" %}">{% trans "Subject" %}</a></th>
     <th>{% trans "Body" %}</th>
-    <th>{% trans "Published" %}</th>
+    <th><a href="?orderby={% get_orderby orderby "postdate" %}">{% trans "Published" %}</a></th>
     <th>{% trans "Actions" %}</th>
   </tr>
   {% for post in post_list %}
