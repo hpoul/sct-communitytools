@@ -33,13 +33,13 @@
 
 <table>
   <tr>
-    <th>{% trans "Username" %}</th>
+    <th><a href="?orderby=username">{% trans "Username" %}</a></th>
     <th>{% trans "Full name" %}</th>
     <th>{% trans "E-mail" %}</th>
     {% if is_sphboard %}
         <th>{% trans "Board posts" %}</th>
     {% endif %}
-    <th>{% trans "Is active" %}</th>
+    <th><a href="?orderby=is_active">{% trans "Is active" %}</a></th>
     <th>{% trans "Actions" %}</th>
   </tr>
   {% for usr in sphuser_list %}

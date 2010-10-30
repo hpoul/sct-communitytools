@@ -591,10 +591,14 @@ def admin_permission_role_groupmember_add(request, group, role_id):
 def admin_users(request, group):
     if not has_permission_flag(request.user, 'community_manage_users'):
         raise PermissionDenied()
-    users = User.objects.filter(is_superuser=False)
+
+    orderby = request.GET.get('orderby', 'username')
+
+    users = User.objects.filter(is_superuser=False).order_by(orderby)
     templateName = 'sphene/community/admin/users_list.html'
 
-    context = {'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS}
+    context = {'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS,
+               'orderby':orderby}
 
     res =  object_list( request = request,
                         queryset = users,

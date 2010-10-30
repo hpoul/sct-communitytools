@@ -405,3 +405,15 @@ def resize(file, size='200x200'):
         image.thumbnail([x, y], Image.ANTIALIAS) # generate a 200x200 thumbnail
         image.save(miniature_filename, image.format)
     return (miniature_url, x, y)
+
+@register.simple_tag
+def get_orderby(orderby, key):
+    plainkey = key
+    if plainkey and plainkey[0]=='-':
+        plainkey = plainkey[1:]
+
+    if orderby==plainkey:
+        return "-%s" % (plainkey)
+    elif orderby[0]=='-' and orderby[1:]==plainkey:
+        return plainkey
+    return key
