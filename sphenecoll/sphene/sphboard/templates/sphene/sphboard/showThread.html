@@ -158,7 +158,7 @@
                   {% endfor %}
                 </table>
               {% else %}
-                <form method="post" action="{% sph_url2 sphene.sphboard.views.vote thread_id=thread.id %}">
+                <form method="post" action="{% sph_url2 sphene.sphboard.views.vote thread_id=thread.id %}">{% csrf_token %}
                 {% if request.attributes.voteerror %}
                   <strong class="sphboard error">{% trans "Error:" %} {{ request.attributes.voteerror }}</strong><br/>
                 {% endif %}

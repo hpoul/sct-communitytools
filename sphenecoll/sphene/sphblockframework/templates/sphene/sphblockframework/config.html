@@ -18,7 +18,7 @@
 
 
   <h2>Create a new block configuration:</h2>
-  <form method="post" action=".">
+  <form method="post" action=".">{% csrf_token %}
     <table>
       {{ createblockform }}
       <tr>

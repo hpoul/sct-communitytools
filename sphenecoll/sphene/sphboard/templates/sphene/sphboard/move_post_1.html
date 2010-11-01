@@ -11,7 +11,7 @@
   <div><strong>{% trans "Step 1" %}</strong> -&gt; <span class="inactive-step">{% trans "Step 2" %}</span> -&gt; <span class="inactive-step">{% trans "Step 3" %}</span></div>
 
   <p>{% blocktrans with post.subject|escape as subject %}Select target category to move post <strong>{{ subject }}</strong> into. Later you'll be able to select destination thread.{% endblocktrans %}</p>
-  <form method="POST" action=".">
+  <form method="POST" action=".">{% csrf_token %}
     <table class="sphboard form">
       <tr>
           <th>{% trans "Category name" %}</th>

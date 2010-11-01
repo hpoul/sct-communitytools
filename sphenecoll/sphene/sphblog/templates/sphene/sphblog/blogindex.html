@@ -16,7 +16,7 @@
 {% block content %}
 
   {% if allowpostcategories %}
-    <form method="post" name="postthread" action="{% sph_url 'sphblog_postthread' %}">
+    <form method="post" name="postthread" action="{% sph_url 'sphblog_postthread' %}">{% csrf_token %}
       <select name="category">
 	{% for category in allowpostcategories %}
 	  <option value="{{ category.id }}">{{ category.name }}</option>

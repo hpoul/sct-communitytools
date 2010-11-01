@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<form method="POST" action="." class="sphform" enctype="multipart/form-data">
+<form method="POST" action="." class="sphform" enctype="multipart/form-data">{% csrf_token %}
   <table border="0">
     {{ form }}
 

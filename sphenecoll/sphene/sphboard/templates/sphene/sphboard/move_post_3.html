@@ -17,7 +17,7 @@
   <b>{% blocktrans with post.subject|escape as subject %}Move post: {{ subject }} by {% endblocktrans %}{% sphboard_displayUserName thread.author %}</b>
   <br/><br/>
 
-  <form method="POST" action=".">
+  <form method="POST" action=".">{% csrf_token %}
     <table class="sphboard form">
       {{ form }}
       <tr>

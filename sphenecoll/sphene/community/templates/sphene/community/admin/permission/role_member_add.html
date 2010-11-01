@@ -3,7 +3,7 @@
 
 {% block content %}
 {{ block.super }}
-<form method="POST" class="sphform" action=".">
+<form method="POST" class="sphform" action=".">{% csrf_token %}
   <table class="">
     {{ form }}
 

@@ -14,7 +14,7 @@
       {% blocktrans with post.subject|escape as subject and category.name as categoryname %}Click <strong><a href="{{ move_post_3_ic_url }}">here</a></strong> to move post <strong>{{ subject }}</strong>
       directly into category <strong>{{ categoryname }}</strong> (new thread will be created if necessary)
       or select target thread below to append post <strong>{{ subject }}</strong> to it:{% endblocktrans %}</p>
-  <form method="POST" action=".">
+  <form method="POST" action=".">{% csrf_token %}
     <table class="sphboard form">
       <tr>
           <th>{% trans "Thread" %}</th>

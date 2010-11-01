@@ -10,7 +10,7 @@
 
   <h1>{% trans "Editing Poll" %}</h1>
 
-  <form method="post">
+  <form method="post">{% csrf_token %}
     <table>
       {{ form }}
 

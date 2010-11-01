@@ -21,7 +21,7 @@
   </table>
 
   <h2>{% trans "Create a new Role Group" %}</h2>
-  <form method="post">
+  <form method="post">{% csrf_token %}
     <input type="text" name="name" />
     <input type="submit" value="{% trans "Save" %}" />
   </form>

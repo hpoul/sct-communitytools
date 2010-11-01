@@ -20,7 +20,7 @@
   {% if version %}
     <div class="sphwiki_versionwarning"><strong>{% trans "Warning" %}:</strong> {% blocktrans with version.editor|sph_html_user as version_editor and version.edited|sph_date as version_editdate %}You are editing an old version: By {{ version_editor }} at {{ version_editdate }}{% endblocktrans %}</div>
   {% endif %}
-  <form action="." method="post" name="snipedit" class="sphform">
+  <form action="." method="post" name="snipedit" class="sphform">{% csrf_token %}
     <table class="form">
       {{ form }}
       <tr>

@@ -5,7 +5,7 @@
 {% blocktrans %}If you have forgotten your username or password, you can enter your
 email address here. You will then receive your username and a newly
 generated password by email.{% endblocktrans %}<br/><br/>
-<form method="POST" action=".">
+<form method="POST" action=".">{% csrf_token %}
   <table>
     {{ form }}
   </table>
