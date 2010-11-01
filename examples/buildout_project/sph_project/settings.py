@@ -64,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'sphene.community.middleware.ThreadLocals',
     'sphene.community.middleware.GroupMiddleware',
     'sphene.community.middleware.MultiHostMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -109,6 +110,8 @@ SPH_HOST_MIDDLEWARE_URLCONF_MAP = {
     '127.0.0.1:8000': { 'params': { 'groupName': 'example' }
                       },
 }
+
+LOGIN_REDIRECT_URL = '/'
 
 # settings_local overwrites a few settings from here, and has to define SECRET_KEY
 try:
