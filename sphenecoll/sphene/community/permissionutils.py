@@ -22,15 +22,14 @@ def has_permission_flag(user, flag, contentobject = None, group = None):
 
     if group is None:
         group = get_current_group()
-    
+
     # TODO cache rolegroup_ids for user ?
-    rolegroups = RoleGroupMember.objects.filter(rolegroup__group = group, user = user)
-    rolegroup_ids = [rolegroup.rolegroup_id for rolegroup in rolegroups]
+    rolegroups = RoleGroupMember.objects.filter(rolegroup__group = group, user = user).values_list('id',flat=True)
 
     # Check if the user has a global flag ...
     userselect = (Q(user = user) & Q(rolegroup__isnull = True)) \
         | (Q(rolegroup__in = rolegroup_ids) & Q(user__isnull = True))
-    matches = RoleMember.objects.filter( 
+    matches = RoleMember.objects.filter(
         userselect,
         role__permission_flags__name__exact = flag, has_limitations = False ).count()
 
@@ -50,7 +49,7 @@ def has_permission_flag(user, flag, contentobject = None, group = None):
                                                  ).count()
         if rolemembers > 0:
             return True
-            
+
     # ... lookup the group_administrator flag:
     if flag != 'group_administrator':
         return has_permission_flag(user, 'group_administrator')
