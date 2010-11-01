@@ -24,7 +24,7 @@ def has_permission_flag(user, flag, contentobject = None, group = None):
         group = get_current_group()
 
     # TODO cache rolegroup_ids for user ?
-    rolegroups = RoleGroupMember.objects.filter(rolegroup__group = group, user = user).values_list('id',flat=True)
+    rolegroup_ids = RoleGroupMember.objects.filter(rolegroup__group = group, user = user).values_list('id',flat=True)
 
     # Check if the user has a global flag ...
     userselect = (Q(user = user) & Q(rolegroup__isnull = True)) \
