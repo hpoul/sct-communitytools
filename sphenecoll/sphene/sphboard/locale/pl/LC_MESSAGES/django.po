@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-29 04:32-0500\n"
-"PO-Revision-Date: 2010-10-29 11:34+0100\n"
+"POT-Creation-Date: 2010-11-02 22:18+0100\n"
+"PO-Revision-Date: 2010-11-02 22:19+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "Language: \n"
@@ -24,10 +24,16 @@ msgstr ""
 msgid "-- Select Category --"
 msgstr "-- Wybierz Kategorię --"
 
-#: feeds.py:22
-#: feeds.py:25
+#: feeds.py:17
+#: feeds.py:20
 #, python-format
 msgid "Latest threads in %(obj_name)s"
+msgstr "Najnowsze wątki w %(obj_name)s"
+
+#: feeds.py:47
+#: feeds.py:50
+#, python-format
+msgid "Latest threads at %(obj_name)s"
 msgstr "Najnowsze wątki w %(obj_name)s"
 
 #: forms.py:57
@@ -360,7 +366,7 @@ msgid "Annotated a users post."
 msgstr "Skomentowano wiadomość użytkownika."
 
 #: views.py:521
-#: views.py:890
+#: views.py:893
 msgid "Post deleted"
 msgstr "Wiadomość usunięta"
 
@@ -429,11 +435,11 @@ msgstr "Pomyślnie ustawiono monitorowanie i powiadamianie emailowe."
 msgid "Removed email notification monitor."
 msgstr "Wyłączono monitorowanie i powiadamianie emailowe."
 
-#: views.py:901
+#: views.py:904
 msgid "All posts deleted"
 msgstr "Wszystkie wiadomości zostały usunięte"
 
-#: views.py:903
+#: views.py:906
 msgid "No posts to delete"
 msgstr "Brak wiadomości do usunięcia"
 
