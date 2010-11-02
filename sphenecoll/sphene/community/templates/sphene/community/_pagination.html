@@ -1,9 +1,15 @@
 {% load i18n %}
 {% if pages != 1 %}
 {% trans "Page:" %}
+
+{% if first_page %}
+  <a href="{{ url }}?{{ getparam }}={{ first_page }}{{ getvars }}">{% trans "First" %}</a>
+{% endif %}
+
 {% if has_prev %}
   <a href="{{ url }}?{{ getparam }}={{ prev }}{{ getvars }}">{% trans "Previous" %}</a>
 {% endif %}
+
 {% for p in page_range %}
   {% ifequal p page %}
     {{ p }}
@@ -11,7 +17,12 @@
     <a href="{{ url }}?{{ getparam }}={{ p }}{{ getvars }}">{{ p }}</a>
   {% endifequal %}
 {% endfor %}
+
 {% if has_next %}
   <a href="{{ url }}?{{ getparam }}={{ next }}{{ getvars }}">{% trans "Next" %}</a>
+{% endif %}
+
+{% if last_page %}
+  <a href="{{ url }}?{{ getparam }}={{ last_page }}{{ getvars }}">{% trans "Last" %}</a>
 {% endif %}
 {% endif %}
