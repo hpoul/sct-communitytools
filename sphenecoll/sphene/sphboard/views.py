@@ -47,7 +47,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         if not categoryObject.has_view_permission( request.user ):
             raise PermissionDenied()
         categoryObject.touch(request.session, request.user)
-        blog_feed_url = sph_reverse('sphboard-feeds', kwargs = { 'url': 'latest/%s' % categoryObject.id })
+        blog_feed_url = sph_reverse('sphboard-feeds', kwargs = { 'category_id': categoryObject.id })
         add_rss_feed( blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name )
 
         if sphdata != None: sphdata['subtitle'] = categoryObject.name

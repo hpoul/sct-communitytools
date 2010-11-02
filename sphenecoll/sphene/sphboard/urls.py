@@ -1,17 +1,17 @@
 from django.conf.urls.defaults import *
 
-from sphene.sphboard.feeds import LatestThreads
-
-feeds = {
-    'latest': LatestThreads,
-    }
+from sphene.sphboard.feeds import LatestThreads, LatestGlobalThreads
 
 urlpatterns = patterns('',
                        #url(r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/0/'}, name = 'sphboard-index'),
-                       url(r'^feeds/(?P<url>.+)/$', 'django.contrib.syndication.views.feed',
-                           { 'feed_dict': feeds,
-                             'noGroup': True, },
+                       url(r'^feeds/latest/(?P<category_id>.+)/$',
+                           LatestThreads(),
+                           {},
                            'sphboard-feeds'),
+                       url(r'^feeds/all/$',
+                           LatestGlobalThreads(),
+                           {},
+                           'sphboard-global-feeds')
                        )
 urlpatterns += patterns('sphene.sphboard.views',
                         url(r'^$', 'showCategory', {'category_id': '0'}, name = 'sphboard-index'),

@@ -6,27 +6,33 @@ def define_page_range(page, pages):
     window = 6
     page_range = range( 1, pages+1 )
 
-    pg = 1
-    if page != -1:
-        pg = page
+    pg = page
+    out = []
 
-    wnd_start = page_range[:pg]
-    wnd_end = page_range[pg:]
+    if page == -1:
+        out = set(page_range[:window/2])
+        out.update(set(page_range[-window/2:]))
+        out = list(out)
+        if len(out) < len(page_range):
+            out.insert(window/2, '...')
+    else:
+        wnd_start = page_range[:pg]
+        wnd_end = page_range[pg:]
 
-    end_correction = window/2
-    if len(wnd_start) <= window/2:
-        end_correction = window/2 + (window/2-len(wnd_start)) + 1
+        end_correction = window/2
+        if len(wnd_start) <= window/2:
+            end_correction = window/2 + (window/2-len(wnd_start)) + 1
 
-    start_correction = window/2 + 1
-    if len(wnd_end) <= window/2:
-        start_correction = window/2 + (window/2-len(wnd_end)) + 1
+        start_correction = window/2 + 1
+        if len(wnd_end) <= window/2:
+            start_correction = window/2 + (window/2-len(wnd_end)) + 1
 
-    out = wnd_start[-start_correction:]
-    out = out + wnd_end[:end_correction]
+        out = wnd_start[-start_correction:]
+        out = out + wnd_end[:end_correction]
     return out
 
 @register.inclusion_tag('sphene/community/_pagination.html', takes_context=True)
-def sph_pagination(context, pages, page, url = '', getparam = 'page', compress=False):
+def sph_pagination(context, pages, page, url = '', getparam = 'page', compress=0):
     has_next = page < pages
     has_prev = page > 1
     if page == -1:
