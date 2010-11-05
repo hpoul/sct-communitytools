@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-11-04 12:32+0100\n"
-"PO-Revision-Date: 2010-11-04 12:33+0100\n"
+"PO-Revision-Date: 2010-11-06 00:09+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -494,7 +494,7 @@ msgstr "Strona:"
 
 #: templates/sphene/community/_pagination.html:6
 msgid "First"
-msgstr "Pierwsa"
+msgstr "Pierwsza"
 
 #: templates/sphene/community/_pagination.html:10
 msgid "Previous"
