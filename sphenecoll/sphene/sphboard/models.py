@@ -1527,11 +1527,7 @@ class UserPostCountManager(models.Manager):
     def update_post_count(self, user, group):
         if user is None:
             return None
-        try:
-            upc = self.get(user = user, group = group)
-            
-        except UserPostCount.DoesNotExist:
-            upc = UserPostCount(user = user, group = group)
+        upc, created = UserPostCount.objects.get_or_create(user = user, group = group)
         upc.update_post_count()
         upc.save()
         return upc.post_count
@@ -1549,7 +1545,7 @@ class UserPostCount(models.Model):
         try:
             qry = qry.filter(category__group = self.group)
         except:
-            qry = qry.filter(category__group__isnull = True).count()
+            qry = qry.filter(category__group__isnull = True)
         qry = qry.filter(is_hidden=0)
         
         self.post_count = qry.count()
