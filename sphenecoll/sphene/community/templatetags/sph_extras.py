@@ -6,6 +6,7 @@ from time import time
 from django import template
 from django.template.context import RequestContext
 from django.conf import settings
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -15,6 +16,7 @@ from sphene.contrib.libs.markdown import mdx_macros
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group, get_current_user
 from sphene.community.sphutils import add_rss_feed, sph_reverse
+
 
 import logging
 log = logging.getLogger('sphene.community.sph_extras')
@@ -326,8 +328,8 @@ def sph_plus(value, arg = 0):
 @register.simple_tag
 def sph_truncate(string, charlen, replacement):
     if len(string) > charlen:
-        return string[0:charlen-len(replacement)] + replacement
-    return string
+        return escape(string[0:charlen-len(replacement)] + replacement)
+    return escape(string)
 
 @register.simple_tag
 def sph_showavatar(user, maxwidth = None):
