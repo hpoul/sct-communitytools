@@ -1536,7 +1536,7 @@ class UserPostCountManager(models.Manager):
 class UserPostCount(models.Model):
     user = models.ForeignKey( User )
     group = models.ForeignKey( Group, null=True )
-    post_count = models.IntegerField()
+    post_count = models.IntegerField(default=0)
 
     objects = UserPostCountManager()
 
