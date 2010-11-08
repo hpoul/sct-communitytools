@@ -94,6 +94,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         else: thread_args = { 'category__group__isnull': True }
         #thread_args[ 'thread__isnull'] = True
         thread_args[ 'category__id__in'] = allowed_categories
+        thread_args[ 'root_post__is_hidden'] = 0
         context['isShowLatest'] = True
         thread_list = ThreadInformation.objects.filter( **thread_args )
     else:
