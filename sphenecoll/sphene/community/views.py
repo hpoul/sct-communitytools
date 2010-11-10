@@ -605,6 +605,7 @@ def admin_users(request, group):
                         template_name = templateName,
                         template_object_name = 'sphuser',
                         allow_empty = True,
+                        extra_context = context,
                         paginate_by = 10,
                         )
 
