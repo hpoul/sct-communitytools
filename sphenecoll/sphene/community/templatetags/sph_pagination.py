@@ -12,6 +12,7 @@ def define_page_range(page, pages):
     if page == -1:
         out = set(page_range[:window/2])
         out.update(set(page_range[-window/2:]))
+        out = sorted(out)
         out = list(out)
         if len(out) < len(page_range):
             out.insert(window/2, '...')
