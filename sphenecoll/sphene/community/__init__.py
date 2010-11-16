@@ -62,7 +62,7 @@ def clean_community_advprofile_avatar(self):
         
     except IOError, e:
         print e
-        raise ValidationError( _(u"Uploaded an invalid image.") )
+        raise djangoforms.ValidationError( _(u"Uploaded an invalid image.") )
     
     return f
 
