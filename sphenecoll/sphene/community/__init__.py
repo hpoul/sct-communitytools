@@ -124,10 +124,7 @@ def community_advprofile_display(sender, signal, request, user, **kwargs):
         avatar = profile.avatar.url
         avatar_width = profile.avatar_width
         avatar_height = profile.avatar_height
-        
     
-    ret = ''
-
     ret = '<tr><th>%s</th><td><img src="%s" width="%dpx" height="%dpx" alt="%s"></img></td></tr>' % (_(u'Avatar'), avatar, avatar_width, avatar_height, _(u'Users avatar'))
     
     return ret

@@ -1,4 +1,7 @@
 import django.dispatch
+from django.conf import settings
+from django.core.cache import cache
+
 # Called when the edit_profile view initializes the form ...
 # gives listeners a chance to add custom fields to the form.
 profile_edit_init_form = django.dispatch.Signal()
@@ -29,3 +32,13 @@ maintenance = django.dispatch.Signal()
 # echo -e "from sphene.community.signals import trigger_maintenance\ntrigger_maintenance()" | ./manage.py shell --plain
 def trigger_maintenance():
     maintenance.send(None)
+
+def clear_user_displayname(sender, instance, created, *args, **kwargs):
+    from django.contrib.auth.models import User
+    user = None
+    if isinstance(instance, User):
+        user = instance
+    else:
+        user = instance.user
+    key = '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
+    cache.delete(key)

@@ -4,9 +4,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
-
+from django.db.models.signals import post_save
 
 from sphene.community.sphpermalink import sphpermalink
+from sphene.community.signals import clear_user_displayname
 
 import logging
 import re
@@ -673,5 +674,5 @@ def community_profile_display(sender, signal, request, user, **kwargs):
 profile_edit_init_form.connect(community_profile_edit_init_form, sender = EditProfileForm)
 profile_edit_save_form.connect(community_profile_edit_save_form, sender = EditProfileForm)
 profile_display.connect(community_profile_display)
-
-
+post_save.connect(clear_user_displayname, sender=User)
+post_save.connect(clear_user_displayname, sender=CommunityUserProfile)

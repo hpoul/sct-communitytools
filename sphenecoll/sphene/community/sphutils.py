@@ -9,6 +9,7 @@ from django.template import loader
 from django.utils.translation import ugettext as _
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
+from django.core.cache import cache
 
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
@@ -29,16 +30,19 @@ def get_user_displayname(user):
     """ returns the full username of the given user - if defined
     (No HTML, just text) """
     if not user: return _(u"Anonymous")
-   
-    profile = user.communityuserprofile_set.all()
-    if profile and profile[0].displayname:
-        return profile[0].displayname
-
-    if (not user.first_name or not user.last_name) or\
-        get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
-        return user.username
-
-    return "%s %s" % (user.first_name, user.last_name)
+    key = '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
+    res = cache.get(key)
+    if not res:
+        profile = user.communityuserprofile_set.all()
+        if profile and profile[0].displayname:
+            res = profile[0].displayname
+        elif (not user.first_name or not user.last_name) or\
+            get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
+            res = user.username
+        else:
+            res = "%s %s" % (user.first_name, user.last_name)
+        cache.set(key, res)
+    return res
 
 # This is for backwards compatibility
 get_fullusername = get_user_displayname
