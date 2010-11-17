@@ -38,7 +38,7 @@ def clear_post_cache(sender, instance, *args, **kwargs):
             else:
                 thr = instance.thread
 
-            if thr and (original.thread.pk != instance.thread.pk
+            if thr and (original.thread != instance.thread
                         or original.is_hidden != instance.is_hidden
                         or original.category != instance.category):
                 for post in thr.get_all_posts():
