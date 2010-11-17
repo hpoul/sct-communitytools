@@ -27,6 +27,7 @@ from sphene.community.models import Group
 from sphene.sphblog.utils import slugify
 from sphene.sphboard import categorytyperegistry
 from renderers import POST_MARKUP_CHOICES, render_body
+from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache
 
 import logging
 logger = logging.getLogger('sphene.sphboard.models')
@@ -462,14 +463,19 @@ class Category(models.Model):
         return self._get_absolute_url()
 
     def _get_absolute_url(self):
-        kwargs = { 'groupName': self.group.name,
-                   'category_id': self.id }
-        if get_sph_setting('board_slugify_links'):
-            kwargs['slug'] = slugify(self.name) or '_'
-            name = 'sphboard_show_category'
-        else:
-            name = 'sphboard_show_category_without_slug'
-        return (name, (), kwargs)
+        key = '%s_cat_abs_url_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk, get_sph_setting('board_slugify_links'))
+        res = cache.get(key)
+        if not res:
+            kwargs = { 'groupName': self.group.name,
+                       'category_id': self.id }
+            if get_sph_setting('board_slugify_links'):
+                kwargs['slug'] = slugify(self.name) or '_'
+                name = 'sphboard_show_category'
+            else:
+                name = 'sphboard_show_category_without_slug'
+            res = (name, (), kwargs)
+            cache.set(key, res)
+        return res
     _get_absolute_url = sphpermalink(_get_absolute_url)
 
     def get_absolute_post_thread_url(self):
@@ -1045,12 +1051,21 @@ class Post(models.Model):
         return int(math.ceil(i / float(get_sph_setting( 'board_post_paging' ))))
 
     def get_absolute_url(self):
-        cturl = self.category.get_category_type().get_absolute_url_for_post( self )
-        if cturl:
-            return cturl
-        return "%s?page=%d#post-%d" % (self._get_absolute_url(),
-                                       self.get_page(),
-                                       self.id)
+        key = '%s_post_abs_url_%s_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                            self.pk,
+                                            get_sph_setting('board_slugify_links'),
+                                            get_sph_setting( 'board_post_paging' ))
+        res = cache.get(key)
+        if not res:
+            cturl = self.category.get_category_type().get_absolute_url_for_post( self )
+            if cturl:
+                res = cturl
+            else:
+                res = "%s?page=%d#post-%d" % (self._get_absolute_url(),
+                                              self.get_page(),
+                                              self.id)
+            cache.set(key, res)
+        return res
 
     def _get_absolute_url(self):
         kwargs = { 'groupName': self.category.group.name,
@@ -1668,3 +1683,9 @@ def board_profile_display(sender, signal, request, user, **kwargs):
 profile_edit_init_form.connect(board_profile_edit_init_form, sender = EditProfileForm)
 profile_edit_save_form.connect(board_profile_edit_save_form, sender = EditProfileForm)
 profile_display.connect(board_profile_display)
+signals.post_save.connect(clear_category_cache, sender=Group)
+signals.post_save.connect(clear_category_cache, sender=Category)
+signals.pre_save.connect(clear_post_cache, sender=Post)
+signals.pre_save.connect(clear_post_cache, sender=Group)
+signals.pre_save.connect(clear_post_cache, sender=Category)
+signals.post_delete.connect(clear_post_cache_on_delete, sender=Post)
