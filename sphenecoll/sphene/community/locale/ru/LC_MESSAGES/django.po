@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-04 12:32+0100\n"
+"POT-Creation-Date: 2010-11-19 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +34,7 @@ msgstr "Загруженный файл не является изображен
 msgid "Delete avatar"
 msgstr "Удалить аватар"
 
-#: __init__.py:81 __init__.py:131 models.py:154
+#: __init__.py:81 __init__.py:128 models.py:155
 msgid "Avatar"
 msgstr "Аватар"
 
@@ -42,7 +43,7 @@ msgstr "Аватар"
 msgid "Avatar with maximum size of %(max_width)sx%(max_height)s"
 msgstr ""
 
-#: __init__.py:131 templatetags/sph_extras.py:360
+#: __init__.py:128 templatetags/sph_extras.py:362
 msgid "Users avatar"
 msgstr "Аватар пользователя"
 
@@ -94,18 +95,18 @@ msgstr "Новые пароли не совпадают."
 msgid "-- Select Object Type --"
 msgstr "-- Выберите тип объекта --"
 
-#: forms.py:94 models.py:229 models.py:255
+#: forms.py:94 models.py:230 models.py:256
 #: templates/sphene/community/profile.html:9
 #: templates/sphene/community/admin/permission/role_list.html:14
 msgid "Name"
 msgstr "Имя"
 
-#: forms.py:95 models.py:248 models.py:258
+#: forms.py:95 models.py:249 models.py:259
 #, fuzzy
 msgid "Permission flags"
 msgstr "Доступ запрещён"
 
-#: forms.py:106 models.py:305
+#: forms.py:106 models.py:306
 #, fuzzy
 msgid "Has limitations"
 msgstr "Ограничения"
@@ -114,7 +115,7 @@ msgstr "Ограничения"
 msgid "Allows you to limit the given permission to only one specific object."
 msgstr "Позволяет применять выбранные права только к выбранному объекту."
 
-#: forms.py:112 models.py:329
+#: forms.py:112 models.py:330
 #, fuzzy
 msgid "Object type"
 msgstr "Неверный тип объекта"
@@ -137,219 +138,219 @@ msgstr "Имя пользователя"
 msgid "User does not exist."
 msgstr "Пользователь не существует."
 
-#: forms.py:141 models.py:303 models.py:356 models.py:362
+#: forms.py:141 models.py:304 models.py:357 models.py:363
 #, fuzzy
 msgid "Role group"
 msgstr "Группа"
 
-#: models.py:56 models.py:65 models.py:107 models.py:207 models.py:256
-#: models.py:345 models.py:521
+#: models.py:57 models.py:66 models.py:108 models.py:208 models.py:257
+#: models.py:346 models.py:522
 #, fuzzy
 msgid "Group"
 msgstr "Группа"
 
-#: models.py:57
+#: models.py:58
 #, fuzzy
 msgid "Groups"
 msgstr "Ролевые группы"
 
-#: models.py:60
+#: models.py:61
 msgid "Normal User"
 msgstr "Обычный пользователь"
 
-#: models.py:61
+#: models.py:62
 msgid "Administrator"
 msgstr "Администратор"
 
-#: models.py:66 models.py:150 models.py:302 models.py:363
+#: models.py:67 models.py:151 models.py:303 models.py:364
 #: templates/sphene/community/admin/permission/role_member_list.html:13
 msgid "User"
 msgstr "Пользователь"
 
-#: models.py:81
+#: models.py:82
 msgid "Group member"
 msgstr ""
 
-#: models.py:82
+#: models.py:83
 #, fuzzy
 msgid "Group members"
 msgstr "Участиники"
 
-#: models.py:93
+#: models.py:94
 msgid "Theme"
 msgstr ""
 
-#: models.py:94
+#: models.py:95
 #, fuzzy
 msgid "Themes"
 msgstr "Участиники"
 
-#: models.py:129
+#: models.py:130
 msgid "Navigation"
 msgstr ""
 
-#: models.py:130
+#: models.py:131
 #, fuzzy
 msgid "Navigations"
 msgstr "Ограничения"
 
-#: models.py:141
+#: models.py:142
 msgid "Application change log"
 msgstr ""
 
-#: models.py:142
+#: models.py:143
 msgid "Application change logs"
 msgstr ""
 
-#: models.py:151 models.py:592
+#: models.py:152 models.py:593
 msgid "Display name"
 msgstr "Публичное имя"
 
-#: models.py:152 models.py:597
+#: models.py:153 models.py:598
 msgid "Public email address"
 msgstr "Публичный email адрес"
 
-#: models.py:159
+#: models.py:160
 #, fuzzy
 msgid "Avatar height"
 msgstr "Аватар"
 
-#: models.py:160
+#: models.py:161
 #, fuzzy
 msgid "Avatar width"
 msgstr "Аватар"
 
-#: models.py:172
+#: models.py:173
 #, fuzzy
 msgid "Community user profile"
 msgstr "Редактирование профиля пользователя"
 
-#: models.py:173
+#: models.py:174
 #, fuzzy
 msgid "Community user profiles"
 msgstr "Настройки сайта."
 
-#: models.py:185
+#: models.py:186
 #, fuzzy
 msgid "Community user profile field"
 msgstr "Редактирование профиля пользователя"
 
-#: models.py:186
+#: models.py:187
 #, fuzzy
 msgid "Community user profile fields"
 msgstr "Редактирование профиля пользователя"
 
-#: models.py:191
+#: models.py:192
 msgid "User profile"
 msgstr ""
 
-#: models.py:192
+#: models.py:193
 #, fuzzy
 msgid "Profile field"
 msgstr "Профиль пользователя"
 
-#: models.py:197
+#: models.py:198
 #, fuzzy
 msgid "Community user profile field value"
 msgstr "Редактирование профиля пользователя"
 
-#: models.py:198
+#: models.py:199
 msgid "Community user profile field values"
 msgstr ""
 
-#: models.py:215
+#: models.py:216
 msgid "Group template"
 msgstr ""
 
-#: models.py:216
+#: models.py:217
 msgid "Group templates"
 msgstr ""
 
-#: models.py:233
+#: models.py:234
 msgid "Users with this permission flag have all permissions."
 msgstr ""
 
-#: models.py:236
+#: models.py:237
 msgid "User has permission to create, edit and assign roles."
 msgstr ""
 
-#: models.py:239
+#: models.py:240
 msgid "User has permission to manage other users"
 msgstr ""
 
-#: models.py:247
+#: models.py:248
 #, fuzzy
 msgid "Permission flag"
 msgstr "Доступ запрещён"
 
-#: models.py:284 models.py:301
+#: models.py:285 models.py:302
 #, fuzzy
 msgid "Role"
 msgstr "Список ролей"
 
-#: models.py:285
+#: models.py:286
 #, fuzzy
 msgid "Roles"
 msgstr "Список ролей"
 
-#: models.py:318 models.py:327
+#: models.py:319 models.py:328
 msgid "Role member"
 msgstr ""
 
-#: models.py:319
+#: models.py:320
 #, fuzzy
 msgid "Role members"
 msgstr "Участиники"
 
-#: models.py:335
+#: models.py:336
 msgid "Role member limitation"
 msgstr ""
 
-#: models.py:336
+#: models.py:337
 msgid "Role member limitations"
 msgstr ""
 
-#: models.py:357
+#: models.py:358
 #, fuzzy
 msgid "Role groups"
 msgstr "Ролевые группы"
 
-#: models.py:366
+#: models.py:367
 #, fuzzy
 msgid "Role group member"
 msgstr "Группа"
 
-#: models.py:367
+#: models.py:368
 #, fuzzy
 msgid "Role group members"
 msgstr "Ролевые группы"
 
-#: models.py:528
+#: models.py:529
 msgid "Tag"
 msgstr ""
 
-#: models.py:529
+#: models.py:530
 #, fuzzy
 msgid "Tags"
 msgstr "Флаги"
 
-#: models.py:544
+#: models.py:545
 msgid "Tag label"
 msgstr ""
 
-#: models.py:545
+#: models.py:546
 msgid "Tag labels"
 msgstr ""
 
-#: models.py:558
+#: models.py:559
 msgid "Tagged item"
 msgstr ""
 
-#: models.py:559
+#: models.py:560
 msgid "Tagged items"
 msgstr ""
 
-#: models.py:575
+#: models.py:576
 msgid ""
 "This email address will be shown to all users. If you leave it black noone "
 "will see your email address."
@@ -357,7 +358,7 @@ msgstr ""
 "Этот email адрес будет виден всем пользователям. Если вы оставите это поле "
 "пустым, ваш email адрес не будет виден никому."
 
-#: models.py:576
+#: models.py:577
 msgid ""
 "This email address will be shown to all users. If you leave it blank, your "
 "verified email address will be shown."
@@ -365,7 +366,7 @@ msgstr ""
 "Этот email адрес будет виден всем пользователям. Если вы оставите это поле "
 "пустым, будет отображаться email адрес, указанный при регистрации."
 
-#: models.py:580
+#: models.py:581
 msgid ""
 "This display name will be shown to all users. If you leave it blank then "
 "your username will be shown."
@@ -373,7 +374,7 @@ msgstr ""
 "Это публичное имя будет видно всеи пользователям. Если вы оставите это поле "
 "пустым, будет отображаться имя пользователя."
 
-#: models.py:581
+#: models.py:582
 msgid ""
 "This display name will be shown to all users. If you leave it blank, your "
 "first and last name will be shown. If those are blank too, then your "
@@ -383,27 +384,27 @@ msgstr ""
 "пустым, будут отображаться ваши имя и фамилия. Если вы их не ввели, будет "
 "отображаться имя пользователя."
 
-#: models.py:591
+#: models.py:592
 msgid "Community settings"
 msgstr "Настройки сайта."
 
-#: models.py:651
+#: models.py:652
 msgid "Successfully saved community profile."
 msgstr "Профиль успешно сохранён."
 
-#: sphutils.py:31 templates/sphene/community/_display_username.html:8
+#: sphutils.py:32 templates/sphene/community/_display_username.html:8
 msgid "Anonymous"
 msgstr "Анонимус"
 
-#: sphutils.py:128
+#: sphutils.py:132
 msgid "Captcha input"
 msgstr "Капча."
 
-#: sphutils.py:158
+#: sphutils.py:162
 msgid "Invalid Captcha response."
 msgstr "Код введён неверно."
 
-#: views.py:40 views.py:681
+#: views.py:40 views.py:685
 msgid "Please enter the result of the above calculation."
 msgstr "Введите результат арифметического действия."
 
@@ -447,47 +448,55 @@ msgstr "Пароль"
 msgid "Verify Password"
 msgstr "Подтвердите пароль"
 
-#: views.py:408
+#: views.py:411
 msgid "Successfully changed user profile."
 msgstr "Профиль успешно изменён"
 
-#: views.py:466
+#: views.py:469
 #, python-format
 msgid "Removed user %(username)s from rolegroup."
 msgstr "Пользователь %(username)s удалён из группы."
 
-#: views.py:514
+#: views.py:517
 msgid "Successfully saved role."
 msgstr "Роль сохранена."
 
-#: views.py:539
+#: views.py:542
 msgid "Successfully deleted role member."
 msgstr "Участник вычеркнут из роли."
 
-#: views.py:575
+#: views.py:578
 msgid "Successfully added member."
 msgstr "Участник добавлен."
 
-#: views.py:620
+#: views.py:624
 msgid "no"
 msgstr ""
 
-#: views.py:621 templates/sphene/community/admin/users_list.html:58
+#: views.py:625 templates/sphene/community/admin/users_list.html:58
 msgid "Enable"
 msgstr ""
 
-#: views.py:623
+#: views.py:627
 msgid "yes"
 msgstr ""
 
-#: views.py:624 templates/sphene/community/admin/users_list.html:58
+#: views.py:628 templates/sphene/community/admin/users_list.html:58
 msgid "Disable"
 msgstr ""
 
-#: views.py:627
+#: views.py:631
 #, fuzzy
 msgid "Successfully changed user status."
 msgstr "Профиль успешно изменён"
+
+#: widgets.py:65
+msgid "Currently:"
+msgstr ""
+
+#: widgets.py:65
+msgid "Change:"
+msgstr ""
 
 #: templates/sphene/community/_display_blockquote.html:7
 #, python-format
@@ -576,8 +585,8 @@ msgstr "Отослать письмо с кодом подтверждения"
 #: templates/sphene/community/register_emailsent.html:6
 #, python-format
 msgid ""
-"An email containing the required validation code has been sent to <b>%(email)"
-"s</b>.<br/>\n"
+"An email containing the required validation code has been sent to <b>"
+"%(email)s</b>.<br/>\n"
 "  Please check your emails to continue registration process."
 msgstr ""
 "Письмо с кодом подтверждения отправлено по адресу <b>%(email)s</b>.<br/>\n"
@@ -833,10 +842,10 @@ msgstr "Поднять"
 msgid "Descending"
 msgstr "Опустить"
 
-#: templatetags/sph_extras.py:193
+#: templatetags/sph_extras.py:195
 msgid "Reveal this emailaddress"
 msgstr "Сделать email адрес публичным"
 
-#: templatetags/sph_extras.py:363
+#: templatetags/sph_extras.py:365
 msgid "Submit"
 msgstr "Отослать"

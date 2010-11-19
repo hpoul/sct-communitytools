@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-04 12:32+0100\n"
-"PO-Revision-Date: 2010-11-06 00:09+0100\n"
+"POT-Creation-Date: 2010-11-19 18:57+0100\n"
+"PO-Revision-Date: 2010-11-19 18:58+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
@@ -34,8 +34,8 @@ msgid "Delete avatar"
 msgstr "Usuń avatar"
 
 #: __init__.py:81
-#: __init__.py:131
-#: models.py:154
+#: __init__.py:128
+#: models.py:155
 msgid "Avatar"
 msgstr "Avatar"
 
@@ -44,8 +44,8 @@ msgstr "Avatar"
 msgid "Avatar with maximum size of %(max_width)sx%(max_height)s"
 msgstr "Avatar o maksymalnych rozmiarach %(max_width)sx%(max_height)s"
 
-#: __init__.py:131
-#: templatetags/sph_extras.py:360
+#: __init__.py:128
+#: templatetags/sph_extras.py:362
 msgid "Users avatar"
 msgstr "Avatar użytkownika"
 
@@ -102,21 +102,21 @@ msgid "-- Select Object Type --"
 msgstr "-- Wybierz Typ Obiektu --"
 
 #: forms.py:94
-#: models.py:229
-#: models.py:255
+#: models.py:230
+#: models.py:256
 #: templates/sphene/community/profile.html:9
 #: templates/sphene/community/admin/permission/role_list.html:14
 msgid "Name"
 msgstr "Nazwa"
 
 #: forms.py:95
-#: models.py:248
-#: models.py:258
+#: models.py:249
+#: models.py:259
 msgid "Permission flags"
 msgstr "Flagi uprawnień"
 
 #: forms.py:106
-#: models.py:305
+#: models.py:306
 msgid "Has limitations"
 msgstr "Czy ma ograniczenia"
 
@@ -125,7 +125,7 @@ msgid "Allows you to limit the given permission to only one specific object."
 msgstr "Umożliwia ograniczenie nadanych uprawnień do jednego wybranego obiektu."
 
 #: forms.py:112
-#: models.py:329
+#: models.py:330
 msgid "Object type"
 msgstr "Typ obiektu"
 
@@ -149,249 +149,249 @@ msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
 #: forms.py:141
-#: models.py:303
-#: models.py:356
-#: models.py:362
+#: models.py:304
+#: models.py:357
+#: models.py:363
 msgid "Role group"
 msgstr "Grupa roli"
 
-#: models.py:56
-#: models.py:65
-#: models.py:107
-#: models.py:207
-#: models.py:256
-#: models.py:345
-#: models.py:521
+#: models.py:57
+#: models.py:66
+#: models.py:108
+#: models.py:208
+#: models.py:257
+#: models.py:346
+#: models.py:522
 msgid "Group"
 msgstr "Grupa"
 
-#: models.py:57
+#: models.py:58
 msgid "Groups"
 msgstr "Grupy"
 
-#: models.py:60
+#: models.py:61
 msgid "Normal User"
 msgstr "Zwykły użytkownik"
 
-#: models.py:61
+#: models.py:62
 msgid "Administrator"
 msgstr "Administrator"
 
-#: models.py:66
-#: models.py:150
-#: models.py:302
-#: models.py:363
+#: models.py:67
+#: models.py:151
+#: models.py:303
+#: models.py:364
 #: templates/sphene/community/admin/permission/role_member_list.html:13
 msgid "User"
 msgstr "Użytkownik"
 
-#: models.py:81
+#: models.py:82
 msgid "Group member"
 msgstr "Członek grupy"
 
-#: models.py:82
+#: models.py:83
 msgid "Group members"
 msgstr "Członkowie grupy"
 
-#: models.py:93
+#: models.py:94
 msgid "Theme"
 msgstr "Motyw"
 
-#: models.py:94
+#: models.py:95
 msgid "Themes"
 msgstr "Motywy"
 
-#: models.py:129
+#: models.py:130
 msgid "Navigation"
 msgstr "Nawigacja"
 
-#: models.py:130
+#: models.py:131
 msgid "Navigations"
 msgstr "Nawigacje"
 
-#: models.py:141
+#: models.py:142
 msgid "Application change log"
 msgstr "Log zmian aplikacji"
 
-#: models.py:142
+#: models.py:143
 msgid "Application change logs"
 msgstr "Logi zmian aplikacji"
 
-#: models.py:151
-#: models.py:592
+#: models.py:152
+#: models.py:593
 msgid "Display name"
 msgstr "Nazwa wyświetlana"
 
-#: models.py:152
-#: models.py:597
+#: models.py:153
+#: models.py:598
 msgid "Public email address"
 msgstr "Publiczny adres email"
 
-#: models.py:159
+#: models.py:160
 msgid "Avatar height"
 msgstr "Wysokość avatara"
 
-#: models.py:160
+#: models.py:161
 msgid "Avatar width"
 msgstr "Szerokość avatara"
 
-#: models.py:172
+#: models.py:173
 msgid "Community user profile"
 msgstr "Profil użytkownika"
 
-#: models.py:173
+#: models.py:174
 msgid "Community user profiles"
 msgstr "Profile użytkowników"
 
-#: models.py:185
+#: models.py:186
 msgid "Community user profile field"
 msgstr "Pole profilu użytkownika"
 
-#: models.py:186
+#: models.py:187
 msgid "Community user profile fields"
 msgstr "Pola profilu użytkownika"
 
-#: models.py:191
+#: models.py:192
 msgid "User profile"
 msgstr "Profil użytkownika"
 
-#: models.py:192
+#: models.py:193
 msgid "Profile field"
 msgstr "Pole profilu"
 
-#: models.py:197
+#: models.py:198
 msgid "Community user profile field value"
 msgstr "Wartość pola profilu użytkownika"
 
-#: models.py:198
+#: models.py:199
 msgid "Community user profile field values"
 msgstr "Wartości pól w profilu użytkownika"
 
-#: models.py:215
+#: models.py:216
 msgid "Group template"
 msgstr "Szablon grupy"
 
-#: models.py:216
+#: models.py:217
 msgid "Group templates"
 msgstr "Szablony grup"
 
-#: models.py:233
+#: models.py:234
 msgid "Users with this permission flag have all permissions."
 msgstr "Użytkownicy z tą flagą będą mieli wszystkie uprawnienia."
 
-#: models.py:236
+#: models.py:237
 msgid "User has permission to create, edit and assign roles."
 msgstr "Użytkownik ma prawo do tworzenia, edycji i przypisywania ról."
 
-#: models.py:239
+#: models.py:240
 msgid "User has permission to manage other users"
 msgstr "Użytkownik ma prawo do zarządzania innymi użytkownikami"
 
-#: models.py:247
+#: models.py:248
 msgid "Permission flag"
 msgstr "Flaga uprawnień"
 
-#: models.py:284
-#: models.py:301
+#: models.py:285
+#: models.py:302
 msgid "Role"
 msgstr "Rola"
 
-#: models.py:285
+#: models.py:286
 msgid "Roles"
 msgstr "Role"
 
-#: models.py:318
-#: models.py:327
+#: models.py:319
+#: models.py:328
 msgid "Role member"
 msgstr "Członek roli"
 
-#: models.py:319
+#: models.py:320
 msgid "Role members"
 msgstr "Członkowie roli"
 
-#: models.py:335
+#: models.py:336
 msgid "Role member limitation"
 msgstr "Ograniczenie dla członka roli"
 
-#: models.py:336
+#: models.py:337
 msgid "Role member limitations"
 msgstr "Ograniczenia dla członka roli"
 
-#: models.py:357
+#: models.py:358
 msgid "Role groups"
 msgstr "Grupy ról"
 
-#: models.py:366
+#: models.py:367
 msgid "Role group member"
 msgstr "Członek grupy roli"
 
-#: models.py:367
+#: models.py:368
 msgid "Role group members"
 msgstr "Członkowie grupy roli"
 
-#: models.py:528
+#: models.py:529
 msgid "Tag"
 msgstr "Tag"
 
-#: models.py:529
+#: models.py:530
 msgid "Tags"
 msgstr "Tagi"
 
-#: models.py:544
+#: models.py:545
 msgid "Tag label"
 msgstr "Etykieta tag'a"
 
-#: models.py:545
+#: models.py:546
 msgid "Tag labels"
 msgstr "Etykiety tag'ów"
 
-#: models.py:558
+#: models.py:559
 msgid "Tagged item"
 msgstr "Zatagowany element"
 
-#: models.py:559
+#: models.py:560
 msgid "Tagged items"
 msgstr "Zatagowane elementy"
 
-#: models.py:575
+#: models.py:576
 msgid "This email address will be shown to all users. If you leave it black noone will see your email address."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. Jeśli jednak pozostawisz to pole zaznaczone, nikt nie będzie mógł go zobaczyć."
 
-#: models.py:576
+#: models.py:577
 msgid "This email address will be shown to all users. If you leave it blank, your verified email address will be shown."
 msgstr "Ten adres email będzie pokazywany wszystkim użytkownikom. jeśli pozostawisz to pole puste, Twój zweryfikowany adres email nie będzie pokazywany."
 
-#: models.py:580
+#: models.py:581
 msgid "This display name will be shown to all users. If you leave it blank then your username will be shown."
 msgstr "Nazwa wyświetlana będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:581
+#: models.py:582
 msgid "This display name will be shown to all users. If you leave it blank, your first and last name will be shown. If those are blank too, then your username will be shown."
 msgstr "Ta nazwa będzie widziana przez wszystkich użytkowników. Jeśli zostawisz to pole puste wówczas wyświetlane będzie Twoje imię i nazwisko. Jeżeli jednak nie podałeś imienia i nazwiska, wówczas wyświetlana będzie Twoja nazwa użytkownika."
 
-#: models.py:591
+#: models.py:592
 msgid "Community settings"
 msgstr "Ustawienia społecznościowe"
 
-#: models.py:651
+#: models.py:652
 msgid "Successfully saved community profile."
 msgstr "Pomyślnie zapisano profil społeczny."
 
-#: sphutils.py:31
+#: sphutils.py:32
 #: templates/sphene/community/_display_username.html:8
 msgid "Anonymous"
 msgstr "Anonim"
 
-#: sphutils.py:128
+#: sphutils.py:132
 msgid "Captcha input"
 msgstr "Wejście Captcha"
 
-#: sphutils.py:158
+#: sphutils.py:162
 msgid "Invalid Captcha response."
 msgstr "Niewłaściwy kod Captcha."
 
 #: views.py:40
-#: views.py:681
+#: views.py:685
 msgid "Please enter the result of the above calculation."
 msgstr "Proszę wprowadzić rezultat powyższych obliczeń."
 
@@ -436,48 +436,56 @@ msgstr "Hasło"
 msgid "Verify Password"
 msgstr "Potwierdź Hasło"
 
-#: views.py:408
+#: views.py:411
 msgid "Successfully changed user profile."
 msgstr "Profil użytkownika został pomyślnie zaktualizowany."
 
-#: views.py:466
+#: views.py:469
 #, python-format
 msgid "Removed user %(username)s from rolegroup."
 msgstr "Usunięto użytkownika %(username)s z grupy roli"
 
-#: views.py:514
+#: views.py:517
 msgid "Successfully saved role."
 msgstr "Rola została pomyślnie zapisana."
 
-#: views.py:539
+#: views.py:542
 msgid "Successfully deleted role member."
 msgstr "Pomyślnie usunięto rolę użytkownika."
 
-#: views.py:575
+#: views.py:578
 msgid "Successfully added member."
 msgstr "Pomyślnie dodano użytkownika."
 
-#: views.py:620
+#: views.py:624
 msgid "no"
 msgstr "nie"
 
-#: views.py:621
+#: views.py:625
 #: templates/sphene/community/admin/users_list.html:58
 msgid "Enable"
 msgstr "Włącz"
 
-#: views.py:623
+#: views.py:627
 msgid "yes"
 msgstr "tak"
 
-#: views.py:624
+#: views.py:628
 #: templates/sphene/community/admin/users_list.html:58
 msgid "Disable"
 msgstr "Wyłącz"
 
-#: views.py:627
+#: views.py:631
 msgid "Successfully changed user status."
 msgstr "Status użytkownika został zmieniony."
+
+#: widgets.py:65
+msgid "Currently:"
+msgstr "Bieżący:"
+
+#: widgets.py:65
+msgid "Change:"
+msgstr "Zmień:"
 
 #: templates/sphene/community/_display_blockquote.html:7
 #, python-format
@@ -825,11 +833,11 @@ msgstr "Rosnąco"
 msgid "Descending"
 msgstr "Malejąco"
 
-#: templatetags/sph_extras.py:193
+#: templatetags/sph_extras.py:195
 msgid "Reveal this emailaddress"
 msgstr "Odkryj ten adres email"
 
-#: templatetags/sph_extras.py:363
+#: templatetags/sph_extras.py:365
 msgid "Submit"
 msgstr "Zatwierdź"
 
