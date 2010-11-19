@@ -7,6 +7,7 @@ from django.views.generic.list_detail import object_list
 from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.forms.models import modelformset_factory
 
 from sphene.community import PermissionDenied
 from sphene.community.permissionutils import has_permission_flag
@@ -18,7 +19,7 @@ from sphene.generic import advanced_object_list as objlist
 from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, \
                                   PostPollForm, PostAttachmentForm, \
                                   AnnotateForm, MoveAndAnnotateForm, MovePostForm
-from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit
+from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit, PostAttachment
 
 
 def showCategory(request, group, category_id = None, showType = None, slug = None):
@@ -280,50 +281,54 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     if category_type is not None:
         MyPostForm = category_type.get_post_form_class(thread, post)
 
-    attachmentForm = None
-    attachmentForms = list()
     allow_attachments = get_sph_setting('board_allow_attachments')
     allowedattachments = 0
     if allow_attachments:
         allowedattachments = 1
         if isinstance(allow_attachments, int):
             allowedattachments = allow_attachments
+
+    PostAttachmentFormSet = modelformset_factory(PostAttachment,
+                                                 form=PostAttachmentForm,
+                                                 fields=('fileupload',),
+                                                 can_delete=True,
+                                                 max_num=allowedattachments)
+
+    post_attachment_qs = PostAttachment.objects.none()
+    if post:
+        post_attachment_qs = post.attachments.all()
+
     if request.method == 'POST':
         postForm = MyPostForm(request.POST)
         postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm(request.POST)
 
         create_post = True
+        if allowedattachments and 'cmd_addfile' in request.POST:
+            create_post = False
 
-        #if allow_attachments:
-        for i in range(allowedattachments):
-            attachmentForm = PostAttachmentForm(request.POST,
-                                                request.FILES,
-                                                prefix = 'attachment%d' % i)
-            attachmentForms.append(attachmentForm)
+        post_attachment_formset = PostAttachmentFormSet(request.POST,
+                                                        request.FILES,
+                                                        queryset = post_attachment_qs,
+                                                        prefix='attachment'
+                                                        )
 
-            if 'cmd_addfile' in request.POST:
-                create_post = False
+        if post_attachment_formset.is_valid():
+            instances = post_attachment_formset.save(commit=False)
+            for attachment in instances:
+                if not post:
+                    # if there is no post yet.. we need to create a draft
+                    post = Post( category = category,
+                                 author = request.user,
+                                 thread = thread,
+                                 is_hidden = 1,
+                                 )
+                    post.set_new( True )
+                    post.save()
 
-            if attachmentForm.is_valid():
-                attachment = attachmentForm.save(commit = False)
-                if attachment.fileupload:
-                    # Only save attachments if there was an upload...
-                    # If the form is valid, store the attachment
-                    if not post:
-                        # if there is no post yet.. we need to create a draft
-                        post = Post( category = category,
-                                     author = request.user,
-                                     thread = thread,
-                                     is_hidden = 1,
-                                     )
-                        post.set_new( True )
-                        post.save()
-
-                    # Reference the post and save the attachment
-                    attachment.post = post
-                    attachment.save()
-
+                # Reference the post and save the attachment
+                attachment.post = post
+                attachment.save()
 
         if create_post \
                 and postForm.is_valid() \
@@ -399,10 +404,8 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         postForm.init_for_category_type(category_type, post)
         pollForm = PostPollForm()
 
-        for i in range(allowedattachments):
-            attachmentForms.append(PostAttachmentForm(prefix = 'attachment%d' % i))
-            if attachmentForm is None:
-                attachmentForm = attachmentForms[0]
+        post_attachment_formset = PostAttachmentFormSet(queryset = post_attachment_qs,
+                                                        prefix='attachment')
 
     if post:
         postForm.fields['subject'].initial = post.subject
@@ -426,8 +429,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     # Only allow polls if this is a new _thread_ (not a reply)
     if (not thread and not post) or (post and post.is_new() and post.thread is None):
         context['pollform'] = pollForm
-    context['attachmentForm'] = attachmentForm
-    context['attachmentForms'] = attachmentForms
+    context['post_attachment_formset'] = post_attachment_formset
     if 'createpoll' in request.REQUEST:
         context['createpoll'] = request.REQUEST['createpoll']
 

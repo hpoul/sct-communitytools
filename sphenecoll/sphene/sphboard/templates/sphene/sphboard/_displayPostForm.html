@@ -66,25 +66,23 @@
   //-->
   </script>
   {% endif %}
-  {% if attachmentForm %}
-  <table class="sphboard form attachment">
-    <tr>
-      <th colspan="2">{% trans "Upload Attachment" %}</th>
-    </tr>
-    {% if post %}
-      {% for attachment in post.attachments.all %}
-        <tr>
-	  <td><a href="{{ attachment.fileupload.url }}" target="_blank">{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})</td>
-	</tr>
-      {% endfor %}
-    {% endif %}
-    {% for aform in attachmentForms %}
-        {{ aform }}
-    {% endfor %}
-    <tr>
-      <td colspan="2"><input type="submit" name="cmd_addfile" value="{% trans "Upload File" %}" style="width: auto;" /></td>
-    </tr>
-  </table>
+  {% if post_attachment_formset %}
+      {{ post_attachment_formset.management_form }}
+      <table class="sphboard form attachment">
+          <tr>
+              <th colspan="2">{% trans "Upload Attachment" %}</th>
+          </tr>
+          {% for form in post_attachment_formset.forms %}
+              <tr>
+                  <td>
+                      {{ form.as_p }}
+                  </td>
+              </tr>
+          {% endfor %}
+          <tr>
+              <td colspan="2"><input type="submit" name="cmd_addfile" value="{% trans "Upload File" %}" style="width: auto;" /></td>
+          </tr>
+      </table>
   {% endif %}
 
   <input type="submit" value="{% trans "Post" %}" /> * <input type="button" value="{% trans "Preview" %}" onclick="javascript:doPreview()" />

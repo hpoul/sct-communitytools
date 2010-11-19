@@ -1,6 +1,10 @@
 from django import forms
 from django.conf import settings
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext as _
+from django.utils.safestring import mark_safe
 
+from sphene.community.templatetags.sph_extras import sph_basename
 from sphene.community.sphutils import sph_reverse
 from sphene.community.models import TagLabel
 
@@ -45,3 +49,19 @@ class TagWidget(forms.TextInput):
 
         widget = super(TagWidget, self).render(name, value, attrs)
         return "%s%s" % (js, widget)
+
+class SPHFileWidget(forms.FileInput):
+    """
+    A FileField Widget that shows its current value if it has one.
+    Based on AdminFileWidget
+    """
+    def __init__(self, attrs={}):
+        super(SPHFileWidget, self).__init__(attrs)
+
+    def render(self, name, value, attrs=None):
+        output = []
+        if value and hasattr(value, "url"):
+            output.append('<div class="current-sphfile">%s <a target="_blank" href="%s">%s</a> (%s)</div> %s ' % \
+                (_('Currently:'), value.url, sph_basename(value.url), filesizeformat(value.size), _('Change:')))
+        output.append(super(SPHFileWidget, self).render(name, value, attrs))
+        return mark_safe(u''.join(output))

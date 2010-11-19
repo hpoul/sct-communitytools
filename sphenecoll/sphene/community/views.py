@@ -213,6 +213,9 @@ def register_hash(request, email, emailHash, group = None):
             return render_to_response( 'sphene/community/register_hash_success.html',
                                        { },
                                        context_instance = RequestContext(request) )
+        return render_to_response( 'sphene/community/register_hash.html',
+                                   { 'form': form },
+                                   context_instance = RequestContext(request) )
     
     elif md5(settings.SECRET_KEY + email_address).hexdigest() == emailHash:
         form = RegisterForm( )

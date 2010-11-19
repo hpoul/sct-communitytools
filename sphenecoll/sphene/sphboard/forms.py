@@ -17,6 +17,7 @@ from sphene.sphboard.models import Poll, PollChoice, Post
 from sphene.sphboard.renderers import describe_render_choices
 from sphene.sphboard.models import POST_MARKUP_CHOICES, PostAttachment
 from sphene.sphboard import boardforms
+from sphene.community.widgets import SPHFileWidget
 
 
 class PollForm(forms.ModelForm):
@@ -95,6 +96,8 @@ class PostPollForm(forms.Form):
 
 
 class PostAttachmentForm(forms.ModelForm):
+    fileupload = forms.FileField(label= _('File'), widget=SPHFileWidget)
+
     class Meta:
         model = PostAttachment
         fields = ('fileupload',)

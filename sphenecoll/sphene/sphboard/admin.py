@@ -28,4 +28,5 @@ admin.site.register(models.Monitor, MonitorAdmin)
 admin.site.register(models.Poll)
 admin.site.register(models.PollChoice)
 admin.site.register(models.ExtendedCategoryConfig)
+admin.site.register(models.PostAttachment)
 
