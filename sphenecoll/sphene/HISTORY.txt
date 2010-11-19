@@ -1,0 +1,67 @@
+Sphene 0.7
+  Changes:
+  - We're now using Django 1.2 (introduced backward incompatible changes!)
+  - Attachment upload now uses formsets (this allows changing and removing
+    attachments).
+    Beware that associated template (_displayPostForm.html) was also changed
+    so any custom overrides of this template should be updated to use formsets.
+  - Added SPHFileWidget that is used by upload form (based on AdminFileWidget)
+  - Added caching to Category.__get_absolute_url and Post.__get_absolute_url and
+    sphene.community.sphutils->get_user_displayname
+  - Added CACHE_MIDDLEWARE_KEY_PREFIX to some cache keys.
+  - Added root_post__category, root_post__author, latest_post__author to
+    select_related clause at sphboard.views->showCategory to reduce amount
+    of database queries
+  - Upgraded pagination to support QUERY_STRING parameters and changed display
+    of pagination slices. Template tag sph_pagination now accepts additional
+    argument: compress = 1/0. If compress is set to 1 then list of
+    paginated pages is limited to show at most 7 pages with current page
+    in the middle. If parameter 'page' passed to sph_pagination tag
+    is '-1' - this happens eg. for list of pages displayed for thread,
+    then with compress=1 list of pages is limited to show only six links.
+
+    To use compress=1 call:
+
+        {% sph_pagination page pages '' 'page' 1 %}
+
+    This will result in something like:
+    << < 3 4 5 6 7 8 > >>
+    instead of:
+    1 2 3 4 5 6 7 8 9 10 11 12 13 14
+  - Slightly changed toggle_monitor methods to allow admin toggling monitors
+    for users
+  - Added list of active monitors to user profile
+  - Sphboard now uses migrations (if South is present)
+  - Added some code in order to make postsyncdb signals used by SCT work while
+    using South
+  - SCT now uses slughifi to generate slugs. This means that special
+    characters are not removed from slug, eg.:
+        Title: zażółć gęślą jaźń
+    becomes:
+        Slug: zazolc-gesla-jazn
+
+    Previously this would be:
+        Slug: za-gl-ja
+    Beware that this might change your existing links
+
+  - Added new management views:
+      * 'List of users'
+      * 'List of posts of specific user' (if sphboard is used)
+         It is now possible to remove posts of individual user from one place.
+         You can also remove all posts of specific user (at last it will be
+         possible to remove all spam quickly!)
+
+      these views should be added to template, see this post for details:
+         http://sct.sphene.net/board/thread/3708/updates-in-sct/?page=1#post-3708
+
+      New permission was introduced for these views: community_manage_users
+
+  - Permission names and field names in management views are now translated.
+  
+  Fixes:
+  - Fixed bug in user registration that caused no Response object to be returned
+    if there were any errors in Registration form (eg. invalid password
+    repetition)
+  - Fixed displaying of user at 'Edit profile' page. Because 'user' variable
+    was passed into template it messed with user from context processor
+  - Fixed post count for users - now it is aware of is_hidden attribute of posts

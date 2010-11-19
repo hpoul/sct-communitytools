@@ -808,7 +808,7 @@ class Post(models.Model):
         return self._allow_adminfunctionality( 'sphboard_sticky', user )
 
     def __get_render_cachekey(self):
-        return 'sphboard_rendered_body_%s' % str(self.id)
+        return '%s-sphboard_rendered_body_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, str(self.id))
 
     def body_escaped(self, with_signature = True):
         """ returns the rendered body. """
@@ -1595,7 +1595,7 @@ class ExtendedCategoryConfig(models.Model):
 
 
 def __get_signature_cachekey(user_id):
-    return 'sphboard_signature_%s' % user_id
+    return '%s_sphboard_signature_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user_id)
 
 def get_rendered_signature(user_id):
     """ Returns the rendered signature for the given user. """
