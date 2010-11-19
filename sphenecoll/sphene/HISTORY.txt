@@ -65,3 +65,4 @@ Sphene 0.7
   - Fixed displaying of user at 'Edit profile' page. Because 'user' variable
     was passed into template it messed with user from context processor
   - Fixed post count for users - now it is aware of is_hidden attribute of posts
+  - Fixed displaying posts in sphcomments - now is_hidden is used in filter
