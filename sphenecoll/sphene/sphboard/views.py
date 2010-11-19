@@ -107,6 +107,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         thread_list = thread_list.order_by( '-sticky_value', '-thread_latest_postdate' )
     else:
         thread_list = thread_list.order_by( '-thread_latest_postdate' )
+    thread_list = thread_list.select_related('root_post', 'latest_post', 'root_post__category', 'root_post__author', 'latest_post__author')
 
     res =  object_list( request = request,
                         queryset = thread_list,

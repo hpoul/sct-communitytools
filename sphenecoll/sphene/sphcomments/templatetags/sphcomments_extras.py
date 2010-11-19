@@ -19,7 +19,8 @@ def get_commentinfos(obj, context):
     categoryconfig = CommentsCategoryConfig.objects.get_or_create_for_object(
         obj)
     threads = ThreadInformation.objects.filter(
-        category = categoryconfig.category) \
+        category = categoryconfig.category,
+        root_post__is_hidden=0) \
         .select_related('root_post', 'latest_post')
     request = context['request']
     threadlist = ThreadList(objlist.QuerySetProvider(threads),
