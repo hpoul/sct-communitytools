@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.conf import settings
+from sphene.community.models import Group
 
 from sphene.community.sphutils import get_sph_setting
 
