@@ -1,30 +1,24 @@
 from django.core.cache import cache
-from django.conf import settings
 from sphene.community.models import Group
 
-from sphene.community.sphutils import get_sph_setting
 
 def clear_category_cache(sender, instance, created, *args, **kwargs):
     """ Clear cache for categories absolute url
     """
     if isinstance(instance, Group):
         for category in instance.category_set.all():
-            key = '%s_cat_abs_url_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.pk)
-            cache.delete(key)
+            cache.delete(category._cache_key_absolute_url())
     else:
-        key = '%s_cat_abs_url_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.pk)
-        cache.delete(key)
+        cache.delete(instance._cache_key_absolute_url())
 
 
 def clear_post_cache(sender, instance, *args, **kwargs):
-    """ If post being saved has changed 'thread' field or 'category' field or 'is_hidden' field then clear cache of all
+    """ Clear absolute_urls of posts.
+        If post being saved has changed 'thread' field or 'category' field or 'is_hidden' field then clear cache of all
         other posts in same thread as page numeration may be changed
     """
     from sphene.community.models import Group
     from sphene.sphboard.models import Post, Category
-    key = '%s_post_abs_url_%%s_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                                         get_sph_setting('board_slugify_links'),
-                                         get_sph_setting( 'board_post_paging' ))
     if instance.pk:  # this is not new object
         if isinstance(instance, Post):
             try:
@@ -32,7 +26,7 @@ def clear_post_cache(sender, instance, *args, **kwargs):
             except Post.DoesNotExist:
                 return
 
-            cache.delete(key % (instance.pk))
+            cache.delete(instance._cache_key_absolute_url())
 
             if instance.thread is None:
                 thr = instance
@@ -43,22 +37,40 @@ def clear_post_cache(sender, instance, *args, **kwargs):
                         or original.is_hidden != instance.is_hidden
                         or original.category != instance.category):
                 for post in thr.get_all_posts():
-                    cache.delete(key % (post.pk))
+                    cache.delete(post._cache_key_absolute_url())
         elif isinstance(instance, Category):
             for post in instance.posts.all():
-                cache.delete(key % (post.pk))
+                cache.delete(post._cache_key_absolute_url())
         elif isinstance(instance, Group):
             for category in instance.category_set.all():
                 for post in category.posts.all():
-                    cache.delete(key % (post.pk))
+                    cache.delete(post._cache_key_absolute_url())
+
+def clear_post_4_category_cache(sender, instance, *args, **kwargs):
+    """ If post was created, was hidden or moved to another category then clear category cache
+    """
+    if instance.pk is None:  #new post
+        cache.delete(instance.category._cache_key_post_count())
+        cache.delete(instance.category._cache_key_latest_post())
+        if instance.thread is None:
+            cache.delete(instance.category._cache_key_thread_count())
+    else:
+        from sphene.sphboard.models import Post
+        old_post = Post.objects.get(pk=instance.pk)
+        if old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden:
+            cache.delete(old_post.category._cache_key_post_count())
+            cache.delete(old_post.category._cache_key_latest_post())
+            cache.delete(instance.category._cache_key_thread_count())
+        elif old_post.thread != instance.thread:
+            cache.delete(instance.category._cache_key_thread_count())
 
 def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
     """ Removed post might cause change in page numeration in thread
     """
-    key = '%s_post_abs_url_%%s_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                                         get_sph_setting('board_slugify_links'),
-                                         get_sph_setting( 'board_post_paging' ))
-    cache.delete(key % (instance.pk))
+    cache.delete(instance._cache_key_absolute_url())
+    cache.delete(instance.category._cache_key_post_count())
+    cache.delete(instance.category._cache_key_latest_post())
+    cache.delete(instance.category._cache_key_thread_count())
 
     if instance.thread is None:
         thr = instance
@@ -66,6 +78,11 @@ def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
         thr = instance.thread
 
     for post in thr.get_all_posts():
-        cache.delete(key % (post.pk))
+        cache.delete(post._cache_key_absolute_url())
 
-
+# CACHE KEYS
+# _cache_key_absolute_url - post absolute url
+# _cache_key_absolute_url - category absolute url
+# _cache_key_latest_post  - latest post for category
+# _cache_key_thread_count - thread count for category
+# _cache_key_post_count - number of posts in category

@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db.models import signals, Q
 from django.template.context import Context
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 
@@ -155,8 +156,8 @@ def authorinfo_cachekey(user_id, group_id = None, language_code = None):
         group_id = get_current_group().id
     if language_code is None:
         language_code = getattr(get_current_request(), 'LANGUAGE_CODE', '')
-    return 'sphboard_authorinfo_%s_%s_%s' % \
-        (str(group_id),str(user_id), language_code)
+    return '%s_sphboard_authorinfo_%s_%s_%s' % \
+        (settings.CACHE_MIDDLEWARE_KEY_PREFIX, str(group_id),str(user_id), language_code)
 
 @cache_inclusion_tag(register,
                      'sphene/sphboard/_post_authorinfo.html',

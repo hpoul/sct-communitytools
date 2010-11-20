@@ -27,7 +27,8 @@ from sphene.community.models import Group
 from sphene.sphblog.utils import slugify
 from sphene.sphboard import categorytyperegistry
 from renderers import POST_MARKUP_CHOICES, render_body
-from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache
+from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache, \
+                                    clear_post_4_category_cache
 
 import logging
 logger = logging.getLogger('sphene.sphboard.models')
@@ -274,14 +275,38 @@ class Category(models.Model):
             return self.threadinformation_set
         return self.threadinformation_set.filter(root_post__is_hidden = 0).select_related( depth = 1 )
 
+    def _cache_key_thread_count(self):
+        return '%s_category_tc_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)
+
     def threadCount(self):
-        return self.threadinformation_set.filter(root_post__is_hidden=0).count()
+        key = self._cache_key_thread_count()
+        res = cache.get(key)
+        if not res:
+            res = self.threadinformation_set.filter(root_post__is_hidden=0).count()
+            cache.set(key, res)
+        return res
+
+    def _cache_key_post_count(self):
+        return '%s_category_pc_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)
 
     def postCount(self):
-        return self.posts.filter(is_hidden=0).count()
+        key = self._cache_key_post_count()
+        res = cache.get(key)
+        if not res:
+            res = self.posts.filter(is_hidden=0).count()
+            cache.set(key, res)
+        return res
+
+    def _cache_key_latest_post(self):
+        return '%s_category_lp_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)
 
     def get_latest_post(self):
-        return self.posts.filter(is_hidden=0).latest( 'postdate' )
+        key = self._cache_key_latest_post()
+        res = cache.get(key)
+        if not res:
+            res = self.posts.filter(is_hidden=0).latest( 'postdate' )
+            cache.set(key, res)
+        return res
 
     # For backward compatibility ...
     latestPost = get_latest_post
@@ -462,8 +487,11 @@ class Category(models.Model):
             return cturl
         return self._get_absolute_url()
 
+    def _cache_key_absolute_url(self):
+        return '%s_cat_abs_url_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk, get_sph_setting('board_slugify_links'))
+
     def _get_absolute_url(self):
-        key = '%s_cat_abs_url_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk, get_sph_setting('board_slugify_links'))
+        key = self._cache_key_absolute_url()
         res = cache.get(key)
         if not res:
             kwargs = { 'groupName': self.group.name,
@@ -1050,11 +1078,14 @@ class Post(models.Model):
         import math
         return int(math.ceil(i / float(get_sph_setting( 'board_post_paging' ))))
 
+    def _cache_key_absolute_url(self):
+        return '%s_post_abs_url_%s_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                             self.pk,
+                                             get_sph_setting('board_slugify_links'),
+                                             get_sph_setting( 'board_post_paging' ))
+
     def get_absolute_url(self):
-        key = '%s_post_abs_url_%s_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                                            self.pk,
-                                            get_sph_setting('board_slugify_links'),
-                                            get_sph_setting( 'board_post_paging' ))
+        key = self._cache_key_absolute_url()
         res = cache.get(key)
         if not res:
             cturl = self.category.get_category_type().get_absolute_url_for_post( self )
@@ -1689,3 +1720,4 @@ signals.pre_save.connect(clear_post_cache, sender=Post)
 signals.pre_save.connect(clear_post_cache, sender=Group)
 signals.pre_save.connect(clear_post_cache, sender=Category)
 signals.post_delete.connect(clear_post_cache_on_delete, sender=Post)
+signals.pre_save.connect(clear_post_4_category_cache, sender=Post)

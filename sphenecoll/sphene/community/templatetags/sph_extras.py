@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy
 
 from sphene.community.sphutils import HTML, get_sph_setting
 from sphene.contrib.libs.markdown import mdx_macros
+from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 from sphene.community.models import CommunityUserProfile
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group, get_current_user
 from sphene.community.sphutils import add_rss_feed, sph_reverse
@@ -34,7 +35,7 @@ from django.core.cache import cache
 class IncludeMacro (mdx_macros.PreprocessorMacro):
     def handlePreprocessorMacroCall(self, params):
         if params.has_key( 'url' ):
-            cache_key = 'sph_community_includemacro_' + params['url'] + '_' + params.get( 'start', '' ) + '_' + params.get( 'end', '' );
+            cache_key = settings.CACHE_MIDDLEWARE_KEY_PREFIX + 'sph_community_includemacro_' + params['url'] + '_' + params.get( 'start', '' ) + '_' + params.get( 'end', '' );
             cached_text = cache.get( cache_key )
             if cached_text:
                 text = cached_text
