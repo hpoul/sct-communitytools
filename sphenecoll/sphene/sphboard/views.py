@@ -285,7 +285,8 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     allowedattachments = 0
     if allow_attachments:
         allowedattachments = 1
-        if isinstance(allow_attachments, int):
+        # bool is a subclass of int (hehe)
+        if isinstance(allow_attachments, int) and type(allow_attachments) != bool:
             allowedattachments = allow_attachments
 
     PostAttachmentFormSet = modelformset_factory(PostAttachment,
