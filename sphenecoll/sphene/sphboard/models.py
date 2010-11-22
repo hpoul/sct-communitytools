@@ -515,7 +515,7 @@ class Category(models.Model):
         This will only work since django changeset 4901 (>0.96) """
         return reverse( 'sphboard-feeds',
                         urlconf = get_urlconf(),
-                        kwargs = { 'url': 'latest/%d' % self.id } )
+                        kwargs = { 'category_id': self.id } )
 
     def get_absolute_latest_url(self):
         return ('sphboard_latest', (), { 'groupName': self.group.name, 'category_id': self.id, })
