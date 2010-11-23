@@ -49,20 +49,23 @@ def clear_post_cache(sender, instance, *args, **kwargs):
 def clear_post_4_category_cache(sender, instance, *args, **kwargs):
     """ If post was created, was hidden or moved to another category then clear category cache
     """
-    if instance.pk is None:  #new post
+    if not instance.pk:  #new post
         cache.delete(instance.category._cache_key_post_count())
         cache.delete(instance.category._cache_key_latest_post())
         if instance.thread is None:
             cache.delete(instance.category._cache_key_thread_count())
     else:
         from sphene.sphboard.models import Post
-        old_post = Post.objects.get(pk=instance.pk)
-        if old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden:
-            cache.delete(old_post.category._cache_key_post_count())
-            cache.delete(old_post.category._cache_key_latest_post())
-            cache.delete(instance.category._cache_key_thread_count())
-        elif old_post.thread != instance.thread:
-            cache.delete(instance.category._cache_key_thread_count())
+        try:
+            old_post = Post.objects.get(pk=instance.pk)
+            if old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden:
+                cache.delete(old_post.category._cache_key_post_count())
+                cache.delete(old_post.category._cache_key_latest_post())
+                cache.delete(instance.category._cache_key_thread_count())
+            elif old_post.thread != instance.thread:
+                cache.delete(instance.category._cache_key_thread_count())
+        except Post.DoesNotExist:
+            pass
 
 def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
     """ Removed post might cause change in page numeration in thread
