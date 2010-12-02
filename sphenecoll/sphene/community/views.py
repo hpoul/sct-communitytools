@@ -1,3 +1,4 @@
+import urllib
 # Create your views here.
 
 from time import time
@@ -24,7 +25,7 @@ from django.core.urlresolvers import reverse
 
 from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem, RoleGroup, RoleGroupMember
-from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.forms import EditProfileForm, Separator, UsersSearchForm
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community import sphutils
 from sphene.community.permissionutils import has_permission_flag
@@ -598,9 +599,23 @@ def admin_users(request, group):
     orderby = request.GET.get('orderby', 'username')
 
     users = User.objects.filter(is_superuser=False).order_by(orderby)
+    search_qs = {}
+
+    search_form = UsersSearchForm()
+    if request.GET.has_key('search'):
+        search_form = UsersSearchForm(request.GET)
+        if search_form.is_valid():
+            username = search_form.cleaned_data['username']
+            if username:
+                search_params = Q(username__istartswith=username)|Q(first_name__istartswith=username)|Q(last_name__istartswith=username)
+                users = users.filter(search_params)
+                search_qs = urllib.urlencode(search_form.cleaned_data)
+    
     templateName = 'sphene/community/admin/users_list.html'
 
     context = {'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS,
+               'search_qs':search_qs,
+               'search_form':search_form,
                'orderby':orderby}
 
     res =  object_list( request = request,

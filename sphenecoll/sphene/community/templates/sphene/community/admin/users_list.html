@@ -31,20 +31,28 @@
 
 {% block content %}
 
+<form action="" method="get">
+    <fieldset>
+        <legend>{% trans "Filter users" %}</legend>
+        {{ search_form.username.label }}: {{ search_form.username }}
+        <input type="submit" name="search" value="{% trans "Search" %}" />
+    </fieldset>
+</form>
+
 <table>
   <tr>
-    <th><a href="?orderby=username">{% trans "Username" %}</a></th>
+    <th><a href="?orderby={% get_orderby orderby "username" %}{% if search_qs %}&amp;{{ search_qs|safe }}&amp;search=1{% endif %}">{% trans "Username" %}</a></th>
     <th>{% trans "Full name" %}</th>
     <th>{% trans "E-mail" %}</th>
     {% if is_sphboard %}
         <th>{% trans "Board posts" %}</th>
     {% endif %}
-    <th><a href="?orderby=is_active">{% trans "Is active" %}</a></th>
+    <th><a href="?orderby={% get_orderby orderby "is_active" %}{% if search_qs %}&amp;{{ search_qs|safe }}&amp;search=1{% endif %}">{% trans "Is active" %}</a></th>
     <th>{% trans "Actions" %}</th>
   </tr>
   {% for usr in sphuser_list %}
     <tr>
-      <td>{{ usr.username }}</td>
+      <td><a href="{{ usr|sph_user_profile_link }}">{{ usr.username }}</a></td>
       <td>{{ usr.get_full_name }}</td>
       <td>{{ usr.email }}</td>
       {% if is_sphboard %}

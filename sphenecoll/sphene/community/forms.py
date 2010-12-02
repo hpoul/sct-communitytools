@@ -153,3 +153,5 @@ class EditRoleMemberForm(UsernameRoleMemberForm, BasicRoleMemberForm):
 class EditRoleGroupMemberForm(RoleGroupMemberForm, BasicRoleMemberForm):
     pass
 
+class UsersSearchForm(forms.Form):
+    username = forms.CharField(label=_(u'Username'), required=False)
