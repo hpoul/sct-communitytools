@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django import template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -608,16 +608,20 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
         if form.is_valid():
             data = form.cleaned_data
             body = data['body']
+            move_all_posts = data['move_all_posts']
 
             # information about thread from which moved post is taken
             threadinfo = post.get_threadinformation()
+            next_posts = None
+            if move_all_posts:
+                next_posts = Post.objects.filter(thread=post.get_thread(), postdate__gt=post.postdate).order_by('postdate')
 
             # if moved post is root post of the thread then detach rest of
             # the posts
             if is_root_post:
                 posts = Post.objects.filter(thread=post).order_by('postdate')
                 # if there are subsequent posts
-                if posts.count()>0:
+                if posts.count() > 0 and not move_all_posts:
                     # prepare new root_post
                     new_root = posts[0]
                     new_root.thread = None
@@ -629,6 +633,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                     # if root post is moved into another thread then
                     # remove threadinfo
                     threadinfo.delete()
+                    threadinfo = None
                 else:
                     # if post is moved to new category
                     # just update threadinfo
@@ -640,7 +645,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
             post.thread = target_thread  # this might be None if post was moved into category
             if target_thread:
                 # update postdate if necessary to achieve proper ordering (post is always added at the end)
-                if target_thread.get_latest_post().postdate>post.postdate:
+                if target_thread.get_latest_post().postdate > post.postdate:
                     post.postdate = datetime.now()
 
             if body:
@@ -653,9 +658,23 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                 annotation.save()
             post.save()
 
+            if not next_posts is None:
+                # if posts were moved to new thread update postdate to place them at the end
+                if target_thread:
+                    cnt = 1
+                    for p in next_posts:
+                        p.thread=post.get_thread()
+                        if post.postdate > p.postdate:
+                            p.postdate = datetime.now() + timedelta(microseconds=cnt)
+                        p.save()
+                        cnt += 1
+                elif not is_root_post:  # posts moved to category
+                    next_posts.update(thread = post.get_thread())
+
             # update information about thread from which post was moved
-            threadinfo.update_cache()
-            threadinfo.save()
+            if threadinfo:
+                threadinfo.update_cache()
+                threadinfo.save()
 
             if target_thread:
                 request.user.message_set.create(message=ugettext(u'Post has been appended to thread.'))

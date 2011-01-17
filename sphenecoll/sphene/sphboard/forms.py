@@ -149,6 +149,11 @@ class MoveAndAnnotateForm(MoveForm, AnnotateForm):
 
 
 class MovePostForm(AnnotateForm):
+    move_all_posts = forms.BooleanField(label = _('Move all post after this post'),
+                                        initial = False,
+                                        required = False,
+                                        help_text=_('If checked then all posts following this post will be also moved'))
+
     def __init__(self, *args, **kwargs):
         super(MovePostForm, self).__init__(*args, **kwargs)
         del self.fields['hide_post']
