@@ -28,7 +28,7 @@ from sphene.sphblog.utils import slugify
 from sphene.sphboard import categorytyperegistry
 from renderers import POST_MARKUP_CHOICES, render_body
 from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache, \
-                                    clear_post_4_category_cache
+                                    clear_post_4_category_cache, update_category_last_visit_cache
 
 import logging
 logger = logging.getLogger('sphene.sphboard.models')
@@ -304,8 +304,11 @@ class Category(models.Model):
         key = self._cache_key_latest_post()
         res = cache.get(key)
         if not res:
-            res = self.posts.filter(is_hidden=0).latest( 'postdate' )
-            cache.set(key, res)
+            try:
+                res = self.posts.filter(is_hidden=0).latest( 'postdate' )
+                cache.set(key, res)
+            except Post.DoesNotExist:
+                cache.set(key, None)
         return res
 
     # For backward compatibility ...
@@ -372,7 +375,8 @@ class Category(models.Model):
         Returns the datetime object of when it was last visited.
         """
         # Check if we were already "touched" ;)
-        if getattr(self, '_touched', False): return self._lastVisit
+        print 'touch category', self
+        if getattr(self, '_touched', False): return self.get_lastvisit_date(user)
         self._touched = True
         self.__hasNewPosts = self._hasNewPosts(session, user)
         if not user.is_authenticated(): return None
@@ -387,21 +391,36 @@ class Category(models.Model):
         except CategoryLastVisit.DoesNotExist:
             lastVisit = CategoryLastVisit(user = user, category = self)
         lastVisit.lastvisit = datetime.today()
-        self._lastVisit = lastVisit.oldlastvisit or lastVisit.lastvisit
+        last_visit_date = lastVisit.oldlastvisit or lastVisit.lastvisit
         lastVisit.save()
-        return self._lastVisit
+        return last_visit_date
+
+    def _cache_key_lastvisit_date(self, user):
+        return '%s_category_lastvisit_date_%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk, user.pk)
+
+    def get_lastvisit_date(self, user):
+        key = self._cache_key_lastvisit_date(user)
+        last_visit_date = cache.get(key)
+        if not last_visit_date:
+            try:
+                last_visit = CategoryLastVisit.objects.get( category = self, user = user )
+                last_visit_date = last_visit.oldlastvisit or last_visit.lastvisit
+            except CategoryLastVisit.DoesNotExist:
+                last_visit_date = datetime.today()
+            cache.set(key, last_visit_date)
+        return last_visit_date
 
     def hasNewPosts(self):
         return self._hasNewPosts(get_current_session(), get_current_user())
 
     def _hasNewPosts(self, session, user):
+        print 'hasNewPosts category', self
         if hasattr(self, '__hasNewPosts'): return self.__hasNewPosts
         if not user.is_authenticated(): return False
-        try:
-            latestPost = Post.objects.filter( category = self ).latest( 'postdate' )
-        except Post.DoesNotExist:
+        latestPost = self.get_latest_post()
+        if not latestPost:
             return False
-
+        
         # Retrieve last visit ...
         try:
             lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
@@ -415,27 +434,7 @@ class Category(models.Model):
         
         if lastvisit > latestPost.postdate:
             return False
-
-        # Check all posts to see if they are new ....
-        allNewPosts = Post.objects.filter( category = self,
-                                           postdate__gt = lastvisit, )
-
-        for post in allNewPosts:
-            threadid = post.thread and post.thread.id or post.id
-            try:
-                lasthit = ThreadLastVisit.objects.filter( user = user,
-                                                          thread__id = threadid, )[0]
-            except IndexError:
-                return True
-            if lasthit.lastvisit < post.postdate:
-                return True
-
-        # All posts are read .. cool.. we can remove all ThreadLastVisit and adapt CategoryLastVisit
-        ThreadLastVisit.objects.filter( user = user,
-                                        thread__category = self, ).delete()
-        lastVisit.oldlastvisit = None
-        lastVisit.save()
-        return False
+        return True
 
     def toggle_monitor(self, user=None):
         """Either creates a monitor if there is none currently, or deletes an
@@ -670,9 +669,6 @@ class Post(models.Model):
     def get_threadinformation(self):
         return ThreadInformation.objects.type_default().get( root_post = self.get_thread() )
 
-    def get_latest_post(self):
-        return self.get_all_posts().latest( 'postdate' )
-
     def get_all_posts(self):
         return Post.objects.filter( Q( pk = self.id ) | Q( thread = self ) )
 
@@ -881,7 +877,9 @@ class Post(models.Model):
         return self._touch( session, user )
 
     def _touch(self, session, user):
+        print 'touch post'
         if not user.is_authenticated(): return None
+        category_lastvisit = self.category.touch(session, user)
         if not self._hasNewPosts(session, user): return
         thread = self.thread or self
         try:
@@ -894,23 +892,79 @@ class Post(models.Model):
         threadLastVisit.lastvisit = datetime.today()
         threadLastVisit.save()
 
+
+        # Check all posts to see if they are new ....
+
+        # check if current user has any unread threads and if no
+        # then remove all treheadlastvisit objects, this means that every thread was last visited when
+        # category was last visited
+        #
+
+        # all threads containing new posts for user in this category
+        threads_with_new = ThreadInformation.objects.filter(category=self.category,
+                                                            thread_latest_postdate__gt=category_lastvisit)\
+                                                           .values_list('root_post', 'thread_latest_postdate')
+
+        threads_with_new_ids = [post_tuple[0] for post_tuple in threads_with_new]
+
+        # all threads already visited by user that have new posts
+        visited_threads = ThreadLastVisit.objects.filter(user = user,
+                                                         thread__in=threads_with_new_ids).values_list('thread', 'lastvisit')
+
+        visited_threads_dict = {}
+        for post_tuple in visited_threads:
+            visited_threads_dict[post_tuple[0]] = post_tuple[1]
+
+        visited_threads_ids = visited_threads_dict.keys()
+
+        if set(threads_with_new_ids).difference(set(visited_threads_ids)):
+            # there already are new posts in threads not yet even visited by user
+            return
+
+        for post_tuple in threads_with_new:
+            thread_id = post_tuple[0]
+            last_postdate = post_tuple[1]
+
+            lastvisit = visited_threads_dict[thread_id]
+
+            if lastvisit < last_postdate:
+                return
+
+        # All posts are read .. cool.. we can remove all ThreadLastVisit and adapt CategoryLastVisit
+        ThreadLastVisit.objects.filter( user = user,
+                                        thread__category = self.category, ).delete()
+        clv = CategoryLastVisit.objects.get( category = self.category, user = user )
+        clv.oldlastvisit = None
+        clv.save()
+        return False
+
+
     def has_new_posts(self):
         if hasattr(self, '__has_new_posts'): return self.__has_new_posts
         self.__has_new_posts = self._hasNewPosts(get_current_session(), get_current_user())
         return self.__has_new_posts
 
-    def get_latest_post(self):
-        try:
-            latestPost = Post.objects.filter( thread = self.id ).latest( 'postdate' )
-        except Post.DoesNotExist:
-            # if no post was found, the thread is the latest post ...
-            latestPost = self
-        return latestPost
+    def _cache_key_latest_post(self):
+        return '%s_post_lp_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)
 
+    def get_latest_post(self):
+        key = self._cache_key_latest_post()
+        res = cache.get(key)
+        if not res:
+            try:
+                res = self.get_all_posts().latest( 'postdate' )
+                cache.set(key, res)
+            except Post.DoesNotExist:
+                cache.set(key, None)
+        return res
+    
     def _hasNewPosts(self, session, user):
+        print 'hasNewPosts post', self
         if not user.is_authenticated(): return False
         latestPost = self.get_latest_post()
-        categoryLastVisit = self.category.touch(session, user)
+        categoryLastVisit = self.category.get_lastvisit_date(user)
+        print 'catlastvisit', categoryLastVisit
+        print 'latestpost', latestPost.postdate
         if categoryLastVisit > latestPost.postdate:
             return False
 
@@ -1137,7 +1191,7 @@ class Post(models.Model):
         if user.is_authenticated():
             # for authenticated users
             latest_post = self.get_latest_post()
-            categoryLastVisit = self.category.touch(session, user)
+            categoryLastVisit = self.category.get_lastvisit_date(user)
             if categoryLastVisit > latest_post.postdate:
                 # no new posts in thread - return latest post
                 new_post = latest_post
@@ -1280,7 +1334,7 @@ class ThreadInformation(models.Model):
         self.sticky_value = self.root_post.is_sticky() and 1 or 0
         # Find the last post ...
         self.latest_post = self.root_post.get_latest_post()
-	self.thread_latest_postdate = self.latest_post.postdate
+        self.thread_latest_postdate = self.latest_post.postdate
         # Calculate post count ...
         self.post_count = self.root_post.postCount()
         self.update_heat()
@@ -1721,3 +1775,4 @@ signals.pre_save.connect(clear_post_cache, sender=Group)
 signals.pre_save.connect(clear_post_cache, sender=Category)
 signals.post_delete.connect(clear_post_cache_on_delete, sender=Post)
 signals.pre_save.connect(clear_post_4_category_cache, sender=Post)
+signals.post_save.connect(update_category_last_visit_cache, sender=CategoryLastVisit)

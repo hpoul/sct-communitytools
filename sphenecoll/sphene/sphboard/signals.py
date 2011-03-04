@@ -54,6 +54,8 @@ def clear_post_4_category_cache(sender, instance, *args, **kwargs):
         cache.delete(instance.category._cache_key_latest_post())
         if instance.thread is None:
             cache.delete(instance.category._cache_key_thread_count())
+        else:
+            cache.delete(instance.thread._cache_key_latest_post())
     else:
         from sphene.sphboard.models import Post
         try:
@@ -82,6 +84,12 @@ def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
 
     for post in thr.get_all_posts():
         cache.delete(post._cache_key_absolute_url())
+
+
+def update_category_last_visit_cache(sender, instance, *args, **kwargs):
+    last_visit_date = instance.oldlastvisit or instance.lastvisit
+    cache.set(instance.category._cache_key_lastvisit_date(instance.user),
+              last_visit_date)
 
 # CACHE KEYS
 # _cache_key_absolute_url - post absolute url
