@@ -56,14 +56,16 @@ def clear_post_4_category_cache(sender, instance, *args, **kwargs):
             cache.delete(instance.category._cache_key_thread_count())
         else:
             cache.delete(instance.thread._cache_key_latest_post())
+            cache.delete(instance._cache_key_post_count())
     else:
         from sphene.sphboard.models import Post
         try:
-            old_post = Post.objects.get(pk=instance.pk)
+            old_post = Post.objects.get(pk=instance.pk).select_related('category')
             if old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden:
                 cache.delete(old_post.category._cache_key_post_count())
                 cache.delete(old_post.category._cache_key_latest_post())
                 cache.delete(instance.category._cache_key_thread_count())
+                cache.delete(instance._cache_key_post_count())
             elif old_post.thread != instance.thread:
                 cache.delete(instance.category._cache_key_thread_count())
         except Post.DoesNotExist:
@@ -76,6 +78,7 @@ def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
     cache.delete(instance.category._cache_key_post_count())
     cache.delete(instance.category._cache_key_latest_post())
     cache.delete(instance.category._cache_key_thread_count())
+    cache.delete(instance._cache_key_post_count())
 
     if instance.thread is None:
         thr = instance

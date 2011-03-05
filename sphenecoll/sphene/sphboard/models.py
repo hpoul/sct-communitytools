@@ -375,7 +375,6 @@ class Category(models.Model):
         Returns the datetime object of when it was last visited.
         """
         # Check if we were already "touched" ;)
-        print 'touch category', self
         if getattr(self, '_touched', False): return self.get_lastvisit_date(user)
         self._touched = True
         self.__hasNewPosts = self._hasNewPosts(session, user)
@@ -414,24 +413,14 @@ class Category(models.Model):
         return self._hasNewPosts(get_current_session(), get_current_user())
 
     def _hasNewPosts(self, session, user):
-        print 'hasNewPosts category', self
         if hasattr(self, '__hasNewPosts'): return self.__hasNewPosts
         if not user.is_authenticated(): return False
         latestPost = self.get_latest_post()
         if not latestPost:
             return False
-        
-        # Retrieve last visit ...
-        try:
-            lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
-        except CategoryLastVisit.DoesNotExist:
-            return False
 
-        # If there was no last visit, we didn't store any last visits for threads.
-        # (Because there was no new threads between 'lastvisit' and 'oldlastvisit'
-        #  so use 'lastvisit')
-        lastvisit = lastVisit.oldlastvisit or lastVisit.lastvisit
-        
+        lastvisit = self.get_lastvisit_date(user)
+
         if lastvisit > latestPost.postdate:
             return False
         return True
@@ -675,11 +664,18 @@ class Post(models.Model):
     def replies(self):
         return Post.objects.filter( thread = self )
 
+    def _cache_key_post_count(self):
+        return '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.thread_id or self.pk)
+
     def postCount(self):
-        return self.get_all_posts().count()
+        res = cache.get(self._cache_key_post_count())
+        if not res:
+            res = self.get_all_posts().count()
+            cache.set(self._cache_key_post_count(), res)
+        return res
 
     def replyCount(self):
-        return self.replies().count()
+        return self.postCount() - 1
 
     def allow_posting(self, user):
         """
@@ -877,7 +873,6 @@ class Post(models.Model):
         return self._touch( session, user )
 
     def _touch(self, session, user):
-        print 'touch post'
         if not user.is_authenticated(): return None
         category_lastvisit = self.category.touch(session, user)
         if not self._hasNewPosts(session, user): return
@@ -959,12 +954,9 @@ class Post(models.Model):
         return res
     
     def _hasNewPosts(self, session, user):
-        print 'hasNewPosts post', self
         if not user.is_authenticated(): return False
         latestPost = self.get_latest_post()
         categoryLastVisit = self.category.get_lastvisit_date(user)
-        print 'catlastvisit', categoryLastVisit
-        print 'latestpost', latestPost.postdate
         if categoryLastVisit > latestPost.postdate:
             return False
 

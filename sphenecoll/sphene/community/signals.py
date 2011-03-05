@@ -2,6 +2,8 @@ import django.dispatch
 from django.conf import settings
 from django.core.cache import cache
 
+from sphene.community.sph_cacheutils import invalidate_cache_group_id
+
 # Called when the edit_profile view initializes the form ...
 # gives listeners a chance to add custom fields to the form.
 profile_edit_init_form = django.dispatch.Signal()
@@ -42,3 +44,31 @@ def clear_user_displayname(sender, instance, created, *args, **kwargs):
         user = instance.user
     key = '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
     cache.delete(key)
+
+def clear_permissions_cache_rgm(sender, instance, *args, **kwargs):
+    """ RoleGroupMember
+    """
+    invalidate_cache_group_id('has_permission_flag_%s' % (instance.user_id))
+
+def clear_permissions_cache_rml(sender, instance, *args, **kwargs):
+    """ RoleMemberLimitation
+    """
+    invalidate_cache_group_id('has_permission_flag_%s' % (instance.role_member.user_id))
+
+def clear_permissions_cache_rm(sender, instance, *args, **kwargs):
+    """ RoleMember
+    """
+    invalidate_cache_group_id('has_permission_flag_%s' % (instance.user_id))
+
+def clear_permission_flag_cache(sender, instance, *args, **kwargs):
+    """ m2mchanged
+        If permissions for role had been changed then invalidate permission cache for all users in this role
+    """
+    from sphene.community.models import RoleMember
+    user_ids = RoleMember.objects.filter(role=instance).values_list('user', flat=True)
+    for user_id in user_ids:
+        invalidate_cache_group_id('has_permission_flag_%s' % (user_id))
+
+#     clear_permissions_cache_rgm, sender=RoleGroupMember)
+#post_save.connect(clear_permissions_cache_rml, sender=RoleMemberLimitation)
+#post_save.connect(clear_permissions_cache_rm, sender=RoleMember)

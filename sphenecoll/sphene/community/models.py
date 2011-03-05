@@ -4,10 +4,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed, post_delete
 
 from sphene.community.sphpermalink import sphpermalink
-from sphene.community.signals import clear_user_displayname
+from sphene.community.signals import clear_user_displayname, clear_permissions_cache_rgm, clear_permissions_cache_rml, \
+                                     clear_permissions_cache_rm, clear_permission_flag_cache
 
 import logging
 import re
@@ -676,3 +677,15 @@ profile_edit_save_form.connect(community_profile_edit_save_form, sender = EditPr
 profile_display.connect(community_profile_display)
 post_save.connect(clear_user_displayname, sender=User)
 post_save.connect(clear_user_displayname, sender=CommunityUserProfile)
+
+# permissions cache handlers
+post_save.connect(clear_permissions_cache_rgm, sender=RoleGroupMember)
+post_save.connect(clear_permissions_cache_rml, sender=RoleMemberLimitation)
+post_save.connect(clear_permissions_cache_rm, sender=RoleMember)
+
+post_delete.connect(clear_permissions_cache_rgm, sender=RoleGroupMember)
+post_delete.connect(clear_permissions_cache_rml, sender=RoleMemberLimitation)
+post_delete.connect(clear_permissions_cache_rm, sender=RoleMember)
+
+post_save.connect(clear_permission_flag_cache, sender=Role)
+post_delete.connect(clear_permission_flag_cache, sender=Role)
