@@ -665,7 +665,7 @@ class Post(models.Model):
         return Post.objects.filter( thread = self )
 
     def _cache_key_post_count(self):
-        return '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.thread_id or self.pk)
+        return '%s_thread_post_count_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.thread_id or self.pk)
 
     def postCount(self):
         res = cache.get(self._cache_key_post_count())
