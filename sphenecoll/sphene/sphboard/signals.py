@@ -60,7 +60,7 @@ def clear_post_4_category_cache(sender, instance, *args, **kwargs):
     else:
         from sphene.sphboard.models import Post
         try:
-            old_post = Post.objects.get(pk=instance.pk).select_related('category')
+            old_post = Post.objects.get(pk=instance.pk)
             if old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden:
                 cache.delete(old_post.category._cache_key_post_count())
                 cache.delete(old_post.category._cache_key_latest_post())
