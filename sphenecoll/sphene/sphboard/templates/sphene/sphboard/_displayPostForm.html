@@ -66,8 +66,8 @@
   //-->
   </script>
   {% endif %}
+  {{ post_attachment_formset.management_form }}
   {% if post_attachment_formset.forms %}
-      {{ post_attachment_formset.management_form }}
       <table class="sphboard form attachment">
           <tr>
               <th colspan="2">{% trans "Upload Attachment" %}</th>
