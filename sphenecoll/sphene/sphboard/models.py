@@ -1322,6 +1322,10 @@ class ThreadInformation(models.Model):
         """ Will update the latest_post and post_count of this model.
         (Ie. the cache - or redundant information.)
         Does not save this model ! This has to be done by the caller. """
+        # clear caches
+        cache.delete(self.root_post._cache_key_post_count())
+        cache.delete(self.root_post._cache_key_latest_post())
+
         # Find sticky ..
         self.sticky_value = self.root_post.is_sticky() and 1 or 0
         # Find the last post ...
