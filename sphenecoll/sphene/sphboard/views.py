@@ -8,6 +8,7 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.forms.models import modelformset_factory
+from django.core.cache import cache
 
 from sphene.community import PermissionDenied
 from sphene.community.permissionutils import has_permission_flag
@@ -663,13 +664,16 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                 if target_thread:
                     cnt = 1
                     for p in next_posts:
-                        p.thread=post.get_thread()
+                        p.thread = post.get_thread()
                         if post.postdate > p.postdate:
                             p.postdate = datetime.now() + timedelta(microseconds=cnt)
                         p.save()
                         cnt += 1
                 elif not is_root_post:  # posts moved to category
                     next_posts.update(thread = post.get_thread())
+                    # clear caches
+                    for p in next_posts:
+                        cache.delete(p._cache_key_absolute_url())
 
             # update information about thread from which post was moved
             if threadinfo:
