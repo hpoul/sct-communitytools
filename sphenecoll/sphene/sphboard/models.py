@@ -1329,7 +1329,9 @@ class ThreadInformation(models.Model):
         # Find sticky ..
         self.sticky_value = self.root_post.is_sticky() and 1 or 0
         # Find the last post ...
-        self.latest_post = self.root_post.get_latest_post()
+        latest = self.root_post.get_latest_post()
+        if latest:
+            self.latest_post = latest
         self.thread_latest_postdate = self.latest_post.postdate
         # Calculate post count ...
         self.post_count = self.root_post.postCount()
