@@ -33,7 +33,6 @@ svn export http://source.sphene.net/svn/root/django/communitytools/trunk/sphenec
  
 [django]
 recipe = djangorecipe
-version = 1.2.3
 eggs =
     PIL
     south
