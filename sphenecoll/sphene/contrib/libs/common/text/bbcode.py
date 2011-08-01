@@ -375,7 +375,6 @@ for t in _TAGS:
 _TAGNAMES = [t.name for t in _TAGS]
 
 _EMOTICONS = get_sph_setting('board_emoticons_list')
-print _EMOTICONS.keys()
 _EMOTICON_LIST = _EMOTICONS.keys();
 
 ###### PARSING CLASSES AND FUNCTIONS ######
