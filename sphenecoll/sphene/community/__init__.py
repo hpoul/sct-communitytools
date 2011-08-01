@@ -1,3 +1,5 @@
+from django.utils.encoding import force_unicode
+
 class PermissionDenied(Exception):
     pass
 
@@ -10,7 +12,6 @@ from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
 from sphene.community import sphsettings
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
 
 jsincludes = get_sph_setting( 'community_jsincludes', [])
 jsincludes.append(settings.MEDIA_URL + 'sphene/community/jquery-1.2.3.min.js')
@@ -35,7 +36,6 @@ def clean_community_advprofile_avatar(self):
         raise djangoforms.ValidationError( _(u"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d bytes)") % {'max_size':max_size, 'size':size} )
 
     from PIL import Image
-    from cStringIO import StringIO
 
     try:
         # Verify image dimensions ..
@@ -97,12 +97,20 @@ def community_advprofile_edit_save_form(sender, instance, signal, request, **kwa
         f = getattr(data['community_advprofile_avatar'], 'tmpfile', None)
         if f is None:
             f = data['community_advprofile_avatar']
-        profile.avatar.save( data['community_advprofile_avatar'].name, f )
+
+        #try to avoid limit of 100 characters to filename
+        fname = data['community_advprofile_avatar'].name
+        avt_name = force_unicode(fname)
+
+        if len(avt_name) > 100:
+            name, ext = avt_name.split('.', 1)
+            name = name[:89 - len(ext) - len(force_unicode(profile.avatar.field.get_directory_name()))]
+            fname = '%s.%s' % (name, ext)
+
+        profile.avatar.save( fname, f )
     #profile.avat = data['public_emailaddress']
     profile.save()
 
-
-from sphene.community.templatetags import sph_extras
 
 def community_advprofile_display(sender, signal, request, user, **kwargs):
     try:
