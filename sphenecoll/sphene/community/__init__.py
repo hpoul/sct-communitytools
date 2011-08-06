@@ -101,10 +101,11 @@ def community_advprofile_edit_save_form(sender, instance, signal, request, **kwa
         #try to avoid limit of 100 characters to filename
         fname = data['community_advprofile_avatar'].name
         avt_name = force_unicode(fname)
+        directory_name_len = len(force_unicode(profile.avatar.field.get_directory_name()))
 
-        if len(avt_name) > 100:
+        if len(avt_name) + directory_name_len > 100:
             name, ext = avt_name.split('.', 1)
-            name = name[:89 - len(ext) - len(force_unicode(profile.avatar.field.get_directory_name()))]
+            name = name[:96 - len(ext) - directory_name_len]  # 96 because django will append _x if filename already exists, and one for dot
             fname = '%s.%s' % (name, ext)
 
         profile.avatar.save( fname, f )
