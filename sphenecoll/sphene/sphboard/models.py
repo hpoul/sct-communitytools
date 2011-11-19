@@ -243,6 +243,9 @@ class Category(models.Model):
 
                              'sphboard_moveallposts':
                              ugettext_lazy('Allows moving posts.'),
+
+                             'sphboard_delete_moved_threadinformation':
+                             ugettext_lazy('Allows deleting information about moved threads.'),
                              }
 
     def get_category_type(self):
@@ -1418,6 +1421,23 @@ class ThreadInformation(models.Model):
 
     def get_absolute_lastvisit_url(self):
         return self.root_post.get_absolute_lastvisit_url()
+
+    def allow_deleting_moved(self, user = None):
+        """
+        Returns True if the user is allowed to delete thread information about moved thread.
+
+        if user is None, the current user is taken into account.
+        """
+        if user == None: user = get_current_user()
+
+        if not user or not user.is_authenticated() or self.thread_type != THREAD_TYPE_MOVED:
+            return False
+
+        if user.is_superuser \
+               or has_permission_flag( user, 'sphboard_delete_moved_threadinformation', self.category ):
+            return True
+
+        return False
 
     def _get_absolute_url(self):
         kwargs = { 'groupName': self.category.group.name,

@@ -1,0 +1,24 @@
+{% extends "sphene/sphboard/base.html" %}
+{% load i18n %}
+
+{% load sphboard_extras %}
+
+{% block content %}
+  <br/><br/>
+  <b>
+      {% blocktrans with th.root_post.subject|escape as subject and th.category.name as category %}Delete information about moved thread: {{ subject }} from category {{ category }}{% endblocktrans %}</b>
+  <br/><br/>
+
+  <form method="POST" action=".">{% csrf_token %}
+    <table class="sphboard form">
+      <tr>
+          <td>
+              {% trans "You're about to delete information about moved thread. Are you sure you want to do that?" %}
+          </td>
+      </tr>
+      <tr>
+        <td colspan="2"><input type="submit" name="delete-th" value="{% trans "Delete" %}" /> {% blocktrans with th.category.get_absolute_url as caturl %}or <a href="{{ caturl }}">go back</a>{% endblocktrans %}</td>
+      </tr>
+    </table>
+  </form>
+{% endblock %}

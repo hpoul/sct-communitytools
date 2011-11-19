@@ -228,7 +228,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
 
 
     # All available objects should be loaded from the _id variables.
-    post = None
+    post_obj = None
     thread = None
     category = None
     context = {
@@ -243,14 +243,14 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     if post_id is not None:
         # User wants to edit a post ..
         try:
-            post = Post.allobjects.get( pk = post_id )
+            post_obj = Post.allobjects.get( pk = post_id )
         except Post.DoesNotExist:
             raise Http404
 
-        if not post.allowEditing():
+        if not post_obj.allowEditing():
             raise PermissionDenied()
-        thread = post.thread
-        category = post.category
+        thread = post_obj.thread
+        category = post_obj.category
 
     else:
         # User wants to create a new post (thread or reply)
@@ -280,7 +280,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     category_type = category.get_category_type()
     MyPostForm = PostForm
     if category_type is not None:
-        MyPostForm = category_type.get_post_form_class(thread, post)
+        MyPostForm = category_type.get_post_form_class(thread, post_obj)
 
     allow_attachments = get_sph_setting('board_allow_attachments')
     allowedattachments = 0
@@ -297,12 +297,12 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                                                  max_num=allowedattachments)
 
     post_attachment_qs = PostAttachment.objects.none()
-    if post:
-        post_attachment_qs = post.attachments.all()
+    if post_obj:
+        post_attachment_qs = post_obj.attachments.all()
 
     if request.method == 'POST':
         postForm = MyPostForm(request.POST)
-        postForm.init_for_category_type(category_type, post)
+        postForm.init_for_category_type(category_type, post_obj)
         pollForm = PostPollForm(request.POST)
 
         create_post = True
@@ -318,18 +318,18 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
         if post_attachment_formset.is_valid():
             instances = post_attachment_formset.save(commit=False)
             for attachment in instances:
-                if not post:
+                if not post_obj:
                     # if there is no post yet.. we need to create a draft
-                    post = Post( category = category,
+                    post_obj = Post( category = category,
                                  author = request.user,
                                  thread = thread,
                                  is_hidden = 1,
                                  )
-                    post.set_new( True )
-                    post.save()
+                    post_obj.set_new( True )
+                    post_obj.save()
 
                 # Reference the post and save the attachment
-                attachment.post = post
+                attachment.post = post_obj
                 attachment.save()
 
         if create_post \
@@ -338,13 +338,13 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                          or pollForm.is_valid()):
             data = postForm.cleaned_data
 
-            if post:
-                newpost = post
+            if post_obj:
+                newpost = post_obj
                 newpost.subject = data['subject']
                 newpost.body = data['body']
                 # make post visible
                 newpost.is_hidden = 0
-                if not post.is_new() and category_type.append_edit_message_to_post(post):
+                if not post_obj.is_new() and category_type.append_edit_message_to_post(post_obj):
                     newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_user_displayname( request.user ), 'edit_date':format_date( datetime.today())}
             else:
                 user = request.user.is_authenticated() and request.user or None
@@ -394,7 +394,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                     request.user.message_set.create( message = ugettext(u'Vote created successfully.') )
 
             if request.user.is_authenticated():
-                if post:
+                if post_obj:
                     request.user.message_set.create( message = ugettext(u'Post edited successfully.') )
                 else:
                     request.user.message_set.create( message = ugettext(u'Post created successfully.') )
@@ -403,19 +403,19 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
 
     else:
         postForm = MyPostForm( )
-        postForm.init_for_category_type(category_type, post)
+        postForm.init_for_category_type(category_type, post_obj)
         pollForm = PostPollForm()
 
         post_attachment_formset = PostAttachmentFormSet(queryset = post_attachment_qs,
                                                         prefix='attachment')
 
-    if post:
-        postForm.fields['subject'].initial = post.subject
-        postForm.fields['body'].initial = post.body
+    if post_obj:
+        postForm.fields['subject'].initial = post_obj.subject
+        postForm.fields['body'].initial = post_obj.body
         if 'markup' in postForm.fields:
-            postForm.fields['markup'].initial = post.markup
-        context['post'] = post
-        context['thread'] = post.thread or post
+            postForm.fields['markup'].initial = post_obj.markup
+        context['post'] = post_obj
+        context['thread'] = post_obj.thread or post_obj
     elif 'quote' in request.REQUEST:
         quotepost = get_object_or_404(Post, pk = request.REQUEST['quote'] )
         postForm.fields['subject'].initial = 'Re: %s' % thread.subject
@@ -429,7 +429,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     context['form'] = postForm
 
     # Only allow polls if this is a new _thread_ (not a reply)
-    if (not thread and not post) or (post and post.is_new() and post.thread is None):
+    if (not thread and not post_obj) or (post_obj and post_obj.is_new() and post_obj.thread is None):
         context['pollform'] = pollForm
     context['post_attachment_formset'] = post_attachment_formset
     if 'createpoll' in request.REQUEST:
@@ -517,6 +517,9 @@ def annotate(request, group, post_id):
                                context_instance = RequestContext(request) )
 
 def hide(request, group, post_id):
+    """ Delete post by setting is_hidden=True
+        (annotate method above allows to hide content of the post but leaves it in thread)
+    """
     post = get_object_or_404(Post, pk = post_id )
     thread = post.get_thread()
     if not post.allow_hiding():
@@ -785,6 +788,23 @@ def move(request, group, thread_id):
                                  'form': form,
                                  },
                                context_instance = RequestContext(request))
+
+def delete_moved_info(request, group, pk):
+    """ Delete information about moved thread
+    """
+    th = get_object_or_404(ThreadInformation, pk=pk)
+    if not th.allow_deleting_moved(request.user):
+        raise PermissionDenied()
+
+    if request.method == 'POST' and 'delete-th' in request.POST.keys():
+        back_url = th.category.get_absolute_url()
+        th.delete()
+        request.user.message_set.create( message = ugettext(u'Information about moved thread has been deleted') )
+        return HttpResponseRedirect(back_url)
+
+    return render_to_response("sphene/sphboard/delete_moved_info.html",
+                              {'th': th},
+                              context_instance=RequestContext(request))
 
 def vote(request, group = None, thread_id = None):
     thread = get_object_or_404(Post, pk = thread_id)
