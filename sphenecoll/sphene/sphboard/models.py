@@ -382,19 +382,15 @@ class Category(models.Model):
         self._touched = True
         self.__hasNewPosts = self._hasNewPosts(session, user)
         if not user.is_authenticated(): return None
-        try:
-            lastVisit = CategoryLastVisit.objects.get( category = self, user = user )
 
-            if not lastVisit.oldlastvisit:
-                if self.__hasNewPosts:
-                    # Only set oldlastvisit if we have new posts.
-                    lastVisit.oldlastvisit = lastVisit.lastvisit
-
-        except CategoryLastVisit.DoesNotExist:
-            lastVisit = CategoryLastVisit(user = user, category = self)
-        lastVisit.lastvisit = datetime.today()
-        last_visit_date = lastVisit.oldlastvisit or lastVisit.lastvisit
-        lastVisit.save()
+        last_visit, created = CategoryLastVisit.objects.get_or_create(user=user, category=self)
+        if not created:
+            if not last_visit.oldlastvisit and self.__hasNewPosts:
+                # Only set oldlastvisit if we have new posts.
+                last_visit.oldlastvisit = last_visit.lastvisit
+            last_visit.lastvisit = datetime.today()
+            last_visit.save()
+        last_visit_date = last_visit.oldlastvisit or last_visit.lastvisit
         return last_visit_date
 
     def _cache_key_lastvisit_date(self, user):
@@ -528,8 +524,14 @@ class Category(models.Model):
 class ThreadLastVisit(models.Model):
     """ Entity which stores when a thread was last read. """
     user = models.ForeignKey(User)
-    lastvisit = models.DateTimeField()
+    lastvisit = models.DateTimeField(default=datetime.now)
     thread = models.ForeignKey('Post')
+
+    def __unicode__(self):
+        return _("Last visit of '%(user)s' in thread '%(thread)s' at %(date)s") % \
+                             {'user':self.user.get_full_name() or self.user.username,
+                              'thread':self.thread.subject,
+                              'date':self.lastvisit.strftime('%Y-%m-%d')}
 
     class Meta:
         verbose_name = ugettext_lazy('Thread last visit')
@@ -540,13 +542,19 @@ class ThreadLastVisit(models.Model):
 class CategoryLastVisit(models.Model):
     """ Entity which stores when a category was last accessed. """
     user = models.ForeignKey(User)
-    lastvisit = models.DateTimeField()
+    lastvisit = models.DateTimeField(default=datetime.now)
     oldlastvisit = models.DateTimeField(null = True,)
     category = models.ForeignKey(Category)
 
 
     changelog = ( ( '2007-06-15 00', 'alter', 'ADD oldlastvisit timestamp with time zone' ),
                   )
+
+    def __unicode__(self):
+        return _("Last visit of '%(user)s' in category '%(category)s' at %(date)s") % \
+                             {'user':self.user.get_full_name() or self.user.username,
+                              'category':self.category.name,
+                              'date':self.lastvisit.strftime('%Y-%m-%d')}
 
     class Meta:
         verbose_name = ugettext_lazy('Category last visit')
@@ -880,16 +888,12 @@ class Post(models.Model):
         category_lastvisit = self.category.touch(session, user)
         if not self._hasNewPosts(session, user): return
         thread = self.thread or self
-        try:
-            threadLastVisit = ThreadLastVisit.objects.filter( user = user,
-                                                              thread = thread, )[0]
-        except IndexError:
-            threadLastVisit = ThreadLastVisit( user = user,
-                                               thread = thread, )
 
-        threadLastVisit.lastvisit = datetime.today()
-        threadLastVisit.save()
-
+        thread_last_visit, created = ThreadLastVisit.objects.get_or_create(user=user,
+                                                                           thread=thread)
+        if not created:
+            thread_last_visit.lastvisit = datetime.today()
+            thread_last_visit.save()
 
         # Check all posts to see if they are new ....
 
@@ -901,13 +905,14 @@ class Post(models.Model):
         # all threads containing new posts for user in this category
         threads_with_new = ThreadInformation.objects.filter(category=self.category,
                                                             thread_latest_postdate__gt=category_lastvisit)\
-                                                           .values_list('root_post', 'thread_latest_postdate')
+                                                    .values_list('root_post', 'thread_latest_postdate')
 
         threads_with_new_ids = [post_tuple[0] for post_tuple in threads_with_new]
 
         # all threads already visited by user that have new posts
         visited_threads = ThreadLastVisit.objects.filter(user = user,
-                                                         thread__in=threads_with_new_ids).values_list('thread', 'lastvisit')
+                                                         thread__in=threads_with_new_ids)\
+                                                 .values_list('thread', 'lastvisit')
 
         visited_threads_dict = {}
         for post_tuple in visited_threads:

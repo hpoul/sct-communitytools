@@ -47,7 +47,9 @@
   {% if isShowLatest or category.canContainPosts %}
     {% block above_thread_list %}
     {% endblock %}
-    {% include category.get_category_type.get_new_thread_link_template %}
+    {% if category %}
+        {% include category.get_category_type.get_new_thread_link_template %}
+    {% endif %}
     <table class="sphboard_thread_list">
       {% block thread_list_header %}
       <tr>
@@ -86,7 +88,9 @@
         <td colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}"><span class="board_threadcount">{% blocktrans %}{{ hits }} Threads in this category.{% endblocktrans %}</span><span class="board_pagination">{% sph_pagination pages page '' 'page' 1 %}</span></td>
       </tr>
     </table>
-    {% include category.get_category_type.get_new_thread_link_template %}
+    {% if category %}
+        {% include category.get_category_type.get_new_thread_link_template %}
+    {% endif %}
     {% if user.is_authenticated and category.has_new_posts %}
       <p><a href="{% sph_url2 sphene.sphboard.views.catchup  category_id=category.id %}" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
     {% endif %}
