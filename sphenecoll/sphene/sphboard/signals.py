@@ -71,6 +71,29 @@ def clear_post_4_category_cache(sender, instance, *args, **kwargs):
         except Post.DoesNotExist:
             pass
 
+
+def mark_thread_moved_deleted(sender, instance, *args, **kwargs):
+    """ If post was was hidden or moved to another category then mark it for post_save signal
+    """
+    if instance.pk:
+        from sphene.sphboard.models import Post
+        try:
+            old_post = Post.objects.get(pk=instance.pk)
+            if old_post.thread is None and \
+               (old_post.category_id != instance.category_id or old_post.is_hidden != instance.is_hidden):
+                setattr(instance, '_was_moved_deleted', True)
+        except Post.DoesNotExist:
+            pass
+
+def clear_category_unread_after_post_move(sender, instance, *args, **kwargs):
+    """ If post was was hidden or moved to another category then update unread status of all CategoryLastVisit
+        objects - for all users
+    """
+    if instance.pk and getattr(instance, '_was_moved_deleted', False):
+        category = instance.category
+        for clv in category.categorylastvisit_set.all():
+            category.update_unread_status(clv.user)
+
 def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
     """ Removed post might cause change in page numeration in thread
     """

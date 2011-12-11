@@ -9,6 +9,7 @@ from django.db.models import signals
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.core.cache import cache
+from django.db.models.expressions import F
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.template.context import RequestContext
@@ -28,7 +29,8 @@ from sphene.sphblog.utils import slugify
 from sphene.sphboard import categorytyperegistry
 from renderers import POST_MARKUP_CHOICES, render_body
 from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache, \
-                                    clear_post_4_category_cache, update_category_last_visit_cache
+                                    clear_post_4_category_cache, update_category_last_visit_cache, \
+                                    clear_category_unread_after_post_move, mark_thread_moved_deleted
 
 import logging
 logger = logging.getLogger('sphene.sphboard.models')
@@ -401,7 +403,7 @@ class Category(models.Model):
         last_visit_date = cache.get(key)
         if not last_visit_date:
             try:
-                last_visit = CategoryLastVisit.objects.get( category = self, user = user )
+                last_visit = CategoryLastVisit.objects.get(category=self, user=user)
                 last_visit_date = last_visit.oldlastvisit or last_visit.lastvisit
             except CategoryLastVisit.DoesNotExist:
                 last_visit_date = datetime.today()
@@ -417,12 +419,47 @@ class Category(models.Model):
         latestPost = self.get_latest_post()
         if not latestPost:
             return False
-
+        
         lastvisit = self.get_lastvisit_date(user)
 
         if lastvisit > latestPost.postdate:
             return False
         return True
+
+    def update_unread_status(self, user):
+        """ Check if all threads in current category were read by user
+        """
+        last_visit_date = self.get_lastvisit_date(user)
+        # If there are any threads that were never visited by user and have unread posts then
+        # this means that category is unread
+        if ThreadInformation.objects.filter(root_post__is_hidden=0,
+                                            category=self,
+                                            thread_latest_postdate__gt=last_visit_date).exclude(
+                                            root_post__threadlastvisit__user=user).exists():
+            # there are unread posts - return
+            return
+
+
+        # check if all threads in current category were read:
+        # this means that lastvisit date of each thread is newer than postdate of last post in this thread
+        has_unread_threads = Post.objects.\
+           filter(threadlastvisit__user=user,
+                  thread__isnull=True,
+                  category=self,
+                  threadinformation__thread_latest_postdate__gt=last_visit_date).\
+           filter(threadinformation__thread_latest_postdate__gt=F('threadlastvisit__lastvisit')).\
+           distinct().\
+           exists()
+
+        if has_unread_threads:
+            return
+
+        # All posts are read .. cool.. we can remove all ThreadLastVisit and adapt CategoryLastVisit
+        ThreadLastVisit.objects.filter(user=user,
+                                       thread__category=self).delete()
+        clv = CategoryLastVisit.objects.get(category = self, user=user)
+        clv.oldlastvisit = None
+        clv.save()
 
     def toggle_monitor(self, user=None):
         """Either creates a monitor if there is none currently, or deletes an
@@ -531,7 +568,7 @@ class ThreadLastVisit(models.Model):
         return _("Last visit of '%(user)s' in thread '%(thread)s' at %(date)s") % \
                              {'user':self.user.get_full_name() or self.user.username,
                               'thread':self.thread.subject,
-                              'date':self.lastvisit.strftime('%Y-%m-%d')}
+                              'date':self.lastvisit.strftime('%Y-%m-%d %H:%M:%S')}
 
     class Meta:
         verbose_name = ugettext_lazy('Thread last visit')
@@ -886,7 +923,12 @@ class Post(models.Model):
     def _touch(self, session, user):
         if not user.is_authenticated(): return None
         category_lastvisit = self.category.touch(session, user)
-        if not self._hasNewPosts(session, user): return
+        if not self._hasNewPosts(session, user): return None
+
+        # Check all posts to see if they are new
+        # Check if current user has any unread threads and if he doesn't
+        # then remove all treheadlastvisit objects - this means that every thread was last visited when
+        # category was last visited
         thread = self.thread or self
 
         thread_last_visit, created = ThreadLastVisit.objects.get_or_create(user=user,
@@ -895,50 +937,7 @@ class Post(models.Model):
             thread_last_visit.lastvisit = datetime.today()
             thread_last_visit.save()
 
-        # Check all posts to see if they are new ....
-
-        # check if current user has any unread threads and if no
-        # then remove all treheadlastvisit objects, this means that every thread was last visited when
-        # category was last visited
-        #
-
-        # all threads containing new posts for user in this category
-        threads_with_new = ThreadInformation.objects.filter(category=self.category,
-                                                            thread_latest_postdate__gt=category_lastvisit)\
-                                                    .values_list('root_post', 'thread_latest_postdate')
-
-        threads_with_new_ids = [post_tuple[0] for post_tuple in threads_with_new]
-
-        # all threads already visited by user that have new posts
-        visited_threads = ThreadLastVisit.objects.filter(user = user,
-                                                         thread__in=threads_with_new_ids)\
-                                                 .values_list('thread', 'lastvisit')
-
-        visited_threads_dict = {}
-        for post_tuple in visited_threads:
-            visited_threads_dict[post_tuple[0]] = post_tuple[1]
-
-        visited_threads_ids = visited_threads_dict.keys()
-
-        if set(threads_with_new_ids).difference(set(visited_threads_ids)):
-            # there already are new posts in threads not yet even visited by user
-            return
-
-        for post_tuple in threads_with_new:
-            thread_id = post_tuple[0]
-            last_postdate = post_tuple[1]
-
-            lastvisit = visited_threads_dict[thread_id]
-
-            if lastvisit < last_postdate:
-                return
-
-        # All posts are read .. cool.. we can remove all ThreadLastVisit and adapt CategoryLastVisit
-        ThreadLastVisit.objects.filter( user = user,
-                                        thread__category = self.category, ).delete()
-        clv = CategoryLastVisit.objects.get( category = self.category, user = user )
-        clv.oldlastvisit = None
-        clv.save()
+        self.category.update_unread_status(user)
         return False
 
 
@@ -1798,4 +1797,6 @@ signals.pre_save.connect(clear_post_cache, sender=Group)
 signals.pre_save.connect(clear_post_cache, sender=Category)
 signals.post_delete.connect(clear_post_cache_on_delete, sender=Post)
 signals.pre_save.connect(clear_post_4_category_cache, sender=Post)
+signals.pre_save.connect(mark_thread_moved_deleted, sender=Post)
+signals.post_save.connect(clear_category_unread_after_post_move, sender=Post)
 signals.post_save.connect(update_category_last_visit_cache, sender=CategoryLastVisit)
