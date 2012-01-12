@@ -95,7 +95,7 @@ def quick_post(category, thread = None):
 
     MyPostForm = PostForm
     category_type = category.get_category_type()
-    print "category type: %s" % str(category_type)
+    
     if category_type is not None:
         MyPostForm = category_type.get_post_form_class(thread, None)
 
