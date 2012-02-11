@@ -1,10 +1,14 @@
 from django.core.cache import cache
 from sphene.community.models import Group
+import os
 
 
 def clear_category_cache(sender, instance, created, *args, **kwargs):
     """ Clear cache for categories absolute url
     """
+    if 'sph_init_data' in os.environ:
+        return
+
     if isinstance(instance, Group):
         for category in instance.category_set.all():
             cache.delete(category._cache_key_absolute_url())
@@ -17,6 +21,9 @@ def clear_post_cache(sender, instance, *args, **kwargs):
         If post being saved has changed 'thread' field or 'category' field or 'is_hidden' field then clear cache of all
         other posts in same thread as page numeration may be changed
     """
+    if 'sph_init_data' in os.environ:
+        return
+
     from sphene.community.models import Group
     from sphene.sphboard.models import Post, Category
     if instance.pk:  # this is not new object

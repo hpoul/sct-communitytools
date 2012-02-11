@@ -1,10 +1,12 @@
 from django.db.models import get_app, get_models
 from sphene.sphboard import models
 from django.conf import settings
+import os
 
 def init_data(app, created_models, verbosity, **kwargs):
     from sphene.community.models import Group
     from sphene.sphboard.models import Category, ThreadInformation
+    os.environ['sph_init_data'] = 'true'
     if Category in created_models:
         group, created = Group.objects.get_or_create( name = 'example',
                                                       longname = 'Example Group',

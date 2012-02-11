@@ -2,7 +2,7 @@
 
 {% block head %}
   {{ block.super }}
-  <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/community/styles/base.css" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}sphene/community/styles/base.css" />
   {% if sph.rss %}
     {% for rss in sph.rss %}
       <link rel="alternate" title="{{ rss.label }}" href="{{ rss.url }}" type="application/rss+xml">
