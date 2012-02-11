@@ -51,11 +51,18 @@ sph_settings_defaults = {
     # Valid options for this parameter are 'username' and 'fullname'. Any other
     # option won't cause any effect. Default value is 'fullname'.
     # This option determines the fallback sequence for displaing the name of a user:
+    # let's you overwrite the displayname - has to be a reference to a function which will receive the django user object as first (and only argument)
+    'community_user_get_displayname': None,
+
+    # let's you overwrite the avatar - has to be a reference to a function - it will receive the django user object and has to return a dictionary with { 'url': '...', 'width': 123, 'height': 123 }
+    'community_user_get_avatar': None,
+
     # 1. sequence for 'username': displayfield (if set) - username
     # 2. sequence for 'fullname': displayfield (if set) - fullname (if first or last name are set) - username
     'community_user_displayname_fallback': 'fullname',
     # name of default group created by sphene
-    'default_group_name':'example'
+    'default_group_name':'example',
+
     }
 
 

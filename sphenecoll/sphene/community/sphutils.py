@@ -33,14 +33,19 @@ def get_user_displayname(user):
     key = '%s_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
     res = cache.get(key)
     if not res:
-        profile = user.communityuserprofile_set.all()
-        if profile and profile[0].displayname:
-            res = profile[0].displayname
-        elif (not user.first_name or not user.last_name) or\
-            get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
-            res = user.username
-        else:
-            res = "%s %s" % (user.first_name, user.last_name)
+        get_displayname = get_sph_setting( 'community_user_get_displayname' )
+        if get_displayname is not None:
+            res = get_displayname(user)
+
+        if res is None:
+            profile = user.communityuserprofile_set.all()
+            if profile and profile[0].displayname:
+                res = profile[0].displayname
+            elif (not user.first_name or not user.last_name) or\
+                    get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
+                res = user.username
+            else:
+                res = "%s %s" % (user.first_name, user.last_name)
         cache.set(key, res)
     return res
 

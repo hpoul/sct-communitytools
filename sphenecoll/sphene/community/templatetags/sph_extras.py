@@ -343,21 +343,32 @@ def sph_showavatar(user, maxwidth = None):
     avatar = None
     avatar_width = None
     avatar_height = None
-    if not profile or not profile.avatar:
-        avatar = get_sph_setting( 'community_avatar_default' )
-        log.error("got default avatar: %s", avatar)
-        if not avatar:
-            return ''
-        avatar_width = get_sph_setting( 'community_avatar_default_width' )
-        avatar_height = get_sph_setting( 'community_avatar_default_height' )
-    else:
-        avatar = profile.avatar.url
-        avatar_width = profile.avatar_width
-        avatar_height = profile.avatar_height
+
+    get_avatar = get_sph_setting( 'community_user_get_avatar' )
+    if get_avatar is not None:
+        avatarinfo = get_avatar(user)
+        print "asdf %s" % repr(avatarinfo)
+        if avatarinfo is not None:
+            avatar = avatarinfo['url']
+            avatar_width = avatarinfo['width']
+            avatar_height = avatarinfo['height']
+
+    if avatar is None:
+        if not profile or not profile.avatar:
+            avatar = get_sph_setting( 'community_avatar_default' )
+            log.error("got default avatar: %s", avatar)
+            if not avatar:
+                return ''
+            avatar_width = get_sph_setting( 'community_avatar_default_width' )
+            avatar_height = get_sph_setting( 'community_avatar_default_height' )
+        else:
+            avatar = profile.avatar.url
+            avatar_width = profile.avatar_width
+            avatar_height = profile.avatar_height
     
-    if maxwidth is not None and maxwidth < avatar_width:
-        avatar_height = round(float(avatar_height) * (float(maxwidth) / avatar_width))
-        avatar_width = maxwidth
+        if maxwidth is not None and maxwidth < avatar_width:
+            avatar_height = round(float(avatar_height) * (float(maxwidth) / avatar_width))
+            avatar_width = maxwidth
         
     log.info("avatar: %s", avatar)
     return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (avatar, avatar_width, avatar_height, _(u'Users avatar'))
