@@ -330,7 +330,7 @@ class Category(models.Model):
         """
         Returns True if _anyone_ is allowed to post replies
         """
-        return self.allowrepies != 3
+        return self.allowreplies != 3
 
     def has_view_permission(self, user = None):
         if not user:
