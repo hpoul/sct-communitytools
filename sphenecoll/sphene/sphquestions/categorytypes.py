@@ -11,7 +11,9 @@ from sphene.sphquestions.models import QuestionPostExtension, AnswerVoting
 
 class QuestionPostForm(PostForm):
     is_question = forms.BooleanField(label = ugettext_lazy('Mark as Question'),
-                                     help_text = ugettext_lazy('When posting a question you are able to mark the relevance of posts and wether a reply has answered your question.'))
+                                     help_text = ugettext_lazy('When posting a question you are able to mark the relevance of posts and wether a reply has answered your question.'),
+                                     required = False,
+                                     initial = True)
 
 
 
