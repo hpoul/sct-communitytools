@@ -8,7 +8,6 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 from sphene.community.sphutils import get_sph_setting, get_method_by_name
 from sphene.community.templatetags.sph_extras import sph_markdown
 from sphene.contrib.libs.common.text import bbcode
-from sphene.sphwiki import wikilink_utils
 
 class BaseRenderer(object):
     """ base class for all board renderers.
@@ -37,6 +36,7 @@ class BBCodeRenderer(BaseRenderer):
 
     def render(self, text):
          if get_sph_setting( 'board_auto_wiki_link_enabled', True ):
+             from sphene.sphwiki import wikilink_utils
              return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(text))
          else:
              return bbcode.bb2xhtml(text)
