@@ -17,16 +17,17 @@ def sphquestions_answervoting(qext, reply):
     if not qext or not qext.is_question or reply.thread is None:
         return { 'hidden': True }
 
+    question = reply.thread
+
     # don't diplay answer voting if user is not logged in
     # or if the post is not a question or not a reply.
     if user is None \
             or not user.is_authenticated() \
-            or reply.author == user:
+            or (reply.author == user and reply.author != question.author):
         allowvoting = False
     else:
         allowvoting = True
 
-    question = reply.thread
     votes = AnswerVoting.objects.filter( answer = reply )
     uservoted = False
     authorvoted = False
