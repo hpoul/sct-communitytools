@@ -14,7 +14,7 @@ def votereply(request, group, reply_id):
     question = reply.get_thread()
     qext = question.sphquestions_ext.get()
 
-    if reply.author == request.user:
+    if reply.author == request.user and question.author != reply.author:
         # Users are not allowed to vote for their own replies.
         raise PermissionDenied()
 
