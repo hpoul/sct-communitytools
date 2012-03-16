@@ -7,6 +7,7 @@ from django.views.generic.list_detail import object_list
 from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.forms.models import modelformset_factory
 from django.core.cache import cache
 
@@ -391,13 +392,13 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                     i+=1
                     pollchoice.save()
                 if request.user.is_authenticated():
-                    request.user.message_set.create( message = ugettext(u'Vote created successfully.') )
+                    messages.success(request,  message = ugettext(u'Vote created successfully.') )
 
             if request.user.is_authenticated():
                 if post_obj:
-                    request.user.message_set.create( message = ugettext(u'Post edited successfully.') )
+                    messages.success(request,  message = ugettext(u'Post edited successfully.') )
                 else:
-                    request.user.message_set.create( message = ugettext(u'Post created successfully.') )
+                    messages.success(request,  message = ugettext(u'Post created successfully.') )
             if thread == None: thread = newpost
             return HttpResponseRedirect( newpost.get_absolute_url() )
 
@@ -496,7 +497,7 @@ def annotate(request, group, post_id):
             annotation.hide_post = data['hide_post']
             annotation.markup = data['markup']
             annotation.save()
-            request.user.message_set.create( message = ugettext(u'Annotated a users post.') )
+            messages.success(request,  message = ugettext(u'Annotated a users post.') )
             return HttpResponseRedirect( post.get_absolute_url() )
 
     else:
@@ -527,7 +528,7 @@ def hide(request, group, post_id):
 
     if request.method == 'POST' and 'hide-post' in request.POST.keys():
         post.hide()
-        request.user.message_set.create( message = ugettext(u'Post deleted') )
+        messages.success(request,  message = ugettext(u'Post deleted') )
         if post == thread:
             return HttpResponseRedirect( post.category.get_absolute_url() )
         return HttpResponseRedirect( thread.get_absolute_url() )
@@ -684,9 +685,9 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                 threadinfo.save()
 
             if target_thread:
-                request.user.message_set.create(message=ugettext(u'Post has been appended to thread.'))
+                messages.success(request, message=ugettext(u'Post has been appended to thread.'))
             else:
-                request.user.message_set.create(message=ugettext(u'Post has been moved into category.'))
+                messages.success(request, message=ugettext(u'Post has been moved into category.'))
 
             return HttpResponseRedirect(post.get_absolute_url())
     else:
@@ -770,7 +771,7 @@ def move(request, group, thread_id):
             # update category of thread's posts
             thread.replies().update(category=newcategory)
 
-            request.user.message_set.create( message = ugettext(u'Moved thread into new category.') )
+            messages.success(request,  message = ugettext(u'Moved thread into new category.') )
 
             return HttpResponseRedirect( thread.get_absolute_url() )
 
@@ -799,7 +800,7 @@ def delete_moved_info(request, group, pk):
     if request.method == 'POST' and 'delete-th' in request.POST.keys():
         back_url = th.category.get_absolute_url()
         th.delete()
-        request.user.message_set.create( message = ugettext(u'Information about moved thread has been deleted') )
+        messages.success(request,  message = ugettext(u'Information about moved thread has been deleted') )
         return HttpResponseRedirect(back_url)
 
     return render_to_response("sphene/sphboard/delete_moved_info.html",
@@ -842,7 +843,7 @@ def vote(request, group = None, thread_id = None):
                             choice = choice,
                             user = request.user, )
         voter.save()
-        request.user.message_set.create( message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
+        messages.success(request,  message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
 
 
     return HttpResponseRedirect( thread.get_absolute_url() )
@@ -867,9 +868,9 @@ def toggle_monitor(request, group, monitortype, object_id, monitor_user_id=None)
         new_monitor = obj.toggle_monitor()
 
     if new_monitor:
-        request.user.message_set.create( message = ugettext(u'Successfully created email notification monitor.') )
+        messages.success(request,  message = ugettext(u'Successfully created email notification monitor.') )
     else:
-        request.user.message_set.create( message = ugettext(u'Removed email notification monitor.') )
+        messages.success(request,  message = ugettext(u'Removed email notification monitor.') )
 
     if 'next' in request.GET:
         return HttpResponseRedirect( request.GET['next'] )
@@ -938,7 +939,7 @@ def admin_post_delete(request, group, user_id, post_id):
     if not post.allow_hiding():
         raise PermissionDenied()
     post.hide()
-    request.user.message_set.create( message = ugettext(u'Post deleted') )
+    messages.success(request,  message = ugettext(u'Post deleted') )
     return HttpResponseRedirect(sph_reverse('sphboard_admin_user_posts' , kwargs = {'user_id': user_id } ))
 
 
@@ -949,7 +950,7 @@ def admin_posts_delete(request, group, user_id):
             raise PermissionDenied()
         for post in posts:
             post.hide()
-        request.user.message_set.create( message = ugettext(u'All posts deleted') )
+        messages.success(request,  message = ugettext(u'All posts deleted') )
     else:
-        request.user.message_set.create( message = ugettext(u'No posts to delete') )
+        messages.success(request,  message = ugettext(u'No posts to delete') )
     return HttpResponseRedirect(sph_reverse('sphboard_admin_user_posts' , kwargs = {'user_id': user_id } ))

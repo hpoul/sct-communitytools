@@ -9,6 +9,7 @@ from django.db.models import signals
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mass_mail
 from django.core.cache import cache
+from django.contrib import messages
 from django.db.models.expressions import F
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -1767,7 +1768,7 @@ def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     profile.default_notifyme_value = data['default_notifyme_value']
 
     profile.save()
-    request.user.message_set.create( message = _(u"Successfully saved board profile.") )
+    messages.success(request,  message = _(u"Successfully saved board profile.") )
 
 def board_profile_display(sender, signal, request, user, **kwargs):
     ret = '<tr><th>%s</th><td>%d</td></tr>' % (

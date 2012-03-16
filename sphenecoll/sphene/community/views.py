@@ -16,6 +16,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template import loader, Context
 from django.core.mail import send_mail, EmailMultiAlternatives
+from django.contrib import messages
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
@@ -409,7 +410,7 @@ def profile_edit(request, group, user_id):
                                         )
 
             user.save()
-            request.user.message_set.create( message = ugettext(u'Successfully changed user profile.') )
+            messages.success(request,  message = ugettext(u'Successfully changed user profile.') )
             
             return HttpResponseRedirect( sph_user_profile_link( user ) )
 
@@ -466,7 +467,7 @@ def admin_permission_rolegroup_edit(request, group, rolegroup_id):
     if 'cmd' in request.GET and 'id' in request.GET:
         if request.GET['cmd'] == 'remove':
             member = rolegroup.rolegroupmember_set.get( pk = request.GET['id'] )
-            request.user.message_set.create( 
+            messages.success(request,  
                 message = ugettext( u'Removed user %(username)s from rolegroup.' ) % \
                     { 'username': member.user.username } )
             member.delete()
@@ -515,7 +516,7 @@ def admin_permission_role_edit(request, group, role_id = None):
 
             r.save()
 
-            request.user.message_set.create( message = ugettext(u'Successfully saved role.') )
+            messages.success(request,  message = ugettext(u'Successfully saved role.') )
             return HttpResponseRedirect( r.get_absolute_memberlisturl() )
             
     else:
@@ -540,7 +541,7 @@ def admin_permission_role_member_list(request, group, role_id):
         role_member = RoleMember.objects.get( pk = memberid )
         role_member.delete()
 
-        request.user.message_set.create( message = ugettext(u'Successfully deleted role member.') )
+        messages.success(request,  message = ugettext(u'Successfully deleted role member.') )
 
         return HttpResponseRedirect( role.get_absolute_memberlisturl() )
     return render_to_response( 'sphene/community/admin/permission/role_member_list.html',
@@ -576,7 +577,7 @@ def admin_permission_role_member_add(request, group, role_id, addgroup = False):
                                                    object_id = data['object'], )
                 limitation.save()
                 
-            request.user.message_set.create( message = ugettext(u'Successfully added member.') )
+            messages.success(request,  message = ugettext(u'Successfully added member.') )
             return HttpResponseRedirect( role.get_absolute_memberlisturl() )
     else:
         form = EditForm(group = group)
@@ -643,7 +644,7 @@ def admin_user_switch_active(request, user_id, group):
         button_label = _('Disable')
 
     if not request.is_ajax():
-        request.user.message_set.create( message = ugettext(u'Successfully changed user status.') )
+        messages.success(request,  message = ugettext(u'Successfully changed user status.') )
         url = request.REQUEST.get('next', reverse('sph_admin_users'))
         return HttpResponseRedirect(url)
     else:

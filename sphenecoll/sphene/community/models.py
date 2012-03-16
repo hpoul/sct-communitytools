@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -650,7 +651,7 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
         else:
             if value.id: value.delete()
     
-    request.user.message_set.create( message = _("Successfully saved community profile.") )
+      messages.success(request, message = _("Successfully saved community profile.") )
 
 def community_profile_display(sender, signal, request, user, **kwargs):
     try:

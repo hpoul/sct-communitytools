@@ -5,6 +5,7 @@ from django.views.generic.list_detail import object_list
 from django.template import loader
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -56,7 +57,7 @@ def showSnip(request, group, snipName):
             if snip_rendered_body:
                 if snip in redirects:
                     if request.user.is_authenticated():
-                        request.user.message_set.create( message = ugettext("Detected redirect loop.") )
+                        messages.success(request,  message = ugettext("Detected redirect loop.") )
                     break
                 redirects += (snip,)
                 snip = sphdata['sphwiki_redirect_to_snip']
@@ -221,7 +222,7 @@ def attachmentEdit(request, group, snipName, attachmentId = None):
             raise PermissionDenied()
     if 'delete' in request.GET and request.GET['delete'] == '1':
         attachment.delete()
-        request.user.message_set.create( message = ugettext("Successfully deleted attachment.") )
+        messages.success(request,  message = ugettext("Successfully deleted attachment.") )
         return HttpResponseRedirect( attachment.snip.get_absolute_attachmenturl() )
 
     AttachmentForm.base_fields['fileupload'].widget = widgets.FileInput()
