@@ -48,16 +48,20 @@ def cache_inclusion_tag(register, file_name, cache_key_func=None, cache_time=999
                 raise TemplateSyntaxError, "Any tag function decorated with takes_context=True must have a first argument of 'context'"
 
         class InclusionNode(template.Node):
-            def __init__(self, vars_to_resolve):
-                self.vars_to_resolve = vars_to_resolve
+            #def __init__(self, vars_to_resolve):
+            #    self.vars_to_resolve = vars_to_resolve
+            def __init__(self, takes_context, args, kwargs):
+                self.takes_context = takes_context
+                self.args = args
+                self.kwargs = kwargs
 
             def render(self, context):
-                resolved_vars = []
-                for var in self.vars_to_resolve:
-                    try:
-                        resolved_vars.append(template.resolve_variable(var, context))
-                    except:
-                        resolved_vars.append(None)
+                resolved_vars = [var.resolve(context) for var in self.args]
+                #for var in self.vars_to_resolve:
+                #    try:
+                #        resolved_vars.append(template.resolve_variable(var, context))
+                #    except:
+                #        resolved_vars.append(None)
 
                 if takes_context:
                     args = [context] + resolved_vars
@@ -88,7 +92,7 @@ def cache_inclusion_tag(register, file_name, cache_key_func=None, cache_time=999
                     cache.set(cache_key, retVal, cache_time)
                 return retVal
 
-        compile_func = curry(template.generic_tag_compiler, params, defaults, func.__name__, InclusionNode)
+        compile_func = curry(template.generic_tag_compiler, params=params, varargs=None, varkw=None, defaults=defaults, name=func.__name__, node_class=InclusionNode,takes_context=takes_context)
         compile_func.__doc__ = func.__doc__
         register.tag(func.__name__, compile_func)
         return func
