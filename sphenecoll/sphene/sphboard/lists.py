@@ -15,8 +15,8 @@ def makelink(object, column, value):
 
 class NewPostIndicator(objlist.Column):
     def _get_value(self, object):
-        # {{ STATIC_URL }}sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td
-        return mark_safe( '<img src="%ssphene/sphboard/icons/%sfolder.gif" width="16px" height="16px" />' % (settings.STATIC_URL, object.has_new_posts() and 'new' or '' ) )
+        # {{ MEDIA_URL }}sphene/sphboard/icons/{% if thread.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' title='Heat: {{ thread.heat }}' /></td
+        return mark_safe( '<img src="%ssphene/sphboard/icons/%sfolder.gif" width="16px" height="16px" />' % (settings.MEDIA_URL, object.has_new_posts() and 'new' or '' ) )
 
 
 class ThreadList(objlist.AdvancedObjectList):

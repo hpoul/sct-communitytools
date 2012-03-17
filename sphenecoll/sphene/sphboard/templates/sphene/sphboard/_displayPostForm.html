@@ -2,10 +2,10 @@
 {% load sph_extras %}
 {% load sphboard_extras %}
   {% if bbcodewysiwyg %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}sphene/sphboard/styles/editor.css" />
-    <script type="text/javascript" src="{{ STATIC_URL }}sphene/sphboard/js/editor.js"></script>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}sphene/sphboard/styles/editor.css" />
+    <script type="text/javascript" src="{{ MEDIA_URL }}sphene/sphboard/js/editor.js"></script>
   {% endif %}
-  <script language="JavaScript" type="text/javascript" src="{{ STATIC_URL }}sphene/community/xmlhttp.js"></script>
+  <script language="JavaScript" type="text/javascript" src="{{ MEDIA_URL }}sphene/community/xmlhttp.js"></script>
   <script language="JavaScript" type="text/javascript">
   <!--
    function doPreview() {
@@ -34,9 +34,9 @@
     {{ form }}
     {% if bbcodewysiwyg %}
     <script type="text/javascript">
-      var editor_static = "{{ STATIC_URL }}sphene/sphboard";
+      var editor_static = "{{ MEDIA_URL }}sphene/sphboard";
     </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}sphene/sphboard/js/inline.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}sphene/sphboard/js/inline.js"></script>
     {% endif %}
   </table>
   </script>

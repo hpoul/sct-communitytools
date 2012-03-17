@@ -44,7 +44,7 @@ def sphquestions_answervoting(qext, reply):
              'uservoted'  : uservoted,
              'authorvoted': authorvoted,
              'votecount'  : len(votes),
-             'STATIC_URL'  : settings.STATIC_URL,
+             'MEDIA_URL'  : settings.STATIC_URL,
              'allowvoting': allowvoting,
              }
 

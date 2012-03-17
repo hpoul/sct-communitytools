@@ -43,7 +43,7 @@ class TagWidget(forms.TextInput):
   }
 //-->
 </script>""" % { 'name': name, 
-                 'media_url': settings.STATIC_URL, 
+                 'media_url': settings.MEDIA_URL, 
                  'content_type_id': self.content_type_id,
                  'url': sph_reverse( 'sph_tags_json_autocompletion', (), {} ), };
 

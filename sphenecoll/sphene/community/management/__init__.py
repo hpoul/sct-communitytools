@@ -2,11 +2,8 @@ from django.db.models import signals, get_app, get_apps, get_models
 from sphene.community import models
 from django.conf import settings
 
-import os
-
 def init_data(app, created_models, verbosity, **kwargs):
     from sphene.community.models import Group, Navigation, CommunityUserProfileField
-    os.environ['sph_init_data'] = 'true'
     if Group in created_models:
         group, created = Group.objects.get_or_create( name = 'example',
                                                       longname = 'Example Group',

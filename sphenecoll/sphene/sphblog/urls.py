@@ -2,13 +2,18 @@ from django.conf.urls.defaults import *
 
 from sphene.sphblog.feeds import LatestBlogPosts
 
-feeds = {
-    'latestposts': LatestBlogPosts,
-}
+#feeds = {
+#    'latestposts': LatestBlogPosts,
+#}
 
 urlpatterns = patterns('',
-                        url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
-                            { 'feed_dict': feeds,
+        url(r'^feeds/latestposts/$', LatestBlogPosts(),
+                            { 
+                              'noGroup': True,
+                              },
+                            name = 'sphblog-feeds'),
+        url(r'^feeds/latestposts/(?P<category_id>\d+)/$', LatestBlogPosts(),
+                            { 
                               'noGroup': True,
                               },
                             name = 'sphblog-feeds'),

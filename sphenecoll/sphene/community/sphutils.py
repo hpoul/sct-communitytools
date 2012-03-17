@@ -268,7 +268,7 @@ def include_js(jspath, prefix = None):
         return
 
     if prefix is None:
-        prefix = settings.STATIC_URL
+        prefix = settings.MEDIA_URL
     jsincludes.append(prefix + jspath)
 
     sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
@@ -281,7 +281,7 @@ def include_css(csspath, prefix = None):
         return
 
     if prefix is None:
-        prefix = settings.STATIC_URL
+        prefix = settings.MEDIA_URL
     styleincludes.append(prefix + csspath)
     sphsettings.set_sph_setting( 'community_styleincludes', styleincludes )
 

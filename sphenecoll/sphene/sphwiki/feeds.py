@@ -1,4 +1,4 @@
-from django.contrib.syndication.feeds import Feed
+from django.contrib.syndication.views import Feed
 from sphene.sphwiki.models import WikiSnipChange, WikiSnip
 from sphene.community.middleware import get_current_group
 

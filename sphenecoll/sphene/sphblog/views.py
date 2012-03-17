@@ -140,7 +140,7 @@ def blogindex(request, group, category_id = None, category_slug = None, page = 1
 
     allowpostcategories = filter(Category.has_post_thread_permission, category_info[0])
     #blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), args = ('latestposts',), kwargs = { 'groupName': group.name })
-    blog_feed_url = sph_reverse('sphblog-feeds', kwargs = { 'url': 'latestposts' })
+    blog_feed_url = sph_reverse('sphblog-feeds');#, kwargs = { 'url': 'latestposts' })
     add_rss_feed( blog_feed_url, 'Blog RSS Feed' )
     all_tags = get_tags_for_categories( category_info[0] )
 

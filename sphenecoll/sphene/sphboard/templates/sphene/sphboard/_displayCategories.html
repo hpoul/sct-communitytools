@@ -6,7 +6,7 @@
     {% for test in level|sphrange %}
       <td width='5px'>&nbsp;</td>
     {% endfor %}
-    <td width="20px"><img src="{{ STATIC_URL }}sphene/sphboard/icons/{% if category.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
+    <td width="20px"><img src="{{ MEDIA_URL }}sphene/sphboard/icons/{% if category.has_new_posts %}new{% endif %}folder.gif" width='16px' height='16px' /></td>
     {% ifequal category.category_type "sphseparator" %}
       <td class="sphboard_categoryname" colspan="{{ maxDepth|sphminus:level|sph_plus:3 }}"><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></td>
     {% else %}

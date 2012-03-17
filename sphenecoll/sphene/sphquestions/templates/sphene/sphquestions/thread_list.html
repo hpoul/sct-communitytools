@@ -27,12 +27,12 @@
     {% if qext.is_question %}
       {% if qext.answered %}
         {% ifequal qext.answered 3 %}
-          <img src="{{ STATIC_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" class="sphquestion" />
+          <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" class="sphquestion" />
         {% else %}
-          <img src="{{ STATIC_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" class="sphquestion" />
+          <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" class="sphquestion" />
         {% endifequal %}
       {% else %}
-        <img src="{{ STATIC_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" class="sphquestion" />
+        <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" class="sphquestion" />
       {% endif %}
     {% endif %}
   {% endwith %}
@@ -43,8 +43,8 @@
 
 {% block below_thread_list %}
   <ul class="sphquestions_icons">
-    <li><img src="{{ STATIC_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" /> Answered question (Voted by the author of the question)</li>
-    <li><img src="{{ STATIC_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" /> Answered question (Voted by another user but not by the author)</li>
-    <li> <img src="{{ STATIC_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" /> Unanswered question.</li>
+    <li><img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" alt="Answered (Voted by the author)" title="Answered (Voted by the author)" /> Answered question (Voted by the author of the question)</li>
+    <li><img src="{{ MEDIA_URL }}sphene/sphquestions/icons/voted_answered.png" width="16px" height="16px" alt="Answered (Voted by a user)" title="Answered (Voted by a user)" /> Answered question (Voted by another user but not by the author)</li>
+    <li> <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" alt="Unanswered question" title="Unanswered question" /> Unanswered question.</li>
   </ul>
 {% endblock %}

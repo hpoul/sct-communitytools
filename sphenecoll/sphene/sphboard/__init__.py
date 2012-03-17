@@ -45,7 +45,7 @@ add_setting_defaults( {
     # sph extended BBCODE wiki label.
     'board_auto_wiki_link_enabled': True,
     # default location of emoticons
-    'board_emoticons_root': settings.STATIC_URL + 'sphene/emoticons/',
+    'board_emoticons_root': settings.MEDIA_URL + 'sphene/emoticons/',
     'board_emoticons_list': {
             '0:-)': 'angel.gif',
             'O:-)':'angel.gif',
@@ -124,5 +124,5 @@ add_setting_defaults( {
 
 
 styleincludes = sphsettings.get_sph_setting( 'community_styleincludes', [])
-styleincludes.append(settings.STATIC_URL + 'sphene/sphboard/styles/base.css')
+styleincludes.append(settings.MEDIA_URL + 'sphene/sphboard/styles/base.css')
 sphsettings.set_sph_setting( 'community_styleincludes', styleincludes )

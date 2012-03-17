@@ -93,7 +93,7 @@ class WikiSnip(models.Model):
 	static_filepath = settings.MEDIA_ROOT
         snip_rendered_body = snip_rendered_body.replace( 
             '<img src="%(media_url)s' % \
-                { 'media_url': settings.STATIC_URL },
+                { 'media_url': settings.MEDIA_URL },
             '<img src="%s/' % static_filepath )
         import codecs
         xmlout = codecs.open(xmlfile, mode='w', encoding='utf-8')
