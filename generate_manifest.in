@@ -1,0 +1,23 @@
+#!/bin/bash
+
+target=MANIFEST.in
+
+cat > $target << END
+include AUTHORS
+include LICENSE
+include README
+
+global-include *.pyc README *.xsl *.txt
+
+END
+
+function finddirs() {
+    name=$1
+    find . -name $name -type d | sed "s/^/recursive-include /" | sed "s/$/ */" | sed "s/ \.\// /"  >> $target
+}
+
+finddirs static
+finddirs locale
+finddirs templates
+
+

@@ -1,0 +1,58 @@
+include AUTHORS
+include LICENSE
+include README
+
+global-include *.pyc README *.xsl *.txt
+
+recursive-include dist/django-sct-0.7/examples/buildout_project/sph_project/apps/sph_theme/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/community/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphblockframework/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphblog/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphboard/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphquestions/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphsearch/static *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphwiki/static *
+recursive-include examples/buildout_project/sph_project/apps/sph_theme/static *
+recursive-include sphenecoll/sphene/community/static *
+recursive-include sphenecoll/sphene/sphblockframework/static *
+recursive-include sphenecoll/sphene/sphblog/static *
+recursive-include sphenecoll/sphene/sphboard/static *
+recursive-include sphenecoll/sphene/sphquestions/static *
+recursive-include sphenecoll/sphene/sphsearch/static *
+recursive-include sphenecoll/sphene/sphwiki/static *
+recursive-include dist/django-sct-0.7/examples/buildout_project/sph_project/apps/sph_theme/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/community/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphblog/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphboard/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphcomments/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphlinklist/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphsearchboard/locale *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphwiki/locale *
+recursive-include examples/buildout_project/sph_project/apps/sph_theme/locale *
+recursive-include sphenecoll/sphene/community/locale *
+recursive-include sphenecoll/sphene/sphblog/locale *
+recursive-include sphenecoll/sphene/sphboard/locale *
+recursive-include sphenecoll/sphene/sphcomments/locale *
+recursive-include sphenecoll/sphene/sphlinklist/locale *
+recursive-include sphenecoll/sphene/sphsearchboard/locale *
+recursive-include sphenecoll/sphene/sphwiki/locale *
+recursive-include dist/django-sct-0.7/examples/buildout_project/sph_project/apps/sph_theme/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/community/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphblockframework/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphblog/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphboard/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphcomments/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphlinklist/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphquestions/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphsearchboard/templates *
+recursive-include dist/django-sct-0.7/sphenecoll/sphene/sphwiki/templates *
+recursive-include examples/buildout_project/sph_project/apps/sph_theme/templates *
+recursive-include sphenecoll/sphene/community/templates *
+recursive-include sphenecoll/sphene/sphblockframework/templates *
+recursive-include sphenecoll/sphene/sphblog/templates *
+recursive-include sphenecoll/sphene/sphboard/templates *
+recursive-include sphenecoll/sphene/sphcomments/templates *
+recursive-include sphenecoll/sphene/sphlinklist/templates *
+recursive-include sphenecoll/sphene/sphquestions/templates *
+recursive-include sphenecoll/sphene/sphsearchboard/templates *
+recursive-include sphenecoll/sphene/sphwiki/templates *
