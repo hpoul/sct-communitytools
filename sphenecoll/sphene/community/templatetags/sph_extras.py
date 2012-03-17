@@ -137,7 +137,7 @@ class NewsRSSLinkMacro (object):
 
         url = categoryObj.get_absolute_url_rss_latest_threads()
         add_rss_feed( url, 'RSS Feed of latest threads' )
-        return HTML( '<a href="%(url)s"><img src="%(media_url)ssphene/community/icons/feed-icon-14x14.png" border="0" alt="RSS Feed of latest threads" title="RSS Feed of latest threads" /></a>' % { 'url': url, 'media_url': settings.MEDIA_URL } )
+        return HTML( '<a href="%(url)s"><img src="%(media_url)ssphene/community/icons/feed-icon-14x14.png" border="0" alt="RSS Feed of latest threads" title="RSS Feed of latest threads" /></a>' % { 'url': url, 'media_url': settings.STATIC_URL } )
 
 
 @register.filter
@@ -391,7 +391,7 @@ def resize(file, size='200x200'):
     basename, format = file.name.rsplit('.', 1)
     miniature = basename + '_' + size + '.thumb.' +  format
     miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
-    miniature_url = os.path.join(settings.MEDIA_URL, miniature)
+    miniature_url = os.path.join(settings.STATIC_URL, miniature)
 
     image = Image.open(file)
 

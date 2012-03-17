@@ -10,7 +10,7 @@ sph_settings_defaults = {
     'django096compatibility': False,
     
     
-    'community_avatar_default': settings.MEDIA_URL + 'sphene/community/default_avatar.png',
+    'community_avatar_default': settings.STATIC_URL + 'sphene/community/default_avatar.png',
     'community_avatar_default_width': 48,
     'community_avatar_default_height': 48,
     'community_avatar_max_width': 150,

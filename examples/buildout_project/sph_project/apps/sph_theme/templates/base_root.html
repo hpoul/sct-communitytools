@@ -25,7 +25,7 @@
   {% endspaceless %}{% endblock %}</title>
 
   {% block stylesheets %}
-  <link rel="stylesheet" href="{{ MEDIA_URL }}sph_theme/css/sph_theme.css" />
+  <link rel="stylesheet" href="{{ STATIC_URL }}sph_theme/css/sph_theme.css" />
   {% endblock %}
   {% for styleinclude in sph_settings.community_styleincludes %}
     <link rel="stylesheet" href="{{ styleinclude }}" />

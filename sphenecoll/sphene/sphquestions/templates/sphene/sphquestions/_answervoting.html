@@ -6,12 +6,12 @@
   <div class="sphquestions_answer">
     {% if votecount %}
       <div>
-        <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" /> This answers the question. (Voted by <strong>{{ votecount }} users</strong>{% if authorvoted %} including the author of the question{% endif %}.)
+        <img src="{{ STATIC_URL }}sphene/sphquestions/icons/answered.png" width="16px" height="16px" /> This answers the question. (Voted by <strong>{{ votecount }} users</strong>{% if authorvoted %} including the author of the question{% endif %}.)
       </div>
     {% endif %}
     {% if allowvoting %}
       <div>
-        <img src="{{ MEDIA_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" /> Did this reply answer the question ? <a href="{% sph_url2 sphquestions_votereply reply_id=post.id %}">Yes</a>
+        <img src="{{ STATIC_URL }}sphene/sphquestions/icons/question_blue.png" width="16px" height="16px" /> Did this reply answer the question ? <a href="{% sph_url2 sphquestions_votereply reply_id=post.id %}">Yes</a>
       </div>
     {% endif %}
   </div>
