@@ -107,6 +107,14 @@ class WikiSnip(models.Model):
     <title>%(title)s</title>
   </head>
   <body>
+  <div id="header" class="pdf">
+    <div class="label">%(title)s</div>
+  </div>
+  <div id="footer" class="pdf">
+    Page
+       <pdf:pagenumber />
+  </div>
+
   ''' % { 'title': self.title or self.name } )
         xmlout.write(snip_rendered_body)
         xmlout.write('''
