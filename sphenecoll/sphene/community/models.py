@@ -651,7 +651,7 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
         else:
             if value.id: value.delete()
     
-      messages.success(request, message = _("Successfully saved community profile.") )
+    messages.success(request, message = _("Successfully saved community profile.") )
 
 def community_profile_display(sender, signal, request, user, **kwargs):
     try:
