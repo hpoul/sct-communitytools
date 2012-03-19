@@ -1,7 +1,7 @@
 
 
 from django.http import Http404
-from django.contrib.syndication.feeds import Feed
+from django.contrib.syndication.views import Feed
 
 from sphene.community.middleware import get_current_group
 from sphene.sphblog.models import BlogPostExtension
@@ -17,12 +17,12 @@ class LatestBlogPosts(Feed):
     title_template = 'sphene/sphblog/feeds/latestposts_title.html'
     description_template = 'sphene/sphblog/feeds/latestposts_description.html'
 
-    def get_object(self, bits):
+    def get_object(self, request, category_id = None):
         group = get_current_group()
         categories = get_board_categories(group)
-        if len(bits) != 1:
+        if not category_id:
             return categories
-        category_id = int(bits[0])
+        #category_id = int(bits[0])
         categories = [category for category in categories \
                           if category.id == category_id]
         if not categories:

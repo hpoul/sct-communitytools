@@ -20,7 +20,6 @@ def navigation(request):
     sph_settings = getattr( settings, 'SPH_SETTINGS', None )
     sphdata['installed_apps'] = settings.INSTALLED_APPS
     sphdata['current_url'] = request.path
-    sphdata['login_url'] = settings.LOGIN_URL
     querystring = request.META.get('QUERY_STRING', None)
     if querystring:
         sphdata['current_url'] += '?'+querystring

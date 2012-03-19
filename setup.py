@@ -4,40 +4,57 @@
 # http://allmybrain.com/2009/10/21/the-python-install-system-needs-an-overhaul/
 #
 
-import os
+#import os
 from setuptools import setup, find_packages
-from finddata import find_package_data
- 
-packages=find_packages('sphenecoll')
-package_data=find_package_data('sphenecoll')
-static = find_package_data('static','sphene')
-# not in correct format
-static_dict={} # dir -> files
-for path in static['sphene']:
-   dir, file = os.path.split(path)
-   dir = os.path.join('static', dir )
-   files = static_dict.setdefault( dir, [] )
-   files.append(os.path.join('static',path))
- 
+
+
+CLASSIFIERS = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Web Environment',
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: System Administrators',
+    'License :: OSI Approved :: BSD License',
+    'Natural Language :: English',
+    'Natural Language :: German',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 2.5',
+    'Topic :: Communications',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+
+] 
+
 setup(
- name='Sphene Community Tools',
- version='0.6',
+ name='django-sct',
+ version='0.7',
  author = 'Herbert Poul',
  author_email = 'herbert.poul@gmail.com',
  url = 'http://sct.sphene.net/',
- description = 'SCT (Sphene Community Tools) is a collection of Django applications. It currently consists of a Wiki and Forum application which are applicable for communities, support forums, blogs, etc.',
+ description = 'SCT (Sphene Community Tools) is a collection of Django applications for communities. It currently consists of a Forum and Wiki application which are applicable for communities, support forums, blogs, etc.',
  long_description = '''SCT (Sphene Community Tools) is a collection of Django applications that are
 designed to be easily pluggable into any Django project. It currently consists
 of a Wiki and a Forum application. It contains an example project that allows
 users to create a community Web site containing the Wiki and Board applications
 without any further coding/configuration changes.''',
+ install_requires=[
+    'Django>=1.4',
+    'pycrypto>=2.0',
+ ],
+ classifiers=CLASSIFIERS,
+ license='BSD License',
 
 
- packages=packages,
- package_data=package_data,
+ packages=find_packages('sphenecoll',exclude=['simpleproject','sph_project']),
+ include_package_data=True,
+ zip_safe = False,
  package_dir={'sphene':'sphenecoll/sphene'},
  # these scripts are only required before creating distribution... no need to install them.
  #scripts=['dist/scripts/make-messages.py', 'dist/scripts/compile-all-sph-messages.py' ],
- data_files=static_dict.items()
+ #data_files=static_dict.items()
 )
 

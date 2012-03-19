@@ -11,6 +11,7 @@ from django.core.mail import send_mass_mail
 from django.core.cache import cache
 from django.contrib import messages
 from django.db.models.expressions import F
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.template.context import RequestContext
@@ -369,7 +370,7 @@ class Category(models.Model):
         try:
             categoryLastVisit = CategoryLastVisit.objects.get( category = self,
                                                                user = user, )
-            categoryLastVisit.lastvisit = datetime.today()
+            categoryLastVisit.lastvisit = timezone.now()
             categoryLastVisit.oldlastvisit = None
             categoryLastVisit.save()
         except CategoryLastVisit.DoesNotExist:
@@ -391,7 +392,7 @@ class Category(models.Model):
             if not last_visit.oldlastvisit and self.__hasNewPosts:
                 # Only set oldlastvisit if we have new posts.
                 last_visit.oldlastvisit = last_visit.lastvisit
-            last_visit.lastvisit = datetime.today()
+            last_visit.lastvisit = timezone.now()
             last_visit.save()
         last_visit_date = last_visit.oldlastvisit or last_visit.lastvisit
         return last_visit_date
@@ -407,7 +408,7 @@ class Category(models.Model):
                 last_visit = CategoryLastVisit.objects.get(category=self, user=user)
                 last_visit_date = last_visit.oldlastvisit or last_visit.lastvisit
             except CategoryLastVisit.DoesNotExist:
-                last_visit_date = datetime.today()
+                last_visit_date = timezone.now()
             cache.set(key, last_visit_date)
         return last_visit_date
 
@@ -775,7 +776,7 @@ class Post(models.Model):
         if timeout < 0:
             return timeout
 
-        delta = (datetime.today() - self.postdate)
+        delta = (timezone.now() - self.postdate)
         totalseconds = delta.days * 24 * 60 * 60 + delta.seconds
 
         if timeout >= totalseconds:
@@ -833,7 +834,7 @@ class Post(models.Model):
         if timeout < 0:
             return timeout
 
-        delta = (datetime.today() - self.postdate)
+        delta = (timezone.now() - self.postdate)
         totalseconds = delta.days * 24 * 60 * 60 + delta.seconds
 
         if timeout >= totalseconds:
@@ -935,7 +936,7 @@ class Post(models.Model):
         thread_last_visit, created = ThreadLastVisit.objects.get_or_create(user=user,
                                                                            thread=thread)
         if not created:
-            thread_last_visit.lastvisit = datetime.today()
+            thread_last_visit.lastvisit = timezone.now()
             thread_last_visit.save()
 
         self.category.update_unread_status(user)
@@ -1256,7 +1257,7 @@ class PostAnnotation(models.Model):
             self.post.set_annotated(True)
             self.post.save()
         if not self.created:
-            self.created = datetime.today()
+            self.created = timezone.now()
         if not self.id:
             self.author = get_current_user()
         return super(PostAnnotation, self).save(force_insert=force_insert, force_update=force_update)
@@ -1317,7 +1318,7 @@ class ThreadInformation(models.Model):
         super(ThreadInformation, self).save(force_insert=force_insert, force_update=force_update)
 
     def is_hot(self):
-        if self.heat_calculated and (datetime.today() - self.heat_calculated).days > 7:
+        if self.heat_calculated and (timezone.now() - self.heat_calculated).days > 7:
             logger.debug( 'Heat was not calculated in the last 7 days - recalculating...' )
             self.update_heat()
             self.save()
@@ -1355,10 +1356,10 @@ class ThreadInformation(models.Model):
         days = get_sph_setting( 'board_heat_days' )
 
         # Get the number of posts of the last x days
-        count = self.root_post.get_all_posts().filter( postdate__gte = datetime.today() - timedelta( days ) ).count()
+        count = self.root_post.get_all_posts().filter( postdate__gte = timezone.now() - timedelta( days ) ).count()
         views = self.view_count
 
-        age = -(self.root_post.postdate - datetime.today()).days
+        age = -(self.root_post.postdate - timezone.now()).days
 
         heat_calculator = get_method_by_name( get_sph_setting( 'board_heat_calculator' ) )
         heat = heat_calculator( thread = self,
@@ -1367,7 +1368,7 @@ class ThreadInformation(models.Model):
                                 age = age, )
         logger.debug( "Number of posts in the last %d days: %d - age: %d - views: %d - resulting heat: %d" % (days, count, age, views, heat) )
         self.heat = int(heat)
-        self.heat_calculated = datetime.today()
+        self.heat_calculated = timezone.now()
         
     def is_sticky(self):
         return self.sticky_value > 0

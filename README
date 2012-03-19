@@ -11,7 +11,8 @@ It currently consists of a forum, wiki and blog application.
 ## Directories
 
 - sphenecoll/	Collection of django application (the base source for SCT).
-- static/	Static media files which contain images and css.
+- examples/     A simple example configuration for using forum and wiki
+
 
 ## Requirements
 
@@ -27,11 +28,13 @@ are using (e.g. by executing: python setup.py install) please provide
 feedback on http://sct.sphene.net/ or herbert.poul@gmail.com if it 
 worked or if you encountered any problems.)
 
+To find instructions on how to setup a simple project for using forum
+and wiki see our tutorial at:
+http://sct.sphene.net/wiki/show/Tutorial/
+
 ### Python library path
 
-You need to add sphenecoll/ to your python include path and
-static/ needs to be served from your django installation.
-(static/sphene/ is enough)
+You need to add sphenecoll/ to your python include path.
 
 ### Maintenance cron job (Optional)
 

@@ -1,1 +1,4 @@
 *.pyc
+dist/django-sct-*.tar.gz
+dist/django-sct-*
+django_sct.egg-info
