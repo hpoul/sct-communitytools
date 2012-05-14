@@ -1,5 +1,6 @@
 
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 
 from sphene.community import PermissionDenied
@@ -9,6 +10,7 @@ from sphene.sphboard.models import Post
 
 from sphene.sphquestions.models import AnswerVoting
 
+@login_required
 def votereply(request, group, reply_id):
     reply = Post.objects.get( pk = reply_id )
     question = reply.get_thread()
