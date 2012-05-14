@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django import template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -6,6 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic.list_detail import object_list
 from django.template.context import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.forms.models import modelformset_factory
@@ -346,7 +347,7 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
                 # make post visible
                 newpost.is_hidden = 0
                 if not post_obj.is_new() and category_type.append_edit_message_to_post(post_obj):
-                    newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_user_displayname( request.user ), 'edit_date':format_date( datetime.today())}
+                    newpost.body += "\n\n" + _(u'--- Last Edited by %(username)s at %(edit_date)s ---') % {'username':get_user_displayname( request.user ), 'edit_date':format_date( timezone.now())}
             else:
                 user = request.user.is_authenticated() and request.user or None
                 newpost = Post( category = category,
@@ -651,7 +652,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
             if target_thread:
                 # update postdate if necessary to achieve proper ordering (post is always added at the end)
                 if target_thread.get_latest_post().postdate > post.postdate:
-                    post.postdate = datetime.now()
+                    post.postdate = timezone.now()
 
             if body:
                 post.set_annotated(True)
@@ -670,7 +671,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                     for p in next_posts:
                         p.thread = post.get_thread()
                         if post.postdate > p.postdate:
-                            p.postdate = datetime.now() + timedelta(microseconds=cnt)
+                            p.postdate = timezone.now() + timedelta(microseconds=cnt)
                         p.save()
                         cnt += 1
                 elif not is_root_post:  # posts moved to category
@@ -881,7 +882,7 @@ def toggle_monitor(request, group, monitortype, object_id, monitor_user_id=None)
 def catchup(request, group, category_id):
     if category_id == '0':
         ThreadLastVisit.objects.filter(user = request.user).delete()
-        CategoryLastVisit.objects.filter(user = request.user).update(lastvisit = datetime.today(), oldlastvisit = None)
+        CategoryLastVisit.objects.filter(user = request.user).update(lastvisit = timezone.now(), oldlastvisit = None)
         req = HttpResponseRedirect(sph_reverse('sphboard-index'))
     else:
         category = get_object_or_404(Category, pk = category_id )
