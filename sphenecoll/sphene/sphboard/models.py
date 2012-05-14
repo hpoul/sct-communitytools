@@ -1,5 +1,5 @@
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 import mimetypes
 
 
@@ -563,7 +563,7 @@ class Category(models.Model):
 class ThreadLastVisit(models.Model):
     """ Entity which stores when a thread was last read. """
     user = models.ForeignKey(User)
-    lastvisit = models.DateTimeField(default=datetime.now)
+    lastvisit = models.DateTimeField(default=timezone.now)
     thread = models.ForeignKey('Post')
 
     def __unicode__(self):
@@ -581,7 +581,7 @@ class ThreadLastVisit(models.Model):
 class CategoryLastVisit(models.Model):
     """ Entity which stores when a category was last accessed. """
     user = models.ForeignKey(User)
-    lastvisit = models.DateTimeField(default=datetime.now)
+    lastvisit = models.DateTimeField(default=timezone.now)
     oldlastvisit = models.DateTimeField(null = True,)
     category = models.ForeignKey(Category)
 
