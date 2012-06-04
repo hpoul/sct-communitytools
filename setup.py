@@ -44,6 +44,7 @@ without any further coding/configuration changes.''',
  install_requires=[
     'Django>=1.4',
     'pycrypto>=2.0',
+    'South',
  ],
  classifiers=CLASSIFIERS,
  license='BSD License',

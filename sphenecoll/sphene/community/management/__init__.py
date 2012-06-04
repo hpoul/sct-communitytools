@@ -45,91 +45,6 @@ def init_data(app, created_models, verbosity, **kwargs):
 from django.db import backend, connection, transaction
 from sphene.community.models import PermissionFlag, Role, Group
 from sphene.community.models import ApplicationChangelog
-from datetime import datetime
-
-def do_changelog(app, created_models, verbosity, **kwargs):
-    app_models = get_models( app )
-    if app_models == None: return
-
-    sql = ()
-    invokes = ()
-    for clazz in app_models:
-        changelog = getattr(clazz, 'changelog', None)
-        if not changelog: continue
-        #changelog = get_changelog(None)
-
-        version = None
-        currentversion = changelog[-1][0]
-        currentcl = ApplicationChangelog( app_label = clazz._meta.app_label,
-                                          model = clazz._meta.object_name.lower(),
-                                          version = currentversion,
-                                          applied = datetime.today(), )
-        try:
-            appcl = ApplicationChangelog.objects.filter( app_label = clazz._meta.app_label,
-                                                         model = clazz._meta.object_name.lower(), )\
-                                                         .latest()
-            version = appcl.version
-            if currentversion == version:
-                continue
-        except ApplicationChangelog.DoesNotExist:
-            # See if model was just created...
-            if clazz in created_models:
-                # Store latest version in changelog ...
-                currentcl.save()
-                continue # No need to do anything ...
-            else:
-                # We need to do the whole changelog ...
-                version = None
-
-
-        for change in changelog:
-            date, changetype, stmt = change
-            if version != None and version >= date:
-                # This change was already applied ...
-                continue
-
-            if changetype == 'alter':
-                sqlstmt = 'ALTER TABLE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
-                sql += (sqlstmt,)
-                print "%s: SQL Statement: %s" % (date, sqlstmt)
-            elif changetype == 'update':
-                sqlstmt = 'UPDATE %s %s' % (connection.ops.quote_name(clazz._meta.db_table), stmt)
-                sql += (sqlstmt,)
-                print "%s: SQL Statement: %s" % (date, sqlstmt)
-            elif changetype == 'sqltable':
-                sqlstmt = stmt % { 'tablename': connection.ops.quote_name(clazz._meta.db_table), }
-                sql += (sqlstmt,)
-                print "%s: SQL Statement: %s" % (date, sqlstmt)
-            elif changetype == 'sql':
-                sqlstmt = stmt
-                sql += (sqlstmt,)
-                print "%s: SQL Statement: %s" % (date, sqlstmt)
-            elif changetype == 'comment':
-                print "%s: !!! Important Comment: %s" % (date, stmt)
-            elif changetype == 'invoke':
-                print "%s: Invoke function %s" % (date, stmt.__name__)
-                invokes += (stmt,)
-            else:
-                print "Unknown changetype: %s - %s" % (changetype, str(change))
-
-        # Store new version ...
-        currentcl.save()
-
-    if len(sql) > 0:
-        confirm = 'x'
-        while confirm not in ('yes', 'no'):
-            confirm = raw_input("Detected changes - Do you want to execute SQL Statements ? (yes,no): ")
-        if confirm == 'yes':
-            curs = connection.cursor()
-            for sqlstmt in sql:
-                curs.execute( sqlstmt )
-
-            for invoke in invokes:
-                print "Invoking %s ..." % invoke.__name__
-                invoke()
-            transaction.commit_unless_managed()
-        else:
-            print "Not updating database. You have to do this by hand !"
 
 def create_permission_flags(app, created_models, verbosity, **kwargs):
     """
@@ -190,19 +105,14 @@ def syncdb_compat(app_label, handler=None, *args, **kwargs):
 def syncdb_compat_init_data(app, *args, **kwargs):
     syncdb_compat(app, handler=init_data, *args, **kwargs)
 
-def syncdb_compat_do_changelog(app, *args, **kwargs):
-    syncdb_compat(app, handler=do_changelog, *args, **kwargs)
-
 def syncdb_compat_create_permission_flags(app, *args, **kwargs):
     syncdb_compat(app, handler=create_permission_flags, *args, **kwargs)
 
 if 'south' in settings.INSTALLED_APPS:
     from south.signals import post_migrate
     post_migrate.connect(syncdb_compat_init_data, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
-    post_migrate.connect(syncdb_compat_do_changelog)
     post_migrate.connect(syncdb_compat_create_permission_flags)
 else:
     from django.db.models.signals import post_syncdb
     post_syncdb.connect(init_data, sender=models, dispatch_uid="communitytools.sphenecoll.sphene.community.management")
-    post_syncdb.connect(do_changelog)
     post_syncdb.connect(create_permission_flags)

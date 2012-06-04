@@ -45,8 +45,6 @@ def synchronize_threadinformation(verbosity = -1):
         thread_info.save()
 
 
-from sphene.community.management import do_changelog
-
 # handle both post_syncdb and post_migrate (if south is used)
 def syncdb_compat(app_label, handler=None, *args, **kwargs):
     if app_label=='sphboard':
@@ -57,14 +55,9 @@ def syncdb_compat(app_label, handler=None, *args, **kwargs):
 def syncdb_compat_init_data(app, *args, **kwargs):
     syncdb_compat(app, handler=init_data, *args, **kwargs)
 
-def syncdb_compat_do_changelog(app, *args, **kwargs):
-    syncdb_compat(app, handler=do_changelog, *args, **kwargs)
-
 if 'south' in settings.INSTALLED_APPS:
     from south.signals import post_migrate
     post_migrate.connect(syncdb_compat_init_data)
-    post_migrate.connect(syncdb_compat_do_changelog)
 else:
     from django.db.models.signals import post_syncdb
-    post_syncdb.connect(do_changelog, sender=models)
     post_syncdb.connect(init_data, sender=models)
