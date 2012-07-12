@@ -157,7 +157,7 @@ def authorinfo_cachekey(user_id, group_id = None, language_code = None):
     if language_code is None:
         language_code = getattr(get_current_request(), 'LANGUAGE_CODE', '')
     return '%s_sphboard_authorinfo_%s_%s_%s' % \
-        (settings.CACHE_MIDDLEWARE_KEY_PREFIX, str(group_id),str(user_id), language_code)
+        (settings.CACHE_MIDDLEWARE_KEY_PREFIX, str(group_id), str(user_id), language_code)
 
 @cache_inclusion_tag(register,
                      'sphene/sphboard/_post_authorinfo.html',
@@ -169,8 +169,9 @@ def sphboard_post_authorinfo(user_id):
     else:
         user = User.objects.get(pk = user_id)
 
-    return { 'author': user,
-             'post_count': UserPostCount.objects.get_post_count(user, get_current_group()) }
+    return {'author': user,
+            'STATIC_URL': settings.STATIC_URL,
+            'post_count': UserPostCount.objects.get_post_count(user, get_current_group())}
 
 
 def clear_cache_all_languages(user_id, group_id):

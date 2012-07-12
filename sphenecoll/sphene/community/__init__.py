@@ -14,7 +14,7 @@ from sphene.community import sphsettings
 from django.utils.translation import ugettext as _
 
 jsincludes = get_sph_setting( 'community_jsincludes', [])
-jsincludes.append(settings.STATIC_URL + 'sphene/community/jquery-1.2.3.min.js')
+jsincludes.append(settings.STATIC_URL + 'sphene/community/jquery-1.7.2.min.js')
 jsincludes.append(settings.STATIC_URL + 'sphene/community/jquery.autocomplete.js')
 sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
 
@@ -23,7 +23,6 @@ sphsettings.set_sph_setting( 'community_jsincludes', jsincludes )
 #
 # Source code for adding an avatar .. (advanced community profile)
 #
-
 def clean_community_advprofile_avatar(self):
     f = self.cleaned_data['community_advprofile_avatar']
     if f is None:

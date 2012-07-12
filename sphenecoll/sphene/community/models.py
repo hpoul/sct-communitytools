@@ -1,3 +1,6 @@
+import logging
+import re
+
 from django.db import models
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -5,18 +8,18 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.db import connection
-from django.db.models.signals import post_save, m2m_changed, post_delete
+from django.db.models.signals import post_save, post_delete
+from django import forms
 
+from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphpermalink import sphpermalink
 from sphene.community.signals import clear_user_displayname, clear_permissions_cache_rgm, clear_permissions_cache_rml, \
                                      clear_permissions_cache_rm, clear_permission_flag_cache
-
-import logging
-import re
-
+from sphene.community.sphsettings import get_sph_setting
 
 logger = logging.getLogger('sphene.community.models')
-# Create your models here.
+
 
 class Group(models.Model):
     name = models.CharField(max_length = 250)
@@ -59,42 +62,44 @@ class Group(models.Model):
         verbose_name = ugettext_lazy('Group')
         verbose_name_plural = ugettext_lazy('Groups')
 
+
 USERLEVEL_CHOICES = (
     (0, ugettext_lazy('Normal User')),
     (5, ugettext_lazy('Administrator')),
     )
 
 class GroupMember(models.Model):
-        group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
-        user = models.ForeignKey( User, verbose_name=ugettext_lazy(u'User'))
-        userlevel = models.IntegerField( choices = USERLEVEL_CHOICES )
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
+    user = models.ForeignKey( User, verbose_name=ugettext_lazy(u'User'))
+    userlevel = models.IntegerField( choices = USERLEVEL_CHOICES )
 
 
-        changelog = ( ( '2008-04-06 00', 'alter', 'ADD userlevel integer', ),
-                      ( '2008-04-06 01', 'update', 'SET userlevel = 0', ),
-                      ( '2008-04-06 02', 'alter', 'ALTER userlevel SET NOT NULL', ), )
+    changelog = ( ( '2008-04-06 00', 'alter', 'ADD userlevel integer', ),
+                  ( '2008-04-06 01', 'update', 'SET userlevel = 0', ),
+                  ( '2008-04-06 02', 'alter', 'ALTER userlevel SET NOT NULL', ), )
 
 
-        def get_userlevel_str(self):
-            for value, str in USERLEVEL_CHOICES:
-                if value == self.userlevel:
-                    return str;
+    def get_userlevel_str(self):
+        for value, str in USERLEVEL_CHOICES:
+            if value == self.userlevel:
+                return str;
 
-        class Meta:
-            verbose_name = ugettext_lazy('Group member')
-            verbose_name_plural = ugettext_lazy('Group members')
+    class Meta:
+        verbose_name = ugettext_lazy('Group member')
+        verbose_name_plural = ugettext_lazy('Group members')
 
 
 class Theme(models.Model):
-        name = models.CharField(max_length = 250)
-        path = models.CharField(max_length = 250)
+    name = models.CharField(max_length = 250)
+    path = models.CharField(max_length = 250)
 
-        def __unicode__(self):
-                return self.name;
+    def __unicode__(self):
+            return self.name;
 
-        class Meta:
-            verbose_name = ugettext_lazy('Theme')
-            verbose_name_plural = ugettext_lazy('Themes')
+    class Meta:
+        verbose_name = ugettext_lazy('Theme')
+        verbose_name_plural = ugettext_lazy('Themes')
+
 
 NAVIGATION_URL_TYPES = (
         (0, 'Relative (e.g. /wiki/show/Start)'),
@@ -107,53 +112,49 @@ NAVIGATION_TYPES = (
         )
 
 class Navigation(models.Model):
-        group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
-        label = models.CharField(max_length = 250)
-        href  = models.CharField(max_length = 250)
-        urltype = models.IntegerField( default = 0, choices = NAVIGATION_URL_TYPES )
-        sortorder = models.IntegerField( default = 100 )
-        navigationType = models.IntegerField( default = 0, choices = NAVIGATION_TYPES )
+    group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
+    label = models.CharField(max_length = 250)
+    href  = models.CharField(max_length = 250)
+    urltype = models.IntegerField( default = 0, choices = NAVIGATION_URL_TYPES )
+    sortorder = models.IntegerField( default = 100 )
+    navigationType = models.IntegerField( default = 0, choices = NAVIGATION_TYPES )
 
+    def __unicode__(self):
+        return self.label
 
-        def __unicode__(self):
-            return self.label
+    def is_active(self):
+        from sphene.community.middleware import get_current_request
+        req = get_current_request()
+        if not req:
+            return False
+        nav = getattr(req, 'nav', req.path)
+        if self.href == '/':
+            return self.href == nav or nav == ''
+        return nav.startswith(self.href)
 
-        def is_active(self):
-            from sphene.community.middleware import get_current_request
-            req = get_current_request()
-            if not req:
-                return False
-            nav = getattr(req, 'nav', req.path)
-            if self.href == '/':
-                return self.href == nav or nav == ''
-            return nav.startswith(self.href)
+    class Meta:
+        verbose_name = ugettext_lazy('Navigation')
+        verbose_name_plural = ugettext_lazy('Navigations')
+        ordering = ['sortorder']
 
-        class Meta:
-                verbose_name = ugettext_lazy('Navigation')
-                verbose_name_plural = ugettext_lazy('Navigations')
-                ordering = ['sortorder']
-        
 
 class ApplicationChangelog(models.Model):
-        app_label = models.CharField(max_length = 250)
-        model = models.CharField(max_length = 250)
-        version = models.CharField(max_length = 250)
-        applied = models.DateTimeField()
+    app_label = models.CharField(max_length = 250)
+    model = models.CharField(max_length = 250)
+    version = models.CharField(max_length = 250)
+    applied = models.DateTimeField()
 
-        class Meta:
-                verbose_name = ugettext_lazy('Application change log')
-                verbose_name_plural = ugettext_lazy('Application change logs')
-                get_latest_by = 'applied'
+    class Meta:
+        verbose_name = ugettext_lazy('Application change log')
+        verbose_name_plural = ugettext_lazy('Application change logs')
+        get_latest_by = 'applied'
 
-
-from sphene.community.sphsettings import get_sph_setting
-#from sphene.community import sphutils
 
 class CommunityUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True, verbose_name=ugettext_lazy(u'User'))
     displayname = models.CharField(ugettext_lazy(u'Display name'), max_length = 250)
     public_emailaddress = models.CharField(ugettext_lazy(u'Public email address'), max_length = 250)
-    
+
     avatar = models.ImageField( ugettext_lazy(u'Avatar'),
                                 height_field = 'avatar_height',
                                 width_field = 'avatar_width',
@@ -174,6 +175,7 @@ class CommunityUserProfile(models.Model):
     class Meta:
         verbose_name = ugettext_lazy('Community user profile')
         verbose_name_plural = ugettext_lazy('Community user profiles')
+
 
 class CommunityUserProfileField(models.Model):
     """ User profile fields, configurable through the django admin
@@ -213,7 +215,7 @@ class GroupTemplate(models.Model):
 
     def __unicode__(self):
         return self.template_name
-    
+
     class Meta:
         verbose_name = ugettext_lazy('Group template')
         verbose_name_plural = ugettext_lazy('Group templates')
@@ -242,7 +244,6 @@ class PermissionFlag(models.Model):
                              ugettext_lazy('User has permission to manage other users'),
                              }
 
-
     def __unicode__(self):
         return self.name
 
@@ -259,7 +260,6 @@ class Role(models.Model):
     group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
 
     permission_flags = models.ManyToManyField( PermissionFlag, related_name = 'roles', verbose_name=ugettext_lazy(u'Permission flags'))
-
 
     def get_permission_flag_string(self):
         return ", ".join( [flag.name for flag in self.permission_flags.all()] )
@@ -306,7 +306,6 @@ class RoleMember(models.Model):
     rolegroup = models.ForeignKey('RoleGroup', null=True, verbose_name=ugettext_lazy(u'Role group'))
 
     has_limitations = models.BooleanField(ugettext_lazy(u'Has limitations'))
-
 
     changelog = ( ( '2008-04-15 00', 'alter', 'ALTER user_id DROP NOT NULL', ),
                   ( '2008-04-15 01', 'alter', 'ADD rolegroup_id integer REFERENCES community_rolegroup(id)', ), )
@@ -371,7 +370,6 @@ class RoleGroupMember(models.Model):
         unique_together = ('rolegroup', 'user',)
 
 
-
 #########################################################
 ###
 ### tagging
@@ -386,6 +384,7 @@ tag_sanitize_regex = re.compile(r'[^\w]+', re.S | re.U)
 def tag_sanitize(tag_label):
     return tag_sanitize_regex.sub('', tag_label).lower()
 
+
 def tag_set_labels(model_instance, tag_labels):
     """
     sets the tags of the given model_instance (which must exists already!)
@@ -394,7 +393,6 @@ def tag_set_labels(model_instance, tag_labels):
 
     returns True if anything has changed, False otherwise.
     """
-
     model_type = ContentType.objects.get_for_model(model_instance)
 
     # Check if anything has changed
@@ -423,18 +421,14 @@ def tag_set_labels(model_instance, tag_labels):
             # the same ... ie. they did not change.
             return False
 
-
     # First remove existing tag labels
     TaggedItem.objects.filter( content_type__pk = model_type.id,
                                object_id = model_instance.id, ).delete()
-
-    
 
     for tag_label in tag_labels:
         t = TaggedItem( object = model_instance,
                         tag_label = tag_label )
         t.save()
-
 
     return True
 
@@ -455,11 +449,12 @@ def tag_get_labels(model_instance):
 
     return tag_labels
 
+
 def tag_get_or_create_label(group, tag_label_str):
     if tag_label_str == '':
         # ignore empty labels
         return None
-    
+
     # Check if the label is already known:
     try:
         tag_label = TagLabel.objects.get( tag__group = group,
@@ -491,6 +486,7 @@ def get_queryset_and_model(queryset_or_model):
     except AttributeError:
         return queryset_or_model._default_manager.all(), queryset_or_model
 
+
 def tag_get_models_by_tag(queryset_or_model, tag):
     # pretty much copied from django-tagging
     queryset, model = get_queryset_and_model(queryset_or_model)
@@ -514,6 +510,7 @@ def tag_get_models_by_tag(queryset_or_model, tag):
         params=[content_type.pk, tag.pk],
         )
 
+
 class Tag(models.Model):
     """
     A tag is the internal representation which is always linked to a specific group.
@@ -532,6 +529,7 @@ class Tag(models.Model):
         verbose_name_plural = ugettext_lazy('Tags')
         unique_together = (("group", "name"))
 
+
 class TagLabel(models.Model):
     """
     A tag label represents the user entered value for the tag. Including uppercase/lowercase,
@@ -548,6 +546,7 @@ class TagLabel(models.Model):
         verbose_name_plural = ugettext_lazy('Tag labels')
         unique_together = (("tag", "label"))
 
+
 class TaggedItem(models.Model):
     """
     Relationship between a tag label and an item.
@@ -562,21 +561,17 @@ class TaggedItem(models.Model):
         verbose_name_plural = ugettext_lazy('Tagged items')
         unique_together = (('tag_label', 'content_type', 'object_id'))
 
+
 #########################################################
 ###
 ### hooks
 ###
-
-from django import forms
-from sphene.community.forms import EditProfileForm, Separator
-from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
-
-
 def get_public_emailaddress_help():
     # TODO also add a notice about wether anonymous user require to enter a captcha ?
     if get_sph_setting( 'community_email_show_only_public' ):
         return _('This email address will be shown to all users. If you leave it black noone will see your email address.')
     return _('This email address will be shown to all users. If you leave it blank, your verified email address will be shown.')
+
 
 def get_user_displayname_help():
     if get_sph_setting( 'community_user_displayname_fallback' ) == 'username':
@@ -590,20 +585,17 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
         profile = CommunityUserProfile.objects.get( user = user, )
     except CommunityUserProfile.DoesNotExist:
         profile = CommunityUserProfile( user = user, )
-        
+
     instance.fields['community_settings'] = Separator(label=_(u'Community settings'))
     instance.fields['displayname'] = forms.CharField( label = _(u'Display name'),
                                                       required = False,
                                                       initial = profile.displayname,
                                                       help_text = get_user_displayname_help())
-    
+
     instance.fields['public_emailaddress'] = forms.CharField( label = _(u'Public email address'),
                                                               required = False,
                                                               initial = profile.public_emailaddress,
                                                               help_text = get_public_emailaddress_help())
-
-
-
 
     fields = CommunityUserProfileField.objects.all()
     for field in fields:
@@ -615,13 +607,14 @@ def community_profile_edit_init_form(sender, instance, signal, request, *args, *
                 initial = value.value
             except CommunityUserProfileFieldValue.DoesNotExist:
                 pass
-                                                    
+
         instance.fields['community_field_%d' % field.id] = forms.RegexField( regex = field.regex,
                                                                              label = field.name,
                                                                              help_text = field.help_text,
                                                                              initial = initial,
                                                                              required = False,
                                                                              )
+
 
 def community_profile_edit_save_form(sender, instance, signal, request, *args, **kwargs):
     data = instance.cleaned_data
@@ -650,8 +643,9 @@ def community_profile_edit_save_form(sender, instance, signal, request, *args, *
             value.save()
         else:
             if value.id: value.delete()
-    
+
     messages.success(request, message = _("Successfully saved community profile.") )
+
 
 def community_profile_display(sender, signal, request, user, **kwargs):
     try:
@@ -670,8 +664,9 @@ def community_profile_display(sender, signal, request, user, **kwargs):
                                      'value': value.value, })
         except CommunityUserProfileFieldValue.DoesNotExist:
             continue
-                                            
+
     return ret
+
 
 profile_edit_init_form.connect(community_profile_edit_init_form, sender = EditProfileForm)
 profile_edit_save_form.connect(community_profile_edit_save_form, sender = EditProfileForm)
