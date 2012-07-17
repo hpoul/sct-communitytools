@@ -4,6 +4,7 @@ from sphene.community import models
 
 admin.site.register(models.Group)
 
+
 class GroupMemberAdmin(admin.ModelAdmin):
     list_display = ('group', 'user',)
     list_filter = ('group',)
@@ -11,12 +12,21 @@ class GroupMemberAdmin(admin.ModelAdmin):
 admin.site.register(models.GroupMember, GroupMemberAdmin)
 admin.site.register(models.Theme)
 
+
 class NavigationAdmin(admin.ModelAdmin):
     list_display = ( 'label', 'group', 'href', 'navigationType', 'sortorder' )
     list_filter = ( 'group', 'navigationType' )
     ordering = ['group', 'navigationType', 'sortorder']
 
 admin.site.register(models.Navigation, NavigationAdmin)
+
+
+class CommunityUserProfileAdmin(admin.ModelAdmin):
+    list_display = ( 'user', 'displayname', 'public_emailaddress' )
+    list_filter = ( 'user__username', 'public_emailaddress' )
+    ordering = ['user__username', 'displayname']
+
+admin.site.register(models.CommunityUserProfile, CommunityUserProfileAdmin)
 
 
 class CommunityUserProfileFieldAdmin(admin.ModelAdmin):

@@ -125,6 +125,7 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
     res.sph_lastmodified = True
     return res
 
+
 def listThreads(request, group, category_id):
     """
     THIS IS JUST FOR TESTING PURPOSES FOR NOW !!!
@@ -180,6 +181,7 @@ def showThread(request, thread_id, group = None, slug = None):
     res.sph_lastmodified = thread.get_latest_post().postdate
     return res
 
+
 def options(request, thread_id, group = None):
     thread = Post.objects.get( pk = thread_id )
 
@@ -201,6 +203,7 @@ def options(request, thread_id, group = None):
 
     return HttpResponseRedirect( thread.get_absolute_url() )
 
+
 def reply(*args, **kwargs):
     return post(*args, **kwargs)
 
@@ -211,6 +214,7 @@ def enable_wysiwyg_editor():
     return len( POST_MARKUP_CHOICES ) == 1 and \
         POST_MARKUP_CHOICES[0][0] == 'bbcode' and \
         get_sph_setting('board_wysiwyg')
+
 
 def post(request, group = None, category_id = None, post_id = None, thread_id = None):
     """
@@ -518,6 +522,7 @@ def annotate(request, group, post_id):
                                  },
                                context_instance = RequestContext(request) )
 
+
 def hide(request, group, post_id):
     """ Delete post by setting is_hidden=True
         (annotate method above allows to hide content of the post but leaves it in thread)
@@ -540,6 +545,7 @@ def hide(request, group, post_id):
                                  },
                                context_instance = RequestContext(request) )
 
+
 def move_post_1(request, group, post_id):
     """
         Display list of categories where the post can be moved to.
@@ -553,6 +559,7 @@ def move_post_1(request, group, post_id):
                               {'categories': categories,
                                'post': post},
                               context_instance = RequestContext(request))
+
 
 def move_post_2(request, group, post_id, category_id):
     """
@@ -577,6 +584,7 @@ def move_post_2(request, group, post_id, category_id):
                        paginate_by = get_sph_setting('board_post_paging')
                       )
     return res
+
 
 def move_post_3(request, group, post_id, category_id, thread_id=None):
     """
@@ -718,6 +726,7 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
                                  },
                                context_instance = RequestContext(request))
 
+
 def move(request, group, thread_id):
     thread = get_object_or_404(Post, pk = thread_id)
     if not thread.allow_moving():
@@ -791,6 +800,7 @@ def move(request, group, thread_id):
                                  },
                                context_instance = RequestContext(request))
 
+
 def delete_moved_info(request, group, pk):
     """ Delete information about moved thread
     """
@@ -807,6 +817,7 @@ def delete_moved_info(request, group, pk):
     return render_to_response("sphene/sphboard/delete_moved_info.html",
                               {'th': th},
                               context_instance=RequestContext(request))
+
 
 def vote(request, group = None, thread_id = None):
     thread = get_object_or_404(Post, pk = thread_id)
@@ -846,8 +857,8 @@ def vote(request, group = None, thread_id = None):
         voter.save()
         messages.success(request,  message = choice and ugettext(u"Voted for '%(choice)s'.") % {'choice': choice.choice} or ugettext(u'You selected to abstain from voting') )
 
-
     return HttpResponseRedirect( thread.get_absolute_url() )
+
 
 def toggle_monitor(request, group, monitortype, object_id, monitor_user_id=None):
     if not request.user.is_authenticated():
@@ -879,6 +890,7 @@ def toggle_monitor(request, group, monitortype, object_id, monitor_user_id=None)
         return HttpResponseRedirect(sph_reverse('sphboard-index'))
     return HttpResponseRedirect(obj.get_absolute_url())
 
+
 def catchup(request, group, category_id):
     if category_id == '0':
         ThreadLastVisit.objects.filter(user = request.user).delete()
@@ -892,6 +904,7 @@ def catchup(request, group, category_id):
     req.sph_lastmodified = True
     return req
 
+
 def latest_posts_of_user_context(request, group, user):
     allowed_categories = get_all_viewable_categories( group, request.user )
     post_list = Post.objects.filter( category__id__in = allowed_categories,
@@ -902,14 +915,15 @@ def latest_posts_of_user_context(request, group, user):
              'post_user': user,
              }
 
+
 def render_latest_posts_of_user(request, group, user):
     ctx = latest_posts_of_user_context(request,group,user)
     ctx['post_list'] = ctx['post_list'][0:10]
     str = template.loader.render_to_string( 'sphene/sphboard/_latest_posts_of_user.html',
                                             ctx,
                                             context_instance = RequestContext(request))
-
     return str
+
 
 def admin_user_posts(request, group, user_id):
     if not has_permission_flag(request.user, 'community_manage_users'):

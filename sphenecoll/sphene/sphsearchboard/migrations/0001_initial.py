@@ -8,9 +8,9 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-pass
+        pass
     def backwards(self, orm):
-pass
+        pass
     models = {
         
     }
