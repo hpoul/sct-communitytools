@@ -137,10 +137,7 @@ class GroupMiddleware(object):
 
 # copied from http://code.djangoproject.com/wiki/CookBookThreadlocalsAndUser
 # threadlocals middleware
-try:
-    from threading import local
-except ImportError:
-    from django.utils._threading_local import local
+from threading import local
 
 #print "Executing module body."
 _thread_locals = local()
