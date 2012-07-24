@@ -1,22 +1,25 @@
+import re
+from operator import add
+from time import time
+import logging
+
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.core import urlresolvers
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-
 from django.contrib.sites.models import SiteManager, Site
+from django.db import connection
+from django.template.context import RequestContext
+from django.template import loader
+from django.http import HttpResponseForbidden
 
-
+from sphene.community import PermissionDenied
 from sphene.community.models import Group
 from sphene.community.sphsettings import get_sph_setting
 
-
-import re
-import logging
-
-
 logger = logging.getLogger('sphene.community.middleware')
+
 
 def my_get_current(self):
     try:
@@ -30,7 +33,6 @@ def my_get_current(self):
 
 SiteManager.get_current = my_get_current
                     
-
 
 # If all are used the following order has to remain:
 # 1.) ThreadLocals (required)
@@ -195,14 +197,6 @@ class ThreadLocals(object):
 
 
 ## copied from http://code.djangoproject.com/wiki/PageStatsMiddleware
-import re
-from operator import add
-from time import time
-from django.db import connection
-import logging
-
-logger = logging.getLogger('sphene.community.middleware')
-
 class StatsMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -271,10 +265,10 @@ class StatsMiddleware(object):
 
         return response
 
-from django.core.handlers.modpython import ModPythonRequest
 
 class ModPythonSetLoggedinUser(object):
     def process_request(self, request):
+        from django.core.handlers.modpython import ModPythonRequest
         if not isinstance(request, ModPythonRequest):
             return None
 
@@ -297,11 +291,7 @@ class PsycoMiddleware(object):
         psyco.profile()
         return None
 
-from sphene.community import PermissionDenied
-from django.template.context import RequestContext
-from django.shortcuts import render_to_response
-from django.template import loader
-from django.http import HttpResponseForbidden
+
 class PermissionDeniedMiddleware(object):
     def process_exception(self, request, exception):
         if isinstance(exception, PermissionDenied):
@@ -310,7 +300,6 @@ class PermissionDeniedMiddleware(object):
                                                                     },
                                                                   context_instance = RequestContext(request) ) )
         return None
-
 
 
 class LastModified(object):

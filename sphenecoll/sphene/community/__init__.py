@@ -6,7 +6,7 @@ class PermissionDenied(Exception):
 # We can't import it as 'forms' because we've got a package called 'forms' .. how smart.
 from django import forms as djangoforms
 from django.conf import settings
-from sphene.community.forms import EditProfileForm, Separator
+from sphene.community.forms import EditProfileForm
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community.sphutils import get_sph_setting
 from sphene.community.models import CommunityUserProfile
