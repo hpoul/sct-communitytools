@@ -964,15 +964,15 @@ class Post(models.Model):
     
     def _hasNewPosts(self, session, user):
         if not user.is_authenticated(): return False
-        latestPost = self.get_latest_post()
+        latest_post = self.get_latest_post()
         categoryLastVisit = self.category.get_lastvisit_date(user)
-        if categoryLastVisit > latestPost.postdate:
+        if not latest_post or categoryLastVisit > latest_post.postdate:
             return False
 
         try:
             threadLastVisit = ThreadLastVisit.objects.filter( user = user,
                                                               thread__id = self.id, )[0]
-            return threadLastVisit.lastvisit < latestPost.postdate
+            return threadLastVisit.lastvisit < latest_post.postdate
         except IndexError:
             return True
 
