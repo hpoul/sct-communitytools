@@ -1,36 +1,56 @@
+from collections import deque
+from itertools import count
 from django import template
     
 register = template.Library()
 
-def define_page_range(page, pages):
-    window = 6
-    page_range = range( 1, pages+1 )
 
-    pg = page
-    out = []
+def define_page_range(current_page, total_pages, window=6):
+    """ Returns range of pages that contains current page and few pages before and after it.
 
-    if page == -1:
-        out = set(page_range[:window/2])
-        out.update(set(page_range[-window/2:]))
-        out = sorted(out)
-        out = list(out)
-        if len(out) < len(page_range):
-            out.insert(window/2, '...')
-    else:
-        wnd_start = page_range[:pg]
-        wnd_end = page_range[pg:]
+        @current_page - starts from 1
+        @tota_pages - total number of pages
+        @window - maximum number of pages shown with current page - should be even
 
-        end_correction = window/2
-        if len(wnd_start) <= window/2:
-            end_correction = window/2 + (window/2-len(wnd_start)) + 1
+        Examples (cucumber style):
+             Given window = 6
+             When current_page is 8
+             and total_pages = 20
+             Then I should see: 5 6 7 [8] 9 10 11
 
-        start_correction = window/2 + 1
-        if len(wnd_end) <= window/2:
-            start_correction = window/2 + (window/2-len(wnd_end)) + 1
+             Given window = 6
+             When current_page is 8
+             and total_pages = 9
+             Then I should see: 3 4 5 6 7 [8] 9
 
-        out = wnd_start[-start_correction:]
-        out = out + wnd_end[:end_correction]
-    return out
+             Given window = 6
+             When current_page is 1
+             and total_pages = 9
+             Then I should see: [1] 2 3 4 5 6 7
+    """
+    # maximum length of page range is window + 1
+    maxlen = window + 1
+    page_range = deque(maxlen=maxlen)
+
+    # minimum possible index is either: (current_page - window) or 1
+    window_start = (current_page - window) if (current_page - window) > 0 else 1
+
+    # maximum possible index is current_page + window or total_pages
+    window_end = total_pages if (current_page + window) > total_pages else (current_page + window)
+
+    # if we have enough pages then we should end at preffered end
+    preffered_end = current_page + int(window / 2.0)
+
+    for i in count(window_start):
+        if i > window_end:
+            # if we're on first page then our window will be [1] 2 3 4 5 6 7
+            break
+        elif i > preffered_end and len(page_range) == maxlen:
+            # if we have enough pages already then stop at preffered_end
+            break
+        page_range.append(i)
+    return list(page_range)
+
 
 @register.inclusion_tag('sphene/community/_pagination.html', takes_context=True)
 def sph_pagination(context, pages, page, url = '', getparam = 'page', compress=0):
@@ -38,7 +58,6 @@ def sph_pagination(context, pages, page, url = '', getparam = 'page', compress=0
     has_prev = page > 1
     if page == -1:
         has_next = has_prev = False
-
 
     if compress:
         page_range = define_page_range(page, pages)
