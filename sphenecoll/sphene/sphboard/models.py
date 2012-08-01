@@ -109,7 +109,7 @@ class CategoryTypeChoices(object):
         try:
             for ct in categorytyperegistry.get_category_type_list():
                 choices += ((ct.name, "%s (%s)" % (unicode(ct.label), ct.name)),)
-        except:
+        except Exception, e:
             # This is also called during syncdb before tables are
             # created, so for this case catch all exceptions.
             # see http://sct.sphene.net/board/thread/898/

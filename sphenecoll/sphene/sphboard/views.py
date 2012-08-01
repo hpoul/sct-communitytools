@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.forms.models import modelformset_factory
 from django.core.cache import cache
+from django.contrib.auth.decorators import login_required
 
 from sphene.community import PermissionDenied
 from sphene.community.permissionutils import has_permission_flag
@@ -891,6 +892,7 @@ def toggle_monitor(request, group, monitortype, object_id, monitor_user_id=None)
     return HttpResponseRedirect(obj.get_absolute_url())
 
 
+@login_required
 def catchup(request, group, category_id):
     if category_id == '0':
         ThreadLastVisit.objects.filter(user = request.user).delete()
