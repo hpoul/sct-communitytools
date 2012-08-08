@@ -204,7 +204,7 @@ class ImgTag(BBTag):
 class ColorTag(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) > 0:
-            if node.parameter.lower() in _COLORS or \
+            if node.parameter and node.parameter.lower() in _COLORS or \
                 _COLOR_REGEXP.match(node.parameter) is not None:
                 return '<span style="color: ' + node.parameter +  ';">' + \
                     node.render_children_xhtml() + '</span>'

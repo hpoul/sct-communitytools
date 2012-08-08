@@ -1,7 +1,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _, ugettext
+from django.contrib.auth.models import User
+from django.db.models import get_apps, get_models
+from django.contrib.contenttypes.models import ContentType
 
 from sphene.community.signals import profile_edit_init_form
+
 
 class Separator(forms.Field):
     def __init__(self, *args, **kwargs):
@@ -9,6 +13,7 @@ class Separator(forms.Field):
 
     def is_separator(self):
         return True
+
 
 class EditProfileForm(forms.Form):
     first_name = forms.CharField(label=_(u'First name'), required=False)
@@ -47,10 +52,6 @@ class EditProfileForm(forms.Form):
         return self.cleaned_data
 
 
-from django.contrib.auth.models import User
-from django.db.models import signals, get_apps, get_models
-from django.contrib.contenttypes.models import ContentType
-
 def get_object_type_choices():
     ret = list()
     ret.append( ('', _(u'-- Select Object Type --')) )
@@ -72,6 +73,7 @@ def get_object_id_choices(object_type, group):
         ret.append( (obj.id, unicode(obj)) )
     return ret
 
+
 def get_permission_flag_choices():
     ret = list()
 
@@ -90,6 +92,7 @@ def get_permission_flag_choices():
 
     return ret
 
+
 class EditRoleForm(forms.Form):
     name = forms.CharField(label=_(u'Name'))
     permission_flags = forms.MultipleChoiceField(label=_(u'Permission flags'))
@@ -100,6 +103,7 @@ class EditRoleForm(forms.Form):
 
 
 autosubmit_args = { 'onchange': 'this.form.auto_submit.value = "on";this.form.submit();' }
+
 
 class BasicRoleMemberForm(forms.Form):
 #    username = forms.CharField()
@@ -120,6 +124,7 @@ class BasicRoleMemberForm(forms.Form):
             return ContentType.objects.get( pk = self.cleaned_data['object_type'] )
         except ContentType.DoesNotExist:
             raise forms.ValidationError(_(u'Invalid Object Type'))
+
 
 class UsernameRoleMemberForm(forms.Form):
     username = forms.CharField(label=_(u'Username'))
@@ -146,12 +151,14 @@ class RoleGroupMemberForm(forms.Form):
         from sphene.community.models import RoleGroup
         self.fields['rolegroup'].queryset = RoleGroup.objects.filter( group = group )
 
+
 class EditRoleMemberForm(UsernameRoleMemberForm, BasicRoleMemberForm):
     pass
 
 
 class EditRoleGroupMemberForm(RoleGroupMemberForm, BasicRoleMemberForm):
     pass
+
 
 class UsersSearchForm(forms.Form):
     username = forms.CharField(label=_(u'Username'), required=False)
