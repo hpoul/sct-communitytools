@@ -172,7 +172,11 @@ class UserForm(forms.Form):
     email_hash = forms.CharField(widget=forms.HiddenInput)
 
     def clean_username(self):
-        if User.objects.filter( username__exact = self.cleaned_data['username'] ).count() != 0:
+        import pdb;pdb.set_trace()
+        case_sensitive_uname = sphsettings.get_sph_setting('community_register_username_casesensitive', True)
+        if ((case_sensitive_uname and User.objects.filter(username__exact=self.cleaned_data['username']).exists())
+            or
+            (not case_sensitive_uname and User.objects.filter(username__iexact=self.cleaned_data['username']).exists())):
             raise forms.ValidationError(ugettext(u'The username %(username)s is already taken.') % {'username': self.cleaned_data['username']})
         return self.cleaned_data['username']
 
