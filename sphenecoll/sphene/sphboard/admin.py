@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from sphene.sphboard import models
 
@@ -17,9 +18,14 @@ class CategoryLastVisitAdmin(admin.ModelAdmin):
 admin.site.register(models.CategoryLastVisit, CategoryLastVisitAdmin)
 
 
+def user_email(obj):
+    return obj.user.email
+user_email.short_description = _('Email')
+
 class MonitorAdmin(admin.ModelAdmin):
-    list_display = ('user', 'group', 'category', 'thread')
-    list_filter = ('user', 'group')
+    list_display = ('user', user_email, 'group', 'category', 'thread')
+    search_fields = ('user__username', 'user__email', 'category__name', 'thread__subject')
+    raw_id_fields = ('user', 'group', 'category', 'thread')
 admin.site.register(models.Monitor, MonitorAdmin)
 
 

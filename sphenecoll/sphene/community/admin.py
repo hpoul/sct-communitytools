@@ -23,8 +23,9 @@ admin.site.register(models.Navigation, NavigationAdmin)
 
 class CommunityUserProfileAdmin(admin.ModelAdmin):
     list_display = ( 'user', 'displayname', 'public_emailaddress' )
-    list_filter = ( 'user__username', 'public_emailaddress' )
+    search_fields = ('user__username', 'displayname', 'public_emailaddress', 'user__email')
     ordering = ['user__username', 'displayname']
+    raw_id_fields = ('user', )
 
 admin.site.register(models.CommunityUserProfile, CommunityUserProfileAdmin)
 

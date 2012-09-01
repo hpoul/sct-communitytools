@@ -1541,10 +1541,10 @@ class Monitor(models.Model):
     """Monitors allow user to get notified by email on new posts in a
     particular thread, category or a whole board of a group."""
     
-    thread = models.ForeignKey(Post, null = True, blank = True)
-    category = models.ForeignKey(Category, null = True, blank = True)
-    group = models.ForeignKey(Group)
-    user = models.ForeignKey(User)
+    thread = models.ForeignKey(Post, null=True, blank=True, verbose_name=_('Thread'))
+    category = models.ForeignKey(Category, null=True, blank=True, verbose_name=_('Category'))
+    group = models.ForeignKey(Group, verbose_name=_('Group'))
+    user = models.ForeignKey(User, verbose_name=_('User'))
 
     class Meta:
         verbose_name = ugettext_lazy('Monitor')
