@@ -172,7 +172,6 @@ class UserForm(forms.Form):
     email_hash = forms.CharField(widget=forms.HiddenInput)
 
     def clean_username(self):
-        import pdb;pdb.set_trace()
         case_sensitive_uname = sphsettings.get_sph_setting('community_register_username_casesensitive', True)
         if ((case_sensitive_uname and User.objects.filter(username__exact=self.cleaned_data['username']).exists())
             or
