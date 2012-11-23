@@ -1221,7 +1221,8 @@ class PostAttachment(models.Model):
     # This is only blank so the form does not throw errors when it was not entered !
     fileupload = models.FileField( ugettext_lazy(u'File'),
                                    upload_to = get_sph_setting( 'board_attachments_upload_to' ),
-                                   blank = True )
+                                   blank = True,
+                                   max_length = 200)
 
     def is_image(self):
         (type, encoding) = mimetypes.guess_type(self.fileupload.name)
