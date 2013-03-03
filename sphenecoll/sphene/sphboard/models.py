@@ -11,6 +11,7 @@ from django.core.mail import send_mass_mail
 from django.core.cache import cache
 from django.contrib import messages
 from django.db.models.expressions import F
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -1066,28 +1067,29 @@ class Post(models.Model):
                 thread = self.thread or self
                 # thread monitors ..
                 allmonitors = Monitor.objects.all()
-                monitors = allmonitors.filter( thread = thread )
+                monitors = allmonitors.filter(thread=thread)
                 # any category monitors
                 category = self.category
                 while category:
-                    monitors = monitors | allmonitors.filter( category = category, thread__isnull = True )
+                    monitors = monitors | allmonitors.filter(category=category, thread__isnull=True)
                     category = category.parent
                     # group monitors
-                    monitors = monitors | allmonitors.filter( group = self.category.group, category__isnull = True, thread__isnull = True )
+                    monitors = monitors | allmonitors.filter(group=self.category.group, category__isnull=True,
+                                                             thread__isnull=True)
                     #monitors = Monitor.objects.filter(myQ)
                     
                 subject = _('New Forum Post in "%(category_name)s": %(subject)s') % {'category_name':self.category.name,
                                                                                      'subject':self.subject}
                 group = get_current_group() or self.category.group
-                t = loader.get_template('sphene/sphboard/new_post_email.txt')
-                c = {
-                    'baseurl': group.baseurl,
-                    'group': group,
-                    'post': self,
-                    }
-                body = t.render(RequestContext(get_current_request(), c))
-                #body = ("%s just posted in a thread or forum you are monitoring: \n" + \
-                #        "Visit http://%s/%s") % (group.baseurl, self.author.get_full_name(), self.get_absolute_url())
+
+                body = render_to_string('sphene/sphboard/new_post_email.txt',
+                                        {'baseurl': group.baseurl,
+                                         'group': group,
+                                         'post': self,
+                                        },
+                                        RequestContext(get_current_request())
+                                        )
+
                 datatuple = ()
                 sent_email_addresses = ()
                 if self.author != None:
@@ -1103,7 +1105,7 @@ class Post(models.Model):
                                                                                                          str(self.category),))
                         continue
 
-                    logger.info( "Adding user {%s} email address to notification email." % str(monitor.user) )
+                    logger.info( "Adding user {%s} email address to notification email." % str(monitor.user))
                 
                     # Add email address to address tuple ...
                     datatuple += (subject, body, None, [monitor.user.email,]),
