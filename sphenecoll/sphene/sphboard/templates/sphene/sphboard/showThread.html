@@ -122,18 +122,18 @@
           {% else %}
             {{ post.body_escaped }}
           {% endif %}
-          {% with post.attachments.all as allattachments %}
-            {% if allattachments|length %}
-              <div class="attachments">
-                <strong>{% trans "Attachments" %}</strong>
-                <ul>
-		{% for attachment in allattachments %}
-		  <li><a href="{{ attachment.fileupload.url }}" target="_blank">{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})</li>
-		{% endfor %}
-                </ul>
-              </div>
-            {% endif %}
-          {% endwith %}
+          {% if post.has_attachments %}
+              {% with post.attachments.all as allattachments %}
+                  <div class="attachments">
+                      <strong>{% trans "Attachments" %}</strong>
+                      <ul>
+                          {% for attachment in allattachments %}
+                              <li><a href="{{ attachment.fileupload.url }}" target="_blank">{{ attachment.fileupload.name|sph_basename }}</a> ({{ attachment.fileupload.size|filesizeformat }})</li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              {% endwith %}
+          {% endif %}
 
           {% endblock post_body %}
 
