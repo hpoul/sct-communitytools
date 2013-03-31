@@ -14,6 +14,7 @@ def clear_category_cache(sender, instance, created, *args, **kwargs):
             cache.delete(category._cache_key_absolute_url())
     else:
         cache.delete(instance._cache_key_absolute_url())
+        cache.delete('category_group_%s' % instance.pk)
 
 
 def clear_post_cache(sender, instance, *args, **kwargs):
@@ -25,7 +26,7 @@ def clear_post_cache(sender, instance, *args, **kwargs):
         return
 
     from sphene.community.models import Group
-    from sphene.sphboard.models import Post, Category
+    from sphene.sphboard.models import Post, Category, PostAttachment
     if instance.pk:  # this is not new object
         if isinstance(instance, Post):
             try:
@@ -52,6 +53,9 @@ def clear_post_cache(sender, instance, *args, **kwargs):
             for category in instance.category_set.all():
                 for post in category.posts.all():
                     cache.delete(post._cache_key_absolute_url())
+        elif isinstance(instance, PostAttachment):
+            cache.delete('has_attachments_%s' % instance.post.pk)
+
 
 def clear_post_4_category_cache(sender, instance, *args, **kwargs):
     """ If post was created, was hidden or moved to another category then clear category cache

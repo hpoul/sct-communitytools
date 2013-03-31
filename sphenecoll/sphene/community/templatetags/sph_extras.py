@@ -1,7 +1,10 @@
-import Image
 import os
 from time import time
 
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 
 from django import template
 from django.template.context import RequestContext

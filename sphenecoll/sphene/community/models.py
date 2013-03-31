@@ -22,11 +22,11 @@ logger = logging.getLogger('sphene.community.models')
 
 
 class Group(models.Model):
-    name = models.CharField(max_length = 250)
-    longname = models.CharField(max_length = 250)
-    default_theme = models.ForeignKey('Theme', null = True, blank = True)
-    parent = models.ForeignKey('Group', null = True, blank = True)
-    baseurl = models.CharField(max_length = 250, help_text = 'The base URL under which this group will be available. Example: sct.sphene.net')
+    name = models.CharField(max_length=250)
+    longname = models.CharField(max_length=250)
+    default_theme = models.ForeignKey('Theme', null=True, blank = True)
+    parent = models.ForeignKey('Group', null=True, blank=True)
+    baseurl = models.CharField(max_length=250, help_text='The base URL under which this group will be available. Example: sct.sphene.net')
 
     def get_name(self):
         return self.longname or self.name
@@ -67,6 +67,7 @@ USERLEVEL_CHOICES = (
     (0, ugettext_lazy('Normal User')),
     (5, ugettext_lazy('Administrator')),
     )
+
 
 class GroupMember(models.Model):
     group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
@@ -110,6 +111,7 @@ NAVIGATION_TYPES = (
         (0, 'Left Main Navigation'),
         (1, 'Top navigation')
         )
+
 
 class Navigation(models.Model):
     group = models.ForeignKey(Group, verbose_name=ugettext_lazy(u'Group'))
@@ -162,7 +164,6 @@ class CommunityUserProfile(models.Model):
                                 blank = True, null = True, )
     avatar_height = models.IntegerField(ugettext_lazy(u'Avatar height'), blank = True, null = True, )
     avatar_width = models.IntegerField(ugettext_lazy(u'Avatar width'), blank = True, null = True, )
-
 
     changelog = ( ( '2007-08-10 00', 'alter', 'ADD avatar varchar(100)'   ),
                   ( '2007-08-10 01', 'alter', 'ADD avatar_height integer' ),
@@ -381,6 +382,7 @@ class RoleGroupMember(models.Model):
 
 tag_sanitize_regex = re.compile(r'[^\w]+', re.S | re.U)
 
+
 def tag_sanitize(tag_label):
     return tag_sanitize_regex.sub('', tag_label).lower()
 
@@ -479,6 +481,7 @@ def tag_get_or_create_label(group, tag_label_str):
 
 
 qn = connection.ops.quote_name
+
 
 def get_queryset_and_model(queryset_or_model):
     try:

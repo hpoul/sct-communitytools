@@ -249,10 +249,13 @@ try:
     from djaptcha.models import CaptchaRequest
     from cStringIO import StringIO
     import random
-    import Image,ImageDraw,ImageFont,ImageChops
-    
 except:
     pass
+
+try:
+    from PIL import Image,ImageDraw,ImageFont,ImageChops
+except ImportError:
+    import Image,ImageDraw,ImageFont,ImageChops
 
 # You need to get the font from somewhere and have it accessible by Django
 # I have it set in the djaptcha's settings dir

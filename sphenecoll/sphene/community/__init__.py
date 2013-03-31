@@ -34,7 +34,10 @@ def clean_community_advprofile_avatar(self):
     if size > max_size:
         raise djangoforms.ValidationError( _(u"Max upload filesize of %(max_size)d bytes exceeded. (Your file had %(size)d bytes)") % {'max_size':max_size, 'size':size} )
 
-    from PIL import Image
+    try:
+        from PIL import Image
+    except ImportError:
+        import Image
 
     try:
         # Verify image dimensions ..

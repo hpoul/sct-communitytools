@@ -26,7 +26,7 @@ from sphene.sphboard.forms import PollForm, PollChoiceForm, PostForm, \
 from sphene.sphboard.models import Category, Post, PostAnnotation, ThreadInformation, Poll, PollChoice, PollVoters, POST_MARKUP_CHOICES, THREAD_TYPE_MOVED, THREAD_TYPE_DEFAULT, get_all_viewable_categories, ThreadLastVisit, CategoryLastVisit, PostAttachment
 
 
-def showCategory(request, group, category_id = None, showType = None, slug = None):
+def showCategory(request, group, category_id=None, showType=None, slug=None):
     """
     displays either all root categories, or the contents of a category.
     the contents of a category could be other categories or forum threads.
@@ -40,26 +40,28 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
     args = {
         'group__isnull': True,
         'parent__isnull': True,
-        }
+    }
     categoryObject = None
 
     sphdata = get_current_sphdata()
 
-    if category_id != None and category_id != '0':
+    if category_id is not None and category_id != '0':
         args['parent__isnull'] = False
         args['parent'] = category_id
-        categoryObject = get_object_or_404(Category, pk = category_id)
-        if not categoryObject.has_view_permission( request.user ):
+        categoryObject = get_object_or_404(Category, pk=category_id)
+        if not categoryObject.has_view_permission(request.user):
             raise PermissionDenied()
         categoryObject.touch(request.session, request.user)
-        blog_feed_url = sph_reverse('sphboard-feeds', kwargs = { 'category_id': categoryObject.id })
-        add_rss_feed( blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name )
 
-        if sphdata != None: sphdata['subtitle'] = categoryObject.name
+        blog_feed_url = sph_reverse('sphboard-feeds', kwargs={'category_id': categoryObject.id})
+        add_rss_feed(blog_feed_url, 'Latest Threads in %s RSS Feed' % categoryObject.name)
+
+        if sphdata is not None:
+            sphdata['subtitle'] = categoryObject.name
     elif sphdata is not None:
         sphdata['subtitle'] = ugettext('Forum Overview')
 
-    if group != None:
+    if group is not None:
         args['group__isnull'] = False
         args['group'] = group
 
@@ -67,19 +69,19 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         categories = []
     else:
         if 'group' in args:
-            categories = Category.sph_objects.filter( group = args['group'] )#filter_for_group( args['group'] )
+            categories = Category.sph_objects.filter(group=args['group'])  #filter_for_group( args['group'] )
             if 'parent' in args:
-                categories = categories.filter( parent = category_id )
+                categories = categories.filter(parent=category_id)
             else:
-                categories = categories.filter( parent__isnull = True )
-            categories = [ category for category in categories if category.has_view_permission( request.user ) ]
+                categories = categories.filter(parent__isnull=True)
+            categories = [category for category in categories if category.has_view_permission(request.user)]
         else:
-            categories = Category.objects.filter( **args )
+            categories = Category.objects.filter(**args)
 
-    context = { 'rootCategories': categories,
-                'category': categoryObject,
-                'allowPostThread': categoryObject and categoryObject.allowPostThread( request.user ),
-                'category_id': category_id, }
+    context = {'rootCategories': categories,
+               'category': categoryObject,
+               'allowPostThread': categoryObject and categoryObject.allowPostThread(request.user),
+               'category_id': category_id}
 
     try:
         context['search_posts_url'] = sph_reverse('sphsearchboard_posts')
@@ -87,21 +89,23 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
         pass
 
     templateName = 'sphene/sphboard/listCategories.html'
-    if categoryObject == None:
+    if categoryObject is None:
         if showType != 'threads':
-            return render_to_response( templateName, context,
-                                       context_instance = RequestContext(request) )
+            return render_to_response(templateName, context,
+                                      context_instance=RequestContext(request))
 
         ## Show the latest threads from all categories.
-        allowed_categories = get_all_viewable_categories( group, request.user )
+        allowed_categories = get_all_viewable_categories(group, request.user)
 
-        if group != None: thread_args = { 'category__group': group }
-        else: thread_args = { 'category__group__isnull': True }
+        if group is not None:
+            thread_args = {'category__group': group}
+        else:
+            thread_args = {'category__group__isnull': True}
         #thread_args[ 'thread__isnull'] = True
         thread_args[ 'category__id__in'] = allowed_categories
         thread_args[ 'root_post__is_hidden'] = 0
         context['isShowLatest'] = True
-        thread_list = ThreadInformation.objects.filter( **thread_args )
+        thread_list = ThreadInformation.objects.filter(**thread_args)
     else:
         category_type = categoryObject.get_category_type()
         templateName = category_type.get_threadlist_template()
@@ -109,19 +113,19 @@ def showCategory(request, group, category_id = None, showType = None, slug = Non
 
     #thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
     if showType != 'threads':
-        thread_list = thread_list.order_by( '-sticky_value', '-thread_latest_postdate' )
+        thread_list = thread_list.order_by('-sticky_value', '-thread_latest_postdate')
     else:
-        thread_list = thread_list.order_by( '-thread_latest_postdate' )
+        thread_list = thread_list.order_by('-thread_latest_postdate')
     thread_list = thread_list.select_related('root_post', 'latest_post', 'root_post__category', 'root_post__author', 'latest_post__author')
 
-    res =  object_list( request = request,
-                        queryset = thread_list,
-                        template_name = templateName,
-                        extra_context = context,
-                        template_object_name = 'thread',
-                        allow_empty = True,
-                        paginate_by = 10,
-                        )
+    res = object_list(request=request,
+                      queryset=thread_list,
+                      template_name=templateName,
+                      extra_context=context,
+                      template_object_name='thread',
+                      allow_empty=True,
+                      paginate_by=10,
+                      )
 
     res.sph_lastmodified = True
     return res
@@ -153,31 +157,32 @@ def listThreads(request, group, category_id):
                                    { 'threadlist': threadlist, })
 
 
-def showThread(request, thread_id, group = None, slug = None):
-    thread = get_object_or_404(Post.objects, pk = thread_id )
+def showThread(request, thread_id, group=None, slug=None):
+    thread = get_object_or_404(Post.objects, pk=thread_id )
     if not thread.category.has_view_permission(request.user):
         raise PermissionDenied()
     thread.viewed( request.session, request.user )
 
     sphdata = get_current_sphdata()
-    if sphdata != None: sphdata['subtitle'] = thread.subject
+    if sphdata is not None:
+        sphdata['subtitle'] = thread.subject
 
     category_type = thread.category.get_category_type()
     template_name = category_type.get_show_thread_template()
 
-    res =  object_list( request = request,
-                        #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
-                        queryset = thread.get_all_posts().order_by('postdate'),
-                        allow_empty = True,
-                        template_name = template_name,
-                        extra_context = { 'thread': thread,
-                                          'allowPosting': thread.allowPosting( request.user ),
-                                          'postSubject': 'Re: ' + thread.subject,
-                                          'category_type': category_type,
-                                          },
-                        template_object_name = 'post',
-                        paginate_by = get_sph_setting( 'board_post_paging' ),
-                        )
+    res = object_list(request=request,
+                      #queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
+                      queryset=thread.get_all_posts().order_by('postdate'),
+                      allow_empty=True,
+                      template_name=template_name,
+                      extra_context={'thread': thread,
+                                     'allowPosting': thread.allowPosting( request.user ),
+                                     'postSubject': 'Re: ' + thread.subject,
+                                     'category_type': category_type,
+                                     },
+                      template_object_name='post',
+                      paginate_by=get_sph_setting( 'board_post_paging' ),
+                      )
 
     res.sph_lastmodified = thread.get_latest_post().postdate
     return res

@@ -1,4 +1,3 @@
-
 from datetime import timedelta
 import mimetypes
 
@@ -16,7 +15,6 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.template.context import RequestContext
-from django.template import loader
 from django.conf import settings
 from django.contrib.auth.models import User
 from django import forms
@@ -139,7 +137,7 @@ def get_tags_for_categories(categories):
     group_ids = list()
     category_ids = list()
     for category in categories:
-        group = category.group
+        group = category.get_group()
         if not group.id in group_ids:
             group_ids.append(group.id)
         category_ids.append(category.id)
@@ -189,18 +187,18 @@ def get_all_viewable_categories(group, user):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length = 250)
-    group = models.ForeignKey(Group, null = True, blank = True)
-    parent = models.ForeignKey('self', related_name = 'subcategories', null = True, blank = True)
-    description = models.TextField(blank = True)
-    allowview = models.IntegerField( default = -1, choices = POSTS_ALLOWED_CHOICES )
-    allowthreads = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
-    allowreplies = models.IntegerField( default = 0, choices = POSTS_ALLOWED_CHOICES )
-    sortorder = models.IntegerField( default = 0, null = False )
+    name = models.CharField(max_length=250)
+    group = models.ForeignKey(Group, null=True, blank=True)
+    parent = models.ForeignKey('self', related_name='subcategories', null=True, blank=True)
+    description = models.TextField(blank=True)
+    allowview = models.IntegerField(default=-1, choices=POSTS_ALLOWED_CHOICES)
+    allowthreads = models.IntegerField(default=0, choices=POSTS_ALLOWED_CHOICES)
+    allowreplies = models.IntegerField(default=0, choices=POSTS_ALLOWED_CHOICES)
+    sortorder = models.IntegerField(default=0, null=False)
 
-    slug = models.CharField(max_length = 250, unique = True, db_index = True)
+    slug = models.CharField(max_length=250, unique=True, db_index=True)
 
-    category_type = models.CharField(max_length = 250, blank = True, db_index = True, choices = get_category_type_choices())
+    category_type = models.CharField(max_length=250, blank=True, db_index=True, choices=get_category_type_choices())
 
     objects = AccessCategoryManager()#models.Manager()
     sph_objects = AccessCategoryManager()
@@ -259,7 +257,7 @@ class Category(models.Model):
             return DefaultCategoryType( self )
         ct = categorytyperegistry.get_category_type( self.category_type )
         if ct is None:
-            raise Exception( 'Invalid category type "%s" for "%s"' % (self.category_type, self.name))
+            raise Exception('Invalid category type "%s" for "%s"' % (self.category_type, self.name))
         return ct(self)
 
     def get_rolemember_limitation_objects(group):
@@ -271,17 +269,17 @@ class Category(models.Model):
 
     def get_children(self):
         """ Returns all children of this category in which the user has view permission. """
-        return Category.sph_objects.filter_for_group( self.group ).filter( parent = self )
+        return Category.sph_objects.filter_for_group(self.get_group()).filter( parent = self )
 
     def canContainPosts(self):
         return self.allowthreads != 3
 
     def get_thread_list(self):
         #return self.posts.filter( thread__isnull = True )
-        if get_sph_setting( 'workaround_select_related_bug' ):
+        if get_sph_setting('workaround_select_related_bug'):
             # See http://code.djangoproject.com/ticket/4789
             return self.threadinformation_set
-        return self.threadinformation_set.filter(root_post__is_hidden = 0).select_related( depth = 1 )
+        return self.threadinformation_set.filter(root_post__is_hidden=0).select_related(depth=1)
 
     def _cache_key_thread_count(self):
         return '%s_category_tc_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)
@@ -338,18 +336,17 @@ class Category(models.Model):
     def has_view_permission(self, user = None):
         if not user:
             user = get_current_user()
-        return self.testAllowance(user, self.allowview) \
-               or has_permission_flag(user, 'sphboard_view', self)
+        return self.testAllowance(user, self.allowview) or has_permission_flag(user, 'sphboard_view', self)
 
     def testAllowance(self, user, level):
         if level == -1:
-            return True;
-        if user == None or not user.is_authenticated():
-            return False;
+            return True
+        if user is None or not user.is_authenticated():
+            return False
         if level == 0:
-            return True;
+            return True
 
-        if level == 1 and self.group.get_member(user) != None:
+        if level == 1 and self.get_group().get_member(user) is not None:
             return True
 
         if level <= 2 and user.is_staff:
@@ -474,9 +471,9 @@ class Category(models.Model):
             self.__get_monitor(user).delete()
             if hasattr(self, '__monitor'): delattr(self,'__monitor')
         else:
-            monitor = Monitor(group = self.group,
-                              user = user,
-                              category = self)
+            monitor = Monitor(group=self.get_group(),
+                              user=user,
+                              category=self)
             monitor.save()
             self.__monitor = monitor
             return monitor
@@ -503,7 +500,7 @@ class Category(models.Model):
             if self.parent:
                 monitor = self.parent.has_monitor()
             else:
-                monitor = self.group.has_monitor()
+                monitor = self.get_group().has_monitor()
 
         self.__monitor = monitor
         return self.__monitor
@@ -521,7 +518,7 @@ class Category(models.Model):
         key = self._cache_key_absolute_url()
         res = cache.get(key)
         if not res:
-            kwargs = { 'groupName': self.group.name,
+            kwargs = { 'groupName': self.get_group().name,
                        'category_id': self.id }
             if get_sph_setting('board_slugify_links'):
                 kwargs['slug'] = slugify(self.name) or '_'
@@ -534,23 +531,34 @@ class Category(models.Model):
     _get_absolute_url = sphpermalink(_get_absolute_url)
 
     def get_absolute_post_thread_url(self):
-        return ('sphboard_post_thread', (), { 'groupName': self.group.name, 'category_id': self.id })
+        return ('sphboard_post_thread', (), {'groupName': self.get_group().name, 'category_id': self.id})
     get_absolute_post_thread_url = sphpermalink(get_absolute_post_thread_url)
 
     def get_absolute_url_rss_latest_threads(self):
         """ Returns the absolute url to the RSS feed displaying the latest threads.
         This will only work since django changeset 4901 (>0.96) """
-        return reverse( 'sphboard-feeds',
-                        urlconf = get_urlconf(),
-                        kwargs = { 'category_id': self.id } )
+        return reverse('sphboard-feeds',
+                       urlconf=get_urlconf(),
+                       kwargs={'category_id': self.id})
 
     def get_absolute_latest_url(self):
-        return ('sphboard_latest', (), { 'groupName': self.group.name, 'category_id': self.id, })
+        return ('sphboard_latest', (), {'groupName': self.get_group().name, 'category_id': self.id})
     get_absolute_latest_url = sphpermalink(get_absolute_latest_url)
 
     def get_absolute_togglemonitor_url(self):
-        return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.group.name, 'monitortype': 'category', 'object_id': self.id, })
+        return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.get_group().name, 'monitortype': 'category', 'object_id': self.id, })
     get_absolute_togglemonitor_url = sphpermalink(get_absolute_togglemonitor_url)
+
+    def get_group(self):
+        res = getattr(self, '_group', None)
+        if not res:
+            cache_key = 'category_group_%s' % self.pk
+            res = cache.get(cache_key)
+            if not res:
+                res = self.group
+                cache.set(cache_key, res)
+            setattr(self, '_group', res)
+        return res
     
     def __unicode__(self):
         return self.name;
@@ -642,8 +650,8 @@ class Post(models.Model):
     if anything has to be done when a new post is created it is important to make sure that
     'is_hidden' is 0 - if it is non-0 it is not really created right now.
     """
-    status = models.IntegerField(default = 0, editable = False )
-    category = models.ForeignKey(Category, related_name = 'posts', editable = False )
+    status = models.IntegerField(default = 0, editable=False )
+    category = models.ForeignKey(Category, related_name='posts', editable = False )
     subject = models.CharField(max_length = 250)
     body = models.TextField()
     thread = models.ForeignKey('self', null = True, editable = False )
@@ -657,7 +665,7 @@ class Post(models.Model):
     # (if something is hidden, it is ALWAYS hidden, not even shown to an administrator.
     #  a custom category type might change this behavior tough by adding a 
     #  administration interface for hidden posts.)
-    is_hidden = models.IntegerField(default = 0, editable = False, db_index = True )
+    is_hidden = models.IntegerField(default=0, editable=False, db_index=True )
 
     # allobjects also contain hidden posts.
     allobjects = models.Manager()
@@ -673,12 +681,16 @@ class Post(models.Model):
 
     def is_sticky(self):
         return self.status & POST_STATUS_STICKY
+
     def is_closed(self):
         return self.status & POST_STATUS_CLOSED
+
     def is_poll(self):
         return self.status & POST_STATUS_POLL
+
     def is_annotated(self):
         return self.status & POST_STATUS_ANNOTATED
+
     def is_new(self):
         return self.status & POST_STATUS_NEW
 
@@ -727,6 +739,14 @@ class Post(models.Model):
 
     def replyCount(self):
         return self.postCount() - 1
+
+    def has_attachments(self):
+        cache_key = 'has_attachments_%s' % self.pk
+        res = cache.get(cache_key, None)
+        if res is None:
+            res = self.attachments.exists()
+            cache.set(cache_key, res)
+        return res
 
     def allow_posting(self, user):
         """
@@ -914,9 +934,9 @@ class Post(models.Model):
         cache.delete( self.__get_render_cachekey() )
 
     def viewed(self, session, user):
-        if get_sph_setting( 'board_count_views' ):
+        if get_sph_setting('board_count_views'):
             threadinfo = self.get_threadinformation()
-            threadinfo.view_count += 1
+            threadinfo.view_count = F('view_count') + 1
             threadinfo.save()
         self.touch(session, user)
 
@@ -942,7 +962,6 @@ class Post(models.Model):
 
         self.category.update_unread_status(user)
         return False
-
 
     def has_new_posts(self):
         if hasattr(self, '__has_new_posts'): return self.__has_new_posts
@@ -976,7 +995,6 @@ class Post(models.Model):
             return threadLastVisit.lastvisit < latest_post.postdate
         except IndexError:
             return True
-
 
     def poll(self):
         try:
@@ -1020,7 +1038,7 @@ class Post(models.Model):
             thread = self.thread or self
             monitor = Monitor( thread = thread,
                                category = thread.category,
-                               group = thread.category.group,
+                               group = thread.category.get_group(),
                                user = user, )
             monitor.save()
             self.__monitor = monitor
@@ -1074,13 +1092,13 @@ class Post(models.Model):
                     monitors = monitors | allmonitors.filter(category=category, thread__isnull=True)
                     category = category.parent
                     # group monitors
-                    monitors = monitors | allmonitors.filter(group=self.category.group, category__isnull=True,
+                    monitors = monitors | allmonitors.filter(group=self.category.get_group(), category__isnull=True,
                                                              thread__isnull=True)
                     #monitors = Monitor.objects.filter(myQ)
                     
                 subject = _('New Forum Post in "%(category_name)s": %(subject)s') % {'category_name':self.category.name,
                                                                                      'subject':self.subject}
-                group = get_current_group() or self.category.group
+                group = get_current_group() or self.category.get_group()
 
                 body = render_to_string('sphene/sphboard/new_post_email.txt',
                                         {'baseurl': group.baseurl,
@@ -1156,7 +1174,7 @@ class Post(models.Model):
         return res
 
     def _get_absolute_url(self):
-        kwargs = { 'groupName': self.category.group.name,
+        kwargs = { 'groupName': self.category.get_group().name,
                    'thread_id': self.thread and self.thread.id or self.id }
         if get_sph_setting('board_slugify_links'):
             name = 'sphboard_show_thread'
@@ -1167,23 +1185,23 @@ class Post(models.Model):
     _get_absolute_url = sphpermalink(_get_absolute_url)
     
     def get_absolute_editurl(self):
-        return ('sphene.sphboard.views.post', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'post_id': self.id })
+        return ('sphene.sphboard.views.post', (), { 'groupName': self.category.get_group().name, 'category_id': self.category.id, 'post_id': self.id })
     get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def get_absolute_hideurl(self):
-        return ('sphene.sphboard.views.hide', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+        return ('sphene.sphboard.views.hide', (), { 'groupName': self.category.get_group().name, 'post_id': self.id })
     get_absolute_hideurl = sphpermalink(get_absolute_hideurl)
 
     def get_absolute_moveposturl(self):
-        return ('sphene.sphboard.views.move_post_1', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+        return ('sphene.sphboard.views.move_post_1', (), { 'groupName': self.category.get_group().name, 'post_id': self.id })
     get_absolute_moveposturl = sphpermalink(get_absolute_moveposturl)
 
     def get_absolute_postreplyurl(self):
-        return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.group.name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })
+        return ('sphene.sphboard.views.reply', (), { 'groupName': self.category.get_group().name, 'category_id': self.category.id, 'thread_id': self.get_thread().id })
     get_absolute_postreplyurl = sphpermalink(get_absolute_postreplyurl)
 
     def get_absolute_annotate_url(self):
-        return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.group.name, 'post_id': self.id })
+        return ('sphene.sphboard.views.annotate', (), { 'groupName': self.category.get_group().name, 'post_id': self.id })
     get_absolute_annotate_url = sphpermalink(get_absolute_annotate_url)
 
     def get_absolute_lastvisit_url(self):
@@ -1217,6 +1235,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = ugettext_lazy('Post')
         verbose_name_plural = ugettext_lazy('Posts')
+
 
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
@@ -1293,8 +1312,8 @@ class ThreadInformationManager(models.Manager):
 class ThreadInformation(models.Model):
     """ A object which holds information about threads and caches
     a couple of things which are redundant. """
-    root_post = models.ForeignKey( Post, null = False, blank = False )
-    category = models.ForeignKey( Category )
+    root_post = models.ForeignKey(Post, null=False, blank=False)
+    category = models.ForeignKey(Category)
 
     # A thread type allows the decleration of a "Moved" thread.
     thread_type = models.IntegerField( choices = thread_types )
@@ -1312,7 +1331,6 @@ class ThreadInformation(models.Model):
     thread_latest_postdate = models.DateTimeField( db_index = True )
 
     objects = ThreadInformationManager()
-
 
     def save(self, force_insert=False, force_update=False):
         if self.thread_latest_postdate is None:
@@ -1413,17 +1431,17 @@ class ThreadInformation(models.Model):
     ###################################
 
     def get_threadlist_subject(self):
-        return self.category.get_category_type().get_threadlist_subject( self )
+        return self.category.get_category_type().get_threadlist_subject(self)
 
     def get_absolute_url(self):
-        cturl = self.category.get_category_type().get_absolute_url_for_post( self.root_post )
+        cturl = self.category.get_category_type().get_absolute_url_for_post(self.root_post)
         if cturl:
             return cturl
         #return self._get_absolute_url()
         return self.root_post.get_absolute_url()
 
     def get_absolute_url_nopaging(self):
-        cturl = self.category.get_category_type().get_absolute_url_for_post( self.root_post )
+        cturl = self.category.get_category_type().get_absolute_url_for_post(self.root_post)
         if cturl:
             return cturl
         return self._get_absolute_url()
@@ -1443,14 +1461,14 @@ class ThreadInformation(models.Model):
             return False
 
         if user.is_superuser \
-               or has_permission_flag( user, 'sphboard_delete_moved_threadinformation', self.category ):
+               or has_permission_flag(user, 'sphboard_delete_moved_threadinformation', self.category):
             return True
 
         return False
 
     def _get_absolute_url(self):
-        kwargs = { 'groupName': self.category.group.name,
-                   'thread_id': self.root_post.id }
+        kwargs = {'groupName': self.category.get_group().name,
+                  'thread_id': self.root_post.id}
         name = 'sphboard_show_thread_without_slug'
         if get_sph_setting('board_slugify_links'):
             slug = slugify(self.root_post.subject)
@@ -1684,7 +1702,7 @@ class UserPostCount(models.Model):
 
 
 def update_post_count(instance, **kwargs):
-    UserPostCount.objects.update_post_count( instance.author, instance.category.group )
+    UserPostCount.objects.update_post_count( instance.author, instance.category.get_group() )
 
 signals.post_save.connect(update_post_count,
                    sender = Post)
@@ -1792,8 +1810,8 @@ def board_profile_display(sender, signal, request, user, **kwargs):
     return { 'additionalprofile': ret,
              'block': mark_safe(blocks), }
 
-profile_edit_init_form.connect(board_profile_edit_init_form, sender = EditProfileForm)
-profile_edit_save_form.connect(board_profile_edit_save_form, sender = EditProfileForm)
+profile_edit_init_form.connect(board_profile_edit_init_form, sender=EditProfileForm)
+profile_edit_save_form.connect(board_profile_edit_save_form, sender=EditProfileForm)
 profile_display.connect(board_profile_display)
 signals.post_save.connect(clear_category_cache, sender=Group)
 signals.post_save.connect(clear_category_cache, sender=Category)
@@ -1805,3 +1823,4 @@ signals.pre_save.connect(clear_post_4_category_cache, sender=Post)
 signals.pre_save.connect(mark_thread_moved_deleted, sender=Post)
 signals.post_save.connect(clear_category_unread_after_post_move, sender=Post)
 signals.post_save.connect(update_category_last_visit_cache, sender=CategoryLastVisit)
+signals.post_save.connect(clear_post_cache, sender=PostAttachment)
