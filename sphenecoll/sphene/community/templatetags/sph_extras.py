@@ -359,7 +359,7 @@ def sph_showavatar(user, maxwidth = None):
     if avatar is None:
         if not profile or not profile.avatar:
             avatar = get_sph_setting( 'community_avatar_default' )
-            log.error("got default avatar: %s", avatar)
+            log.debug("got default avatar: %s", avatar)
             if not avatar:
                 return ''
             avatar_width = get_sph_setting( 'community_avatar_default_width' )
