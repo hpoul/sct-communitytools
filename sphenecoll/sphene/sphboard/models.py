@@ -1770,9 +1770,11 @@ def board_profile_edit_init_form(sender, instance, signal, *args, **kwargs):
         instance.fields['markup'] = forms.CharField(widget = forms.Select( choices = POST_MARKUP_CHOICES, ),
                                                     required = False,
                                                     initial = profile.markup, )
-    instance.fields['default_notifyme_value'] = forms.NullBooleanField( label = _(u'Default Notify Me - Value'),
-                                                                        required = False,
-                                                                        initial = profile.default_notifyme_value, )
+    instance.fields['default_notifyme_value'] = forms.NullBooleanField(label=_(u'Default Notify Me - Value'),
+                                                                       required=False,
+                                                                       initial=profile.default_notifyme_value,
+                                                                       help_text=_('If selected then you\'ll be automatically notified about changes in threads you\'ve written something. Be careful! You may get tons of e-mails!'))
+
 
 def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     user = instance.user
@@ -1792,6 +1794,7 @@ def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     profile.save()
     messages.success(request,  message = _(u"Successfully saved board profile.") )
 
+
 def board_profile_display(sender, signal, request, user, **kwargs):
     ret = '<tr><th>%s</th><td>%d</td></tr>' % (
             _('Posts'), UserPostCount.objects.get_post_count(user, get_current_group()), )
@@ -1799,7 +1802,7 @@ def board_profile_display(sender, signal, request, user, **kwargs):
         profile = BoardUserProfile.objects.get( user = user, )
 
         if profile.signature:
-            ret += '<tr><th colspan="2">%s</th></tr><tr><td colspan="2">%s</td></tr>' % (
+            ret += '<tr class="board-signature"><th colspan="2">%s:</th></tr><tr><td colspan="2">%s</td></tr>' % (
                 _('Board Signature'), profile.render_signature(), )
 
     except BoardUserProfile.DoesNotExist:
