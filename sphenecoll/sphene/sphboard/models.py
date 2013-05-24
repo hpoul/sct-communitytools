@@ -1737,7 +1737,7 @@ def get_rendered_signature(user_id):
 
     upc = UserPostCount.objects.get_post_count(User.objects.get(pk=user_id), get_current_group())
 
-    if upc.post_count < get_sph_setting('board_signature_required_post_count'):
+    if upc < get_sph_setting('board_signature_required_post_count'):
         rendered_profile = ''
     else:
         try:
