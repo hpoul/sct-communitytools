@@ -27,6 +27,7 @@ add_setting_defaults( {
     # Default 6 hours
     'board_body_cache_timeout': 6 * 3600,
     'board_signature_cache_timeout': 6 * 3600,
+    'board_signature_required_post_count': 0,
     'board_authorinfo_cache_timeout': 6 * 3600,
 
     # See http://code.djangoproject.com/ticket/4789

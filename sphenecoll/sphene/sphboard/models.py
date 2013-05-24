@@ -1734,13 +1734,18 @@ def get_rendered_signature(user_id):
     rendered_profile = cache.get( cachekey )
     if rendered_profile is not None:
         return rendered_profile
-    
-    try:
-        profile = BoardUserProfile.objects.get( user__pk = user_id, )
-        
-        rendered_profile = profile.render_signature()
-    except BoardUserProfile.DoesNotExist:
+
+    upc = UserPostCount.objects.get_post_count(User.objects.get(pk=user_id), get_current_group())
+
+    if upc.post_count < get_sph_setting('board_signature_required_post_count'):
         rendered_profile = ''
+    else:
+        try:
+            profile = BoardUserProfile.objects.get( user__pk = user_id, )
+
+            rendered_profile = profile.render_signature()
+        except BoardUserProfile.DoesNotExist:
+            rendered_profile = ''
 
     cache.set( cachekey, rendered_profile, get_sph_setting( 'board_signature_cache_timeout' ) )
     
