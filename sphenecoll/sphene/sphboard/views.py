@@ -234,10 +234,11 @@ def post(request, group = None, category_id = None, post_id = None, thread_id = 
     """
     if 'type' in request.REQUEST and request.REQUEST['type'] == 'preview':
         # If user just wants a preview, simply create a dummy post so it can be rendered.
-        previewpost = Post( body = request.REQUEST['body'],
-                            markup = request.REQUEST.get('markup', None), )
+        previewpost = Post(body=request.REQUEST['body'],
+                           markup=request.REQUEST.get('markup', None))
+        if request.user.is_authenticated():
+            previewpost.author_id = request.user.pk
         return HttpResponse( unicode(previewpost.body_escaped()) )
-
 
     # All available objects should be loaded from the _id variables.
     post_obj = None
