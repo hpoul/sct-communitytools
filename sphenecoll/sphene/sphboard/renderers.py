@@ -20,7 +20,7 @@ class BaseRenderer(object):
     def __init__(self):
         pass
     
-    def render(self, text):
+    def render(self, text, apply_spammer_limits=False):
         return text
         
 
@@ -31,15 +31,14 @@ class BBCodeRenderer(BaseRenderer):
     reference ='<a href="http://en.wikipedia.org/wiki/BBCode" target="_blank">BBCode</a>'
 
     def bbcode_replace(test):
-        print "bbcode ... %s %s %s" % (test.group(1), test.group(2), test.group(3))
         return test.group()
 
-    def render(self, text):
+    def render(self, text, apply_spammer_limits=False):
          if get_sph_setting( 'board_auto_wiki_link_enabled', True ):
              from sphene.sphwiki import wikilink_utils
              return wikilink_utils.render_wikilinks(bbcode.bb2xhtml(text))
          else:
-             return bbcode.bb2xhtml(text)
+             return bbcode.bb2xhtml(text, apply_spammer_limits=apply_spammer_limits)
 
 HTML_ALLOWED_TAGS = {
     'p': ( 'align' ),
@@ -80,7 +79,7 @@ class HtmlRenderer(BaseRenderer):
         print "tag is not allowed ? %s" % test.group(2)
         return test.group().replace('<','&lt;').replace('>','&gt;')
         
-    def render(self, text):
+    def render(self, text, apply_spammer_limits=False):
         """DISABLED.  Render the body as html"""
         if False:
             regex = re.compile("&(?!nbsp;)");
@@ -133,13 +132,14 @@ Class entry in your sphene settings 'board_custom_markup'")\
 
 POST_MARKUP_CHOICES, RENDER_CLASSES = _get_markup_choices()
 
-def render_body(body, markup = None):
+
+def render_body(body, markup=None, apply_spammer_limits=False):
     """ Renders the given body string using the given markup.
     """
     if markup:
         try:
             renderer = RENDER_CLASSES[markup]()
-            return renderer.render(body)
+            return renderer.render(body, apply_spammer_limits)
         except KeyError:
             raise exceptions.ImproperlyConfigured(
                 _(u"Can't render markup '%(markup)s'") % {'markup':markup})

@@ -914,14 +914,19 @@ class Post(models.Model):
         if self.id:
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
+
+        apply_spammer_limits = False
+        upc = UserPostCount.objects.get_post_count(User.objects.get(pk=self.author_id), get_current_group())
+        if upc < get_sph_setting('board_signature_required_post_count'):
+            apply_spammer_limits = True
         if bodyhtml is None:
             # Nothing found in cache, render body.
-            bodyhtml = render_body( body, markup )
+            bodyhtml = render_body(body, markup, apply_spammer_limits)
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
 
         if self.author_id and with_signature:
-            signature = get_rendered_signature( self.author_id )
+            signature = get_rendered_signature( self.author_id, apply_spammer_limits )
             if signature:
                 board_signature_tag = get_sph_setting('board_signature_tag')
                 bodyhtml += board_signature_tag % {'signature':signature}
@@ -1727,7 +1732,7 @@ class ExtendedCategoryConfig(models.Model):
 def __get_signature_cachekey(user_id):
     return '%s_sphboard_signature_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user_id)
 
-def get_rendered_signature(user_id):
+def get_rendered_signature(user_id, apply_spammer_limits):
     """ Returns the rendered signature for the given user. """
     # TODO add caching !
     cachekey = __get_signature_cachekey(user_id)
@@ -1735,9 +1740,7 @@ def get_rendered_signature(user_id):
     if rendered_profile is not None:
         return rendered_profile
 
-    upc = UserPostCount.objects.get_post_count(User.objects.get(pk=user_id), get_current_group())
-
-    if upc < get_sph_setting('board_signature_required_post_count'):
+    if apply_spammer_limits:
         rendered_profile = ''
     else:
         try:

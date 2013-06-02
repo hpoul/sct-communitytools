@@ -468,8 +468,9 @@ class BBTagNode(BBNode):
         return self.bbtag.render_node_bbcode(self)
 
 class BBCodeParser:
-    def __init__(self, root_allows_inline = False):
+    def __init__(self, root_allows_inline = False, apply_spammer_limits=False):
         self.root_allows_inline = root_allows_inline
+        self.apply_spammer_limits = apply_spammer_limits
 
     def push_text_node(self, text, escaped=False):
         """Add a text node to the current node"""
@@ -510,6 +511,8 @@ class BBCodeParser:
 
     def push_tag_node(self, name, parameter):
         """Add a BBTagNode of name 'name' onto the tree"""
+        if self.apply_spammer_limits and name == 'url':
+            return
         if not self.current_node.allows(name):
             new_tag = _TAGDICT[name]
             if new_tag.discardable:
@@ -567,11 +570,11 @@ class BBCodeParser:
             bbcode = bbcode.replace(key, val)
 
         # Replace URLs with [url=...]
-        bbcode = re.sub( r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|https)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode )
+        bbcode = re.sub(r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|https)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode)
         
         return bbcode
 
-    def parse(self, bbcode):
+    def parse(self, bbcode, apply_spammer_limits=False):
         """Parse the bbcode into a tree of elements"""        
         self.root_node = BBRootNode(self.root_allows_inline)
         self.current_node = self.root_node
@@ -626,9 +629,9 @@ class BBCodeParser:
         """Render the parsed tree as corrected BBCode"""
         return self.root_node.render_bbcode()
 
-def bb2xhtml(bbcode, root_allows_inline = False):
+def bb2xhtml(bbcode, root_allows_inline = False, apply_spammer_limits=False):
     "Render bbcode as XHTML"
-    parser = BBCodeParser(root_allows_inline)
+    parser = BBCodeParser(root_allows_inline, apply_spammer_limits)
     parser.parse(bbcode)
     return parser.render_xhtml()
     
