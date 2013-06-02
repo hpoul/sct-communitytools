@@ -916,7 +916,10 @@ class Post(models.Model):
             bodyhtml = cache.get( cachekey )
 
         apply_spammer_limits = False
-        upc = UserPostCount.objects.get_post_count(User.objects.get(pk=self.author_id), get_current_group())
+        try:
+            upc = UserPostCount.objects.get_post_count(User.objects.get(pk=self.author_id), get_current_group())
+        except User.DoesNotExist:
+            upc = 0
         if upc < get_sph_setting('board_signature_required_post_count'):
             apply_spammer_limits = True
         if bodyhtml is None:
