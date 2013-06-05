@@ -34,6 +34,8 @@ from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache
                                     clear_category_unread_after_post_move, mark_thread_moved_deleted
 
 import logging
+from sphene.sphboard.utils import is_spammer
+
 logger = logging.getLogger('sphene.sphboard.models')
 
 """
@@ -915,13 +917,7 @@ class Post(models.Model):
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
 
-        apply_spammer_limits = False
-        try:
-            upc = UserPostCount.objects.get_post_count(User.objects.get(pk=self.author_id), get_current_group())
-        except User.DoesNotExist:
-            upc = 0
-        if upc < get_sph_setting('board_signature_required_post_count'):
-            apply_spammer_limits = True
+        apply_spammer_limits = is_spammer(self.author_id)
         if bodyhtml is None:
             # Nothing found in cache, render body.
             bodyhtml = render_body(body, markup, apply_spammer_limits)
@@ -1653,13 +1649,13 @@ class BoardUserProfile(models.Model):
     signature = models.TextField(ugettext_lazy(u'Signature'), default = '')
     
     markup = models.CharField(ugettext_lazy(u'Markup'), max_length = 250,
-                              null = True,
-                              choices = POST_MARKUP_CHOICES, )
+                              null=True,
+                              choices=POST_MARKUP_CHOICES, )
 
     default_notifyme_value = models.NullBooleanField(null = True, )
 
     def render_signature(self):
-        if self.signature == '':
+        if self.signature == '' or is_spammer(self.user_id):
             return ''
         return render_body(self.signature, self.markup)
 
