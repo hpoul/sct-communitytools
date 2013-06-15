@@ -17,7 +17,6 @@ from sphene.community.sphpermalink import sphpermalink
 from sphene.community.signals import clear_user_displayname, clear_permissions_cache_rgm, clear_permissions_cache_rml, \
                                      clear_permissions_cache_rm, clear_permission_flag_cache
 from sphene.community.sphsettings import get_sph_setting
-from sphene.sphboard.utils import is_spammer
 
 logger = logging.getLogger('sphene.community.models')
 
@@ -656,7 +655,7 @@ def community_profile_display(sender, signal, request, user, **kwargs):
         profile = CommunityUserProfile.objects.get( user = user, )
     except CommunityUserProfile.DoesNotExist:
         return None
-
+    from sphene.sphboard.utils import is_spammer
     ret = ''
     fields = CommunityUserProfileField.objects.all()
     apply_spammer_limits = is_spammer(user.pk)
