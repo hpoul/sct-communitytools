@@ -615,7 +615,7 @@ def admin_users(request, group):
         if search_form.is_valid():
             username = search_form.cleaned_data['username']
             if username:
-                search_params = Q(username__istartswith=username)|Q(first_name__istartswith=username)|Q(last_name__istartswith=username)
+                search_params = Q(username__istartswith=username)|Q(first_name__istartswith=username)|Q(last_name__istartswith=username)|Q(email__istartswith=username)
                 users = users.filter(search_params)
                 search_qs = urllib.urlencode(search_form.cleaned_data)
     
