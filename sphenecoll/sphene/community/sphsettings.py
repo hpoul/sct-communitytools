@@ -66,6 +66,8 @@ sph_settings_defaults = {
     'community_user_displayname_fallback': 'fullname',
     # name of default group created by sphene
     'default_group_name':'example',
+    # name of the fields that should be not displayed if user might be a spammer
+    'community_user_profile_spammer_restricted_fields': [],
 
     }
 
