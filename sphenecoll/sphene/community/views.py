@@ -26,7 +26,7 @@ from django.contrib.auth.views import login as view_login, logout as view_logout
 
 from sphene.community import PermissionDenied, sphsettings
 from sphene.community.models import Role, RoleMember, RoleMemberLimitation, PermissionFlag, TagLabel, TaggedItem, RoleGroup, RoleGroupMember
-from sphene.community.forms import EditProfileForm, Separator, UsersSearchForm
+from sphene.community.forms import EditProfileForm, UsersSearchForm
 from sphene.community.signals import profile_edit_init_form, profile_edit_save_form, profile_display
 from sphene.community import sphutils
 from sphene.community.permissionutils import has_permission_flag
@@ -593,10 +593,12 @@ def admin_permission_role_member_add(request, group, role_id, addgroup = False):
                                  },
                                context_instance = RequestContext(request) )
 
+
 def admin_permission_role_groupmember_add(request, group, role_id):
     if not has_permission_flag(request.user, 'community_manage_roles'):
         raise PermissionDenied()
     return admin_permission_role_member_add(request, group, role_id, True)
+
 
 def admin_users(request, group):
     if not has_permission_flag(request.user, 'community_manage_users'):
@@ -619,19 +621,19 @@ def admin_users(request, group):
     
     templateName = 'sphene/community/admin/users_list.html'
 
-    context = {'is_sphboard':'sphene.sphboard' in settings.INSTALLED_APPS,
-               'search_qs':search_qs,
-               'search_form':search_form,
-               'orderby':orderby}
+    context = {'is_sphboard': 'sphene.sphboard' in settings.INSTALLED_APPS,
+               'search_qs': search_qs,
+               'search_form': search_form,
+               'orderby': orderby}
 
-    res =  object_list( request = request,
-                        queryset = users,
-                        template_name = templateName,
-                        template_object_name = 'sphuser',
-                        allow_empty = True,
-                        extra_context = context,
-                        paginate_by = 10,
-                        )
+    res = object_list(request=request,
+                      queryset=users,
+                      template_name=templateName,
+                      template_object_name='sphuser',
+                      allow_empty=True,
+                      extra_context=context,
+                      paginate_by=10,
+                     )
 
     return res
 
