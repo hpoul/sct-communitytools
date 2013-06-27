@@ -296,6 +296,7 @@ def captcha_image(request,token_id,group = None):
     response.write(out.read())
     return response
 
+
 def autocrop(im, bgcolor, borderWidth = 0):
     if im.mode != 'RGB':
         im = im.convert('RGB')
@@ -332,7 +333,10 @@ def autocrop(im, bgcolor, borderWidth = 0):
     return im
 
 def profile(request, group, user_id):
-    user = get_object_or_404(User, pk = user_id)
+    user = get_object_or_404(User, pk=user_id)
+    if not request.user.is_superuser:
+        if not user.is_active:
+            raise Http404
     has_edit_permission = False
     profile_edit_url = None
 
