@@ -63,7 +63,7 @@
           </td>
       {% endif %}
       <td class="user-activity-status">{{ usr.is_active|yesno }}</td>
-      <td class="user-activity-status">{{ usr.date_joined|date:"d-m-Y" }}</td>
+      <td class="user-activity-status">{{ usr.date_joined|date:"d-m-Y H:m:s" }}</td>
       <td>
           <a class="user-activity-switch" href="{% sph_url2 sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a>
       </td>
