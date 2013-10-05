@@ -17,7 +17,6 @@ from django.template import loader, Context
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib import messages
 from django.contrib.auth import authenticate,login
-from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
 from django.views.generic.list_detail import object_list
@@ -34,6 +33,10 @@ from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
 #from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
+
+
+import logging
+logger = logging.getLogger('shpene')
 
 
 class RegisterEmailAddress(forms.Form):
@@ -122,6 +125,15 @@ def accounts_forgot(request, group = None):
                                context_instance = RequestContext(request) )
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 def register(request, group=None):
     if request.method == 'POST':
         form = RegisterEmailAddress(request.POST)
@@ -129,6 +141,7 @@ def register(request, group=None):
             regdata = form.cleaned_data
             email_address = regdata['email_address']
             mail_domain = email_address.split('@')[1]
+            logger.info('email: %s, ip: %s' % (email_address, get_client_ip(request)))
             # do not tell spammers that we have not sent email :)
             if mail_domain not in getattr(settings, 'BLACKLISTED_EMAIL_DOMAINS', []):
                 if not group:
