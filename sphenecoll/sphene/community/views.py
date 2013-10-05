@@ -36,7 +36,7 @@ from sphene.community.middleware import get_current_sphdata
 
 
 import logging
-logger = logging.getLogger('shpene')
+logger = logging.getLogger('sphene')
 
 
 class RegisterEmailAddress(forms.Form):
