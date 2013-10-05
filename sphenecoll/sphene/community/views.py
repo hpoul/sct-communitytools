@@ -128,26 +128,29 @@ def register(request, group=None):
         if form.is_valid():
             regdata = form.cleaned_data
             email_address = regdata['email_address']
-            if not group:
-                subject = ugettext(u'Email verification required')
-            else:
-                subject = ugettext(u'Email verification required for site %(site_name)s') % {'site_name': group.get_name()}
-            validationcode = md5(settings.SECRET_KEY + email_address).hexdigest() ## cryptString( settings.SECRET_KEY, email_address )
-            mail_context = RequestContext(request, {
+            mail_domain = email_address.split('@')[1]
+            # do not tell spammers that we have not sent email :)
+            if mail_domain not in getattr(settings, 'BLACKLISTED_EMAIL_DOMAINS', []):
+                if not group:
+                    subject = ugettext(u'Email verification required')
+                else:
+                    subject = ugettext(u'Email verification required for site %(site_name)s') % {'site_name': group.get_name()}
+                validationcode = md5(settings.SECRET_KEY + email_address).hexdigest() ## cryptString( settings.SECRET_KEY, email_address )
+                mail_context = RequestContext(request, {
                     'email': email_address,
                     'baseurl': group.baseurl,
                     'path': sph_reverse( 'sphene.community.views.register_hash', (), { "email": quote(email_address), 'emailHash': validationcode, } ),
                     'validationcode': validationcode,
                     'group': group,
                     })
-            text_part = loader.get_template('sphene/community/accounts/account_verification_email.txt') \
-                .render(mail_context)
-            html_part = loader.get_template('sphene/community/accounts/account_verification_email.html') \
-                .render(mail_context)
+                text_part = loader.get_template('sphene/community/accounts/account_verification_email.txt') \
+                    .render(mail_context)
+                html_part = loader.get_template('sphene/community/accounts/account_verification_email.html') \
+                    .render(mail_context)
 
-            msg = EmailMultiAlternatives(subject, text_part, None, [email_address])
-            msg.attach_alternative(html_part, "text/html")
-            msg.send()
+                msg = EmailMultiAlternatives(subject, text_part, None, [email_address])
+                msg.attach_alternative(html_part, "text/html")
+                msg.send()
 
             return render_to_response( 'sphene/community/register_emailsent.html',
                                        { 'email': email_address,
