@@ -1644,7 +1644,7 @@ class PollVoters(models.Model):
         verbose_name_plural = ugettext_lazy('Poll voters')
 
 
-class BoardUserProfile(models.Model):
+class   BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     signature = models.TextField(ugettext_lazy(u'Signature'), default = '')
     
