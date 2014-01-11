@@ -153,15 +153,15 @@ def listThreads(request, group, category_id):
                                                  'posts',
                                                  ( 'latestpostdate',
                                                    'latestpostauthor', ), ), )
-    return sph_render_to_response( 'sphene/sphboard/new_list_threads.html',
-                                   { 'threadlist': threadlist, })
+    return sph_render_to_response('sphene/sphboard/new_list_threads.html',
+                                   {'threadlist': threadlist, })
 
 
 def showThread(request, thread_id, group=None, slug=None):
     thread = get_object_or_404(Post.objects, pk=thread_id )
     if not thread.category.has_view_permission(request.user):
         raise PermissionDenied()
-    thread.viewed( request.session, request.user )
+    thread.viewed(request.session, request.user)
 
     sphdata = get_current_sphdata()
     if sphdata is not None:

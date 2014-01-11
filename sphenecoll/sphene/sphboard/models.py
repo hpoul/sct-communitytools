@@ -724,7 +724,7 @@ class Post(models.Model):
         return ThreadInformation.objects.type_default().get( root_post = self.get_thread() )
 
     def get_all_posts(self):
-        return Post.objects.filter( Q( pk = self.id ) | Q( thread = self ) )
+        return Post.objects.filter(Q(pk=self.id) | Q(thread=self))
 
     def replies(self):
         return Post.objects.filter( thread = self )
@@ -1644,7 +1644,7 @@ class PollVoters(models.Model):
         verbose_name_plural = ugettext_lazy('Poll voters')
 
 
-class   BoardUserProfile(models.Model):
+class BoardUserProfile(models.Model):
     user = models.ForeignKey( User, unique = True)
     signature = models.TextField(ugettext_lazy(u'Signature'), default = '')
     
