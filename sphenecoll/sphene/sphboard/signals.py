@@ -108,7 +108,7 @@ def clear_category_unread_after_post_move(sender, instance, *args, **kwargs):
 def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
     """ Removed post might cause change in page numeration in thread
     """
-    from sphene.sphboard.models import Category
+    from sphene.sphboard.models import Category, Post
     cache.delete(instance._cache_key_absolute_url())
     try:
         cache.delete(instance.category._cache_key_post_count())
@@ -118,10 +118,13 @@ def clear_post_cache_on_delete(sender, instance, *args, **kwargs):
         pass
     cache.delete(instance._cache_key_post_count())
 
-    if instance.thread is None:
-        thr = instance
-    else:
-        thr = instance.thread
+    thr = instance
+
+    try:
+        if instance.thread is not None:
+            thr = instance.thread
+    except Post.DoesNotExist:
+        pass
 
     for post in thr.get_all_posts():
         cache.delete(post._cache_key_absolute_url())
