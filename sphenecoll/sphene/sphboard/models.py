@@ -548,7 +548,8 @@ class Category(models.Model):
     get_absolute_latest_url = sphpermalink(get_absolute_latest_url)
 
     def get_absolute_togglemonitor_url(self):
-        return ('sphene.sphboard.views.toggle_monitor', (), { 'groupName': self.get_group().name, 'monitortype': 'category', 'object_id': self.id, })
+        return ('sphene.sphboard.views.toggle_monitor', (), {'groupName': self.get_group().name,
+                                                             'monitortype': 'category', 'object_id': self.id, })
     get_absolute_togglemonitor_url = sphpermalink(get_absolute_togglemonitor_url)
 
     def get_group(self):
@@ -563,7 +564,7 @@ class Category(models.Model):
         return res
     
     def __unicode__(self):
-        return self.name;
+        return self.name
 
     class Meta:
         verbose_name = ugettext_lazy('Category')

@@ -141,7 +141,7 @@ def register(request, group=None):
             regdata = form.cleaned_data
             email_address = regdata['email_address']
             mail_domain = email_address.split('@')[1]
-            logger.info('email: %s, ip: %s' % (email_address, get_client_ip(request)))
+            logger.info('ip: %s, email: %s' % (get_client_ip(request), email_address))
             # do not tell spammers that we have not sent email :)
             if mail_domain not in getattr(settings, 'BLACKLISTED_EMAIL_DOMAINS', []):
                 if not group:
@@ -295,9 +295,9 @@ def captcha_image(request,token_id,group = None):
     borderWidth = 2
     if hasattr(settings,'CAPTCHA_BORDER'):
         borderWidth = settings.CAPTCHA_BORDER
-    font = ImageFont.truetype(settings.FONT_PATH,settings.FONT_SIZE)
-    (width,height) = font.getsize(text)
-    image = Image.new('RGB', (width+(borderWidth*2),height+(borderWidth*2)), bgcolor)
+    font = ImageFont.truetype(settings.FONT_PATH, settings.FONT_SIZE)
+    (width, height) = font.getsize(text)
+    image = Image.new('RGB', (width + (borderWidth * 2), height + 3 + (borderWidth * 2)), bgcolor)
     draw = ImageDraw.Draw(image)
     # Draw the text, starting from (borderWidth,borderWidth) so the text won't be edge
     draw.text((borderWidth, borderWidth), text, font = font, fill = fgcolor)
