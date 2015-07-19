@@ -669,6 +669,11 @@ def admin_user_switch_active(request, user_id, group):
     if usr.is_active:
         user_status=_('yes')
         button_label = _('Disable')
+    else:
+        # clear user sessions - only works if sessions are stored in django db
+        if settings.SESSION_ENGINE == 'django.contrib.sessions.backends.db':
+            from django.contrib.sessions.models import Session
+            [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == usr.id]
 
     if not request.is_ajax():
         messages.success(request,  message = ugettext(u'Successfully changed user status.') )
