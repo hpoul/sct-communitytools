@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models import Q
 from django.db.models import signals
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mass_mail
 from django.core.cache import cache
 from django.contrib import messages
 from django.db.models.expressions import F
@@ -28,6 +27,7 @@ from sphene.community.forms import EditProfileForm, Separator
 from sphene.community.models import Group
 from sphene.sphblog.utils import slugify
 from sphene.sphboard import categorytyperegistry
+from sphene.sphboard.utils import send_mass_mail
 from renderers import POST_MARKUP_CHOICES, render_body
 from sphene.sphboard.signals import clear_post_cache_on_delete, clear_post_cache, clear_category_cache, \
                                     clear_post_4_category_cache, update_category_last_visit_cache, \
