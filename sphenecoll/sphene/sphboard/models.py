@@ -947,11 +947,19 @@ class Post(models.Model):
                 board_signature_tag = get_sph_setting('board_signature_tag')
                 bodyhtml += board_signature_tag % {'signature':signature}
 
-        if bodyhtml.strip() == '':
-            logger_r.info('Pusty post %s!!!!' % (self.id))
-            logger_r.info(out)
+        try:
+            logger_r.debug('[%s] %s' % (self.pk, bodyhtml.encode('utf-8')))
+        except Exception as e:
+            pass
 
-        return mark_safe(bodyhtml)
+        out = mark_safe(bodyhtml)
+
+        try:
+            logger_r.debug('[%s] safe: %s' % (self.pk, bodyhtml.encode('utf-8')))
+        except Exception as e:
+            pass
+
+        return out
 
     def body_rendered_without_signature(self):
         return self.body_escaped(with_signature = False)
