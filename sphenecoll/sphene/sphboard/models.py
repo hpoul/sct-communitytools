@@ -927,7 +927,12 @@ class Post(models.Model):
             out += 'empty cache\n'
             # Nothing found in cache, render body.
             bodyhtml = render_body(body, markup, apply_spammer_limits)
-            out += ' po render_body: %s\n\n\n' % bodyhtml
+
+            try:
+                logger_r.debug('[%s] %s' % (self.pk, bodyhtml.encode('utf-8')))
+            except Exception as e:
+                pass
+
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
         else:
