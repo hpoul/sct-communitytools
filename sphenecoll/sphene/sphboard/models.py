@@ -37,6 +37,7 @@ import logging
 from sphene.sphboard.utils import is_spammer
 
 logger = logging.getLogger('sphene.sphboard.models')
+logger_r = logging.getLogger('post_renderer')
 
 """
 Extended Group methods ........
@@ -914,22 +915,32 @@ class Post(models.Model):
         # Check cache
         bodyhtml = None
         cachekey = None
+        out = ''
         if self.id:
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
 
         apply_spammer_limits = is_spammer(self.author_id)
         if bodyhtml is None:
+            out += 'empty cache\n'
             # Nothing found in cache, render body.
             bodyhtml = render_body(body, markup, apply_spammer_limits)
+            out += ' po render_body: %s\n\n\n' % bodyhtml
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
 
         if self.author_id and with_signature:
+            out += 'with_signature: %s\n' % with_signature
             signature = get_rendered_signature( self.author_id, apply_spammer_limits )
             if signature:
+                out += 'jest signature: %s\n' % signature
                 board_signature_tag = get_sph_setting('board_signature_tag')
                 bodyhtml += board_signature_tag % {'signature':signature}
+
+        if bodyhtml.strip() == '':
+            logger_r.info('Pusty post %s!!!!' % (self.id))
+            logger_r.info('')
+
         return mark_safe(bodyhtml)
 
     def body_rendered_without_signature(self):
