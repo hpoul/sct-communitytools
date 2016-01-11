@@ -916,18 +916,23 @@ class Post(models.Model):
         bodyhtml = None
         cachekey = None
         out = ''
+        logger_r.debug('[%s] body_escaped dla posta' % self.pk)
         if self.id:
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
 
         apply_spammer_limits = is_spammer(self.author_id)
         if bodyhtml is None:
+            logger_r.debug('[%s] not from cache' % self.pk)
             out += 'empty cache\n'
             # Nothing found in cache, render body.
             bodyhtml = render_body(body, markup, apply_spammer_limits)
             out += ' po render_body: %s\n\n\n' % bodyhtml
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
+        else:
+            logger_r.debug('[%s] from cache' % self.pk)
+        logger_r.debug('type %s' % type(bodyhtml))
 
         if self.author_id and with_signature:
             out += 'with_signature: %s\n' % with_signature
@@ -939,7 +944,7 @@ class Post(models.Model):
 
         if bodyhtml.strip() == '':
             logger_r.info('Pusty post %s!!!!' % (self.id))
-            logger_r.info('')
+            logger_r.info(out)
 
         return mark_safe(bodyhtml)
 
