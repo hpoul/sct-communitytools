@@ -37,7 +37,6 @@ import logging
 from sphene.sphboard.utils import is_spammer
 
 logger = logging.getLogger('sphene.sphboard.models')
-logger_r = logging.getLogger('post_renderer')
 
 """
 Extended Group methods ........
@@ -915,57 +914,25 @@ class Post(models.Model):
         # Check cache
         bodyhtml = None
         cachekey = None
-        out = ''
-        logger_r.debug('[%s] body_escaped dla posta' % self.pk)
+
         if self.id:
             cachekey = self.__get_render_cachekey()
             bodyhtml = cache.get( cachekey )
 
         apply_spammer_limits = is_spammer(self.author_id)
         if bodyhtml is None:
-            logger_r.debug('[%s] not from cache' % self.pk)
-            out += 'empty cache\n'
             # Nothing found in cache, render body.
             bodyhtml = render_body(body, markup, apply_spammer_limits)
-
-            try:
-                logger_r.debug('[%s] %s' % (self.pk, bodyhtml.encode('utf-8')))
-            except Exception as e:
-                pass
-
             if cachekey is not None:
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
-        else:
-            logger_r.debug('[%s] from cache' % self.pk)
-        logger_r.debug('[%s] type %s' % (self.pk, type(bodyhtml)))
 
-        try:
-            if self.author_id and with_signature:
-                logger_r.debug('[%s] z sygnatura 1' % (self.pk))
-                signature = get_rendered_signature( self.author_id, apply_spammer_limits )
-                logger_r.debug('[%s] z sygnatura 2' % (self.pk))
-                if signature:
-                    logger_r.debug('[%s] z sygnatura 3' % (self.pk))
-                    board_signature_tag = get_sph_setting('board_signature_tag')
-                    logger_r.debug('[%s] z sygnatura 4' % (self.pk))
-                    bodyhtml += board_signature_tag % {'signature':signature}
-                    logger_r.debug('[%s] z sygnatura 5' % (self.pk))
-        except Exception as e:
-            logger.error('wyjatek przy sygnaturze', exc_info=True)
-        logger_r.debug('[%s] po sygnaturze' % (self.pk))
-        try:
-            logger_r.debug('[%s] %s' % (self.pk, bodyhtml.encode('utf-8')))
-        except Exception as e:
-            logger_r.error('wyjatek 1', exc_info=True)
+        if self.author_id and with_signature:
+            signature = get_rendered_signature( self.author_id, apply_spammer_limits )
+            if signature:
+                board_signature_tag = get_sph_setting('board_signature_tag')
+                bodyhtml += board_signature_tag % {'signature':signature}
 
-        out = mark_safe(bodyhtml)
-
-        try:
-            logger_r.debug('[%s] safe: %s' % (self.pk, bodyhtml.encode('utf-8')))
-        except Exception as e:
-            pass
-
-        return out
+        return mark_safe(bodyhtml)
 
     def body_rendered_without_signature(self):
         return self.body_escaped(with_signature = False)
