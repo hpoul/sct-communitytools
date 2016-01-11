@@ -937,20 +937,26 @@ class Post(models.Model):
                 cache.set( cachekey, bodyhtml, get_sph_setting( 'board_body_cache_timeout' ) )
         else:
             logger_r.debug('[%s] from cache' % self.pk)
-        logger_r.debug('type %s' % type(bodyhtml))
+        logger_r.debug('[%s] type %s' % (self.pk, type(bodyhtml)))
 
-        if self.author_id and with_signature:
-            out += 'with_signature: %s\n' % with_signature
-            signature = get_rendered_signature( self.author_id, apply_spammer_limits )
-            if signature:
-                out += 'jest signature: %s\n' % signature
-                board_signature_tag = get_sph_setting('board_signature_tag')
-                bodyhtml += board_signature_tag % {'signature':signature}
-
+        try:
+            if self.author_id and with_signature:
+                logger_r.debug('[%s] z sygnatura 1' % (self.pk))
+                signature = get_rendered_signature( self.author_id, apply_spammer_limits )
+                logger_r.debug('[%s] z sygnatura 2' % (self.pk))
+                if signature:
+                    logger_r.debug('[%s] z sygnatura 3' % (self.pk))
+                    board_signature_tag = get_sph_setting('board_signature_tag')
+                    logger_r.debug('[%s] z sygnatura 4' % (self.pk))
+                    bodyhtml += board_signature_tag % {'signature':signature}
+                    logger_r.debug('[%s] z sygnatura 5' % (self.pk))
+        except Exception as e:
+            logger.error('wyjatek przy sygnaturze', exc_info=True)
+        logger_r.debug('[%s] po sygnaturze' % (self.pk))
         try:
             logger_r.debug('[%s] %s' % (self.pk, bodyhtml.encode('utf-8')))
         except Exception as e:
-            pass
+            logger_r.error('wyjatek 1', exc_info=True)
 
         out = mark_safe(bodyhtml)
 
