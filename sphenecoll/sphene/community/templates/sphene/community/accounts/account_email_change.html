@@ -2,9 +2,10 @@
 <html>
 <head></head>
 <body>
-<pre>
 {% blocktrans with group.get_name as group_name %}You have requested to change your email address to:
-      {{ email }} 
+
+    {{ email }}
+
 on the {{ group_name }} website.{% endblocktrans %}
 
 {% blocktrans %}
@@ -15,7 +16,6 @@ on the {{ group_name }} website.{% endblocktrans %}
 Thanks for your interest,
   Your {{ group_name }} Team.
 {% endblocktrans %}
-</pre>
 
 {% blocktrans %}If you did not make this request you can safely ignore this email.{% endblocktrans %}
 </body>

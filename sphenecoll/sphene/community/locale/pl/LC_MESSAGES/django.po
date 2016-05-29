@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: communitytools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-29 23:14+0200\n"
-"PO-Revision-Date: 2016-05-29 23:18+0100\n"
+"POT-Creation-Date: 2016-05-29 23:32+0200\n"
+"PO-Revision-Date: 2016-05-29 23:32+0100\n"
 "Last-Translator: Maciej Wiśniowski <maciej.wisniowski@natcam.pl>\n"
 "Language-Team: Jakub Wisniowski <restless.being@gmail.com>\n"
 "Language: pl_PL\n"
@@ -614,12 +614,13 @@ msgstr "Rejestracja"
 msgid "Successfully registered user and logged in."
 msgstr "Użytkownik został pomyślnie zarejestrowany i zalogowany w systemie."
 
-#: templates/sphene/community/accounts/account_email_change.html:6
-#: templates/sphene/community/accounts/account_email_change.txt:2
-#, python-format
+#: templates/sphene/community/accounts/account_email_change.html:5
+#, fuzzy, python-format
 msgid ""
 "You have requested to change your email address to:\n"
-"      %(email)s \n"
+"\n"
+"    %(email)s\n"
+"\n"
 "on the %(group_name)s website."
 msgstr ""
 "Poprosiłeś o zmianę adresu e-mail na:\n"
@@ -627,7 +628,7 @@ msgstr ""
 "      %(email)s \n"
 "na stronie %(group_name)s."
 
-#: templates/sphene/community/accounts/account_email_change.html:10
+#: templates/sphene/community/accounts/account_email_change.html:11
 #, python-format
 msgid ""
 "\n"
@@ -638,7 +639,7 @@ msgstr ""
 "<a href=\"http://%(baseurl)s%(path)s\">Aby zatwierdzić zmianę adresu e-mail "
 "kliknij ten link</a>."
 
-#: templates/sphene/community/accounts/account_email_change.html:14
+#: templates/sphene/community/accounts/account_email_change.html:15
 #: templates/sphene/community/accounts/account_email_change.txt:10
 #: templates/sphene/community/accounts/account_verification_email.html:14
 #: templates/sphene/community/accounts/account_verification_email.txt:10
@@ -659,6 +660,18 @@ msgstr ""
 msgid "If you did not make this request you can safely ignore this email."
 msgstr ""
 "Jeśli to nie ty złożyłeś tę prośbę możesz po prostu zignorować ten email."
+
+#: templates/sphene/community/accounts/account_email_change.txt:2
+#, python-format
+msgid ""
+"You have requested to change your email address to:\n"
+"      %(email)s \n"
+"on the %(group_name)s website."
+msgstr ""
+"Poprosiłeś o zmianę adresu e-mail na:\n"
+"\n"
+"      %(email)s \n"
+"na stronie %(group_name)s."
 
 #: templates/sphene/community/accounts/account_email_change.txt:5
 #, python-format
