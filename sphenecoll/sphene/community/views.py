@@ -32,6 +32,7 @@ from sphene.community.permissionutils import has_permission_flag
 from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 #from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 
@@ -250,6 +251,39 @@ def register_hash(request, email, emailHash, group=None):
         raise Http404("No Outstanding registrations for this user.")
 
 
+def email_change_hash(request, email_change_hash=None, group=None):
+    s = URLSafeTimedSerializer(getattr(settings, 'EMAIL_CHANGE_SECRET', '87fuhaidfhahfokhh3u'))
+    email_data = None
+    signature_expired = False
+    invalid_user = False
+    try:
+        email_data = s.loads(email_change_hash, max_age=3600 * 24)
+    except SignatureExpired as e:
+        signature_expired = True
+    except Exception as e:
+        pass
+
+    if email_data:
+        if request.user.is_authenticated():
+            if request.user.id != email_data['user_id']:
+                invalid_user = True
+            else:
+                user = request.user
+                user.email = email_data['email']
+                user.save()
+        else:
+            user = User.objects.get(id=email_data['user_id'])
+            user.email = email_data['email']
+            user.save()
+
+    return render_to_response('sphene/community/email_changed.html',
+                              {'signature_expired': signature_expired,
+                               'invalid_user': invalid_user,
+                               'email_data': email_data},
+                              context_instance=RequestContext(request))
+
+    # 'WzEsMiwzLDRd.wSPHqC0gR7VUqivlSukJ0IeTDgo'
+    # s.loads('WzEsMiwzLDRd.wSPHqC0gR7VUqivlSukJ0IeTDgo')
 
 
 
@@ -387,6 +421,7 @@ def profile(request, group, user_id):
                                  },
                                context_instance = RequestContext( request ))
 
+
 def profile_edit_mine(request, group):
     return profile_edit(request, group = group, user_id = None)
 
@@ -410,9 +445,9 @@ def profile_edit(request, group, user_id):
     else:
         form = EditProfileForm(user)
 
-    profile_edit_init_form.send(sender = EditProfileForm,
-                                instance = form,
-                                request = request,
+    profile_edit_init_form.send(sender=EditProfileForm,
+                                instance=form,
+                                request=request,
                                 )
     
     if request.method == 'POST':
@@ -422,8 +457,40 @@ def profile_edit(request, group, user_id):
             user.last_name = data['last_name']
 
             if user.email != data['email_address']:
-                # Require email validation ...
-                pass
+                email_address = data['email_address']
+                mail_domain = email_address.split('@')[1]
+                logger.info('change e-mail request ip: %s, email: %s' % (get_client_ip(request), email_address))
+
+                s = URLSafeTimedSerializer(getattr(settings, 'EMAIL_CHANGE_SECRET', '87fuhaidfhahfokhh3u'))
+                email_change_hash = s.dumps({'email': email_address,
+                                             'user_id': user.pk})
+
+                # do not tell spammers that we have not sent email :)
+                if mail_domain not in getattr(settings, 'BLACKLISTED_EMAIL_DOMAINS', []):
+                    if not group:
+                        subject = ugettext(u'Email verification required')
+                    else:
+                        subject = ugettext(u'Email verification required for site %(site_name)s') % {
+                            'site_name': group.get_name()}
+
+                    mail_context = RequestContext(request, {
+                        'email': email_address,
+                        'baseurl': group.baseurl,
+                        'path': sph_reverse('sphene.community.views.email_change_hash', (),
+                                            {"email_change_hash": email_change_hash}),
+                        'group': group,
+                    })
+                    text_part = loader.get_template(
+                        'sphene/community/accounts/account_email_change.txt') \
+                        .render(mail_context)
+                    html_part = loader.get_template(
+                        'sphene/community/accounts/account_email_change.html') \
+                        .render(mail_context)
+
+                    msg = EmailMultiAlternatives(subject, text_part, None, [email_address])
+                    msg.attach_alternative(html_part, "text/html")
+                    msg.send()
+                    messages.info(request, message=ugettext(u'E-mail with verification link has been sent to change your e-mail address.'))
 
             if data['new_password']:
                 # Check was already made in form, we only need to change the password.
@@ -435,7 +502,7 @@ def profile_edit(request, group, user_id):
                                         )
 
             user.save()
-            messages.success(request,  message = ugettext(u'Successfully changed user profile.') )
+            messages.success(request, message=ugettext(u'Successfully changed user profile.') )
             
             return HttpResponseRedirect( sph_user_profile_link( user ) )
 

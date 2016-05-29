@@ -34,5 +34,6 @@ urlpatterns += patterns( 'sphene.community.views',
 
                          url(r'^accounts/register/$', 'register', name = 'sph_register'),
                          url(r'^accounts/register/(?P<emailHash>[a-zA-Z\./\+0-9=]+)/(?P<email>[a-zA-Z%@\./\+0-9_-]+)/$', 'register_hash', name='sph_register_hash'),
+                         url(r'^accounts/email_change/(?P<email_change_hash>.+)/$', 'email_change_hash', name='sph_email_change_hash'),
                          url(r'^tags/json/autocompletion/$', 'tags_json_autocompletion', name = 'sph_tags_json_autocompletion'),
                          )
