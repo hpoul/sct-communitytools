@@ -1802,7 +1802,7 @@ def board_profile_edit_save_form(sender, instance, signal, request, **kwargs):
     profile.default_notifyme_value = data['default_notifyme_value']
 
     profile.save()
-    messages.success(request,  message = _(u"Successfully saved board profile.") )
+    # messages.success(request,  message = _(u"Successfully saved board profile.") )
 
 
 def board_profile_display(sender, signal, request, user, **kwargs):
