@@ -76,7 +76,7 @@ def create_permission_flags(app, created_models, verbosity, **kwargs):
                 for (flag, description) in sph_permission_flags:
                     flag, created = PermissionFlag.objects.get_or_create(name = flag)
                     if created and verbosity >= 2:
-                        print "Added sph permission flag '%s'" % flag.name
+                        print("Added sph permission flag '%s'" % flag.name)
 
     if Role in created_models:
         # Create a 'Group Admin' role for all groups.
@@ -93,7 +93,7 @@ def create_permission_flags(app, created_models, verbosity, **kwargs):
             role.save()
 
             if verbosity >= 2:
-                print "Created new role '%s' for group '%s' and assigned permission '%s'" % (rolename, group.name, permissionflag.name)
+                print("Created new role '%s' for group '%s' and assigned permission '%s'" % (rolename, group.name, permissionflag.name))
 
 # handle both post_syncdb and post_migrate (if south is used)
 def syncdb_compat(app_label, handler=None, *args, **kwargs):

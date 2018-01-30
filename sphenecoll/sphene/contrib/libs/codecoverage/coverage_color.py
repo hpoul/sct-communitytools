@@ -15,11 +15,12 @@
 import cgi
 import string
 import sys
-import cStringIO
 import os
 import keyword
 import token
 import tokenize
+
+from django.utils.six import StringIO
 
 _VERBOSE = False
 
@@ -114,11 +115,11 @@ class Parser:
 
         # parse the source and write it
         self.pos = 0
-        text = cStringIO.StringIO(self.raw)
+        text = StringIO(self.raw)
         self.out.write('<pre class="code">\n')
         try:
             tokenize.tokenize(text.readline, self)
-        except tokenize.TokenError, ex:
+        except tokenize.TokenError as ex:
             msg = ex[0]
             line = ex[1][0]
             self.out.write("<h3>ERROR: %s</h3>%s\n" % (
@@ -128,12 +129,14 @@ class Parser:
             self.cover_flag = False
         self.out.write('\n</pre>')
 
-    def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
+    def __call__(self, toktype, toktext, srow_scol, erow_ecol, line):
         """ Token handler.
         """
+        srow, scol = srow_scol
+        erow, ecol = erow_ecol
         if _VERBOSE:
-            print "type", toktype, token.tok_name[toktype], "text", toktext,
-            print "start", srow,scol, "end", erow,ecol, "<br>"
+            print("type", toktype, token.tok_name[toktype], "text", toktext,)
+            print("start", srow,scol, "end", erow,ecol, "<br>")
 
         # calculate new positions
         oldpos = self.pos
@@ -197,7 +200,7 @@ def colorize_file(filename, outstream=sys.stdout, not_covered=[]):
 
     Reads file and writes to outstream (default sys.stdout).
     """
-    fo = file(filename, 'rb')
+    fo = open(filename, 'rb')
     try:
         source = fo.read()
     finally:

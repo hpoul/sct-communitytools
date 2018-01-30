@@ -2,25 +2,27 @@ import urllib
 from random import choice
 import string
 from time import time
-from urllib import quote, unquote
+from urllib.parse import quote
+from urllib.parse import unquote
 from hashlib import md5
+import json
 
-from django.utils import simplejson
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseGone, Http404
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
-from django.template import loader, Context
+from django.template import loader
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib import messages
 from django.contrib.auth import authenticate,login
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
 from django.views.generic.list_detail import object_list
-from django.core.urlresolvers import reverse
+
 from django.contrib.auth.views import login as view_login, logout as view_logout
 
 from sphene.community import PermissionDenied, sphsettings
@@ -33,7 +35,6 @@ from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-#from sphene.contrib.libs.common.utils.misc import cryptString, decryptString
 
 
 import logging
@@ -246,8 +247,6 @@ def register_hash(request, email, emailHash, group=None):
                                   {'form': form},
                                   context_instance = RequestContext(request) )
     else:
-        print email_address
-        print md5(settings.SECRET_KEY + email_address).hexdigest(), emailHash
         raise Http404("No Outstanding registrations for this user.")
 
 
@@ -292,7 +291,6 @@ def email_change_hash(request, email_change_hash=None, group=None):
 #### The following code was copied from the django captchas project.
 #### and slightly modified.
 
-from django.http import HttpResponse
 try:
 
     from djaptcha.models import CaptchaRequest
@@ -744,11 +742,12 @@ def admin_user_switch_active(request, user_id, group):
 
     if not request.is_ajax():
         messages.success(request,  message = ugettext(u'Successfully changed user status.') )
-        url = request.REQUEST.get('next', reverse('sph_admin_users'))
+        req = request.GET if request.method == 'GET' else request.POST
+        url = req.get('next', reverse('sph_admin_users'))
         return HttpResponseRedirect(url)
     else:
-        return HttpResponse(simplejson.dumps({"user_status":user_status,
-                                              "button_label":button_label}),
+        return HttpResponse(json.dumps({"user_status": user_status,
+                                        "button_label": button_label}),
                             mimetype='application/json')
 
 

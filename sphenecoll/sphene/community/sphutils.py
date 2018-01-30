@@ -3,13 +3,15 @@ import logging
 
 from django.conf import settings
 from django.core import exceptions
-from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import loader
+from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.core.cache import cache
+from django.contrib.auth.models import User
+from django import forms
+from random import random
 
 from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group
 from sphene.community.sphpermalink import sphpermalink as imported_sphpermalink
@@ -17,9 +19,9 @@ from sphene.community import sphsettings
 
 logger = logging.getLogger('sphene.community.sphutils')
 
-
 # For backward compatibility .. it has been moved into it's own module file.
 sphpermalink = imported_sphpermalink
+
 
 def get_urlconf():
     request = get_current_request()
@@ -49,13 +51,15 @@ def get_user_displayname(user):
         cache.set(key, res)
     return res
 
+
 # This is for backwards compatibility
 get_fullusername = get_user_displayname
+
 
 def format_date(value, format = None):
     if not hasattr(value, 'strftime') :
         logger.error( 'Wrong value to format date: %s' % (str(value)) )
-	return str(value)
+        return str(value)
     if format is None:
         format = 'FULL_DATE'
 
@@ -65,8 +69,6 @@ def format_date(value, format = None):
     return value.strftime( "%Y-%m-%d %H:%M:%S" )
 
 
-from django.contrib.auth.models import User
-
 def get_user_link_for_username(username):
     try:
         user = User.objects.get( username__exact = username )
@@ -74,6 +76,7 @@ def get_user_link_for_username(username):
         return username
     # TODO add a link to user profiles
     return get_user_displayname(user)
+
 
 def render_blockquote(citation, membername, post):
     memberlink = get_user_link_for_username(membername)
@@ -85,8 +88,6 @@ def render_blockquote(citation, membername, post):
 usecaptcha = True
 try:
     from djaptcha.models import CaptchaRequest, CAPTCHA_ANSWER_OK
-    #from django.db.models import permalink
-    from sphene.community.middleware import get_current_request
 
     def captcha_request_get_absolute_url(self):
         return ('sphene.community.views.captcha_image', (), { 'token_id': self.id })
@@ -99,11 +100,11 @@ try:
 except:
     usecaptcha = False
 
-from random import random
 
 def has_captcha_support():
     """ Determines if captcha support is currently enabled. """
     return usecaptcha
+
 
 def generate_captcha():
     """
@@ -118,6 +119,7 @@ def generate_captcha():
     req = CaptchaRequest.generate_request(text,answer,get_current_request().path)
     return req
 
+
 def validate_captcha(id, answer):
     """
     Validates a given captcha and returns True if the answer is correct, False otherwise.
@@ -125,16 +127,13 @@ def validate_captcha(id, answer):
     if not usecaptcha: return True
     captcha = CaptchaRequest.objects.get(pk = id)
     return captcha.answer == answer
-    return False
-#return CaptchaRequest.validate(uid, answer) == CAPTCHA_ANSWER_OK
 
-
-from django import forms
 
 class CaptchaInputWidget(forms.widgets.TextInput):
 
     def render(self, name, value, attrs=None):
         return u'<span class="sph_captcha"><img src="%s" alt="%s" /> %s</span>' % (value, _(u'Captcha input'), super(CaptchaInputWidget, self).render(name, None, attrs))
+
 
 class CaptchaWidget(forms.widgets.MultiWidget):
     def __init__(self, attrs=None):
@@ -148,6 +147,7 @@ class CaptchaWidget(forms.widgets.MultiWidget):
 
     def decompress(self, value):
         return None
+
 
 class CaptchaField(forms.fields.MultiValueField):
     def __init__(self, *args, **kwargs):
@@ -170,8 +170,6 @@ class CaptchaField(forms.fields.MultiValueField):
         return None
 
 
-
-
 class HTML:
     """
     Used as a dummy markdown entity which simply contains rendered HTML content.
@@ -191,6 +189,7 @@ class HTML:
     def toxml(self):
         return self.value
 
+
 def add_setting_defaults(newdefaults):
     """
     This method can be used by other applications to define their
@@ -200,6 +199,7 @@ def add_setting_defaults(newdefaults):
     the settings.
     """
     sphsettings.add_setting_defaults(newdefaults)
+
 
 def get_sph_setting(name, default_value = None):
     return sphsettings.get_sph_setting(name, default_value)
@@ -213,7 +213,10 @@ class SphSettings(object):
     def __getattribute__(self, name):
         return get_sph_setting(name)
 
-def sph_reverse( viewname, args=(), kwargs={} ):
+
+def sph_reverse( viewname, args=(), kwargs=None):
+    if kwargs is None:
+        kwargs = {}
     req = get_current_request()
     urlconf = getattr(req, 'urlconf', None)
     sphdata = get_current_sphdata()
@@ -222,7 +225,8 @@ def sph_reverse( viewname, args=(), kwargs={} ):
         kwargs['groupName'] = get_current_group().name
     elif 'groupName' in kwargs:
         del kwargs['groupName']
-    return reverse( viewname, urlconf, args, kwargs )
+    return reverse(viewname, urlconf, args, kwargs)
+
 
 def get_method_by_name(methodname):
     """Import a named method from a string.  
@@ -231,11 +235,11 @@ def get_method_by_name(methodname):
     try:
         dot = methodname.rindex('.')
     except ValueError:
-        raise exceptions.ImproperlyConfigured, '%s isn\'t a module' % methodname
+        raise(exceptions.ImproperlyConfigured, '%s isn\'t a module' % methodname)
     named_module, named_method = methodname[:dot], methodname[dot+1:]
     try:
         named_mod = __import__(named_module, {}, {}, [''])
-    except ImportError, e:
+    except ImportError as e:
         raise exceptions.ImproperlyConfigured(
             'Error importing named method %s: "%s"' % (named_module, e))
     try:
@@ -247,18 +251,26 @@ def get_method_by_name(methodname):
 
     return named_method
 
+
 def add_rss_feed(url, label):
     sphdata = get_current_sphdata()
-    if not 'rss' in sphdata:
+    if 'rss' not in sphdata:
         sphdata['rss'] = []
 
-    sphdata['rss'].append( { 'url': url,
-                             'label': label, } )
+    sphdata['rss'].append(
+        {
+            'url': url,
+            'label': label
+        }
+    )
+
 
 def sph_render_to_response(template_name, context = None):
-    return render_to_response(template_name,
-                              context,
-                              context_instance = RequestContext(get_current_request()))
+    return render(
+        get_current_request(),
+        template_name,
+        context
+    )
 
 
 def include_js(jspath, prefix = None):

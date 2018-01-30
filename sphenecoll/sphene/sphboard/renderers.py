@@ -57,12 +57,12 @@ class HtmlRenderer(BaseRenderer):
     reference = 'HTML (%s and %s)' % (", ".join(["'%s', " % tag for tag in HTML_ALLOWED_TAGS.keys()[:-1]]), HTML_ALLOWED_TAGS.keys()[-1])
     
     def htmlentities_replace(test):
-        print "entity allowed: %s" % test.group(1)
+        print("entity allowed: %s" % test.group(1))
         return test.group()
 
     def htmltag_replace(self, test):
         if HtmlRenderer.ALLOWED_TAGS.has_key( test.group(2) ):
-            print "tag is allowed.... %s - %s" % (test.group(), test.group(3))
+            print("tag is allowed.... %s - %s" % (test.group(), test.group(3)))
             if test.group(3) == None: return test.group()
             attrs = test.group(3).split(' ')
             allowedParams = ALLOWED_TAGS[test.group(2)]
@@ -73,10 +73,10 @@ class HtmlRenderer(BaseRenderer):
                 val = attr.split('=')
                 if not val[0] in allowedParams:
                     allowed = False
-                    print "Not allowed: %s" % val[0]
+                    print("Not allowed: %s" % val[0])
                     break
             if allowed: return test.group()
-        print "tag is not allowed ? %s" % test.group(2)
+        print("tag is not allowed ? %s" % test.group(2))
         return test.group().replace('<','&lt;').replace('>','&gt;')
         
     def render(self, text, apply_spammer_limits=False):

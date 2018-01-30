@@ -29,7 +29,7 @@ def synchronize_threadinformation(verbosity = -1):
 
     # First find all threads ...
     if verbosity >= 2:
-        print "Synchronizing ThreadInformation ..."
+        print("Synchronizing ThreadInformation ...")
     all_threads = Post.objects.filter( thread__isnull = True )
 
     for thread in all_threads:

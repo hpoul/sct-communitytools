@@ -1,5 +1,7 @@
-import os
 from time import time
+
+import requests
+from django.urls import NoReverseMatch
 
 try:
     from PIL import Image
@@ -13,12 +15,12 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
+from django.core.cache import cache
 
 from sphene.community.sphutils import HTML, get_sph_setting
 from sphene.contrib.libs.markdown import mdx_macros
-from sphene.contrib.libs.common.cache_inclusion_tag import cache_inclusion_tag
 from sphene.community.models import CommunityUserProfile
-from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_group, get_current_user
+from sphene.community.middleware import get_current_request, get_current_sphdata, get_current_user
 from sphene.community.sphutils import add_rss_feed, sph_reverse
 
 
@@ -32,18 +34,16 @@ class SimpleHelloWorldMacro (object):
     def handleMacroCall(self, doc, params):
         return doc.createTextNode("Hello World!")
 
-import urllib2
-from django.core.cache import cache
 
 class IncludeMacro (mdx_macros.PreprocessorMacro):
     def handlePreprocessorMacroCall(self, params):
-        if params.has_key( 'url' ):
+        if 'url' in params:
             cache_key = settings.CACHE_MIDDLEWARE_KEY_PREFIX + 'sph_community_includemacro_' + params['url'] + '_' + params.get( 'start', '' ) + '_' + params.get( 'end', '' );
-            cached_text = cache.get( cache_key )
+            cached_text = cache.get(cache_key)
             if cached_text:
                 text = cached_text
             else:
-                f = urllib2.urlopen( params['url'] )
+                f = requests.get(params['url'])
                 try:
                     start = params.get( 'start', None )
                     end = params.get( 'end', None )
@@ -76,7 +76,8 @@ class IncludeMacro (mdx_macros.PreprocessorMacro):
                 ret.toc = sphdata['toc']
             return ret
         """
-        return doc.createTextNode("Error, no 'url' given for include macro.")
+        # return doc.createTextNode("Error, no 'url' given for include macro.")
+        return None  # wtf is doc?
 
 class IncludeTemplateMacro (object):
     """
@@ -84,7 +85,7 @@ class IncludeTemplateMacro (object):
     templating system.
     """
     def handleMacroCall(self, doc, params):
-        if not params.has_key( 'templateName' ):
+        if 'templateName' not in params:
             return doc.createTextNode("Error, no 'templateName' given for includetemplate macro.")
 
         templateName = params['templateName']
@@ -102,12 +103,13 @@ class NewsMacro (object):
     def handleMacroCall(self, doc, params):
         from sphene.sphboard.models import Post
 
-        if not params.has_key( 'category' ):
+        if 'category' not in params:
             return doc.createTextNode("Error, no 'category' or 'template' given for news macro.")
 
         limit = 'limit' in params and params['limit'] or 5
         templateName = 'sphene/sphboard/wikimacros/news.html'
-        if params.has_key( 'template' ): templateName = params['template']
+        if 'template' in params:
+            templateName = params['template']
         
         category_ids = params['category'].split(',')
         threads = Post.objects.filter( category__id__in = category_ids, thread__isnull = True ).order_by( '-postdate' )[:limit]
@@ -115,7 +117,8 @@ class NewsMacro (object):
 
         t = template.loader.get_template( templateName )
         baseURL = ''
-        if params.has_key( 'baseURL' ): baseURL = params['baseURL']
+        if 'baseURL' in params:
+            baseURL = params['baseURL']
         c = template.Context({ 'threads': threads,
                                'baseURL': baseURL,
                                'category': params['category'],
@@ -149,7 +152,7 @@ def sph_markdown(value, arg='', oldmd=None, extra_macros={}):
         from sphene.contrib.libs.markdown import markdown
     except ImportError:
         if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% markdown %} filter: The Python markdown library isn't installed."
+            raise(template.TemplateSyntaxError, "Error in {% markdown %} filter: The Python markdown library isn't installed.")
         return value
     else:
         safe_mode = arg == 'safe'
@@ -273,7 +276,6 @@ class SphURLNode(Node):
         self.asvar = asvar
 
     def render(self, context):
-        from django.core.urlresolvers import reverse, NoReverseMatch
         args = [arg.resolve(context) for arg in self.args]
         kwargs = dict([(smart_str(k,'ascii'), v.resolve(context))
                        for k, v in self.kwargs.items()])
@@ -282,7 +284,7 @@ class SphURLNode(Node):
         try:
             url = sph_reverse(self.view_name,
                               args=args, kwargs=kwargs)
-        except NoReverseMatch, e:
+        except NoReverseMatch as e:
             if settings.SETTINGS_MODULE:
                 project_name = settings.SETTINGS_MODULE.split('.')[0]
                 try:
@@ -350,7 +352,6 @@ def sph_showavatar(user, maxwidth = None):
     get_avatar = get_sph_setting( 'community_user_get_avatar' )
     if get_avatar is not None:
         avatarinfo = get_avatar(user)
-        print "asdf %s" % repr(avatarinfo)
         if avatarinfo is not None:
             avatar = avatarinfo['url']
             avatar_width = avatarinfo['width']

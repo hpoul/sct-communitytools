@@ -15,7 +15,6 @@ register = template.Library()
 
 
 def get_blocks(blockregion, context):
-    print "for region %s" % blockregion
     region = get_region(get_current_group(),
                         get_current_user(),
                         blockregion)

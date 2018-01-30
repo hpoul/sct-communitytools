@@ -44,7 +44,7 @@ MESSAGE_THRESHOLD = CRITICAL
 
 def message(level, text) :
     if level >= MESSAGE_THRESHOLD :
-        print text
+        print(text)
 
 
 # --------------- CONSTANTS YOU MIGHT WANT TO MODIFY -----------------
@@ -1623,7 +1623,7 @@ def parse_options() :
                     'encoding' : None }
 
         else :
-            print OPTPARSE_WARNING
+            print(OPTPARSE_WARNING)
             return None
 
     parser = optparse.OptionParser(usage="%prog INPUTFILE [options]")

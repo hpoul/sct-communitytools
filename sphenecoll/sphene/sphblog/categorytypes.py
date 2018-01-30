@@ -112,7 +112,7 @@ class BlogCategoryType(CategoryType):
         try:
             blog_url = sph_reverse('sphblog_category_index_slug', kwargs = { 'category_slug': self.category.slug })
             return blog_url
-        except Exception, e:
+        except Exception as e:
             #print "err.. argl %s" % str(e)
             return None
 

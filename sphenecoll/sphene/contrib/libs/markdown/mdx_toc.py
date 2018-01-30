@@ -256,7 +256,7 @@ if __name__=="__main__" :
     out_filename = os.path.splitext(in_filename)[0] + '.html'
 
     if os.path.exists(out_filename):
-        print "\nWARNING", out_filename, "already exists, overwritting.\n"
+        print("\nWARNING", out_filename, "already exists, overwritting.\n")
 
     out_file = file(out_filename, "w")
     out_file.write( markdownWithManyExtensions( file(in_filename).read() ) )

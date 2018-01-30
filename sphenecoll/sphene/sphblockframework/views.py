@@ -129,11 +129,11 @@ def sortblocks(request, group):
         raise Exception
 
     # Now resort it ..
-    print str(request.POST);
+    print(str(request.POST))
     #return HttpResponse('')
     for blockregion in request.POST.getlist('block_region'):
         sortorder = request.POST[blockregion]
-        print "sortorder for %s: %s" % (blockregion, str(sortorder))
+        print("sortorder for %s: %s" % (blockregion, str(sortorder)))
 
 
         region = get_or_create_region(get_current_group(),

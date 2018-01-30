@@ -233,7 +233,7 @@ class BaseAdvancedObjectList(object):
         self.state['page'] = int(requestvars.get("%s.page" % self.prefix, 1))
         try:
             self.process_cmd(requestvars["%s.cmd" % self.prefix], requestvars)
-        except KeyError, e:
+        except KeyError as e:
             return
 
     def colconfig_json(self):

@@ -109,12 +109,12 @@ class CategoryTypeChoices(object):
         choices = ()
         try:
             for ct in categorytyperegistry.get_category_type_list():
-                choices += ((ct.name, "%s (%s)" % (unicode(ct.label), ct.name)),)
-        except Exception, e:
+                choices += ((ct.name, "%s (%s)" % (ct.label, ct.name)),)
+        except Exception as e:
             # This is also called during syncdb before tables are
             # created, so for this case catch all exceptions.
             # see http://sct.sphene.net/board/thread/898/
-            print "Error while trying to fetch category types."
+            print("Error while trying to fetch category types.")
             pass
 
         return choices.__iter__()
@@ -1559,10 +1559,10 @@ def ensure_thread_information():
     ThreadInformation object. (Useful for updates)
     """
     allthreads = Post.objects.filter( thread__isnull = True )
-    print "Validating Thread information ..."
+    print("Validating Thread information ...")
     for thread in allthreads:
         update_thread_information( thread )
-    print "Done."
+    print("Done.")
 
 
 class Monitor(models.Model):

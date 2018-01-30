@@ -24,7 +24,7 @@ logger = logging.getLogger('sphene.community.middleware')
 def my_get_current(self):
     try:
         group = get_current_group()
-    except AttributeError, e:
+    except AttributeError as e:
         group = None
     if not group:
         return self.get(pk=settings.SITE_ID)
@@ -114,7 +114,7 @@ class GroupMiddleware(object):
             if group is None or group.name != groupName:
                 try:
                     group = get_object_or_404(Group, name = groupName)
-                except Http404, e:
+                except Http404 as e:
                     # We allow access to admin site without group.
                     if not view_func.__module__.startswith('django.contrib.admin.'):
                         raise e
@@ -164,7 +164,7 @@ def get_current_user():
 def get_current_group():
     try:
         return _thread_locals.group
-    except AttributeError, e:
+    except AttributeError as e:
         logger.error('Unable to retrieve group. Is GroupMiddleware enabled?')
         raise e
 
