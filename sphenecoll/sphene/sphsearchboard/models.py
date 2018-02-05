@@ -1,7 +1,5 @@
-
 import logging
 import os
-
 
 from django.conf import settings
 
@@ -9,15 +7,16 @@ from sphene.community import sphsettings
 from sphene.community.middleware import get_current_group, get_current_user
 from sphene.sphboard.models import Post, get_all_viewable_categories
 
-
 logger = logging.getLogger('sphene.sphsearchboard.models')
 
 post_index = None
 try:
-    import urls  #ensure that load_indexes is called
-    post_index= Post.indexer
+    import urls  # ensure that load_indexes is called
+
+    post_index = Post.indexer
 except:
-    from djapian import Indexer
+    from djapian.indexer import Indexer
+
     searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index', '/var/cache/sct/postindex/')
 
     if not os.path.isdir(searchboard_post_index):
@@ -25,23 +24,23 @@ except:
 
     Post.index_model = 'sphene.sphsearchboard.models.post_index'
     post_index = Indexer(
-        path = searchboard_post_index,
+        path=searchboard_post_index,
 
-        model = Post,
+        model=Post,
 
-        fields = [('subject', 20), 'body'],
+        fields=[('subject', 20), 'body'],
 
-        tags = [
+        tags=[
             ('subject', 'subject', 20),
             ('date', 'postdate'),
             ('category', 'category.name'),
             ('post_id', 'id'),
             ('category_id', 'category.id'),
             ('group_id', 'category.group.id'),
-          ])
-
+        ])
 
     post_index.boolean_fields = ('category_id', 'group_id',)
+
 
 class PostFilter(object):
     """
@@ -60,8 +59,8 @@ class PostFilter(object):
 
     def __len__(self):
         return self.resultset.count()
-    count = __len__
 
+    count = __len__
 
     def __iter__(self):
         for hit in self.resultset:
@@ -77,10 +76,10 @@ class PostFilter(object):
                 yield hit
 
 
-def search_posts(query, category = None):
+def search_posts(query, category=None):
     group = get_current_group()
     user = get_current_user()
-    #if group:
+    # if group:
     #    query = u''.join((u'+', u'group_id:', unicode(group.id), ' ', query))
     categories = get_all_viewable_categories(group, user)
     if category is not None:
@@ -96,12 +95,20 @@ def search_posts(query, category = None):
 
 def get_category_name(post):
     return post.category.name
+
+
 get_category_name.name = 'category'
+
 
 def get_category_id(post):
     return post.category.id
+
+
 get_category_id.name = 'category_id'
+
 
 def get_group_id(post):
     return post.category.group.id
+
+
 get_group_id.name = 'group_id'
