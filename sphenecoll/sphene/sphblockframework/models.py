@@ -25,7 +25,7 @@ def get_region(group, user, name):
 
     pci = None
     try:
-        if user.is_authenticated():
+        if user.is_authenticated:
             pci = PageConfigurationInstance.objects.get(
                 page_configuration = pc,
                 user = user)

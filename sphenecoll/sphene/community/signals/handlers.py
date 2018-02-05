@@ -16,10 +16,6 @@ jsincludes.append(settings.STATIC_URL + 'sphene/community/jquery.autocomplete.js
 sphsettings.set_sph_setting('community_jsincludes', jsincludes)
 
 
-class PermissionDenied(Exception):
-    pass
-
-
 ####
 #
 # Source code for adding an avatar .. (advanced community profile)

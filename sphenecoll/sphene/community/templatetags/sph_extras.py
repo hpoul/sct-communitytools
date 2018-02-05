@@ -193,7 +193,7 @@ def sph_publicemailaddress(value):
     if get_sph_setting('community_email_anonymous_require_captcha'):
         # as a security constraint we don't return the public email
         # address if the user is not logged in.
-        if not get_current_user().is_authenticated():
+        if not get_current_user().is_authenticated:
             validated = get_current_request().session.get('sph_email_captcha_validated', 0)
 
             # if the timeout is reached or the captcha was never entered

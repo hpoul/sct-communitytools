@@ -17,7 +17,7 @@ def has_permission_flag(user, flag, contentobject=None, group=None):
     assigned.
     """
     # Anonymous users won't have flags ...
-    if user is None or not user.is_authenticated():
+    if user is None or not user.is_authenticated:
         return False
 
     # Super users have all flags anyway ..

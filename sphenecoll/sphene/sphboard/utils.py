@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.mail import get_connection, EmailMessage
 
-from sphene.community import get_sph_setting
+from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_group
 
 
@@ -36,8 +36,8 @@ def send_mass_mail(datatuple, fail_silently=False, auth_user=None,
     functionality should use the EmailMessage class directly.
     """
     connection = connection or get_connection(username=auth_user,
-                                    password=auth_password,
-                                    fail_silently=fail_silently)
+                                              password=auth_password,
+                                              fail_silently=fail_silently)
     messages = [EmailMessage(subject, message, sender, recipient, headers={'Precedence': 'bulk'})
                 for subject, message, sender, recipient in datatuple]
     return connection.send_messages(messages)

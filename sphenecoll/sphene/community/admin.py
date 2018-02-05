@@ -9,29 +9,33 @@ class GroupMemberAdmin(admin.ModelAdmin):
     list_display = ('group', 'user',)
     list_filter = ('group',)
 
+
 admin.site.register(models.GroupMember, GroupMemberAdmin)
 admin.site.register(models.Theme)
 
 
 class NavigationAdmin(admin.ModelAdmin):
-    list_display = ( 'label', 'group', 'href', 'navigationType', 'sortorder' )
-    list_filter = ( 'group', 'navigationType' )
+    list_display = ('label', 'group', 'href', 'navigationType', 'sortorder')
+    list_filter = ('group', 'navigationType')
     ordering = ['group', 'navigationType', 'sortorder']
+
 
 admin.site.register(models.Navigation, NavigationAdmin)
 
 
 class CommunityUserProfileAdmin(admin.ModelAdmin):
-    list_display = ( 'user', 'displayname', 'public_emailaddress' )
+    list_display = ('user', 'displayname', 'public_emailaddress')
     search_fields = ('user__username', 'displayname', 'public_emailaddress', 'user__email')
     ordering = ['user__username', 'displayname']
-    raw_id_fields = ('user', )
+    raw_id_fields = ('user',)
+
 
 admin.site.register(models.CommunityUserProfile, CommunityUserProfileAdmin)
 
 
 class CommunityUserProfileFieldAdmin(admin.ModelAdmin):
-    list_display = ('name', 'regex', 'renderstring', 'sortorder', )
+    list_display = ('name', 'regex', 'renderstring', 'sortorder',)
+
 
 admin.site.register(models.CommunityUserProfileField,
                     CommunityUserProfileFieldAdmin)
@@ -39,7 +43,8 @@ admin.site.register(models.CommunityUserProfileField,
 
 class GroupTemplateAdmin(admin.ModelAdmin):
     list_display = ('template_name', 'group')
-    list_filter = ( 'group', 'template_name' )
+    list_filter = ('group', 'template_name')
+
 
 admin.site.register(models.GroupTemplate,
                     GroupTemplateAdmin)
@@ -48,7 +53,6 @@ admin.site.register(models.GroupTemplate,
 class RoleAdmin(admin.ModelAdmin):
     ordering = ('group__id', 'name')
 
+
 admin.site.register(models.Role, RoleAdmin)
-
 admin.site.register(models.RoleMember)
-
