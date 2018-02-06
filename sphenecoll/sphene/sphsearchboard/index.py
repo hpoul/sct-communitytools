@@ -16,6 +16,3 @@ try:
     space.add_index(Post, PostIndexer, attach_as='indexer')
 except:
     pass
-
-
-    
