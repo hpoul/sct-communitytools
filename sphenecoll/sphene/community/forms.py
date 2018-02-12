@@ -87,7 +87,7 @@ def get_permission_flag_choices():
                 sph_permission_flags = klass.sph_permission_flags
 
                 if isinstance(sph_permission_flags, dict):
-                    sph_permission_flags = sph_permission_flags.iteritems()
+                    sph_permission_flags = sph_permission_flags.items()
 
                 for (flag, description) in sph_permission_flags:
                     ret.append((flag, "%s (%s)" % (flag, str(description))))
@@ -153,7 +153,7 @@ class RoleGroupMemberForm(forms.Form):
     rolegroup = forms.ModelChoiceField(queryset=None, label=_(u'Role group'))
 
     def __init__(self, group, *args, **kwargs):
-        super(RoleGroupMemberForm, self).__init__(group=group, *args, **kwargs)
+        super(RoleGroupMemberForm, self).__init__(*args, **kwargs)
 
         from sphene.community.models import RoleGroup
         self.fields['rolegroup'].queryset = RoleGroup.objects.filter(group=group)
