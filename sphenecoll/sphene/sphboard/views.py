@@ -1,9 +1,7 @@
 from datetime import timedelta
 
-from django import template
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template.context import RequestContext
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -90,11 +88,13 @@ def showCategory(request, group, category_id=None, showType=None, slug=None):
     except:
         pass
 
-    templateName = 'sphene/sphboard/listCategories.html'
+    template_name = 'sphene/sphboard/listCategories.html'
     if categoryObject is None:
         if showType != 'threads':
-            return render_to_response(templateName, context,
-                                      context_instance=RequestContext(request))
+            return render(
+                request,
+                template_name,
+                context)
 
         ## Show the latest threads from all categories.
         allowed_categories = get_all_viewable_categories(group, request.user)
@@ -110,7 +110,7 @@ def showCategory(request, group, category_id=None, showType=None, slug=None):
         thread_list = ThreadInformation.objects.filter(**thread_args)
     else:
         category_type = categoryObject.get_category_type()
-        templateName = category_type.get_threadlist_template()
+        template_name = category_type.get_threadlist_template()
         thread_list = categoryObject.get_thread_list()
 
     # thread_list = thread_list.extra( select = { 'latest_postdate': 'SELECT MAX(postdate) FROM sphboard_post AS postinthread WHERE postinthread.thread_id = sphboard_post.id OR postinthread.id = sphboard_post.id', 'is_sticky': 'status & %d' % POST_STATUSES['sticky'] } )
@@ -123,7 +123,7 @@ def showCategory(request, group, category_id=None, showType=None, slug=None):
 
     res = object_list(request=request,
                       queryset=thread_list,
-                      template_name=templateName,
+                      template_name=template_name,
                       extra_context=context,
                       template_object_name='thread',
                       allow_empty=True,
@@ -353,7 +353,7 @@ def post(request, group=None, category_id=None, post_id=None, thread_id=None):
 
         if create_post \
                 and postForm.is_valid() \
-                and ('createpoll' not in request.POST \
+                and ('createpoll' not in request.POST
                      or pollForm.is_valid()):
             data = postForm.cleaned_data
 
@@ -389,7 +389,7 @@ def post(request, group=None, category_id=None, post_id=None, thread_id=None):
                 newpost.toggle_monitor()
 
             if 'createpoll' in request.POST and request.POST['createpoll'] == '1':
-                newpost.set_poll(True);
+                newpost.set_poll(True)
                 newpost.save()
 
                 # Creating poll...
@@ -527,50 +527,54 @@ def annotate(request, group, post_id):
         if 'markup' in form.fields:
             form.fields['markup'].initial = annotation.markup
 
-    return render_to_response("sphene/sphboard/annotate.html",
-                              {'thread': thread,
-                               'post': post,
-                               'form': form,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/annotate.html",
+        {'thread': thread,
+         'post': post,
+         'form': form}
+    )
 
 
 def hide(request, group, post_id):
     """ Delete post by setting is_hidden=True
         (annotate method above allows to hide content of the post but leaves it in thread)
     """
-    post = get_object_or_404(Post, pk=post_id)
-    thread = post.get_thread()
-    if not post.allow_hiding():
+    post_obj = get_object_or_404(Post, pk=post_id)
+    thread = post_obj.get_thread()
+    if not post_obj.allow_hiding():
         raise PermissionDenied()
 
     if request.method == 'POST' and 'hide-post' in request.POST.keys():
-        post.hide()
+        post_obj.hide()
         messages.success(request, message=ugettext(u'Post deleted'))
-        if post == thread:
-            return HttpResponseRedirect(post.category.get_absolute_url())
+        if post_obj == thread:
+            return HttpResponseRedirect(post_obj.category.get_absolute_url())
         return HttpResponseRedirect(thread.get_absolute_url())
 
-    return render_to_response("sphene/sphboard/hide.html",
-                              {'thread': thread,
-                               'post': post
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/hide.html",
+        {'thread': thread,
+         'post': post_obj}
+    )
 
 
 def move_post_1(request, group, post_id):
     """
         Display list of categories where the post can be moved to.
     """
-    post = Post.objects.get(pk=post_id)
-    if not post.allow_moving_post():
+    post_obj = Post.objects.get(pk=post_id)
+    if not post_obj.allow_moving_post():
         raise PermissionDenied()
     categories = get_all_viewable_categories(group, request.user)
     categories = Category.objects.filter(pk__in=categories)
-    return render_to_response("sphene/sphboard/move_post_1.html",
-                              {'categories': categories,
-                               'post': post},
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/move_post_1.html",
+        {'categories': categories,
+         'post': post_obj}
+    )
 
 
 def move_post_2(request, group, post_id, category_id):
@@ -578,11 +582,11 @@ def move_post_2(request, group, post_id, category_id):
         Display threads in category (category_id) where the post
         can be moved to
     """
-    post = Post.objects.get(pk=post_id)
-    if not post.allow_moving_post():
+    post_obj = Post.objects.get(pk=post_id)
+    if not post_obj.allow_moving_post():
         raise PermissionDenied()
 
-    thread = post.get_thread()
+    thread = post_obj.get_thread()
     category = Category.objects.get(pk=category_id)
     thread_list = category.get_thread_list().exclude(root_post=thread.pk).order_by('-thread_latest_postdate')
 
@@ -590,7 +594,7 @@ def move_post_2(request, group, post_id, category_id):
                       queryset=thread_list,
                       allow_empty=True,
                       template_name="sphene/sphboard/move_post_2.html",
-                      extra_context={'post': post,
+                      extra_context={'post': post_obj,
                                      'category': category},
                       template_object_name='thread',
                       paginate_by=get_sph_setting('board_post_paging')
@@ -731,15 +735,16 @@ def move_post_3(request, group, post_id, category_id, thread_id=None):
         form.fields['body'].initial = _(u'This post was moved from the category %(category_name)s') % {
             'category_name': category_name}
 
-    return render_to_response("sphene/sphboard/move_post_3.html",
-                              {'thread': thread,
-                               'form': form,
-                               'post': post,
-                               'target_thread': target_thread,
-                               'is_root_post': is_root_post,
-                               'category': target_category
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/move_post_3.html",
+        {'thread': thread,
+         'form': form,
+         'post': post,
+         'target_thread': target_thread,
+         'is_root_post': is_root_post,
+         'category': target_category
+         })
 
 
 def move(request, group, thread_id):
@@ -810,11 +815,12 @@ def move(request, group, thread_id):
     form.fields['body'].initial = _(u'This thread was moved from the category %(category_name)s') % {
         'category_name': category_name}
 
-    return render_to_response("sphene/sphboard/move.html",
-                              {'thread': thread,
-                               'form': form,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/move.html",
+        {'thread': thread,
+         'form': form}
+    )
 
 
 def delete_moved_info(request, group, pk):
@@ -830,9 +836,11 @@ def delete_moved_info(request, group, pk):
         messages.success(request, message=ugettext(u'Information about moved thread has been deleted'))
         return HttpResponseRedirect(back_url)
 
-    return render_to_response("sphene/sphboard/delete_moved_info.html",
-                              {'th': th},
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        "sphene/sphboard/delete_moved_info.html",
+        {'th': th}
+    )
 
 
 def vote(request, group=None, thread_id=None):
@@ -943,10 +951,10 @@ def latest_posts_of_user_context(request, group, user):
 def render_latest_posts_of_user(request, group, user):
     ctx = latest_posts_of_user_context(request, group, user)
     ctx['post_list'] = ctx['post_list'][0:10]
-    str = template.loader.render_to_string('sphene/sphboard/_latest_posts_of_user.html',
-                                           ctx,
-                                           context_instance=RequestContext(request))
-    return str
+    return render(
+        request,
+        'sphene/sphboard/_latest_posts_of_user.html',
+        ctx)
 
 
 def admin_user_posts(request, group, user_id):
@@ -974,10 +982,10 @@ def admin_user_posts(request, group, user_id):
 
 
 def admin_post_delete(request, group, user_id, post_id):
-    post = get_object_or_404(Post, author=user_id, pk=post_id)
-    if not post.allow_hiding():
+    post_obj = get_object_or_404(Post, author=user_id, pk=post_id)
+    if not post_obj.allow_hiding():
         raise PermissionDenied()
-    post.hide()
+    post_obj.hide()
     messages.success(request, message=ugettext(u'Post deleted'))
     return HttpResponseRedirect(sph_reverse('sphboard_admin_user_posts', kwargs={'user_id': user_id}))
 
@@ -987,8 +995,8 @@ def admin_posts_delete(request, group, user_id):
     if posts:
         if not posts[0].allow_hiding():
             raise PermissionDenied()
-        for post in posts:
-            post.hide()
+        for post_obj in posts:
+            post_obj.hide()
         messages.success(request, message=ugettext(u'All posts deleted'))
     else:
         messages.success(request, message=ugettext(u'No posts to delete'))

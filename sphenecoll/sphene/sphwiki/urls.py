@@ -1,24 +1,35 @@
-from django.conf.urls.defaults import *
+from django.urls import re_path
+from django.views.generic import RedirectView
+
+from .views import recentChanges
+from .views import showSnip
+from .views import generatePDF
+from .views import history
+from .views import editSnip
+from .views import diff
+from .views import attachmentEdit
+from .views import attachment
+from .views import attachmentCreate
+from .views import show_tag_snips
 
 
-
-urlpatterns = patterns('',
-                       (r'^$', 'django.views.generic.simple.redirect_to', {'url': 'show/Start/'}),
-                                              )
+urlpatterns = [
+    re_path(r'^$', RedirectView.as_view(url='show/Start/'))
+]
 
 snip = r'(?P<snipName>[\w/:\-.]+?)'
 
-urlpatterns += patterns('sphene.sphwiki.views',
-                        (r'^recentchanges/$', 'recentChanges'),
-                        (r'^show/'          + snip + r'/$', 'showSnip'),
-                        (r'^pdf/'           + snip + r'/$', 'generatePDF'),
-                        (r'^edit/'          + snip + r'/$', 'editSnip'),
-                        url(r'^editversion/'+ snip + r'/(?P<versionId>\d+)/$', 'editSnip', name = 'sphwiki_editversion'),
-                        (r'^history/'       + snip + r'/$', 'history'),
-                        (r'^diff/'          + snip + r'/(?P<changeId>\d+)/$', 'diff'),
-                        (r'^attachments/edit/'   + snip + r'/(?P<attachmentId>\d+)/$', 'attachmentEdit'),
-                        (r'^attachments/create/'   + snip + r'/$', 'attachmentCreate'),
-                        (r'^attachments/list/'   + snip + r'/$', 'attachment'),
+urlpatterns += [
+    re_path(r'^recentchanges/$', recentChanges),
+    re_path(r'^show/' + snip + r'/$', showSnip),
+    re_path(r'^pdf/' + snip + r'/$', generatePDF),
+    re_path(r'^edit/' + snip + r'/$', editSnip),
+    re_path(r'^editversion/' + snip + r'/(?P<versionId>\d+)/$', editSnip, name='sphwiki_editversion'),
+    re_path(r'^history/' + snip + r'/$', history),
+    re_path(r'^diff/' + snip + r'/(?P<changeId>\d+)/$', diff),
+    re_path(r'^attachments/edit/' + snip + r'/(?P<attachmentId>\d+)/$', attachmentEdit),
+    re_path(r'^attachments/create/' + snip + r'/$', attachmentCreate),
+    re_path(r'^attachments/list/' + snip + r'/$', attachment),
 
-                        url(r'^tag/(?P<tag_name>\w+)/$', 'show_tag_snips', name = 'sphwiki_show_tag_snips'),
-                        )
+    re_path(r'^tag/(?P<tag_name>\w+)/$', show_tag_snips, name='sphwiki_show_tag_snips'),
+]

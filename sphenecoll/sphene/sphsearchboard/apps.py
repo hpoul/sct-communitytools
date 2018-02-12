@@ -9,4 +9,5 @@ class SearchBoardConfig(AppConfig):
         super().ready()
         # from djapian import load_indexes
         # load_indexes()
+        print('sphsearchboard/apps.py -> ready')
         self.module.setup_indices()

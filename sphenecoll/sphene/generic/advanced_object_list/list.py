@@ -1,15 +1,16 @@
-from copy import deepcopy
 import itertools
+from collections import OrderedDict
 
 from django.template.loader import render_to_string
-from django.utils import simplejson
-from django.utils.datastructures import SortedDict
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
 
 from sphene.generic.advanced_object_list.columns import Column
 
 __all__ = ('ObjectProvider', 'QuerySetProvider', 'AdvancedObjectList')
+
+
+def cmp(x, y):
+    return (x > y) - (x < y)
 
 
 def get_declared_columns(bases, attrs, with_base_columns=True):
@@ -18,7 +19,7 @@ def get_declared_columns(bases, attrs, with_base_columns=True):
 
     # TODO iterate over base classes
 
-    return SortedDict(columns)
+    return OrderedDict(columns)
 
 
 class DeclarativeColumnsMetaclass(type):

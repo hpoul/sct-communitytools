@@ -9,9 +9,12 @@ def setup_indices():
     from .models import Post
     global post_index
 
+    print('calling sphsearchboard setup_indices')
+
     try:
         post_index = Post.indexer
     except Exception as e:
+        print(e)
         from djapian.indexer import Indexer
 
         searchboard_post_index = sphsettings.get_sph_setting('sphsearchboard_post_index', '/var/cache/sct/postindex/')

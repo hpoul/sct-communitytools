@@ -12,10 +12,10 @@ from difflib import HtmlDiff
 
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community import PermissionDenied, sphutils
-from sphene.community.sphutils import get_sph_setting
 from sphene.community.middleware import get_current_sphdata, get_current_user
 from sphene.community.models import Tag, tag_set_labels, tag_get_labels, tag_get_models_by_tag
 from sphene.community.fields import TagField
+
 
 # Create your views here.
 
@@ -129,8 +129,8 @@ def diff(request, group, snipName, changeId=None):
     if not snip.has_view_permission():
         raise PermissionDenied()
     change_end = get_object_or_404(WikiSnipChange,
-                                  snip=snip,
-                                  pk=changeId, )
+                                   snip=snip,
+                                   pk=changeId, )
     args = {'snip': snip,
             'snipName': snipName, }
     try:
@@ -161,8 +161,8 @@ def diff(request, group, snipName, changeId=None):
             'editor': sph_user_displayname(change_end.editor),
             'editversionlink': change_end.get_absolute_editurl()},
 
-        diff_table = html_diff.make_table(change_start.body.splitlines(1),
-                                          change_end.body.splitlines(1),
+        diff_table = html_diff.make_table(change_start.body.splitlines(True),
+                                          change_end.body.splitlines(True),
                                           fromdesc=fromdesc,
                                           todesc=todesc,
                                           context=True, )

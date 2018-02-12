@@ -2,7 +2,7 @@ import urllib
 from random import choice
 import string
 from time import time
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 from urllib.parse import unquote
 from hashlib import md5
 import json
@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from django.template import loader
 from django.core.mail import send_mail, EmailMultiAlternatives
@@ -21,7 +21,6 @@ from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _, ugettext, ugettext_lazy
-from django.views.generic.list_detail import object_list
 
 from django.contrib.auth.views import login as view_login, logout as view_logout
 
@@ -35,6 +34,10 @@ from sphene.community.permissionutils import has_permission_flag
 from sphene.community.sphutils import sph_reverse
 from sphene.community.templatetags.sph_extras import sph_user_profile_link
 from sphene.community.middleware import get_current_sphdata
+from .forms import EditRoleForm
+from .forms import EditRoleMemberForm
+from .forms import EditRoleGroupMemberForm
+
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 import logging
@@ -90,7 +93,7 @@ class ForgotUsernamePassword(forms.Form):
 
 
 def generate_password():
-    chars = string.letters + string.digits
+    chars = string.ascii_letters + string.digits
     newpassword = ''
     for i in range(10):
         newpassword = newpassword + choice(chars)
@@ -120,15 +123,18 @@ def accounts_forgot(request, group=None):
             body = t.render(RequestContext(request, c))
 
             send_mail(subject, body, None, [user.email])
-            return render_to_response('sphene/community/accounts/forgot_sent.html',
-                                      {},
-                                      context_instance=RequestContext(request))
+            return render(
+                request,
+                'sphene/community/accounts/forgot_sent.html',
+                {}
+            )
     else:
         form = ForgotUsernamePassword()
-    return render_to_response('sphene/community/accounts/forgot.html',
-                              {'form': form,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/accounts/forgot.html',
+        {'form': form}
+    )
 
 
 def get_client_ip(request):
@@ -174,17 +180,19 @@ def register(request, group=None):
                 msg.attach_alternative(html_part, "text/html")
                 msg.send()
 
-            return render_to_response('sphene/community/register_emailsent.html',
-                                      {'email': email_address,
-                                       },
-                                      context_instance=RequestContext(request))
+            return render(
+                request,
+                'sphene/community/register_emailsent.html',
+                {'email': email_address})
         pass
     else:
         form = RegisterEmailAddress()
 
-    return render_to_response('sphene/community/register.html',
-                              {'form': form},
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/register.html',
+        {'form': form}
+    )
 
 
 username_re = r'^\w+$'
@@ -243,20 +251,24 @@ def register_hash(request, email, emailHash, group=None):
                                             formdata['password'])
             user = authenticate(username=formdata['username'], password=formdata['password'])
             login(request, user)
-            return render_to_response('sphene/community/register_hash_success.html',
-                                      {},
-                                      context_instance=RequestContext(request))
-        return render_to_response('sphene/community/register_hash.html',
-                                  {'form': form},
-                                  context_instance=RequestContext(request))
+            return render(
+                request,
+                'sphene/community/register_hash_success.html',
+                {})
+        return render(
+            request,
+            'sphene/community/register_hash.html',
+            {'form': form}
+        )
 
     elif md5(settings.SECRET_KEY + email_address).hexdigest() == emailHash:
         form = RegisterForm()
         form.fields['email_address'].initial = email_address
         form.fields['email_hash'].initial = emailHash
-        return render_to_response('sphene/community/register_hash.html',
-                                  {'form': form},
-                                  context_instance=RequestContext(request))
+        return render(
+            request,
+            'sphene/community/register_hash.html',
+            {'form': form})
     else:
         raise Http404("No Outstanding registrations for this user.")
 
@@ -286,11 +298,13 @@ def email_change_hash(request, email_change_hash=None, group=None):
             user.email = email_data['email']
             user.save()
 
-    return render_to_response('sphene/community/email_changed.html',
-                              {'signature_expired': signature_expired,
-                               'invalid_user': invalid_user,
-                               'email_data': email_data},
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/email_changed.html',
+        {'signature_expired': signature_expired,
+         'invalid_user': invalid_user,
+         'email_data': email_data}
+    )
 
     # 'WzEsMiwzLDRd.wSPHqC0gR7VUqivlSukJ0IeTDgo'
     # s.loads('WzEsMiwzLDRd.wSPHqC0gR7VUqivlSukJ0IeTDgo')
@@ -304,7 +318,7 @@ def email_change_hash(request, email_change_hash=None, group=None):
 try:
 
     from djaptcha.models import CaptchaRequest
-    from cStringIO import StringIO
+    from io import StringIO
     import random
 except:
     pass
@@ -335,18 +349,18 @@ def captcha_image(request, token_id, group=None):
     fgcolor = (153, 204, 0)
     if hasattr(settings, 'CAPTCHA_FGCOLOR'):
         fgcolor = settings.CAPTCHA_FGCOLOR
-    borderWidth = 2
+    border_width = 2
     if hasattr(settings, 'CAPTCHA_BORDER'):
-        borderWidth = settings.CAPTCHA_BORDER
+        border_width = settings.CAPTCHA_BORDER
     font = ImageFont.truetype(settings.FONT_PATH, settings.FONT_SIZE)
     (width, height) = font.getsize(text)
-    image = Image.new('RGB', (width + (borderWidth * 2), height + 3 + (borderWidth * 2)), bgcolor)
+    image = Image.new('RGB', (width + (border_width * 2), height + 3 + (border_width * 2)), bgcolor)
     draw = ImageDraw.Draw(image)
     # Draw the text, starting from (borderWidth,borderWidth) so the text won't be edge
-    draw.text((borderWidth, borderWidth), text, font=font, fill=fgcolor)
+    draw.text((border_width, border_width), text, font=font, fill=fgcolor)
     # Saves the image in a StringIO object, so you can write the response
     # in a HttpResponse object
-    image = autocrop(image, bgcolor, borderWidth)
+    image = autocrop(image, bgcolor, border_width)
     out = StringIO()
     image.save(out, "JPEG")
     out.seek(0)
@@ -422,14 +436,16 @@ def profile(request, group, user_id):
 
             additionalprofile += response
 
-    return render_to_response('sphene/community/profile.html',
-                              {'profile_user': user,
-                               'profile_blocks': blocks,
-                               'has_edit_permission': has_edit_permission,
-                               'profile_edit_url': profile_edit_url,
-                               'additionalprofile': mark_safe(additionalprofile),
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/profile.html',
+        {'profile_user': user,
+         'profile_blocks': blocks,
+         'has_edit_permission': has_edit_permission,
+         'profile_edit_url': profile_edit_url,
+         'additionalprofile': mark_safe(additionalprofile),
+         }
+    )
 
 
 def profile_edit_mine(request, group):
@@ -530,12 +546,14 @@ def profile_edit(request, group, user_id):
                               } )
     """
 
-    return render_to_response('sphene/community/profile_edit.html',
-                              {'profile_user': user,
-                               'form': form,
-                               'is_sphboard': 'sphene.sphboard' in settings.INSTALLED_APPS
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/profile_edit.html',
+        {'profile_user': user,
+         'form': form,
+         'is_sphboard': 'sphene.sphboard' in settings.INSTALLED_APPS
+        }
+    )
 
 
 def admin_permission_rolegroup_list(request, group):
@@ -548,9 +566,11 @@ def admin_permission_rolegroup_list(request, group):
                       name=name).save()
             return HttpResponseRedirect(sph_reverse('community_admin_permission_rolegroup_list'))
     rolegroups = RoleGroup.objects.filter(group=group)
-    return render_to_response('sphene/community/admin/permission/rolegroup_list.html',
-                              {'rolegroups': rolegroups, },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/admin/permission/rolegroup_list.html',
+        {'rolegroups': rolegroups}
+    )
 
 
 def admin_permission_rolegroup_edit(request, group, rolegroup_id):
@@ -576,23 +596,22 @@ def admin_permission_rolegroup_edit(request, group, rolegroup_id):
             member.delete()
             return HttpResponseRedirect(rolegroup.get_absolute_editurl())
 
-    return render_to_response('sphene/community/admin/permission/rolegroup_edit.html',
-                              {'rolegroup': rolegroup,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/admin/permission/rolegroup_edit.html',
+        {'rolegroup': rolegroup}
+    )
 
 
 def admin_permission_role_list(request, group):
     if not has_permission_flag(request.user, 'community_manage_roles'):
         raise PermissionDenied()
     roles = Role.objects.filter(group=group)
-    return render_to_response('sphene/community/admin/permission/role_list.html',
-                              {'roles': roles,
-                               },
-                              context_instance=RequestContext(request))
-
-
-from forms import EditRoleForm
+    return render(
+        request,
+        'sphene/community/admin/permission/role_list.html',
+        {'roles': roles}
+    )
 
 
 def admin_permission_role_edit(request, group, role_id=None):
@@ -631,10 +650,11 @@ def admin_permission_role_edit(request, group, role_id=None):
         form.fields['name'].initial = role.name
         form.fields['permission_flags'].initial = [flag.name for flag in role.permission_flags.all()]
 
-    return render_to_response('sphene/community/admin/permission/role_edit.html',
-                              {'form': form,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/admin/permission/role_edit.html',
+        {'form': form}
+    )
 
 
 def admin_permission_role_member_list(request, group, role_id):
@@ -650,14 +670,12 @@ def admin_permission_role_member_list(request, group, role_id):
         messages.success(request, message=ugettext(u'Successfully deleted role member.'))
 
         return HttpResponseRedirect(role.get_absolute_memberlisturl())
-    return render_to_response('sphene/community/admin/permission/role_member_list.html',
-                              {'members': members,
-                               'role': role,
-                               },
-                              context_instance=RequestContext(request))
-
-
-from forms import EditRoleMemberForm, EditRoleGroupMemberForm
+    return render(
+        request,
+        'sphene/community/admin/permission/role_member_list.html',
+        {'members': members,
+         'role': role}
+    )
 
 
 def admin_permission_role_member_add(request, group, role_id, addgroup=False):
@@ -690,11 +708,12 @@ def admin_permission_role_member_add(request, group, role_id, addgroup=False):
     else:
         form = EditForm(group=group)
 
-    return render_to_response('sphene/community/admin/permission/role_member_add.html',
-                              {'form': form,
-                               'role': role,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/admin/permission/role_member_add.html',
+        {'form': form,
+         'role': role}
+    )
 
 
 def admin_permission_role_groupmember_add(request, group, role_id):
@@ -721,9 +740,9 @@ def admin_users(request, group):
                 search_params = Q(username__istartswith=username) | Q(first_name__istartswith=username) | Q(
                     last_name__istartswith=username) | Q(email__istartswith=username)
                 users = users.filter(search_params)
-                search_qs = urllib.urlencode(search_form.cleaned_data)
+                search_qs = urlencode(search_form.cleaned_data)
 
-    templateName = 'sphene/community/admin/users_list.html'
+    template_name = 'sphene/community/admin/users_list.html'
 
     context = {'is_sphboard': 'sphene.sphboard' in settings.INSTALLED_APPS,
                'search_qs': search_qs,
@@ -732,7 +751,7 @@ def admin_users(request, group):
 
     res = object_list(request=request,
                       queryset=users,
-                      template_name=templateName,
+                      template_name=template_name,
                       template_object_name='sphuser',
                       allow_empty=True,
                       extra_context=context,
@@ -829,7 +848,8 @@ def reveal_emailaddress(request, group, user_id):
             return HttpResponseRedirect(sph_user_profile_link(user))
     else:
         form = RevealEmailAddress()
-    return render_to_response('sphene/community/profile_reveal_emailaddress.html',
-                              {'form': form,
-                               },
-                              context_instance=RequestContext(request))
+    return render(
+        request,
+        'sphene/community/profile_reveal_emailaddress.html',
+        {'form': form}
+    )
