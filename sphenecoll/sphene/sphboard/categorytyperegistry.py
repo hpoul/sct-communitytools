@@ -1,3 +1,5 @@
+from importlib import import_module
+
 from django.conf import settings
 
 
@@ -6,6 +8,7 @@ class CategoryTypeBase(type):
 
     def __new__(cls, name, bases, attrs):
         # If this isn't a subclass of Model, don't do anything special.
+        print('new called')
         new_class = super(CategoryTypeBase, cls).__new__(cls, name, bases, attrs)
         try:
             parents = [b for b in bases if issubclass(b, CategoryType)]
@@ -20,14 +23,11 @@ class CategoryTypeBase(type):
         return new_class
 
 
-class CategoryType(object):
+class CategoryType(metaclass=CategoryTypeBase):
     """
     Base class for all category types.
     """
-
-    __metaclass__ = CategoryTypeBase
-
-    # The name uniqueley identifies this category type.
+    # The name uniquely identifies this category type.
     name = None
 
     # The label which will be displayed to the user.
@@ -159,8 +159,13 @@ def __assure_initialized():
 def __init_category_types():
     # for now use settings.INSTALLED_APPS
     # but in the end we should better use get_apps() ?
+    from django.apps import apps
 
-    for app_name in settings.INSTALLED_APPS:
-        mod = __import__(app_name, {}, {}, ['categorytypes'])
-        if hasattr(mod, 'categorytypes'):
+    configs = apps.get_app_configs()
+    for app_config in configs:
+        try:
+            import_module('%s.%s' % (app_config.name, 'categorytypes'))
+        except Exception:
+            pass
+        else:
             initialized = True

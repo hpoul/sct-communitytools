@@ -40,7 +40,7 @@ class PostModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PostModelForm, self).__init__(*args, **kwargs)
-        # if not sphutils.has_captcha_support() or get_current_user().is_authenticated():
+        # if not sphutils.has_captcha_support() or get_current_user().is_authenticated:
         #    del self.fields['captcha']
 
         # if there is no choice for 'markup' .. don't show it.

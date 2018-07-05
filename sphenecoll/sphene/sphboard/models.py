@@ -266,7 +266,7 @@ class Category(models.Model):
         if get_sph_setting('workaround_select_related_bug'):
             # See http://code.djangoproject.com/ticket/4789
             return self.threadinformation_set
-        return self.threadinformation_set.filter(root_post__is_hidden=0).select_related(depth=1)
+        return self.threadinformation_set.filter(root_post__is_hidden=0).select_related('root_post', 'category')
 
     def _cache_key_thread_count(self):
         return '%s_category_tc_%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.pk)

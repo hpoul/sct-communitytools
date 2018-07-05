@@ -1,30 +1,31 @@
-from django.conf.urls.defaults import *
 from django.conf import settings
-
-defaultdict = { 'groupName': 'example' }
-
-
-# newforms admin magic
-
+from django.urls import include, re_path
+from django.contrib.staticfiles import views
+from django.views.generic import RedirectView
 from django.contrib import admin
-admin.autodiscover()
+from django.contrib.auth import views as auth_views
 
-urlpatterns = patterns('',
+defaultdict = {'groupName': 'example'}
+
+
+urlpatterns = [
     # Example:
     # (r'^simpleproject/', include('simpleproject.foo.urls')),
 
-    (r'^$', 'django.views.generic.simple.redirect_to', { 'url': '/wiki/show/Start/' }),
+    re_path('^$', RedirectView.as_view(url='/wiki/show/Start/', permanent=True)),
 
-    (r'^community/', include('sphene.community.urls'), defaultdict),
-    (r'^board/', include('sphene.sphboard.urls'), defaultdict),
-    (r'^wiki/', include('sphene.sphwiki.urls'), defaultdict),
+    re_path(r'^community/', include('sphene.community.urls'), defaultdict),
+    re_path(r'^board/', include('sphene.sphboard.urls'), defaultdict),
+    re_path(r'^wiki/', include('sphene.sphwiki.urls'), defaultdict),
 
-    (r'accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'accounts/logout/$', 'django.contrib.auth.views.logout' ),
+    re_path(r'accounts/login/$', auth_views.LoginView.as_view()),
+    re_path(r'accounts/logout/$', auth_views.LogoutView.as_view()),
 
     # Only for development
-    (r'^static/sphene/(.*)$', 'django.views.static.serve', {'document_root': settings.ROOT_PATH + '/../../static/sphene' }),
+    re_path(r'^static/sphene/(.*)$',
+            views.serve,
+            {'document_root': settings.ROOT_PATH + '/../../static/sphene'}),
 
     # Uncomment this for admin:
-    (r'^admin/(.*)', admin.site.root),
-)
+    re_path(r'^admin/(.*)', admin.site.urls),
+]
