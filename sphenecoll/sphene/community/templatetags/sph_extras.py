@@ -1,7 +1,7 @@
 from time import time
 import os
 
-import requests
+from django.template.base import TextNode
 from django.urls import NoReverseMatch
 
 try:
@@ -10,14 +10,14 @@ except ImportError:
     import Image
 
 from django import template
-from django.template.context import RequestContext
 from django.conf import settings
 from django.utils.html import escape, conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.core.cache import cache
-from django.template import defaulttags, Node
+from django.template import defaulttags, Node, TemplateSyntaxError
+from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
 
 from sphene.community.sphutils import HTML, get_sph_setting
@@ -48,6 +48,7 @@ class IncludeMacro(mdx_macros.PreprocessorMacro):
             if cached_text:
                 text = cached_text
             else:
+                import requests
                 f = requests.get(params['url'])
                 try:
                     start = params.get('start', None)
@@ -251,11 +252,9 @@ def sph_html_user(user):
 
 @register.filter
 def sph_html_user(user):
-    str = template.loader \
-        .render_to_string('sphene/community/_display_username.html',
-                          {'user': user, },
-                          context_instance=RequestContext(get_current_request()))
-    return str
+    return render_to_string('sphene/community/_display_username.html',
+                            {'user': user, },
+                            request=get_current_request())
 
 
 @register.filter
@@ -296,6 +295,10 @@ class SphURLNode(Node):
         args = [arg.resolve(context) for arg in self.args]
         kwargs = {k: v.resolve(context) for k, v in self.kwargs.items()}
         view_name = self.view_name.resolve(context)
+        if view_name == '':
+            log.error('Error while resolving sph_url2 for %r / %s', self.view_name, self.view_name)
+            return ''
+
         try:
             current_app = context.request.current_app
         except AttributeError:
@@ -365,8 +368,12 @@ class SphURLNodeOld(Node):
 
 
 def sph_url2(*args, **kwargs):
-    node = defaulttags.url(*args, **kwargs)
-    return SphURLNode(node.view_name, node.args, node.kwargs, node.asvar)
+    try:
+        node = defaulttags.url(*args, **kwargs)
+        return SphURLNode(node.view_name, node.args, node.kwargs, node.asvar)
+    except TemplateSyntaxError:
+        log.error('Error while resolving url for %r / %r', args, kwargs)
+        return TextNode('')
 
 
 sph_url2 = register.tag(sph_url2)

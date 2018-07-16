@@ -23,7 +23,7 @@ logger = logging.getLogger('sphene.community.middleware')
 _thread_locals = local()
 
 
-def my_get_current(self):
+def my_get_current(self, *args):
     try:
         group = get_current_group()
     except AttributeError as e:
@@ -67,7 +67,7 @@ class MultiHostMiddleware:
                 urlconf = settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP[host]
             else:
                 # TODO cache results ? - cache regular expressions .. ?
-                for key, value in settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP.iteritems():
+                for key, value in settings.SPH_HOST_MIDDLEWARE_URLCONF_MAP.items():
                     regex = re.compile(key)
                     match = regex.match(host)
                     if not match:
@@ -317,3 +317,37 @@ class PermissionDeniedMiddleware:
                 )
             )
         return None
+
+
+class LastModified:
+    """ Middleware that sets the Last-Modified and associated headers,
+    if requested by the view. (By setting the sph_lastmodified attribute
+    of the response object.
+    based on a contribution of Andrew Plotkin:
+    http://eblong.com/zarf/boodler/sitework/
+
+    2018-07-16 h@poul.at: modified to use http_date() and django 1.9 style MIDDLEWARE
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        # Code to be executed for each request/response after
+        # the view is called.
+
+        stamp = getattr(response, 'sph_lastmodified', None)
+        if not stamp: return response
+
+        from django.utils.http import http_date
+        import calendar
+        if stamp is True:
+            val = http_date()
+        else:
+            val = http_date(calendar.timegm(stamp.timetuple()))
+        response['Last-Modified'] = val
+        response['Cache-Control'] = 'private, must-revalidate, max-age=0'
+
+        return response

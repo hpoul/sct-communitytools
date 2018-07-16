@@ -20,7 +20,7 @@ class BlogPostExtension(models.Model):
     Extension to a forum post - but actually only applicable for
     threads not posts.
     """
-    post = models.ForeignKey(Post, unique = True)
+    post = models.ForeignKey(Post, unique=True, on_delete=models.CASCADE)
     # The status is basically just for usability .. 
     # It is just important that this info gets populated to the Posts 'is_hidden' attribute.
     status = models.IntegerField( choices = BLOG_POST_STATUS_CHOICES )
@@ -47,7 +47,7 @@ class BlogCategoryConfig(models.Model):
     """
     Extended configuration for a Blog category.
     """
-    category = models.ForeignKey( Category, unique = True )
+    category = models.ForeignKey(Category, unique=True, on_delete=models.CASCADE)
 
     enable_googleblogping = models.BooleanField(help_text = "Enable ping to blogsearch.google.com ?")
 

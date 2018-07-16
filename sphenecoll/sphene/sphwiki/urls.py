@@ -20,16 +20,16 @@ urlpatterns = [
 snip = r'(?P<snipName>[\w/:\-.]+?)'
 
 urlpatterns += [
-    re_path(r'^recentchanges/$', recentChanges),
-    re_path(r'^show/' + snip + r'/$', showSnip),
-    re_path(r'^pdf/' + snip + r'/$', generatePDF),
-    re_path(r'^edit/' + snip + r'/$', editSnip),
+    re_path(r'^recentchanges/$', recentChanges, name='sphwiki-recentchanges'),
+    re_path(r'^show/' + snip + r'/$', showSnip, name='sphwiki-show'),
+    re_path(r'^pdf/' + snip + r'/$', generatePDF, name='sphwiki-pdf'),
+    re_path(r'^edit/' + snip + r'/$', editSnip, name='sphwiki-edit'),
     re_path(r'^editversion/' + snip + r'/(?P<versionId>\d+)/$', editSnip, name='sphwiki_editversion'),
-    re_path(r'^history/' + snip + r'/$', history),
+    re_path(r'^history/' + snip + r'/$', history, name='sphwiki-history'),
     re_path(r'^diff/' + snip + r'/(?P<changeId>\d+)/$', diff),
-    re_path(r'^attachments/edit/' + snip + r'/(?P<attachmentId>\d+)/$', attachmentEdit),
-    re_path(r'^attachments/create/' + snip + r'/$', attachmentCreate),
-    re_path(r'^attachments/list/' + snip + r'/$', attachment),
+    re_path(r'^attachments/edit/' + snip + r'/(?P<attachmentId>\d+)/$', attachmentEdit, name='sphwiki-attachments-edit'),
+    re_path(r'^attachments/create/' + snip + r'/$', attachmentCreate, name='sphwiki-attachments-create'),
+    re_path(r'^attachments/list/' + snip + r'/$', attachment, name='sphwiki-attachments-list'),
 
     re_path(r'^tag/(?P<tag_name>\w+)/$', show_tag_snips, name='sphwiki_show_tag_snips'),
 ]
