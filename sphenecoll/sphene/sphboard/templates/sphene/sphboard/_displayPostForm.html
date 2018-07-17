@@ -39,7 +39,6 @@
     <script type="text/javascript" src="{{ STATIC_URL }}sphene/sphboard/js/inline.js"></script>
     {% endif %}
   </table>
-  </script>
     {% if user.is_authenticated %}
           {% if thread.has_monitor or category.has_monitor %}
             <small>{% trans "You are already receiving email notifications for this thread or category." %}</small>

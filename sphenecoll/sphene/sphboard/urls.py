@@ -1,9 +1,8 @@
 from django.urls import re_path
 
 from .feeds import LatestThreads, LatestGlobalThreads
-from .views import options
+from .views import options, CategoryList
 from .views import move
-from .views import showCategory
 from .views import listThreads
 from .views import showThread
 from .views import post
@@ -35,11 +34,11 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    re_path(r'^$', showCategory, {'category_id': '0'}, name='sphboard-index'),
-    re_path(r'^show/(?P<category_id>\d+)/(?P<slug>.+)/$', showCategory, name='sphboard_show_category'),
-    re_path(r'^show/(?P<category_id>\d+)/$', showCategory, name='sphboard_show_category_without_slug'),
+    re_path(r'^$', CategoryList.as_view(), {'category_id': None}, name='sphboard-index'),
+    re_path(r'^show/(?P<category_id>\d+)/(?P<slug>.+)/$', CategoryList.as_view(), name='sphboard_show_category'),
+    re_path(r'^show/(?P<category_id>\d+)/$', CategoryList.as_view(), name='sphboard_show_category_without_slug'),
     re_path(r'^list_threads/(?P<category_id>\d+)/$', listThreads, ),
-    re_path(r'^latest/(?P<category_id>\d+)/$', showCategory, {'showType': 'threads'}, name='sphboard_latest'),
+    re_path(r'^latest/(?:(?P<category_id>\d*)/)?$', CategoryList.as_view(), {'show_type': 'threads'}, name='sphboard_latest'),
     re_path(r'^thread/(?P<thread_id>\d+)/(?P<slug>.+)/$', showThread, name='sphboard_show_thread'),
     re_path(r'^thread/(?P<thread_id>\d+)/$', showThread, name='sphboard_show_thread_without_slug'),
     re_path(r'^options/(?P<thread_id>\d+)/$', options, name='sphboard_options'),

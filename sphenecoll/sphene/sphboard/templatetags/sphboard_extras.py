@@ -51,8 +51,9 @@ def sphboard_latestPost(latestPost, showSubject=1 ):
     return { 'latestPost' : latestPost, 'showSubject': showSubject }
 
 def sphboard_displayBreadcrumbs( category = None, post = None, linkall = False, show_board_link = True ):
-    if category == None:
-        if post == None: return { 'show_board_link': show_board_link, }
+    if category is None:
+        if post is None:
+            return {'show_board_link': show_board_link, }
         category = post.category
         current = post
     else:

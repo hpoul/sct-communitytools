@@ -544,9 +544,9 @@ class Category(models.Model):
     get_absolute_latest_url = sphpermalink(get_absolute_latest_url)
 
     def get_absolute_togglemonitor_url(self):
-        return ('sphene.sphboard.views.toggle_monitor', (), {'groupName': self.get_group().name,
-                                                             'monitortype': 'category', 'object_id': self.id, })
-
+        return ('sphboard_toggle_monitor', (), {'groupName': self.get_group().name,
+                                                'monitortype': 'category',
+                                                'object_id': self.id, })
     get_absolute_togglemonitor_url = sphpermalink(get_absolute_togglemonitor_url)
 
     def get_group(self):
@@ -1151,7 +1151,7 @@ class Post(models.Model):
                                          'group': group,
                                          'post': self,
                                          },
-                                        RequestContext(get_current_request())
+                                        get_current_request()
                                         )
 
                 datatuple = ()

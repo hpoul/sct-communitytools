@@ -85,7 +85,7 @@
             </tr>
           {% endfor %}
           <tr>
-            <td colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}"><span class="board_threadcount">{% blocktrans %}{{ hits }} Threads in this category.{% endblocktrans %}</span><span class="board_pagination">{% sph_pagination pages page '' 'page' 1 %}</span></td>
+            <td colspan="{% if sph_settings.board_count_views %}5{% else %}4{% endif %}"><span class="board_threadcount">{% blocktrans with hits=paginator.count %}{{ hits }} Threads in this category.{% endblocktrans %}</span><span class="board_pagination">{% sph_pagination paginator.num_pages page_obj.number '' 'page' 1 %}</span></td>
           </tr>
         </table>
         {% if category %}

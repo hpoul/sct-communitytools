@@ -2,7 +2,7 @@
 {% load sph_extras %}
 {% load sphboard_extras %}
 {% if show_board_link %}
-<a href="{% sph_url2 sphboard-index %}">{% trans "Board" %}</a>
+<a href="{% sph_url2 'sphboard-index' %}">{% trans "Board" %}</a>
 {% endif %}
 {% if categories %}
   {% for category in categories %}
