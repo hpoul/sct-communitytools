@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core.paginator import Paginator
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -606,16 +607,25 @@ def move_post_2(request, group, post_id, category_id):
     category = Category.objects.get(pk=category_id)
     thread_list = category.get_thread_list().exclude(root_post=thread.pk).order_by('-thread_latest_postdate')
 
-    res = object_list(request=request,
-                      queryset=thread_list,
-                      allow_empty=True,
-                      template_name="sphene/sphboard/move_post_2.html",
-                      extra_context={'post': post_obj,
-                                     'category': category},
-                      template_object_name='thread',
-                      paginate_by=get_sph_setting('board_post_paging')
-                      )
-    return res
+    paginator = Paginator(thread_list, get_sph_setting('board_post_paging'), allow_empty_first_page=True)
+
+    page = request.GET.get('page')
+    page_obj = paginator.get_page(page)
+
+    # res = object_list(request=request,
+    #                   queryset=thread_list,
+    #                   allow_empty=True,
+    #                   template_name="sphene/sphboard/move_post_2.html",
+    #                   extra_context={'post': post_obj,
+    #                                  'category': category},
+    #                   template_object_name='thread',
+    #                   paginate_by=get_sph_setting('board_post_paging')
+    #                   )
+    return render(request, 'sphene/sphboard/move_post_2.html', {
+        'post': post_obj,
+        'category': category,
+        'thread_list': page_obj,
+    })
 
 
 def move_post_3(request, group, post_id, category_id, thread_id=None):

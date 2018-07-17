@@ -615,8 +615,8 @@ class PostManager(models.Manager):
     (ie is_hidden has to be 0)
     """
 
-    def get_query_set(self):
-        return super(PostManager, self).get_query_set().filter(is_hidden=0)
+    def get_queryset(self):
+        return super(PostManager, self).get_queryset().filter(is_hidden=0)
 
 
 POST_STATUS_DEFAULT = 0

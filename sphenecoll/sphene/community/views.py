@@ -419,7 +419,7 @@ def profile(request, group, user_id):
     if user == requester or \
             (requester and requester.is_authenticated and requester.is_superuser):
         has_edit_permission = True
-        profile_edit_url = sph_reverse('sphene.community.views.profile_edit', (), {'user_id': user.id, })
+        profile_edit_url = sph_reverse('sph-profile-edit', args=(), kwargs={'user_id': user.id, })
 
     ret = profile_display.send(None, request=request,
                                user=user, )

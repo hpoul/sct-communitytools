@@ -20,7 +20,7 @@
       {% for category in categories %}
       <tr>
           <td>{% ifequal category.pk post.category.pk %}{{ category.name }} <i>({% trans "source category" %})</i>{% else %}{{ category.name }}{% endifequal %}</td>
-          <td><a href="{% sph_url2 move_post_2 post.pk category.pk %}">{% trans "select" %}</a></td>
+          <td><a href="{% sph_url2 'move_post_2' post.pk category.pk %}">{% trans "select" %}</a></td>
       </tr>
       {% endfor %}
     </table>

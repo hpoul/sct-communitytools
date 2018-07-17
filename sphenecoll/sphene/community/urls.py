@@ -29,7 +29,7 @@ urlpatterns = [
     re_path(r'accounts/forgot/$', accounts_forgot, name='accounts_forgot'),
     re_path(r'profile/(?P<user_id>\d+)/$', profile, name='sph_profile'),
     re_path(r'profile/edit/$', profile_edit_mine, name="profile-edit-mine"),
-    re_path(r'profile/edit/(?P<user_id>\d+)/$', profile_edit, name='profile'),
+    re_path(r'profile/edit/(?P<user_id>\d+)/$', profile_edit, name='sph-profile-edit'),
     re_path(r'profile/(?P<user_id>\d+)/reveal_address/$', reveal_emailaddress, name='sph_reveal_emailaddress'),
 
     re_path(r'admin/permission/role/list/$', admin_permission_role_list, name='community_admin_permission_role_list'),
