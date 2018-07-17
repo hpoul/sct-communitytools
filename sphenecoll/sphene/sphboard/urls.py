@@ -1,10 +1,9 @@
 from django.urls import re_path
 
 from .feeds import LatestThreads, LatestGlobalThreads
-from .views import options, CategoryList
+from .views import options, CategoryList, ThreadList
 from .views import move
 from .views import listThreads
-from .views import showThread
 from .views import post
 from .views import reply
 from .views import annotate
@@ -39,15 +38,15 @@ urlpatterns += [
     re_path(r'^show/(?P<category_id>\d+)/$', CategoryList.as_view(), name='sphboard_show_category_without_slug'),
     re_path(r'^list_threads/(?P<category_id>\d+)/$', listThreads, ),
     re_path(r'^latest/(?:(?P<category_id>\d*)/)?$', CategoryList.as_view(), {'show_type': 'threads'}, name='sphboard_latest'),
-    re_path(r'^thread/(?P<thread_id>\d+)/(?P<slug>.+)/$', showThread, name='sphboard_show_thread'),
-    re_path(r'^thread/(?P<thread_id>\d+)/$', showThread, name='sphboard_show_thread_without_slug'),
+    re_path(r'^thread/(?P<thread_id>\d+)/(?P<slug>.+)/$', ThreadList.as_view(), name='sphboard_show_thread'),
+    re_path(r'^thread/(?P<thread_id>\d+)/$', ThreadList.as_view(), name='sphboard_show_thread_without_slug'),
     re_path(r'^options/(?P<thread_id>\d+)/$', options, name='sphboard_options'),
     re_path(r'^move/(?P<thread_id>\d+)/$', move, name='sphboard_move_thread'),
-    re_path(r'^post/(?P<category_id>\d+)/(?P<post_id>\d+)/$', post),
+    re_path(r'^post/(?P<category_id>\d+)/(?P<post_id>\d+)/$', post, name='sphboard-post-reply'),
     re_path(r'^post/(?P<category_id>\d+)/$', post, name='sphboard_post_thread'),
     re_path(r'^reply/(?P<category_id>\d+)/(?P<thread_id>\d+)/$', reply, name='sphboard_reply'),
-    re_path(r'^annotate/(?P<post_id>\d+)/$', annotate),
-    re_path(r'^hide/(?P<post_id>\d+)/$', hide),
+    re_path(r'^annotate/(?P<post_id>\d+)/$', annotate, name='sphboard-annotate'),
+    re_path(r'^hide/(?P<post_id>\d+)/$', hide, name='sphboard-hide'),
     re_path(r'^move_post_1/(?P<post_id>\d+)/$', move_post_1, name='move_post_1'),
     re_path(r'^move_post_2/(?P<post_id>\d+)/(?P<category_id>\d+)/$', move_post_2, name='move_post_2'),
     re_path(r'^move_post_3_cat/(?P<post_id>\d+)/(?P<category_id>\d+)/$', move_post_3, name='move_post_3'),

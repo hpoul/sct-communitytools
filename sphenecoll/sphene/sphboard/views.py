@@ -169,35 +169,42 @@ def listThreads(request, group, category_id):
                                   {'threadlist': threadlist, })
 
 
-def showThread(request, thread_id, group=None, slug=None):
-    thread = get_object_or_404(Post.objects, pk=thread_id)
-    if not thread.category.has_view_permission(request.user):
-        raise PermissionDenied()
-    thread.viewed(request.session, request.user)
+class ThreadList(ListView):
 
-    sphdata = get_current_sphdata()
-    if sphdata is not None:
-        sphdata['subtitle'] = thread.subject
+    paginate_by = get_sph_setting('board_post_paging')
 
-    category_type = thread.category.get_category_type()
-    template_name = category_type.get_show_thread_template()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.thread: Post = None
 
-    res = object_list(request=request,
-                      # queryset = Post.objects.filter( Q( pk = thread_id ) | Q( thread = thread ) ).order_by('postdate'),
-                      queryset=thread.get_all_posts().order_by('postdate'),
-                      allow_empty=True,
-                      template_name=template_name,
-                      extra_context={'thread': thread,
-                                     'allowPosting': thread.allowPosting(request.user),
-                                     'postSubject': 'Re: ' + thread.subject,
-                                     'category_type': category_type,
-                                     },
-                      template_object_name='post',
-                      paginate_by=get_sph_setting('board_post_paging'),
-                      )
+    def get(self, request, group=None, thread_id=None, **kwargs):
+        assert group
 
-    res.sph_lastmodified = thread.get_latest_post().postdate
-    return res
+        self.thread = thread = get_object_or_404(Post.objects, pk=thread_id)
+        if not thread.category.has_view_permission(request.user):
+            raise PermissionDenied()
+        thread.viewed(request.session, request.user)
+
+        sphdata = get_current_sphdata()
+        if sphdata is not None:
+            sphdata['subtitle'] = thread.subject
+
+        category_type = thread.category.get_category_type()
+        self.template_name = category_type.get_show_thread_template()
+        return super().get(request, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return {
+            **context,
+            'thread': self.thread,
+            'allowPosting': self.thread.allowPosting(self.request.user),
+            'postSubject': 'Re: ' + self.thread.subject,
+            'category_type': self.thread.category.get_category_type(),
+        }
+
+    def get_queryset(self):
+        return self.thread.get_all_posts().order_by('postdate')
 
 
 def options(request, thread_id, group=None):

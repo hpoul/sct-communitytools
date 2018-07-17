@@ -48,6 +48,11 @@ def cache_inclusion_tag(self, filename, cache_key_func=None, cache_time=99999, c
         function_name = (name or getattr(func, '_decorated_function', func).__name__)
 
         class InclusionNode(TagHelperNode):
+
+            def __init__(self, func, takes_context, args, kwargs, filename):
+                super().__init__(func, takes_context, args, kwargs)
+                self.filename = filename
+
             def render(self, context):
                 """
                 Render the specified template and context. Cache the template object
@@ -103,7 +108,7 @@ def cache_inclusion_tag(self, filename, cache_key_func=None, cache_time=99999, c
                 kwonly, kwonly_defaults, takes_context, function_name,
             )
             return InclusionNode(
-                func, takes_context, args, kwargs, filename,
+                func, takes_context, args, kwargs, filename
             )
         self.tag(function_name, compile_func)
         return func

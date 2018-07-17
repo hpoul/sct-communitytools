@@ -11,7 +11,7 @@ except ImportError:
 
 from django import template
 from django.conf import settings
-from django.utils.html import escape, conditional_escape
+from django.utils.html import escape, conditional_escape, format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -445,8 +445,9 @@ def sph_showavatar(user, maxwidth=None):
             avatar_width = maxwidth
 
     log.info("avatar: %s", avatar)
-    return '<img src="%s" width="%dpx" height="%dpx" alt="%s" class="sph_avatar"></img>' % (
-    avatar, avatar_width, avatar_height, _(u'Users avatar'))
+    return format_html(
+        '<img src="{}" width="{}px" height="{}px" alt="%s" class="sph_avatar"></img>',
+        avatar, avatar_width, avatar_height, _(u'Users avatar'))
 
 
 @register.inclusion_tag('sphene/community/templatetags/_form.html')

@@ -1235,31 +1235,31 @@ class Post(models.Model):
     _get_absolute_url = sphpermalink(_get_absolute_url)
 
     def get_absolute_editurl(self):
-        return ('sphene.sphboard.views.post', (),
+        return ('sphboard-post-reply', (),
                 {'groupName': self.category.get_group().name, 'category_id': self.category.id, 'post_id': self.id})
 
     get_absolute_editurl = sphpermalink(get_absolute_editurl)
 
     def get_absolute_hideurl(self):
-        return 'sphene.sphboard.views.hide', (), {'groupName': self.category.get_group().name, 'post_id': self.id}
+        return 'sphboard-hide', (), {'groupName': self.category.get_group().name, 'post_id': self.id}
 
     get_absolute_hideurl = sphpermalink(get_absolute_hideurl)
 
     def get_absolute_moveposturl(self):
         return (
-            'sphene.sphboard.views.move_post_1', (), {'groupName': self.category.get_group().name, 'post_id': self.id})
+            'move_post_1', (), {'groupName': self.category.get_group().name, 'post_id': self.id})
 
     get_absolute_moveposturl = sphpermalink(get_absolute_moveposturl)
 
     def get_absolute_postreplyurl(self):
-        return ('sphene.sphboard.views.reply', (),
+        return ('sphboard_reply', (),
                 {'groupName': self.category.get_group().name, 'category_id': self.category.id,
                  'thread_id': self.get_thread().id})
 
     get_absolute_postreplyurl = sphpermalink(get_absolute_postreplyurl)
 
     def get_absolute_annotate_url(self):
-        return 'sphene.sphboard.views.annotate', (), {'groupName': self.category.get_group().name, 'post_id': self.id}
+        return 'sphboard-annotate', (), {'groupName': self.category.get_group().name, 'post_id': self.id}
 
     get_absolute_annotate_url = sphpermalink(get_absolute_annotate_url)
 

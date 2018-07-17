@@ -14,7 +14,6 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from sphene.community.models import Tag, tag_get_models_by_tag
 from sphene.community.middleware import get_current_urlconf
 from sphene.community.sphutils import add_rss_feed
-from sphene.sphboard.views import showThread as sphboard_show_thread
 from sphene.sphboard.models import Category, ThreadInformation, Post, get_tags_for_categories
 from sphene.sphblog.models import BlogPostExtension
 from sphene.community.sphutils import get_sph_setting, sph_reverse
@@ -200,5 +199,6 @@ def show_thread(request, group, slug, category_slug = None, year = None, month =
         blogpost = BlogPostExtension.objects.get( slug__exact = slug )
     except BlogPostExtension.DoesNotExist:
         raise Http404
+    # FIXME migrate to ThreadList class based view.
     return sphboard_show_thread( request, blogpost.post.id, group )
 

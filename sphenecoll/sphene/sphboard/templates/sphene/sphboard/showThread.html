@@ -77,7 +77,7 @@
     <br/><br/>
   {% endif %}
   {% block above_post_list %}
-    <p>{% sph_pagination pages page '' 'page' 1 %}</p>
+    <p>{% sph_pagination paginator.num_pages page_obj.number '' 'page' 1 %}</p>
   {% endblock %}
   <table class="sphboard_post_list">
     {% for post in post_list %}
@@ -193,7 +193,7 @@
     {% endfor %}
   </table>
 
-  <p class="sphboard_pagination">{% sph_pagination pages page '' 'page' 1 %}</p>
+  <p class="sphboard_pagination">{% sph_pagination paginator.num_pages page_obj.number '' 'page' 1 %}</p>
   
   {% if allowPosting %}
     {% if sph_settings.board_quick_reply %}
