@@ -14,11 +14,12 @@ method of FootnoteExtension.  The method also registers the
 extension to allow it's state to be reset by a call to reset()
 method.
 """
+from sphene.contrib.libs.markdown import markdown
 
 FN_BACKLINK_TEXT = "zz1337820767766393qq"
 
 
-import re, markdown, random
+import re, random
 
 class FootnoteExtension (markdown.Extension):
 
