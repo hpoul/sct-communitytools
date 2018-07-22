@@ -101,10 +101,8 @@ class IncludeTemplateMacro(object):
 
         templateName = params['templateName']
         t = template.loader.get_template(templateName)
-        c = template.Context({'params': params,
-                              })
 
-        return HTML(t.render(c))
+        return HTML(t.render({'params': params}))
 
 
 class NewsMacro(object):
@@ -131,11 +129,11 @@ class NewsMacro(object):
         baseURL = ''
         if 'baseURL' in params:
             baseURL = params['baseURL']
-        c = template.Context({'threads': threads,
-                              'baseURL': baseURL,
-                              'category': params['category'],
-                              'params': params,
-                              })
+        c = {'threads': threads,
+             'baseURL': baseURL,
+             'category': params['category'],
+             'params': params,
+             }
 
         return HTML(t.render(c))
 
@@ -259,10 +257,10 @@ def sph_html_user(user):
 
 @register.filter
 def sph_iter(value):
-    try:
+    if isinstance(value, list) or isinstance(value, tuple):
         return value.__iter__()
-    except AttributeError:
-        return (value,).__iter__()
+    else:
+        return [value].__iter__()
 
 
 @register.filter

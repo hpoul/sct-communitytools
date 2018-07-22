@@ -40,7 +40,7 @@ For changelog, see end of file
 import re, sys, os, random, codecs
 
 # set debug level: 3 none, 2 critical, 1 informative, 0 all
-(VERBOSE, INFO, CRITICAL, NONE) = range(4)
+(VERBOSE, INFO, CRITICAL, NONE) = list(range(4))
 
 MESSAGE_THRESHOLD = CRITICAL
 
@@ -661,7 +661,7 @@ class ReferencePattern(Pattern):
             # if we got something like "[Google][]"
             # we'll use "google" as the id
             id = m.group(2).lower()
-        if not self.references.has_key(id):  # ignore undefined refs
+        if id not in self.references:  # ignore undefined refs
             return None
         href, title = self.references[id]
         text = m.group(2)
@@ -910,7 +910,7 @@ class CorePatterns:
 
     def __init__(self):
         self.regExp = {}
-        for key in self.patterns.keys():
+        for key in list(self.patterns.keys()):
             self.regExp[key] = re.compile("^%s$" % self.patterns[key],
                                           re.DOTALL)
 
@@ -1568,14 +1568,14 @@ class Extension:
         self.config = configs
 
     def getConfig(self, key):
-        if self.config.has_key(key):
+        if key in self.config:
             # print self.config[key][0]
             return self.config[key][0]
         else:
             return ""
 
     def getConfigInfo(self):
-        return [(key, self.config[key][1]) for key in self.config.keys()]
+        return [(key, self.config[key][1]) for key in list(self.config.keys())]
 
     def setConfig(self, key, value):
         self.config[key][0] = value

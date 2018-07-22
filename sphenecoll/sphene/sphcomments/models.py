@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models import signals
@@ -43,7 +46,8 @@ class CommentsCategoryConfigManager(models.Manager):
                 category_type=CommentsOnObjectCategoryType.name,
                 allowview=root_category.allowview,
                 allowthreads=root_category.allowthreads,
-                allowreplies=root_category.allowreplies, )
+                allowreplies=root_category.allowreplies,
+                slug='comments-%s' % ''.join(random.choices(string.ascii_uppercase + string.digits, k=5)))
             category.save()
             config = CommentsCategoryConfig(category=category,
                                             content_object=model_instance)
@@ -52,9 +56,9 @@ class CommentsCategoryConfigManager(models.Manager):
 
 
 class CommentsCategoryConfig(models.Model):
-    category = models.ForeignKey(Category, unique=True, related_name='sphcomments_config')
+    category = models.ForeignKey(Category, unique=True, related_name='sphcomments_config', on_delete=models.CASCADE)
 
-    object_type = models.ForeignKey(ContentType)
+    object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
 
     content_object = GenericForeignKey(ct_field='object_type')

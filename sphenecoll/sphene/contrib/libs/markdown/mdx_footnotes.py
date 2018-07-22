@@ -99,7 +99,7 @@ class FootnoteExtension (markdown.Extension):
 
            @returns: the footnote div as a dom element """
 
-        if not self.footnotes.keys() :
+        if not list(self.footnotes.keys()) :
             return None
 
         div = doc.createElement("div")
@@ -110,7 +110,7 @@ class FootnoteExtension (markdown.Extension):
         div.appendChild(ol)
 
         footnotes = [(self.used_footnotes[id], id)
-                     for id in self.footnotes.keys()]
+                     for id in list(self.footnotes.keys())]
         footnotes.sort()
 
         for i, id in footnotes :
@@ -164,7 +164,7 @@ class FootnotePreprocessor :
 
         id = match.group(1)
         id = id.strip()
-        nextNum = len(self.footnotes.used_footnotes.keys()) + 1
+        nextNum = len(list(self.footnotes.used_footnotes.keys())) + 1
         self.footnotes.used_footnotes[id] = nextNum
 
 

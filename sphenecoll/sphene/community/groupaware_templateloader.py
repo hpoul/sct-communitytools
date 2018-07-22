@@ -13,6 +13,10 @@ from django.utils._os import safe_join
 
 from django.core.cache import cache
 
+import logging
+
+logger = logging.getLogger('sphene.sphblockframework.models')
+
 
 def _get_cache_key(template_name, group):
     return "groupaware_templateloader_%d_%s" % (group.id, template_name)
@@ -34,17 +38,31 @@ class GroupAwareTemplateLoader(Loader):
 
     def get_contents(self, origin):
         group = get_current_group()
-        template_name = origin.template_name
+        template_name: str = origin.template_name
         if group is None:
             # If there is no current group .. we have nothing to do ..
             raise TemplateDoesNotExist(template_name)
 
-        template_dir = sphsettings.get_sph_setting('community_groupaware_template_dir', None)
+        template_dir: str = sphsettings.get_sph_setting('community_groupaware_template_dir', None)
 
         if template_dir is not None:
             template_path = safe_join(os.path.join(template_dir, group.name), template_name)
-            with open(template_path, encoding=self.engine.file_charset) as fp:
-                return fp.read()
+            try:
+                with open(template_path, encoding=self.engine.file_charset) as fp:
+                    return fp.read()
+            except FileNotFoundError as e:
+                logger.warning('File no found', e)
+
+            prefix = 'groups/%s/' % group.name
+            if template_name.startswith(prefix):
+                template_name = template_name.replace(prefix, '')
+                template_path = safe_join(os.path.join(template_dir, group.name), template_name)
+                try:
+                    with open(template_path, encoding=self.engine.file_charset) as fp:
+                        return fp.read()
+                except FileNotFoundError as e:
+                    logger.warning('File no found', e)
+
 
         # Look in the cache . .so we don't have to make unnecessary database
         # queries

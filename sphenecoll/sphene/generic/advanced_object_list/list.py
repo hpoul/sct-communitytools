@@ -1,5 +1,6 @@
 import itertools
 from collections import OrderedDict
+import simplejson
 
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy
@@ -14,8 +15,8 @@ def cmp(x, y):
 
 
 def get_declared_columns(bases, attrs, with_base_columns=True):
-    columns = [(column_name, attrs.pop(column_name)) for column_name, obj in attrs.items() if isinstance(obj, Column)]
-    columns.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
+    columns = [(column_name, attrs.pop(column_name)) for column_name, obj in list(attrs.items()) if isinstance(obj, Column)]
+    # columns.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
 
     # TODO iterate over base classes
 
@@ -44,7 +45,7 @@ class QuerySetProvider(object):
     def get_page(self, start, end):
         ret = self.queryset[start:end]
         if self.wrapper is not None:
-            return itertools.imap(self.wrapper, ret)
+            return map(self.wrapper, ret)
         return ret
 
     def sort(self, column, sortorder):
@@ -278,5 +279,5 @@ class BaseAdvancedObjectList(object):
             self.state['sortorder'] = sortorder
 
 
-class AdvancedObjectList(BaseAdvancedObjectList):
-    __metaclass__ = DeclarativeColumnsMetaclass
+class AdvancedObjectList(BaseAdvancedObjectList, metaclass=DeclarativeColumnsMetaclass):
+    pass

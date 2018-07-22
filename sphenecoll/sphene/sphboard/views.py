@@ -170,7 +170,7 @@ def listThreads(request, group, category_id):
                                   {'threadlist': threadlist, })
 
 
-class ThreadList(ListView):
+class ThreadListView(ListView):
 
     paginate_by = get_sph_setting('board_post_paging')
 

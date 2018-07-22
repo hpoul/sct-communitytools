@@ -1,4 +1,4 @@
-import markdown
+from . import markdown
 
 DEFAULT_URL = "http://www.freewisdom.org/projects/python-markdown/"
 DEFAULT_CREATOR = "Yuri Takhteyev"

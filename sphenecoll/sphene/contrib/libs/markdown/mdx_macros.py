@@ -36,7 +36,7 @@ class MacrosBase(object):
 
     def handleMatch(self, m, doc):
         macro_name = m.group('macroName')
-        if self.macros.has_key(macro_name):
+        if macro_name in self.macros:
             macro_params = m.group('macroParams')
             all_params = dict()
             if macro_params is not None:

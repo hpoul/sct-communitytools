@@ -173,7 +173,7 @@ class TocExtension :
                     previous_toc_doc_indent = None
                     toc_doc_indent=None
                     indent_amt = heading_type - min_header_size_found
-                    indent_list=range(0, indent_amt)
+                    indent_list=list(range(0, indent_amt))
                     for x in indent_list:
                         toc_doc_indent = doc.createElement("ul")
                         if previous_toc_doc_indent is None:
@@ -257,7 +257,7 @@ if __name__=="__main__" :
     out_filename = os.path.splitext(in_filename)[0] + '.html'
 
     if os.path.exists(out_filename):
-        print("\nWARNING", out_filename, "already exists, overwritting.\n")
+        print(("\nWARNING", out_filename, "already exists, overwritting.\n"))
 
     out_file = open(out_filename, "w")
     out_file.write( markdownWithManyExtensions( open(in_filename).read() ) )
