@@ -120,7 +120,7 @@ def accounts_forgot(request, group=None):
                 'currentuser': user,
                 'password': password,
             }
-            body = t.render(RequestContext(request, c))
+            body = t.render(c, request=request)
 
             send_mail(subject, body, None, [user.email])
             return render(
