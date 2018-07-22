@@ -22,6 +22,7 @@ def user_email(obj):
     return obj.user.email
 user_email.short_description = _('Email')
 
+
 class MonitorAdmin(admin.ModelAdmin):
     list_display = ('user', user_email, 'group', 'category', 'thread')
     search_fields = ('user__username', 'user__email', 'category__name', 'thread__subject')
@@ -29,11 +30,19 @@ class MonitorAdmin(admin.ModelAdmin):
 admin.site.register(models.Monitor, MonitorAdmin)
 
 
-admin.site.register(models.Post)
+@admin.register(models.ThreadInformation)
+class ThreadInformationAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'postdate')
+
+@admin.register(models.Post)
+class PostAdmin(admin.ModelAdmin):
+    list_per_page = 1000
+    list_display = ('subject', 'postdate', 'thread', 'category')
+    list_filter = ('category', 'category__group')
+
 admin.site.register(models.Poll)
 admin.site.register(models.PollChoice)
 admin.site.register(models.ExtendedCategoryConfig)
 admin.site.register(models.PostAttachment)
 admin.site.register(models.PostAnnotation)
-admin.site.register(models.ThreadInformation)
 admin.site.register(models.ThreadLastVisit)

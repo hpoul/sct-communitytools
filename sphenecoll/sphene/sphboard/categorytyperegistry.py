@@ -1,6 +1,7 @@
+import logging
 from importlib import import_module
 
-from django.conf import settings
+logger = logging.getLogger(__name__)
 
 
 class CategoryTypeBase(type):
@@ -160,11 +161,19 @@ def __init_category_types():
     # but in the end we should better use get_apps() ?
     from django.apps import apps
 
-    configs = apps.get_app_configs()
+    configs = list(apps.get_app_configs())
     for app_config in configs:
+        module_name = '%s.%s' % (app_config.name, 'categorytypes')
         try:
-            import_module('%s.%s' % (app_config.name, 'categorytypes'))
-        except Exception:
+            import_module(module_name)
+        except ModuleNotFoundError as e:
+            # ignore module not found errors.
+            if e.name == module_name:
+                pass
+            else:
+                logger.warning('Error while importing %s' % module_name, e)
+        except Exception as e:
+            logger.warning('Error while importing module', e)
             pass
         else:
             initialized = True

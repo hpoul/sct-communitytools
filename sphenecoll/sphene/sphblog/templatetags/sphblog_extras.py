@@ -34,10 +34,12 @@ def show_archive(categories = None):
         months_dict[tmp] = months_dict.get(tmp, 0) + 1
 
     # Sort it by year and then by month, in increasing order (last month first)
-    months = sorted(months_dict.iteritems(), \
-                        lambda a, b: \
-                        cmp(a[0][0], b[0][0]) \
-                        or cmp(a[0][1], b[0][1]))
+    months = sorted(months_dict.items(), key=lambda month: month[0][0])
+    months = sorted(months, key=lambda month: month[0][1])
+    # months = sorted(iter(months_dict.items()),
+    #                 lambda a, b: \
+    #                     cmp(a[0][0], b[0][0])
+    #                     or cmp(a[0][1], b[0][1]))
     months.reverse()
     return {'links': months}
 

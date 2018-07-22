@@ -32,13 +32,13 @@ class BlogPostExtension(models.Model):
     def get_absolute_url(self):
         post = self.post
         date = post.postdate
-        return ('sphene.sphblog.views.show_thread', (), { 'groupName': post.category.group.name,
-                                                          'category_slug': post.category.slug,
-                                                          #'year': date.year,
-                                                          #'month': date.month,
-                                                          #'day': date.day,
-                                                          'slug': self.slug,
-                                                          })
+        return ('sphblog-show-thread', (), { 'groupName': post.category.group.name,
+                                             'category_slug': post.category.slug,
+                                             #'year': date.year,
+                                             #'month': date.month,
+                                             #'day': date.day,
+                                             'slug': self.slug,
+                                             })
     get_absolute_url = sphpermalink(get_absolute_url)
 
 

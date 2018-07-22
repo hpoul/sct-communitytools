@@ -5,6 +5,6 @@
 <ul>
 {% for link in links %}
 {# links comes as a list of (year, month) tuples #}
-  <li><a href='{% sph_url2 sphblog_archive_month year=link.0.0 month=link.0.1 %}'>{{ link.0.1|humanize_month }}, {{ link.0.0 }}</a> {% blocktrans with link.1 as postcount %}{{ postcount }} posts.{% endblocktrans %}</li>
+  <li><a href='{% sph_url2 'sphblog_archive_month' year=link.0.0 month=link.0.1 %}'>{{ link.0.1|humanize_month }}, {{ link.0.0 }}</a> {% blocktrans with link.1 as postcount %}{{ postcount }} posts.{% endblocktrans %}</li>
 {% endfor %}
 </ul>

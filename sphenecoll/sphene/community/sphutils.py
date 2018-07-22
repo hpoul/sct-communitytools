@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.shortcuts import render
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, re_path
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.core.cache import cache
@@ -307,3 +307,20 @@ def include_css(csspath, prefix=None):
         prefix = settings.STATIC_URL
     styleincludes.append(prefix + csspath)
     sphsettings.set_sph_setting('community_styleincludes', styleincludes)
+
+
+def mediafiles_urlpatterns():
+    """
+    Method for serve media files with runserver.
+    https://gist.github.com/niwinz/4330821
+    """
+
+    _media_url = settings.MEDIA_URL
+    if _media_url.startswith('/'):
+        _media_url = _media_url[1:]
+
+    from django.views.static import serve
+    return [
+        re_path(r'^%s(?P<path>.*)$' % _media_url, serve,
+         {'document_root': settings.MEDIA_ROOT})
+    ]

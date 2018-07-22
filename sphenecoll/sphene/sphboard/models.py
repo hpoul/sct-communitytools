@@ -1490,6 +1490,10 @@ class ThreadInformation(models.Model):
     def subject(self):
         return self.root_post.subject
 
+    def postdate(self):
+        return self.root_post.postdate
+    postdate.admin_order_field = 'root_post__postdate'
+
     def is_poll(self):
         return self.root_post.is_poll()
 

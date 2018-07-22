@@ -43,5 +43,5 @@ urlpatterns = [
     re_path(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.*)/$', show_thread_redirect),
     re_path(r'^(?P<category_id>\d+)/$', blogindex_redirect, name='sphblog_category_index'),
     re_path(r'^(?P<category_slug>[\w\-]+)/$', blogindex, name='sphblog_category_index_slug'),
-    re_path(r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', show_thread),
+    re_path(r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', show_thread, name='sphblog-show-thread'),
 ]

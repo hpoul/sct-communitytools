@@ -212,7 +212,7 @@ def sph_publicemailaddress(value):
             # provide a link for the user to enter the captcha.
             if validated < time() - get_sph_setting('community_email_anonymous_require_captcha_timeout'):
                 return mark_safe('<a href="%s">%s</a>' % (
-                sph_reverse('sph_reveal_emailaddress', (), {'user_id': value.id, }), _('Reveal this emailaddress')))
+                sph_reverse('sph_reveal_emailaddress', kwargs={'user_id': value.id, }), _('Reveal this emailaddress')))
 
     if get_sph_setting('community_email_show_only_public'):
         try:
@@ -442,7 +442,7 @@ def sph_showavatar(user, maxwidth=None):
 
     log.info("avatar: %s", avatar)
     return format_html(
-        '<img src="{}" width="{}px" height="{}px" alt="%s" class="sph_avatar"></img>',
+        '<img src="{}" width="{}px" height="{}px" alt="{}" class="sph_avatar"></img>',
         avatar, avatar_width, avatar_height, _(u'Users avatar'))
 
 

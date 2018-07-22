@@ -4,7 +4,7 @@
 
 #doinit()
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.db.models import Q
@@ -27,7 +27,7 @@ def get_board_categories(group):
         Q( group = group ) &
         Q( category_type = 'sphblog' ) | Q( category_type = 'sphbloghidden'))
     # Now check permissions
-    blogcategories = filter(Category.has_view_permission, categories)
+    blogcategories = list(filter(Category.has_view_permission, categories))
     return blogcategories
 
 def get_blog_posts_queryset(group, categories, year=None, month=None):
@@ -152,9 +152,10 @@ def blogindex(request, group, category_id = None, category_slug = None, page = 1
                               'group': group,
                               })
 
-    return render_to_response( 'sphene/sphblog/blogindex.html',
-                               context_variables,
-                               context_instance = RequestContext(request) )
+    return render(request,
+                  'sphene/sphblog/blogindex.html',
+                  context_variables)
+
 
 def show_tag_posts(request, group, tag_name, page = 1):
     categories = get_board_categories(group)

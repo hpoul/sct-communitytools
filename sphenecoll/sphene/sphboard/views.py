@@ -44,7 +44,7 @@ class CategoryList(ListView):
         self.group = None
 
     def get(self, request, group=None, category_id=0, show_type=None, *args, **kwargs):
-        category_id = category_id or 0
+        category_id = category_id and int(category_id) or 0
         self.group = group
         self.request = request
 
@@ -101,8 +101,9 @@ class CategoryList(ListView):
         category = self.prepared_context['category']
 
         # TODO is != 'threads' really correct here?!
-        if self.prepared_context['show_type'] != 'threads' \
-                or category is None:
+        # if self.prepared_context['show_type'] == 'threads' \
+        #         or category is None:
+        if category is None:
             return 'sphene/sphboard/listCategories.html'
 
         category_type = category.get_category_type()

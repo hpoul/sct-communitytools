@@ -1,15 +1,14 @@
 from django.apps import AppConfig
 from django.conf import settings
 
-from sphene.community import sphsettings
-from sphene.community.sphutils import get_sph_setting
 
-
-class BoardConfig(AppConfig):
+class BlockFrameworkConfig(AppConfig):
     name = u'sphene.sphblockframework'
     verbose_name = u"Block Framework"
 
     def ready(self):
+        from sphene.community.sphutils import get_sph_setting
+        from sphene.community import sphsettings
         jsincludes = get_sph_setting( 'community_jsincludes', [])
         # jquery is already added by the community application.
         #jsincludes.append(settings.STATIC_URL + 'sphene/community/jquery-1.2.3.min.js')

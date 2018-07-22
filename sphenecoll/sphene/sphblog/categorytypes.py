@@ -1,5 +1,4 @@
 from django import forms
-from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
 
@@ -86,7 +85,7 @@ class BlogCategoryType(CategoryType):
                     # If enabled, ping google blogsearch.
                     import urllib
                     url = self.category.group.get_baseurl()
-                    blog_feed_url = reverse('sphblog-feeds', urlconf=get_current_urlconf(), kwargs = { 'category_id': self.category.id })
+                    blog_feed_url = sph_reverse('sphblog-feeds', urlconf=get_current_urlconf(), kwargs = { 'category_id': self.category.id })
                     pingurl = 'http://blogsearch.google.com/ping?%s' % \
                         urllib.urlencode( \
                         { 'name': self.category.name,
