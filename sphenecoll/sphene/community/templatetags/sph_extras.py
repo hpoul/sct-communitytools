@@ -49,32 +49,30 @@ class IncludeMacro(mdx_macros.PreprocessorMacro):
                 text = cached_text
             else:
                 import requests
-                f = requests.get(params['url'])
-                try:
+                with requests.get(params['url']) as res:
+                    res_text = res.text
                     start = params.get('start', None)
                     end = params.get('end', None)
                     if start or end:
                         text = ''
                         line = ''
                         if start:
-                            for line in f:
-                                if line.find(start) == -1:
+                            for line in res_text:
+                                if start in line:
                                     pass
                                 else:
                                     break
                         if end:
-                            for line in f:
+                            for line in res_text:
                                 if line.find(end) == -1:
                                     text += line
                                 else:
                                     break
 
                     if not end:
-                        text = f.read()
+                        text = res_text
 
                     cache.set(cache_key, text, 3600)
-                finally:
-                    f.close()
             return text
         # md = params['__md']
         # return sph_markdown( text, '', md )

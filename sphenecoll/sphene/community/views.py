@@ -162,19 +162,19 @@ def register(request, group=None):
                     subject = ugettext(u'Email verification required for site %(site_name)s') % {
                         'site_name': group.get_name()}
                 validationcode = md5(
-                    settings.SECRET_KEY + email_address).hexdigest()  ## cryptString( settings.SECRET_KEY, email_address )
-                mail_context = RequestContext(request, {
+                    (settings.SECRET_KEY + email_address).encode('utf-8')).hexdigest()  ## cryptString( settings.SECRET_KEY, email_address )
+                mail_context = {
                     'email': email_address,
                     'baseurl': group.baseurl,
-                    'path': sph_reverse('sphene.community.views.register_hash', (),
-                                        {"email": quote(email_address), 'emailHash': validationcode, }),
+                    'path': sph_reverse('sph_register_hash',
+                                        kwargs={"email": quote(email_address), 'emailHash': validationcode, }),
                     'validationcode': validationcode,
                     'group': group,
-                })
+                }
                 text_part = loader.get_template('sphene/community/accounts/account_verification_email.txt') \
-                    .render(mail_context)
+                    .render(mail_context, request=request)
                 html_part = loader.get_template('sphene/community/accounts/account_verification_email.html') \
-                    .render(mail_context)
+                    .render(mail_context, request=request)
 
                 msg = EmailMultiAlternatives(subject, text_part, None, [email_address])
                 msg.attach_alternative(html_part, "text/html")
@@ -315,13 +315,6 @@ def email_change_hash(request, email_change_hash=None, group=None):
 #### The following code was copied from the django captchas project.
 #### and slightly modified.
 
-try:
-
-    from djaptcha.models import CaptchaRequest
-    from io import StringIO
-    import random
-except:
-    pass
 
 try:
     from PIL import Image, ImageDraw, ImageFont, ImageChops
@@ -337,6 +330,8 @@ def captcha_image(request, token_id, group=None):
     """
     Generate a new captcha image.
     """
+    from io import BytesIO
+    from djaptcha.models import CaptchaRequest
     captcha = CaptchaRequest.objects.get(id=token_id)
     text = captcha.text
     # TODO: Calculate the image dimensions according to the given text.
@@ -361,7 +356,7 @@ def captcha_image(request, token_id, group=None):
     # Saves the image in a StringIO object, so you can write the response
     # in a HttpResponse object
     image = autocrop(image, bgcolor, border_width)
-    out = StringIO()
+    out = BytesIO()
     image.save(out, "JPEG")
     out.seek(0)
     response = HttpResponse()

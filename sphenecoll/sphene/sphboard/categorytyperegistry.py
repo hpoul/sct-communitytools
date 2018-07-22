@@ -8,7 +8,6 @@ class CategoryTypeBase(type):
 
     def __new__(cls, name, bases, attrs):
         # If this isn't a subclass of Model, don't do anything special.
-        print('new called')
         new_class = super(CategoryTypeBase, cls).__new__(cls, name, bases, attrs)
         try:
             parents = [b for b in bases if issubclass(b, CategoryType)]

@@ -51,7 +51,8 @@ class GroupAwareTemplateLoader(Loader):
                 with open(template_path, encoding=self.engine.file_charset) as fp:
                     return fp.read()
             except FileNotFoundError as e:
-                logger.warning('File no found', e)
+                #logger.debug('File not found', e)
+                pass
 
             prefix = 'groups/%s/' % group.name
             if template_name.startswith(prefix):
