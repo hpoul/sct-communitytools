@@ -162,7 +162,7 @@ def register(request, group=None):
                     subject = ugettext(u'Email verification required for site %(site_name)s') % {
                         'site_name': group.get_name()}
                 validationcode = md5(
-                    (settings.SECRET_KEY + email_address).encode('utf-8')).hexdigest()  ## cryptString( settings.SECRET_KEY, email_address )
+                    (settings.SECRET_KEY + email_address).encode('utf-8')).hexdigest()
                 mail_context = {
                     'email': email_address,
                     'baseurl': group.baseurl,
@@ -239,7 +239,7 @@ class RegisterForm(UserForm):
 
 
 def register_hash(request, email, emailHash, group=None):
-    email_address = unquote(email)  # decryptString( settings.SECRET_KEY, emailHash )
+    email_address = unquote(email)
     if request.method == 'POST':
         post = request.POST.copy()
         post.update({'email_address': email_address})
