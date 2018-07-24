@@ -32,7 +32,7 @@ class CommentsCategoryConfigManager(models.Manager):
                         group=group,
                         category_type=CommentsCategoryType.name, ).id
                 except Category.DoesNotExist:
-                    raise Exception('Please create a category of type "%s" (%s).' % (
+                    raise CommentsCategoryConfig.DoesNotExist('Please create a category of type "%s" (%s).' % (
                     CommentsCategoryType.label, CommentsCategoryType.name))
 
             # create a new category ...

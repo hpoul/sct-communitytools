@@ -1,3 +1,5 @@
+import logging
+
 from django import template
 from django.utils.translation import ugettext_lazy
 
@@ -13,11 +15,16 @@ from sphene.sphcomments.models import CommentsCategoryConfig
 
 register = template.Library()
 
+logger = logging.getLogger(__name__)
 
 def get_commentinfos(obj, context):
     # find the right category
-    categoryconfig = CommentsCategoryConfig.objects.get_or_create_for_object(
-        obj)
+    try:
+        categoryconfig = CommentsCategoryConfig.objects.get_or_create_for_object(
+            obj)
+    except CommentsCategoryConfig.DoesNotExist as e:
+        logger.error('Unable to load comments category.', e)
+        return []
     threads = ThreadInformation.objects.filter(
         category = categoryconfig.category,
         root_post__is_hidden=0) \

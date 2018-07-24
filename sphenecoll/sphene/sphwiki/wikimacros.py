@@ -56,7 +56,7 @@ class AttachmentMacro (object):
 
 class ImageMacro (object):
     def handleMacroCall(self, doc, params):
-        if params.has_key( 'id' ):
+        if 'id' in params:
             try:
                 attachment = WikiAttachment.objects.get( id = params['id'] )
             except WikiAttachment.DoesNotExist:
@@ -69,10 +69,10 @@ class ImageMacro (object):
                 el.setAttribute('class', cssclass)
 
             for paramName in [ 'class', 'width', 'height', 'alt', 'align' ]:
-                if params.has_key( paramName ):
+                if paramName in params:
                     el.setAttribute( paramName, params[paramName] )
 
-            if params.has_key('resize'):
+            if 'resize' in params:
                 size = params['resize']
                 width, height = size.split('x')
                 src, width, height = resize(attachment.fileupload, size)
@@ -100,7 +100,7 @@ class RedirectMacro (mdx_macros.PreprocessorMacro):
     This allows to create aliases for snip names. """
 
     def handlePreprocessorMacroCall(self, params):
-        if not params.has_key( 'snip' ):
+        if 'snip' not in params:
             return 'No "snip" parameter given to redirect macro.'
 
         sphdata = get_current_sphdata()
