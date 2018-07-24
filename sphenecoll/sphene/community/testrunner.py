@@ -43,9 +43,9 @@ def run_tests(test_labels, verbosity = 1, interactive = True, extra_tests=[]):
     create_test_db(verbosity, autoclobber=not interactive)
 
     coverage.start()
-    print "Running tests ..."
+    print("Running tests ...")
     result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-    print "Done running tests."
+    print("Done running tests.")
     coverage.stop()
     if not os.path.exists(settings.COVERAGE_DIR):
         os.makedirs(settings.COVERAGE_DIR)

@@ -12,7 +12,7 @@
   {% else %}
       {% blocktrans with post.subject|escape as subject and post.author|sph_user_displayname as postauthor and category.name as categoryname %}Moving post: <strong>{{ subject }}</strong> by <strong>{{ postauthor }}</strong> into category <strong>{{ categoryname }}</strong>{% endblocktrans %}
   {% endif %}
-  <div><a href="{% sph_url2 move_post_1 post.pk %}">{% trans "Step 1" %}</a> -&gt; <a href="{% sph_url2 move_post_2 post.pk category.pk %}">{% trans "Step 2" %}</a> -&gt; <strong>{% trans "Step 3" %}</strong></div>
+  <div><a href="{% sph_url2 'move_post_1' post.pk %}">{% trans "Step 1" %}</a> -&gt; <a href="{% sph_url2 'move_post_2' post.pk category.pk %}">{% trans "Step 2" %}</a> -&gt; <strong>{% trans "Step 3" %}</strong></div>
 
   <b>{% blocktrans with post.subject|escape as subject %}Move post: {{ subject }} by {% endblocktrans %}{% sphboard_displayUserName thread.author %}</b>
   <br/><br/>

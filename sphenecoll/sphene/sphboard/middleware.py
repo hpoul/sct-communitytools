@@ -2,6 +2,7 @@ from django import http
 from django.db import connection
 import time
 
+
 class PerformanceMiddleware(object):
     def process_request(self, request):
         self.started = time.time()

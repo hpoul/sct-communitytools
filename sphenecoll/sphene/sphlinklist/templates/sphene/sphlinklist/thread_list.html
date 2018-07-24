@@ -19,7 +19,7 @@
    {% include "sphene/sphlinklist/_show_thumbnail_of_link.html" %}
    <strong><a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a></strong><br/>
   {% blocktrans with link.link as link %}
-    <small><a href="{{ link }}">Open URL: {{ link }}</a></small>
+    <small><a href="{{ link }}" rel="noreferrer" target="_blank">Open URL: {{ link }}</a></small>
   {% endblocktrans %}
   <br/>
   {% endwith %}

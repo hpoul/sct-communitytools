@@ -1,9 +1,12 @@
-from django.db.models import signals, get_apps, get_models
-from django.conf import settings
+import logging
+from importlib import import_module
+
+logger = logging.getLogger(__name__)
 
 
 class CategoryTypeBase(type):
-    "Metaclass for all category types"
+    """ Metaclass for all category types """
+
     def __new__(cls, name, bases, attrs):
         # If this isn't a subclass of Model, don't do anything special.
         new_class = super(CategoryTypeBase, cls).__new__(cls, name, bases, attrs)
@@ -20,23 +23,18 @@ class CategoryTypeBase(type):
         return new_class
 
 
-class CategoryType(object):
+class CategoryType(metaclass=CategoryTypeBase):
     """
     Base class for all category types.
     """
-
-    __metaclass__ = CategoryTypeBase
-
-    # The name uniqueley identifies this category type.
+    # The name uniquely identifies this category type.
     name = None
 
     # The label which will be displayed to the user.
     label = None
 
-
     def __init__(self, category):
         self.category = category
-
 
     def get_threadlist_template(self):
         """
@@ -98,7 +96,6 @@ class CategoryType(object):
         """
         return None
 
-
     def append_edit_message_to_post(self, post):
         """
         Determines if an 'edit message' should be appended to a post the user has just 
@@ -125,7 +122,7 @@ class CategoryType(object):
         return False
 
 
-category_type_registry = { }
+category_type_registry = {}
 initialized = False
 
 
@@ -136,42 +133,47 @@ def register_category_type(category_type):
     """
     category_type_registry[category_type.name] = category_type
 
+
 def get_category_type(category_type_name):
     """
     Returns the CategoryType instance for the given type name,
     or None if it is not known.
     """
-    __assure_initialized();
+    __assure_initialized()
     return category_type_registry.get(category_type_name, None)
+
 
 def get_category_type_list():
     """
     Returns a list of all known category types.
     """
-    __assure_initialized();
+    __assure_initialized()
     return category_type_registry.values()
 
+
 def __assure_initialized():
-    if not initialized: #category_type_registry:
+    if not initialized:  # category_type_registry:
         __init_category_types()
+
 
 def __init_category_types():
     # for now use settings.INSTALLED_APPS
     # but in the end we should better use get_apps() ?
+    from django.apps import apps
 
-    for app_name in settings.INSTALLED_APPS:
-        mod = __import__(app_name, {}, {}, ['categorytypes'])
-        if hasattr(mod, 'categorytypes'):
+    configs = list(apps.get_app_configs())
+    for app_config in configs:
+        module_name = '%s.%s' % (app_config.name, 'categorytypes')
+        try:
+            import_module(module_name)
+        except ModuleNotFoundError as e:
+            # ignore module not found errors.
+            if e.name == module_name:
+                pass
+            else:
+                logger.warning('Error while importing %s' % module_name, e)
+        except Exception as e:
+            logger.warning('Error while importing module', e)
+            pass
+        else:
             initialized = True
-            #print "We found categorytypes in %s" % app_name
-
-
-#    apps = get_apps()
-#    for app in apps:
-#        try:
-#            app.categorytypes
-#            print "Wanting to search in %s - %s" % (type(app),str(app))
-#        except AttributeError:
-#            pass
-
-#        mod = __import__(app

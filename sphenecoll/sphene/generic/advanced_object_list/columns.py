@@ -1,12 +1,10 @@
-
-from django.utils.safestring import mark_for_escaping
 from copy import deepcopy
 
-class Column(object):
 
+class Column(object):
     creation_counter = 0
 
-    def __init__(self, type = "default", label = None, filter = None, default_sortorder = None):
+    def __init__(self, type="default", label=None, filter=None, default_sortorder=None):
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
         self.type = type
@@ -72,7 +70,8 @@ class AttributeColumn(Column):
     a very simple column which simply retrieves
     the value of an attribute.
     """
-    def __init__(self, attr_name, sortcolumn = None, *args, **kwargs):
+
+    def __init__(self, attr_name, sortcolumn=None, *args, **kwargs):
         super(AttributeColumn, self).__init__(*args, **kwargs)
 
         self.attr_name = attr_name
@@ -89,15 +88,11 @@ class AttributeColumn(Column):
             if callable(value):
                 value = value()
         return value
-        #value = getattr(object, self.attr_name)
-        #return mark_for_escaping(value)
 
     def sort_queryset(self, queryset, direction):
         if direction == 'desc':
-            return queryset.order_by('-'+self.sortcolumn)
+            return queryset.order_by('-' + self.sortcolumn)
         return queryset.order_by(self.sortcolumn)
 
     def is_sortable(self):
         return self.sortcolumn is not None
-
-

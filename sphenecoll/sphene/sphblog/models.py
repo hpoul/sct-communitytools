@@ -20,7 +20,7 @@ class BlogPostExtension(models.Model):
     Extension to a forum post - but actually only applicable for
     threads not posts.
     """
-    post = models.ForeignKey(Post, unique = True)
+    post = models.ForeignKey(Post, unique=True, on_delete=models.CASCADE)
     # The status is basically just for usability .. 
     # It is just important that this info gets populated to the Posts 'is_hidden' attribute.
     status = models.IntegerField( choices = BLOG_POST_STATUS_CHOICES )
@@ -32,13 +32,13 @@ class BlogPostExtension(models.Model):
     def get_absolute_url(self):
         post = self.post
         date = post.postdate
-        return ('sphene.sphblog.views.show_thread', (), { 'groupName': post.category.group.name,
-                                                          'category_slug': post.category.slug,
-                                                          #'year': date.year,
-                                                          #'month': date.month,
-                                                          #'day': date.day,
-                                                          'slug': self.slug,
-                                                          })
+        return ('sphblog-show-thread', (), { 'groupName': post.category.group.name,
+                                             'category_slug': post.category.slug,
+                                             #'year': date.year,
+                                             #'month': date.month,
+                                             #'day': date.day,
+                                             'slug': self.slug,
+                                             })
     get_absolute_url = sphpermalink(get_absolute_url)
 
 
@@ -47,7 +47,7 @@ class BlogCategoryConfig(models.Model):
     """
     Extended configuration for a Blog category.
     """
-    category = models.ForeignKey( Category, unique = True )
+    category = models.ForeignKey(Category, unique=True, on_delete=models.CASCADE)
 
     enable_googleblogping = models.BooleanField(help_text = "Enable ping to blogsearch.google.com ?")
 

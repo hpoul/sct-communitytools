@@ -53,7 +53,8 @@ def define_page_range(current_page, total_pages, window=6):
 
 
 @register.inclusion_tag('sphene/community/_pagination.html', takes_context=True)
-def sph_pagination(context, pages, page, url = '', getparam = 'page', compress=0):
+def sph_pagination(context, pages, page, url='', getparam = 'page', compress=0):
+    assert page != '' and pages != ''
     has_next = page < pages
     has_prev = page > 1
     if page == -1:

@@ -60,13 +60,15 @@ Made quite some changes.. and externalized most part of creating wiki links to a
 so this is not longer an independent implementation but bound into SCT.
 '''
 
-import markdown
+from ..markdown import markdown
 import re
 from sphene.sphwiki import wikilink_utils
 
-class WikiLinkExtension (markdown.Extension) :
+
+class WikiLinkExtension (markdown.Extension):
     def __init__(self, configs):
         # set extension defaults
+        super().__init__(configs)
         self.config = {
                         'base_url' : ['/', 'String to append to beginning or URL.'],
                         'end_url' : ['/', 'String to append to end of URL.'],

@@ -40,7 +40,7 @@ class QuestionPostExtension(models.Model):
     """
     Post extension which is used for threads as well as for replies.
     """
-    post = models.ForeignKey(Post, unique=True, related_name = 'sphquestions_ext')
+    post = models.ForeignKey(Post, unique=True, related_name = 'sphquestions_ext', on_delete=models.CASCADE)
 
     is_question = models.BooleanField()
     # 0 = not answered
@@ -56,10 +56,10 @@ class AnswerVoting(models.Model):
     """
     n:m relation between questions and user who voted it useful.
     """
-    user = models.ForeignKey(User)
-    answer = models.ForeignKey(Post)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Post, on_delete=models.CASCADE)
 
-    question = models.ForeignKey(QuestionPostExtension)
+    question = models.ForeignKey(QuestionPostExtension, on_delete=models.CASCADE)
 
     # rating from 0 to 5 (currently all votings are 5 point votings)
     rating = models.IntegerField()

@@ -36,24 +36,24 @@ def sphrange(value):
     return range( value )
 
 @register.inclusion_tag('sphene/sphboard/_displayCategories.html', takes_context=True)
-def sphboard_displayCategories(context, categories, maxDepth = 5, level = -1 ):
+def sphboard_displayCategories(context, categories, maxDepth=5, level=-1):
     if maxDepth < level:
         return { }
-    ret = {'categories': [ c for c in categories \
-                               if c.get_category_type().is_displayed() ],
-           'level'     : level + 1,
-           'maxDepth'  : maxDepth}
+    ret = {'categories': [c for c in categories if c.get_category_type().is_displayed()],
+           'level': level + 1,
+           'maxDepth': maxDepth}
     retctx = Context(context)
     retctx.update(ret)
     return retctx
 
 @register.inclusion_tag('sphene/sphboard/_displayLatestPost.html')
-def sphboard_latestPost( latestPost, showSubject = 1 ):
+def sphboard_latestPost(latestPost, showSubject=1 ):
     return { 'latestPost' : latestPost, 'showSubject': showSubject }
 
 def sphboard_displayBreadcrumbs( category = None, post = None, linkall = False, show_board_link = True ):
-    if category == None:
-        if post == None: return { 'show_board_link': show_board_link, }
+    if category is None:
+        if post is None:
+            return {'show_board_link': show_board_link, }
         category = post.category
         current = post
     else:

@@ -9,7 +9,6 @@ My markdown extensions for adding:
 import os
 import sys
 import re
-import markdown
 
 
 DEFAULT_TITLE = None
@@ -33,7 +32,7 @@ class TitleExtension :
 
     def extendMarkdown(self, md) :
         # Insert a post-processor that would actually add the title tag
-        md.postprocessors.append(TitlePostprocessor(self))        
+        md.postprocessors.append(TitlePostprocessor(self))
         # Stateless extensions do not need to be registered
 
 
@@ -49,7 +48,7 @@ class TitleExtension :
             if element.type=='element':
                 if element.nodeName=='h1':
                     return True
-        
+
         headerone_doc_list = doc.find(findHeaderOneFn)
         # assume we don't back a None object
         if headerone_doc_list != []:
@@ -57,7 +56,7 @@ class TitleExtension :
             doc_title=child.childNodes[0].value
         else :
             doc_title=DEFAULT_TITLE  # None by default
-            
+
         # create title DOM
         if doc_title is not None:
             title_doc_tag = doc.createElement("title")
@@ -128,9 +127,9 @@ class TocExtension :
             if element.type=='element':
                 if headers_compiled_re.match(element.nodeName):
                     return True
-        
+
         headers_doc_list = doc.find(findHeadersFn)
-        
+
         # Insert anchor tags into dom
         generated_anchor_id=0
         headers_list=[]
@@ -147,16 +146,16 @@ class TocExtension :
                                               heading_type)
                 html_anchor_name= (extract_alphanumeric(heading_title)
                                    +'__MD_autoTOC_%d' % (generated_anchor_id))
-                
+
                 # insert anchor tag inside header tags
                 html_anchor = doc.createElement("a",' ')
                 html_anchor.setAttribute('name', html_anchor_name)
                 element.appendChild(html_anchor)
-                
+
                 headers_list.append( (heading_type, heading_title,
                                       html_anchor_name) )
                 generated_anchor_id = generated_anchor_id + 1
-        
+
         # create dom for toc
         if headers_list != []:
             # Create list
@@ -169,12 +168,12 @@ class TocExtension :
                     toc_doc_text = doc.createTextNode(heading_title)
                     toc_doc_link.appendChild(toc_doc_text)
                     toc_doc_entry.appendChild(toc_doc_link)
-                    
+
                     lowest_toc_doc_indent = doc.createElement("ul")
                     previous_toc_doc_indent = None
                     toc_doc_indent=None
                     indent_amt = heading_type - min_header_size_found
-                    indent_list=range(0, indent_amt)
+                    indent_list=list(range(0, indent_amt))
                     for x in indent_list:
                         toc_doc_indent = doc.createElement("ul")
                         if previous_toc_doc_indent is None:
@@ -186,7 +185,7 @@ class TocExtension :
                         toc_doc_indent = lowest_toc_doc_indent
                     lowest_toc_doc_indent.appendChild(toc_doc_entry)
                     toc_doc_list.appendChild(toc_doc_indent)
-            
+
             # Put list into div            
             div = doc.createElement("div")
             div.setAttribute('class', 'toc')
@@ -210,7 +209,7 @@ class TocPostprocessor :
 
     def run(self, doc):
         tocPlaceholder = self.toc.findTocPlaceholder(doc)
-        
+
         tocDiv = self.toc.createTocDiv(doc)
         if tocDiv:
             if tocPlaceholder :
@@ -224,6 +223,7 @@ class TocPostprocessor :
 
 
 def markdownWithTitle(text):
+    from sphene.contrib.libs.markdown import markdown
     md = markdown.Markdown()
     markdown.FootnoteExtension().extendMarkdown(md)
     footnoteExtension.extendMarkdown(md)
@@ -232,8 +232,9 @@ def markdownWithTitle(text):
     titleExtension.extendMarkdown(md)
     md.source = text
     return str(md)
-        
+
 def markdownWithManyExtensions(text):
+    from sphene.contrib.libs.markdown import markdown
     """converts input text string into xhtml using markdown with all known extensions
     """
     md = markdown.Markdown()
@@ -256,8 +257,8 @@ if __name__=="__main__" :
     out_filename = os.path.splitext(in_filename)[0] + '.html'
 
     if os.path.exists(out_filename):
-        print "\nWARNING", out_filename, "already exists, overwritting.\n"
+        print(("\nWARNING", out_filename, "already exists, overwritting.\n"))
 
-    out_file = file(out_filename, "w")
-    out_file.write( markdownWithManyExtensions( file(in_filename).read() ) )
+    out_file = open(out_filename, "w")
+    out_file.write( markdownWithManyExtensions( open(in_filename).read() ) )
 

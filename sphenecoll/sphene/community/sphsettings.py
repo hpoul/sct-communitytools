@@ -43,6 +43,10 @@ sph_settings_defaults = {
     # If this option is set to true and captcha support is enabled new users
     # will be asked for a captcha before a new registration email will be accepted.
     'community_register_require_captcha': False,
+
+    # If this option is set to true then it is possible that usernames differ only in letters size, eg.:
+    # both 'smith' and 'Smith' users can exist
+    'community_register_username_casesensitive': True,
     
     # The time in seconds an anonymous user is allowed to see email addresses
     # before revalidating a captcha again.
@@ -62,6 +66,8 @@ sph_settings_defaults = {
     'community_user_displayname_fallback': 'fullname',
     # name of default group created by sphene
     'default_group_name':'example',
+    # name of the fields that should be not displayed if user might be a spammer
+    'community_user_profile_spammer_restricted_fields': [],
 
     }
 

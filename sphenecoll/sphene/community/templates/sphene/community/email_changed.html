@@ -1,0 +1,22 @@
+{% extends "sphene/community/base.html" %}
+{% load i18n %}
+
+{% block page-body-class %}e-mail-changed{% endblock %}
+
+{% block content %}
+    <h2>{% trans "User e-mail change" %}</h2>
+    <br/>
+    <p>
+      {% if signature_expired %}
+          {% blocktrans %}E-mail change request is expired. Please request e-mail change again.{% endblocktrans %}
+      {% endif %}
+
+      {% if invalid_user %}
+          {% blocktrans %}E-mail change request was generated for another user account! Please log in as a valid user!{% endblocktrans %}
+      {% endif %}
+
+      {% if not invalid_user and not signature_expired %}
+          {% blocktrans with email=email_data.email %}Your e-mail has been changed to {{ email }}{% endblocktrans %}
+      {% endif %}
+    </p>
+{% endblock %}

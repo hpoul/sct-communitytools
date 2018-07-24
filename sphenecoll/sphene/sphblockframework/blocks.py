@@ -44,7 +44,7 @@ class RenderTemplateBlock(Block):
             return render_to_string(self.block_position. \
                                         block_configuration.config_value,
                                     context_instance = RequestContext(request))
-        except TemplateDoesNotExist, e:
+        except TemplateDoesNotExist as e:
             return 'Template does not exist.'
 
 

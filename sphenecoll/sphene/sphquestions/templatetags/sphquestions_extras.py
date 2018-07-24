@@ -22,7 +22,7 @@ def sphquestions_answervoting(qext, reply):
     # don't diplay answer voting if user is not logged in
     # or if the post is not a question or not a reply.
     if user is None \
-            or not user.is_authenticated() \
+            or not user.is_authenticated \
             or (reply.author == user and reply.author != question.author):
         allowvoting = False
     else:

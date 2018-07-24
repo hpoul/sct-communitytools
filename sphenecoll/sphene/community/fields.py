@@ -15,8 +15,10 @@ class TagField(forms.CharField):
 
         widget = TagWidget
         if model is not None:
-            content_type_id = ContentType.objects.get_for_model(model).id
-            widget = TagWidget(content_type_id)
+            # FIXME migrate this stuff
+            #content_type_id = ContentType.objects.get_for_model(model).id
+            #widget = TagWidget(content_type_id)
+            pass
 
         super(TagField, self).__init__(widget = widget, *args, **kwargs)
 

@@ -25,7 +25,7 @@ def get_region(group, user, name):
 
     pci = None
     try:
-        if user.is_authenticated():
+        if user.is_authenticated:
             pci = PageConfigurationInstance.objects.get(
                 page_configuration = pc,
                 user = user)
@@ -76,13 +76,13 @@ def get_or_create_region(group, user, name):
         return region
 
 class PageConfiguration(models.Model):
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user_configurable = models.IntegerField()
 
 
 class PageConfigurationInstance(models.Model):
-    page_configuration = models.ForeignKey(PageConfiguration)
-    user = models.ForeignKey(User, null = True)
+    page_configuration = models.ForeignKey(PageConfiguration, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null = True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (('page_configuration', 'user'))
@@ -90,7 +90,7 @@ class PageConfigurationInstance(models.Model):
 
 class BlockRegion(models.Model):
     name = models.CharField(max_length = 250)
-    config_instance = models.ForeignKey(PageConfigurationInstance)
+    config_instance = models.ForeignKey(PageConfigurationInstance, on_delete=models.CASCADE)
 
 
 class BlockChoices(object):
@@ -110,7 +110,7 @@ class BlockConfigurationManager(models.Manager):
 
 
 class BlockConfiguration(models.Model):
-    page_configuration = models.ForeignKey(PageConfiguration)
+    page_configuration = models.ForeignKey(PageConfiguration, on_delete=models.CASCADE)
     label = models.CharField(max_length = 250, blank = True, help_text = 'Leave blank to use default label.')
     block_name = models.CharField(max_length = 250, db_index = True, choices = BlockChoices() )
     config_value = models.CharField(max_length = 250, help_text = "Used for configuration for very simple blocks.", blank = True)
@@ -131,8 +131,8 @@ class BlockConfiguration(models.Model):
 
 
 class BlockInstancePosition(models.Model):
-    region = models.ForeignKey(BlockRegion)
-    block_configuration = models.ForeignKey(BlockConfiguration)
+    region = models.ForeignKey(BlockRegion, on_delete=models.CASCADE)
+    block_configuration = models.ForeignKey(BlockConfiguration, on_delete=models.CASCADE)
     sortorder = models.IntegerField()
 
     def get_label(self):

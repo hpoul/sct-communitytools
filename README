@@ -16,11 +16,9 @@ It currently consists of a forum, wiki and blog application.
 
 ## Requirements
 
-- [Django](http://www.djangoproject.com) 1.0 or later
-- Python >= 2.4 (Use >= 2.5 if you need wiki diffs with unicode support)
-- [PyCrypto](http://sf.net/projects/pycrypto) - (e.g. debian package python-crypto)
-- [Python Imaging Library (PIL)](http://www.pythonware.com/products/pil/)
-- [South](http://south.aeracode.org/)
+- [Django](http://www.djangoproject.com) 2.0 or later
+- Python >= 3.6
+- [Python Imaging Library (Pillow)](https://pillow.readthedocs.io/)
 
 ## Installation
 

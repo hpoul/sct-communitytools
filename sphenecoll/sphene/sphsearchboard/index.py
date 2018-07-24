@@ -1,5 +1,6 @@
 try:
-    from djapian import space, Indexer
+    from djapian import space
+    from djapian.indexer import Indexer
     from sphene.sphboard.models import Post
 
     class PostIndexer(Indexer):
@@ -14,8 +15,6 @@ try:
           ]
 
     space.add_index(Post, PostIndexer, attach_as='indexer')
-except:
+except Exception as e:
+    print('Exception in sphsearchboard/index.py', e)
     pass
-
-
-    

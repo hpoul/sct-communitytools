@@ -14,5 +14,5 @@ class LinkListCategoryConfig(models.Manager):
 
 
 class LinkListPostExtension(models.Model):
-    post = models.ForeignKey( Post, unique = True )
+    post = models.ForeignKey( Post, unique = True, on_delete=models.CASCADE )
     link = models.URLField( )

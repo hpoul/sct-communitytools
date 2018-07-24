@@ -7,18 +7,20 @@
 #  it through google cache :) )
 #
 #
-from functools import partial
+import functools
 
 from django.core.cache import cache
 from django import template
-from django.template.base import TagHelperNode, Template, generic_tag_compiler
-from django.utils.functional import curry
-from inspect import getargspec
+from django.template.base import Template
+from django.template.library import TagHelperNode, parse_bits
+from inspect import getfullargspec
 from django.utils.itercompat import is_iterable
 
 __all__ = ['cache_inclusion_tag']
 
-def cache_inclusion_tag(self, file_name, cache_key_func=None, cache_time=99999, context_class=template.Context,  takes_context=False, name=None):
+
+def cache_inclusion_tag(self, filename, cache_key_func=None, cache_time=99999, context_class=template.Context,
+                        takes_context=False, name=None):
     """
     This function will cache the rendering and output of a inclusion tag for cache_time seconds.
 
@@ -40,66 +42,74 @@ def cache_inclusion_tag(self, file_name, cache_key_func=None, cache_time=99999, 
 
     The tag will now be cached.
     """
+
     def dec(func):
-        params, varargs, varkw, defaults = getargspec(func)
+        params, varargs, varkw, defaults, kwonly, kwonly_defaults, _ = getfullargspec(func)
+        function_name = (name or getattr(func, '_decorated_function', func).__name__)
 
         class InclusionNode(TagHelperNode):
+
+            def __init__(self, func, takes_context, args, kwargs, filename):
+                super().__init__(func, takes_context, args, kwargs)
+                self.filename = filename
+
             def render(self, context):
+                """
+                Render the specified template and context. Cache the template object
+                in render_context to avoid reparsing and loading when used in a for
+                loop.
+                """
                 resolved_args, resolved_kwargs = self.get_resolved_arguments(context)
 
                 if takes_context:
                     args = [context] + resolved_args
                 else:
                     args = resolved_args
-
                 if cache_key_func:
                     cache_key = cache_key_func(*args)
                 else:
                     cache_key = None
 
-                if cache_key != None:
-                    retVal = cache.get(cache_key)
-                    if retVal:
-                        return retVal
+                if cache_key is not None:
+                    ret_val = cache.get(cache_key)
+                    if ret_val:
+                        return ret_val
 
-                _dict = func(*resolved_args, **resolved_kwargs)
+                _dict = self.func(*resolved_args, **resolved_kwargs)
 
-                if not getattr(self, 'nodelist', False):
-                    from django.template.loader import get_template, select_template
-                    if isinstance(file_name, Template):
-                        t = file_name
-                    elif not isinstance(file_name, basestring) and is_iterable(file_name):
-                        t = select_template(file_name)
+                t = context.render_context.get(self)
+                if t is None:
+                    if isinstance(self.filename, Template):
+                        t = self.filename
+                    elif isinstance(getattr(self.filename, 'template', None), Template):
+                        t = self.filename.template
+                    elif not isinstance(self.filename, str) and is_iterable(self.filename):
+                        t = context.template.engine.select_template(self.filename)
                     else:
-                        t = get_template(file_name)
-                    self.nodelist = t.nodelist
-                new_context = context_class(_dict, **{
-                    'autoescape': context.autoescape,
-                    'current_app': context.current_app,
-                    'use_l10n': context.use_l10n,
-                    'use_tz': context.use_tz,
-                })
-                # Copy across the CSRF token, if present, because
-                # inclusion tags are often used for forms, and we need
-                # instructions for using CSRF protection to be as simple
-                # as possible.
-                csrf_token = context.get('csrf_token', None)
+                        t = context.template.engine.get_template(self.filename)
+                    context.render_context[self] = t
+                new_context = context.new(_dict)
+                # Copy across the CSRF token, if present, because inclusion tags are
+                # often used for forms, and we need instructions for using CSRF
+                # protection to be as simple as possible.
+                csrf_token = context.get('csrf_token')
                 if csrf_token is not None:
                     new_context['csrf_token'] = csrf_token
+                ret_val = t.render(new_context)
+                if cache_key is not None:
+                    cache.set(cache_key, ret_val, cache_time)
+                return ret_val
 
-                retVal = self.nodelist.render(new_context)
-                if cache_key != None:
-                    cache.set(cache_key, retVal, cache_time)
-                return retVal
-
-        function_name = (name or
-            getattr(func, '_decorated_function', func).__name__)
-        compile_func = partial(generic_tag_compiler,
-            params=params, varargs=varargs, varkw=varkw,
-            defaults=defaults, name=function_name,
-            takes_context=takes_context, node_class=InclusionNode)
-        compile_func.__doc__ = func.__doc__
+        @functools.wraps(func)
+        def compile_func(parser, token):
+            bits = token.split_contents()[1:]
+            args, kwargs = parse_bits(
+                parser, bits, params, varargs, varkw, defaults,
+                kwonly, kwonly_defaults, takes_context, function_name,
+            )
+            return InclusionNode(
+                func, takes_context, args, kwargs, filename
+            )
         self.tag(function_name, compile_func)
         return func
-
     return dec

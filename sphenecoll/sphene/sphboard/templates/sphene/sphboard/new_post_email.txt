@@ -1,6 +1,4 @@
-{% load sph_extras %}
-{% load i18n %}
-{% blocktrans with post.author|sph_user_displayname as full_name and post.get_absolute_url as abs_url and post.get_threadinformation.get_page_count as page_count %}
+{% load sph_extras %}{% load i18n %}{% blocktrans with post.author|sph_user_displayname as full_name and post.get_absolute_url as abs_url and post.get_threadinformation.get_page_count as page_count %}
 {{ full_name }} just posted in a thread or forum you are monitoring:
 
 visit http://{{ baseurl }}{{ abs_url }} to view the post.

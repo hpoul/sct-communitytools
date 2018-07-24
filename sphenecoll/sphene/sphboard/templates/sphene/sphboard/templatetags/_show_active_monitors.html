@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load sph_extras %}
 <h4>{% trans "Forum monitoring - e-mail notifications" %}</h4>
 <table>
 {% for monitor in monitors %}
@@ -16,12 +17,12 @@
       </td>
       <td>
           {% if monitor.thread %}
-              <a href="{% url sphboard_toggle_user_monitor "thread" monitor.thread.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+              <a href="{% sph_url2 'sphboard_toggle_user_monitor' "thread" monitor.thread.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
           {% else %}
               {% if monitor.category %}
-                  <a href="{% url sphboard_toggle_user_monitor "category" monitor.category.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+                  <a href="{% sph_url2 'sphboard_toggle_user_monitor' "category" monitor.category.pk monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
               {% else %}
-                  <a href="{% url sphboard_toggle_user_monitor "group" 0 monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
+                  <a href="{% sph_url2 'sphboard_toggle_user_monitor' "group" 0 monitor.user.pk %}?next={{ request.path }}">{% trans "disable" %}</a>
               {% endif %}
           {% endif %}
       </td>

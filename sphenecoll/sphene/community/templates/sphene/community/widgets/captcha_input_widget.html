@@ -1,0 +1,1 @@
+{% load i18n %}<span class="sph_captcha"><img src="{{ widget.value|stringformat:'s' }}" alt="{% trans "Captcha input" %}" /> <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value=""}{% endif %}{% include "django/forms/widgets/attrs.html" %}></span>

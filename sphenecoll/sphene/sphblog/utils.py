@@ -1,20 +1,12 @@
-
-# Copied from http://www.djangosnippets.org/snippets/369/
-
-import re
-import unicodedata
-from htmlentitydefs import name2codepoint
-from django.utils.encoding import smart_unicode, force_unicode
-from slughifi import slughifi
+from django.utils.text import slugify as django_slugify
 
 
 def slugify(s, entities=True, decimal=True, hexadecimal=True, model=None, slug_field='slug', pk=None):
-    s = smart_unicode(s)
     # we don't want a string > 40 characters
     if len(s) > 40:
         s = s[:40]
 
-    s = slughifi(s)
+    s = django_slugify(s)
 
     slug = s
     if model:  

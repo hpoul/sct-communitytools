@@ -66,31 +66,37 @@
 import re
 
 #### CCIW specific imports #####
-#from zilbo.common.text.utils import get_member_link, obfuscate_email
-#from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
+# from zilbo.common.text.utils import get_member_link, obfuscate_email
+# from cciw.apps.cciw.settings import CCIW_MEDIA_ROOT
 from sphene.community.sphutils import render_blockquote, get_sph_setting
-from django.conf import settings 
+from django.conf import settings
+
 EMOTICONS_ROOT = get_sph_setting('board_emoticons_root')
 
+
 ##### UTILITY FUNCTIONS #####
-def get_member_link( member ):
+def get_member_link(member):
     return member
 
-def obfuscate_email( email ):
+
+def obfuscate_email(email):
     return email
+
 
 def escape(html):
     "Returns the given HTML with ampersands, quotes and carets encoded"
-    if not isinstance(html, basestring):
+    if not isinstance(html, str):
         html = str(html)
     return html.replace('&', '&amp;').replace('<', '&lt;') \
         .replace('>', '&gt;').replace('"', '&quot;')
-        
+
+
 ###### BBCODE ELEMENT DEFINITIONS ######
 class BBTag:
     """Represents an allowed tag with its name and meta data."""
-    def __init__(self, name, allowed_children, implicit_tag, self_closing=False, 
-        prohibited_elements = None, discardable = False):
+
+    def __init__(self, name, allowed_children, implicit_tag, self_closing=False,
+                 prohibited_elements=None, discardable=False):
         """Creates a new BBTag.
         - name is the text appears in square brackets e.g. for [b], name = 'b'
         - allowed_children is a list of the names of tags that can be added to this element
@@ -102,7 +108,7 @@ class BBTag:
         - discardable = True indicates that the tag can be discarded if 
           it can't be added at the current point in the tree.
         """
-        
+
         if prohibited_elements is None:
             self.prohibited_elements = ()
         else:
@@ -112,91 +118,97 @@ class BBTag:
         self.implicit_tag = implicit_tag
         self.allowed_children = allowed_children
         self.discardable = discardable
-        
+
     def render_node_xhtml(self, node):
         """
         Renders a node of this BBTag as HTML.
         node is the node to render.
         """
         raise NotImplementedException()
-    
+
     def render_node_bbcode(self, node):
-        opening = self.name # opening tag
+        opening = self.name  # opening tag
         if node.parameter:
             opening += "=" + node.parameter
         if self.self_closing:
             return '[%s/]' % opening
         else:
             return '[%s]%s[/%s]' % \
-                (opening, node.render_children_bbcode(), self.name)
+                   (opening, node.render_children_bbcode(), self.name)
 
-## Subclasses that follow override the render_node_xhtml 
+
+## Subclasses that follow override the render_node_xhtml
 ## or render_node_bbcode method
-        
+
 class HtmlEquivTag(BBTag):
     """
     A BBTag that is a direct equivalent of an HTML tag, and can render itself.
     """
+
     def __init__(self, *args, **kwargs):
         self.html_equiv = kwargs.pop('html_equiv')
         self.attributes = kwargs.pop('attributes', None)
         BBTag.__init__(self, *args, **kwargs)
-    
+
     def render_node_xhtml(self, node):
         opening = self.html_equiv
         if self.attributes:
             # Add any attributes
-            opening += ' ' + ' '.join(['%s="%s"' % (k, escape(v)) 
-                                        for k, v in self.attributes.items()])
+            opening += ' ' + ' '.join(['%s="%s"' % (k, escape(v))
+                                       for k, v in self.attributes.items()])
         if self.self_closing:
             ret = '<' + opening + '/>'
         else:
             if len(node.children) > 0:
                 ret = '<' + opening + '>' + node.render_children_xhtml() + \
-                    '</' + self.html_equiv + '>'
+                      '</' + self.html_equiv + '>'
             else:
                 ret = ''
         return ret
 
+
 class SoftBrTag(BBTag):
     """A tag representing an optional <br>"""
+
     def render_node_xhtml(self, node):
         if node.parent.allows('br'):
             return '<br/>'
         else:
             return '\n'
-            
+
     def render_node_bbcode(self, node):
         return '\n'
+
 
 class Emoticon(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) == 0:
             return ''
-        emoticon = node.children[0].text   # child is always a BBTextNode
+        emoticon = node.children[0].text  # child is always a BBTextNode
         if node.parent.allows('img'):
-            imagename = _EMOTICONS.get(emoticon,'')
+            imagename = _EMOTICONS.get(emoticon, '')
             if imagename == '':
                 return ''
             else:
                 return '<img src="' + EMOTICONS_ROOT + imagename + '" alt="' + \
-                    escape(emoticon) + '" />'
+                       escape(emoticon) + '" />'
         else:
             return emoticon
-            
+
     def render_node_bbcode(self, node):
         return node.children[0].text
+
 
 class ImgTag(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) == 0:
             return ''
-        imgurl = node.children[0].text   # child is always a BBTextNode
+        imgurl = node.children[0].text  # child is always a BBTextNode
         if node.parent.allows('img'):
             return '<img src="' + imgurl + '" border="0"/>'
         else:
             return imgurl
-            
+
     def render_node_bbcode(self, node):
         return node.children[0].text
 
@@ -205,13 +217,14 @@ class ColorTag(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) > 0:
             if node.parameter and node.parameter.lower() in _COLORS or \
-                _COLOR_REGEXP.match(node.parameter) is not None:
-                return '<span style="color: ' + node.parameter +  ';">' + \
-                    node.render_children_xhtml() + '</span>'
+                    _COLOR_REGEXP.match(node.parameter) is not None:
+                return '<span style="color: ' + node.parameter + ';">' + \
+                       node.render_children_xhtml() + '</span>'
             else:
                 return node.render_children_xhtml()
         else:
             return ''
+
 
 class MemberTag(BBTag):
     def render_node_xhtml(self, node):
@@ -224,13 +237,15 @@ class MemberTag(BBTag):
             else:
                 return get_member_link(member_name)
 
+
 class EmailTag(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) > 0:
             return obfuscate_email(escape(node.children[0].text.strip()))
         else:
             return ''
-            
+
+
 class UrlTag(BBTag):
     def render_node_xhtml(self, node):
         if len(node.children) == 0:
@@ -239,14 +254,16 @@ class UrlTag(BBTag):
             url = node.parameter.strip()
         else:
             url = node.children[0].text.strip()
-        linktext = node.render_children_xhtml() #node.children[0].text.strip()
+        linktext = node.render_children_xhtml()  # node.children[0].text.strip()
         if len(url) == 0:
             return ''
         else:
             post_link = get_sph_setting('board_post_link')
-            return post_link % {'url':escape(url), 'text':linktext}
+            return post_link % {'url': escape(url), 'text': linktext}
+
 
 from sphene import sphboard
+
 
 class QuoteTag(BBTag):
     def render_node_xhtml(self, node):
@@ -254,7 +271,7 @@ class QuoteTag(BBTag):
             node.parameter = ''
         else:
             node.parameter = node.parameter.strip()
- 
+
         citation = node.render_children_xhtml()
         post = None
         membername = None
@@ -264,23 +281,23 @@ class QuoteTag(BBTag):
             membername = match.group('username')
             if match.group('post_id'):
                 try:
-                    post = sphboard.models.Post.objects.get( pk = match.group('post_id') )
+                    post = sphboard.models.Post.objects.get(pk=match.group('post_id'))
                 except sphboard.models.Post.DoesNotExist:
                     pass
         return render_blockquote(citation, membername, post)
-            
+
 
 ###### DATA ######
 
-_COLORS = ('aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 
-    'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow')
+_COLORS = ('aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon',
+           'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow')
 _COLOR_REGEXP = re.compile(r'#[0-9A-F]{6}')
 _MEMBER_REGEXP = re.compile(r'^[\'"]?(?P<username>[0-9A-Za-z_]{1,30})[\'"]?(?:;(?P<post_id>[0-9]+))?$')
 _BBTAG_REGEXP = re.compile(r'\[\[?\/?([A-Za-z\*]+)(:[a-f0-9]+)?(=[^\]]+)?\]?\]')
 
 # 'text' is a dummy entry for text nodes
 _INLINE_TAGS = (
-    'b', 'i', 'color', 'member', 'email', 'url', 
+    'b', 'i', 'color', 'member', 'email', 'url',
     'br', 'text', 'img', 'softbr', 'emoticon', 'u'
 )
 _BLOCK_LEVEL_TAGS = ('p', 'quote', 'list', 'pre', 'code', 'div')
@@ -298,71 +315,71 @@ _ANCHOR_TAGS = ('member', 'email', 'url')
 _TAGS = (
     #           name          allowed_children   implicit_tag
     # <br/>
-    HtmlEquivTag('br',         (),             'div', 
-        self_closing=True, discardable=True, html_equiv='br'),
-    
+    HtmlEquivTag('br', (), 'div',
+                 self_closing=True, discardable=True, html_equiv='br'),
+
     # <br/>, but can adapt during render
-    SoftBrTag   ('softbr',     (),             'div', 
-        self_closing=True, discardable=True),
-    
+    SoftBrTag('softbr', (), 'div',
+              self_closing=True, discardable=True),
+
     # <img/>,  but can adapt
-    Emoticon    ('emoticon',   ('text',),      'div'),
-    
+    Emoticon('emoticon', ('text',), 'div'),
+
     # <b>
-    HtmlEquivTag('b',          _INLINE_TAGS,   'div',
-        html_equiv='b'),
-    
+    HtmlEquivTag('b', _INLINE_TAGS, 'div',
+                 html_equiv='b'),
+
     # <u>
-    HtmlEquivTag('u',          _INLINE_TAGS,   'div',
-        html_equiv='u'),
-    
+    HtmlEquivTag('u', _INLINE_TAGS, 'div',
+                 html_equiv='u'),
+
     # <img/>
-    ImgTag('img',          _INLINE_TAGS,   'div'),
-    
+    ImgTag('img', _INLINE_TAGS, 'div'),
+
     # <i>
-    HtmlEquivTag('i',          _INLINE_TAGS,   'div',
-        html_equiv='i'),
-    
+    HtmlEquivTag('i', _INLINE_TAGS, 'div',
+                 html_equiv='i'),
+
     # <span>
-    ColorTag    ('color',      _INLINE_TAGS,   'div'),
-    
+    ColorTag('color', _INLINE_TAGS, 'div'),
+
     # <a>
-    MemberTag   ('member',     ('text',),      'div' ),
-    
+    MemberTag('member', ('text',), 'div'),
+
     # <a>
-    EmailTag    ('email',      ('text',),      'div'),
-    
+    EmailTag('email', ('text',), 'div'),
+
     # <a>
-    UrlTag      ('url',        _INLINE_TAGS,      'div'),
-    
+    UrlTag('url', _INLINE_TAGS, 'div'),
+
     # <p>
-    HtmlEquivTag('p',          _INLINE_TAGS,   None,
-        html_equiv='p'),
-    
+    HtmlEquivTag('p', _INLINE_TAGS, None,
+                 html_equiv='p'),
+
     # <div>
-    HtmlEquivTag('div',        _FLOW_TAGS,     None,
-        html_equiv='div'),
-    
+    HtmlEquivTag('div', _FLOW_TAGS, None,
+                 html_equiv='div'),
+
     # <blockquote>
-    QuoteTag    ('quote',      _BLOCK_LEVEL_TAGS + ('softbr',), 'div'),
-    
+    QuoteTag('quote', _BLOCK_LEVEL_TAGS + ('softbr',), 'div'),
+
     # <ul>
-    HtmlEquivTag('list',       ('*', 'softbr'), None,
-        html_equiv='ul'),
-    
+    HtmlEquivTag('list', ('*', 'softbr'), None,
+                 html_equiv='ul'),
+
     # <pre> (only img currently needed out of the prohibited elements)
-    HtmlEquivTag('pre',        _INLINE_TAGS,   None, 
-        prohibited_elements=('img', 'big', 'small', 'sub', 'sup', 'br'),
-        html_equiv='pre'), 
-    
+    HtmlEquivTag('pre', _INLINE_TAGS, None,
+                 prohibited_elements=('img', 'big', 'small', 'sub', 'sup', 'br'),
+                 html_equiv='pre'),
+
     # <pre class="code">
-    HtmlEquivTag('code',       _INLINE_TAGS, None, 
-        prohibited_elements = ('img', 'big', 'small', 'sub', 'sup', 'br'),
-        html_equiv='pre', attributes={'class':'code'}),
-        
+    HtmlEquivTag('code', _INLINE_TAGS, None,
+                 prohibited_elements=('img', 'big', 'small', 'sub', 'sup', 'br'),
+                 html_equiv='pre', attributes={'class': 'code'}),
+
     # <li>
     HtmlEquivTag('*', _FLOW_TAGS, 'list',
-        html_equiv='li')
+                 html_equiv='li')
 )
 
 # Make a dictionary
@@ -375,15 +392,17 @@ for t in _TAGS:
 _TAGNAMES = [t.name for t in _TAGS]
 
 _EMOTICONS = get_sph_setting('board_emoticons_list')
-_EMOTICON_LIST = _EMOTICONS.keys();
+_EMOTICON_LIST = [] #_EMOTICONS.keys();
+
 
 ###### PARSING CLASSES AND FUNCTIONS ######
 class BBNode:
     """Abstract base class for a node of BBcode."""
+
     def __init__(self, parent):
         self.parent = parent
         self.children = []
-        
+
     def render_children_xhtml(self):
         """Render the child nodes as XHTML"""
         return "".join([child.render_xhtml() for child in self.children])
@@ -392,13 +411,15 @@ class BBNode:
         """Render the child nodes as BBCode"""
         return "".join([child.render_bbcode() for child in self.children])
 
+
 class BBRootNode(BBNode):
     """Represents a root node"""
-    def __init__(self, allow_inline = False):
+
+    def __init__(self, allow_inline=False):
         BBNode.__init__(self, None)
         self.children = []
         self.allow_inline = allow_inline
-    
+
     def render_xhtml(self):
         """Render the node as XHTML"""
         return self.render_children_xhtml()
@@ -415,12 +436,14 @@ class BBRootNode(BBNode):
         """Render the node as correct BBCode"""
         return self.render_children_bbcode()
 
+
 class BBTextNode(BBNode):
     """A text node, containing only plain text"""
+
     def __init__(self, parent, text):
         BBNode.__init__(self, parent)
         self.text = text
-        
+
     def render_xhtml(self):
         """Render the node as XHTML"""
         return escape(self.text)
@@ -429,11 +452,13 @@ class BBTextNode(BBNode):
         return self.text
 
     def allows(self, tagname):
-        return False      # text nodes are always leaf nodes
+        return False  # text nodes are always leaf nodes
+
 
 class BBEscapedTextNode(BBTextNode):
     def render_bbcode(self):
         return '[' + self.text + ']'
+
 
 class BBTagNode(BBNode):
     def __init__(self, parent, name, parameter):
@@ -467,15 +492,17 @@ class BBTagNode(BBNode):
     def render_bbcode(self):
         return self.bbtag.render_node_bbcode(self)
 
+
 class BBCodeParser:
-    def __init__(self, root_allows_inline = False):
+    def __init__(self, root_allows_inline=False, apply_spammer_limits=False):
         self.root_allows_inline = root_allows_inline
+        self.apply_spammer_limits = apply_spammer_limits
 
     def push_text_node(self, text, escaped=False):
         """Add a text node to the current node"""
         # escaped=True for text that has been wrapped in extra []
         # to stop interpretation as bbcode
-        
+
         if escaped:
             text_class = BBEscapedTextNode
         else:
@@ -489,7 +516,7 @@ class BBCodeParser:
                 self.current_node.children.append(text_class(self.current_node, text))
             else:
                 if self.current_node.allows('div'):
-                    self.current_node.children.append(BBTagNode(self.current_node, 'div',''))
+                    self.current_node.children.append(BBTagNode(self.current_node, 'div', ''))
                     self.descend()
                 else:
                     self.ascend()
@@ -510,14 +537,16 @@ class BBCodeParser:
 
     def push_tag_node(self, name, parameter):
         """Add a BBTagNode of name 'name' onto the tree"""
+        if self.apply_spammer_limits and name == 'url':
+            return
         if not self.current_node.allows(name):
             new_tag = _TAGDICT[name]
             if new_tag.discardable:
                 return
             elif (self.current_node == self.root_node or \
-                self.current_node.bbtag.name in _BLOCK_LEVEL_TAGS) and\
-                not new_tag.implicit_tag is None:
-                
+                  self.current_node.bbtag.name in _BLOCK_LEVEL_TAGS) and \
+                    not new_tag.implicit_tag is None:
+
                 # E.g. [*] inside root, or [*] inside [quote]
                 # or inline inside root
                 # Add an implicit tag if possible
@@ -526,7 +555,7 @@ class BBCodeParser:
             else:
                 # e.g. block level in inline etc. - traverse up the tree
                 self.current_node = self.current_node.parent
-                self.push_tag_node(name, parameter) # recursive call
+                self.push_tag_node(name, parameter)  # recursive call
         else:
             node = BBTagNode(self.current_node, name, parameter)
             self.current_node.children.append(node)
@@ -553,7 +582,7 @@ class BBCodeParser:
     def _prepare(self, bbcode):
         # Replace newlines with 'soft' brs
         bbcode = bbcode.replace("\n", '[softbr]')
-        
+
         # Replace emoticons with context-sensitive emoticon tags
         keys = {}
         uid = 1
@@ -567,12 +596,13 @@ class BBCodeParser:
             bbcode = bbcode.replace(key, val)
 
         # Replace URLs with [url=...]
-        bbcode = re.sub( r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|https)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]', bbcode )
-        
+        bbcode = re.sub(r'(?<!url=|url\]|img=|img\])(?:<?)((http|ftp|https)://[^\s\]>\)\[]+)(>?)', r'[url]\1[/url]',
+                        bbcode)
+
         return bbcode
 
-    def parse(self, bbcode):
-        """Parse the bbcode into a tree of elements"""        
+    def parse(self, bbcode, apply_spammer_limits=False):
+        """Parse the bbcode into a tree of elements"""
         self.root_node = BBRootNode(self.root_allows_inline)
         self.current_node = self.root_node
         bbcode = self._prepare(bbcode)
@@ -583,7 +613,7 @@ class BBCodeParser:
                 # push all text up to the start of the match
 
                 self.push_text_node(bbcode[pos:match.start()])
-                
+
                 # push the tag itself
                 tagname = match.groups()[0]
                 parameter = match.groups()[2]
@@ -593,7 +623,7 @@ class BBCodeParser:
                     self.push_text_node(wholematch[1:-1], escaped=True)
                 else:
                     if not parameter is None and len(parameter) > 0:
-                        parameter = parameter[1:] # strip the equals
+                        parameter = parameter[1:]  # strip the equals
                     if tagname in _TAGNAMES:
                         # genuine tag
                         if wholematch.startswith('[['):
@@ -617,32 +647,37 @@ class BBCodeParser:
                 # push all remaining text
                 self.push_text_node(bbcode[pos:])
                 pos = len(bbcode)
-        
+
     def render_xhtml(self):
         """Render the parsed tree as XHTML"""
         return self.root_node.render_xhtml()
-        
+
     def render_bbcode(self):
         """Render the parsed tree as corrected BBCode"""
         return self.root_node.render_bbcode()
 
-def bb2xhtml(bbcode, root_allows_inline = False):
+
+def bb2xhtml(bbcode, root_allows_inline=False, apply_spammer_limits=False):
     "Render bbcode as XHTML"
-    parser = BBCodeParser(root_allows_inline)
+    parser = BBCodeParser(root_allows_inline, apply_spammer_limits)
     parser.parse(bbcode)
     return parser.render_xhtml()
-    
+
+
 def correct(bbcode):
     "Renders corrected bbcode"
     parser = BBCodeParser(True)
     parser.parse(bbcode)
     return parser.render_bbcode()
 
+
 def to_html(text):
-    return bb2xhtml( text, False )
+    return bb2xhtml(text, False)
+
 
 def name():
     return "bbcode"
+
 
 def quote(text, url):
     return "[quote]\n%s\n[/quote]\n" % text

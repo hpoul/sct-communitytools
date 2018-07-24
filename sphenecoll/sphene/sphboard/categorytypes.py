@@ -1,4 +1,3 @@
-
 from django.utils.safestring import mark_safe
 
 from sphene.sphboard.models import ExtendedCategoryConfig
@@ -11,6 +10,7 @@ class DefaultCategoryType(CategoryType):
     the "default" category type which is used if there
     is no 'category type' setting.
     """
+
     def get_post_form_class(self, replypost, editpost):
         return PostForm
 
@@ -24,26 +24,24 @@ class SeparatorCategoryType(CategoryType):
 
     label = 'Separator'
 
-
     def is_separator(self):
         return True
-
 
 
 class ExtendedPostForm(PostForm):
     def __init__(self, *args, **kwargs):
         super(ExtendedPostForm, self).__init__(*args, **kwargs)
 
-    def __set_label( self, string, field ):
+    def __set_label(self, string, field):
         if string:
             field.label = string
 
     def init_for_category_type(self, category_type, post):
         super(ExtendedPostForm, self).init_for_category_type(category_type, post)
-        self.__set_label( category_type.get_subject_label(), 
-                          self.fields['subject'] )
-        self.__set_label( category_type.get_body_label(),
-                          self.fields['body'] )
+        self.__set_label(category_type.get_subject_label(),
+                         self.fields['subject'])
+        self.__set_label(category_type.get_body_label(),
+                         self.fields['body'])
 
         initial = category_type.get_body_initial()
         if initial:
@@ -52,7 +50,7 @@ class ExtendedPostForm(PostForm):
         help_text = category_type.get_body_help_text()
         if help_text:
             self.fields['body'].help_text = help_text
-        
+
 
 class ExtendedCategoryType(CategoryType):
     name = "extendedconfig"
@@ -87,12 +85,11 @@ class ExtendedCategoryType(CategoryType):
         if hasattr(self, 'extended_config'):
             return self.extended_config
         try:
-            config = ExtendedCategoryConfig.objects.get( category = self.category )
+            config = ExtendedCategoryConfig.objects.get(category=self.category)
         except ExtendedCategoryConfig.DoesNotExist:
-            config = ExtendedCategoryConfig(category = self.category)
+            config = ExtendedCategoryConfig(category=self.category)
             config.save()
 
         # "Cache" result.
         self.extended_config = config
         return config
-

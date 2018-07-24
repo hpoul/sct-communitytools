@@ -48,6 +48,7 @@
         <th>{% trans "Board posts" %}</th>
     {% endif %}
     <th><a href="?orderby={% get_orderby orderby "is_active" %}{% if search_qs %}&amp;{{ search_qs|safe }}&amp;search=1{% endif %}">{% trans "Is active" %}</a></th>
+    <th><a href="?orderby={% get_orderby orderby "date_joined" %}{% if search_qs %}&amp;{{ search_qs|safe }}&amp;search=1{% endif %}">{% trans "Joined" %}</a></th>
     <th>{% trans "Actions" %}</th>
   </tr>
   {% for usr in sphuser_list %}
@@ -62,6 +63,7 @@
           </td>
       {% endif %}
       <td class="user-activity-status">{{ usr.is_active|yesno }}</td>
+      <td class="user-activity-status">{{ usr.date_joined|date:"d-m-Y H:m:s" }}</td>
       <td>
           <a class="user-activity-switch" href="{% sph_url2 sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a>
       </td>

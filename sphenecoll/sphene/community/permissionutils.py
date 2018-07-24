@@ -9,7 +9,7 @@ from sphene.community.models import Role, RoleMember, PermissionFlag, RoleGroupM
 from sphene.community.sph_cacheutils import get_cache_group_id
 
 
-def has_permission_flag(user, flag, contentobject = None, group = None):
+def has_permission_flag(user, flag, contentobject=None, group=None):
     """
     Checks if the given user has the given flag for the given model instance
     (object).
@@ -17,7 +17,7 @@ def has_permission_flag(user, flag, contentobject = None, group = None):
     assigned.
     """
     # Anonymous users won't have flags ...
-    if user is None or not user.is_authenticated():
+    if user is None or not user.is_authenticated:
         return False
 
     # Super users have all flags anyway ..
