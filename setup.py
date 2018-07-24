@@ -38,6 +38,7 @@ designed to be easily pluggable into any Django project. It currently consists
 of a Wiki and a Forum application. It contains an example project that allows
 users to create a community Web site containing the Wiki and Board applications
 without any further coding/configuration changes.''',
+    python_requires='>=3.6',
     install_requires=[
         'Django>=2.0.1',
         'Pillow>=4.0.0',
