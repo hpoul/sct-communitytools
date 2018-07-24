@@ -4,7 +4,7 @@
 {% load sph_extras %}
 
 {% block head %}
-{{ block.SUPER }}
+{{ block.super }}
 <meta name="robots" content="noindex,nofollow" />
 {% endblock %}
 
@@ -58,14 +58,14 @@
       <td>
 	<ul class="sph_tags">
 	{% for label in fromchange|sph_tag_labels %}
-	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
+	  <li><a href="{% sph_url2 'sphwiki_show_tag_snips' tag_name=label.tag.name %}">{{ label.label }}</a></li>
 	{% endfor %}
 	</ul>
       </td>
       <td>
 	<ul class="sph_tags">
 	{% for label in tochange|sph_tag_labels %}
-	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
+	  <li><a href="{% sph_url2 'sphwiki_show_tag_snips' tag_name=label.tag.name %}">{{ label.label }}</a></li>
 	{% endfor %}
 	</ul>
       </td>

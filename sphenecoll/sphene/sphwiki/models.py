@@ -359,7 +359,7 @@ class WikiSnipChange(models.Model):
         return self.change_type & 4
 
     def get_absolute_url(self):
-        return ('sphene.sphwiki.views.diff', (),
+        return ('sphwiki-diff', (),
                 {'groupName': self.snip.group.name, 'snipName': self.snip.name, 'changeId': self.id})
 
     get_absolute_url = sphpermalink(get_absolute_url)

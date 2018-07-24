@@ -22,7 +22,7 @@
       <th width="80%">Change Message</th>
     </tr>
 
-    {% for change in object_list %}
+    {% for change in page_obj %}
       <tr{% if not change.snip.has_view_permission %} class="nopermission" title="Not enough permissions to view this wiki snip."{% endif %}>
         {% if change.snip.has_view_permission %}
           <td><a href="{{ change.snip.get_absolute_url }}">{{ change.snip.name }}</a></td>
@@ -38,9 +38,9 @@
   </table>
 
   {% if is_paginated %}
-    {{ hits }} Changes. {% sph_pagination pages page %}
+    {{ page_obj.paginator.count }} Changes. {% sph_pagination paginator.num_pages page_obj.number %}
   {% else %}
-    {{ object_list.count }} Changes.
+    {{ page_obj.paginator.count }} Changes.
   {% endif %}
 
 {% endblock %}

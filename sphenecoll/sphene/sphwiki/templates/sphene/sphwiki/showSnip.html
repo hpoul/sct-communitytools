@@ -35,7 +35,7 @@
       <h3>{% trans "Tags:" %}</h3>
       <ul class="sph_tags">
 	{% for label in tag_labels %}
-	  <li><a href="{% sph_url2 sphwiki_show_tag_snips tag_name=label.tag.name %}">{{ label.label }}</a></li>
+	  <li><a href="{% sph_url2 'sphwiki_show_tag_snips' tag_name=label.tag.name %}">{{ label.label }}</a></li>
 	{% endfor %}
       </ul>
       {% endif %}

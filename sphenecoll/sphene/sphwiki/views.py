@@ -10,10 +10,13 @@ from django.utils.translation import ugettext, ugettext_lazy
 from datetime import datetime
 from difflib import HtmlDiff
 
+from django.views.generic import ListView
+
 from sphene.sphwiki.models import WikiSnip, WikiSnipChange, WikiAttachment
 from sphene.community import PermissionDenied, sphutils
 from sphene.community.middleware import get_current_sphdata, get_current_user
-from sphene.community.models import Tag, tag_set_labels, tag_get_labels, tag_get_models_by_tag
+from sphene.community.models import Tag, tag_set_labels, tag_get_labels, tag_get_models_by_tag, \
+    Group
 from sphene.community.fields import TagField
 
 
@@ -96,30 +99,37 @@ def generatePDF(request, group, snipName):
     return response
 
 
-def history(request, group, snipName):
-    snip = get_object_or_404(WikiSnip,
-                             group=group,
-                             name=snipName)
-    if not snip.has_view_permission():
-        raise PermissionDenied()
-    return object_list(request=request,
-                       queryset=snip.wikisnipchange_set.order_by('-edited'),
-                       template_name='sphene/sphwiki/history.html',
-                       allow_empty=True,
-                       extra_context={'snipName': snipName,
-                                      'snip': snip,
-                                      },
-                       )
+class HistoryListView(ListView):
+    group: Group
+    snip: WikiSnip
+
+    template_name = 'sphene/sphwiki/history.html'
+    allow_empty = True
+    paginate_by = 50
+
+    # noinspection PyMethodOverriding
+    def get(self, request, group, snipName, *args, **kwargs):
+        self.snip = get_object_or_404(WikiSnip, group=group, name=snipName)
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.snip.wikisnipchange_set.order_by('-edited')
 
 
-def recentChanges(request, group):
-    res = object_list(request=request,
-                      queryset=WikiSnipChange.objects.filter(snip__group=group).order_by('-edited'),
-                      template_name='sphene/sphwiki/recentChanges.html',
-                      allow_empty=True,
-                      )
-    res.sph_lastmodified = True
-    return res
+class RecentChangesListView(ListView):
+    template_name = 'sphene/sphwiki/recentChanges.html'
+    allow_empty = True
+    group: Group
+    paginate_by = 50
+
+    def get(self, request, group=None, *args, **kwargs):
+        self.group = group
+        res = super().get(request, *args, **kwargs)
+        res.sph_lastmodified = True
+        return res
+
+    def get_queryset(self):
+        return WikiSnipChange.objects.filter(snip__group=self.group).order_by('-edited')
 
 
 def diff(request, group, snipName, changeId=None):
@@ -375,16 +385,19 @@ def editSnip(request, group, snipName, versionId=None):
                    'changemessage': changemessage})
 
 
-def show_tag_snips(request, group, tag_name):
-    tag = Tag.objects.get(group=group, name__exact=tag_name)
-    # OK .. we need to find all wiki snips in the current group on which the 
-    # user has permission to view.
-    snips = tag_get_models_by_tag(WikiSnip.objects.all(), tag)
+class TagSnipListView(ListView):
+    template_name = 'sphene/sphwiki/list_tag_snips.html'
+    # paginate_by = 50
+    allow_empty = True
+    tag: Tag
 
-    return object_list(request=request,
-                       queryset=snips,
-                       template_name='sphene/sphwiki/list_tag_snips.html',
-                       extra_context={'tag_name': tag_name,
-                                      },
-                       allow_empty=True,
-                       )
+    # noinspection PyMethodOverriding
+    def get(self, request, group, tag_name, *args, **kwargs):
+        self.tag = get_object_or_404(Tag, group=group, name__exact=tag_name)
+        self.extra_context = {'tag_name': self.tag.name}
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return tag_get_models_by_tag(WikiSnip.objects.all(), self.tag)
+
+    

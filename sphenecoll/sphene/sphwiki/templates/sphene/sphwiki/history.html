@@ -25,7 +25,7 @@
       <th>{% trans "Tags" %}</th>
     </tr>
 
-    {% for change in object_list %}
+    {% for change in page_obj %}
        <tr>
          <td class="history_changedate"><a href="{{ change.get_absolute_url }}" title="Changes to Previous Version">{{ change.edited|sph_date }}</a></td>
          <td class="history_editor">{% sph_html_user change.editor %}</td>
@@ -41,9 +41,9 @@
   </table>
 
   {% if is_paginated %}
-    {% blocktrans with hits as changecount %}{{ changecount }} Changes.{% endblocktrans %} {% sph_pagination pages page %}
+    {% blocktrans with page_obj.paginator.count as changecount %}{{ changecount }} Changes.{% endblocktrans %} {% sph_pagination page_obj.paginator.num_pages page_obj.number %}
   {% else %}
-    {% blocktrans with object_list.count as changecount %}{{ changecount }} Changes.{% endblocktrans %}
+    {% blocktrans with page_obj.paginator.count as changecount %}{{ changecount }} Changes.{% endblocktrans %}
   {% endif %}
 
 
