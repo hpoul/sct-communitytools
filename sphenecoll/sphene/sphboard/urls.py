@@ -58,7 +58,7 @@ urlpatterns += [
             name='sphboard_toggle_user_monitor'),
     re_path(r'^togglemonitor_(?P<monitortype>\w+)/(?P<object_id>\d+)/$', toggle_monitor,
             name='sphboard_toggle_monitor'),
-    re_path(r'^catchup/(?P<category_id>\d+)/$', catchup, name='catchup'),
+    re_path(r'^catchup/(?P<category_id>\d+)/$', catchup, name='sphboard-catchup'),
     re_path(r'^poll/(?P<poll_id>\d+)/edit/$', edit_poll, name='sphboard_edit_poll'),
     re_path(r'^admin/(?P<user_id>\d+)/posts/$', admin_user_posts, name='sphboard_admin_user_posts'),
     re_path(r'^admin/(?P<user_id>\d+)/posts/(?P<post_id>\d+)/delete/$', admin_post_delete,

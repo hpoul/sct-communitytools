@@ -957,8 +957,7 @@ def catchup(request, group, category_id):
     else:
         category = get_object_or_404(Category, pk=category_id)
         category.catchup(request.session, request.user)
-        req = HttpResponseRedirect(
-            sph_reverse('sphene.sphboard.views.showCategory', kwargs={'category_id': category_id}))
+        req = HttpResponseRedirect(category.get_absolute_url())
 
     req.sph_lastmodified = True
     return req

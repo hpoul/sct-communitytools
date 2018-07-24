@@ -400,4 +400,3 @@ class TagSnipListView(ListView):
     def get_queryset(self):
         return tag_get_models_by_tag(WikiSnip.objects.all(), self.tag)
 
-    

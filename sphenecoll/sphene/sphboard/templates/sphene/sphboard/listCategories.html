@@ -13,10 +13,10 @@
       {% include "sphene/sphboard/_category_monitor.html" %}
     {% else %}
       {% if group.has_monitor %}
-        {% trans "You are currently receiving email notifications on new posts." %} - <a href="{% sph_url2 sphboard_toggle_monitor monitortype="group" object_id=group.id %}">{% trans "Stop notifications" %}</a>
+        {% trans "You are currently receiving email notifications on new posts." %} - <a href="{% sph_url2 'sphboard_toggle_monitor' monitortype="group" object_id=group.id %}">{% trans "Stop notifications" %}</a>
       {% else %}
         {% if rootCategories %}
-          <a href="{% sph_url2 sphboard_toggle_monitor monitortype="group" object_id=group.id %}">{% trans "Notify me by email on new posts." %}</a>
+          <a href="{% sph_url2 'sphboard_toggle_monitor' monitortype="group" object_id=group.id %}">{% trans "Notify me by email on new posts." %}</a>
         {% endif %}
       {% endif %}
     {% endif %}
@@ -92,13 +92,13 @@
             {% include category.get_category_type.get_new_thread_link_template %}
         {% endif %}
         {% if user.is_authenticated and category.has_new_posts %}
-          <p><a href="{% sph_url2 sphene.sphboard.views.catchup  category_id=category.id %}" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
+          <p><a href="{% sph_url2 'sphboard-catchup' category_id=category.id %}" title="{% trans "Mark all Posts in this Category as read." %}">{% trans "Catch Up" %}</a></p>
         {% endif %}
       {% endif %}
   {% endif %}
 
   {% if not category and user.is_authenticated %}
-      <p><a href="{% sph_url2 sphene.sphboard.views.catchup category_id=0 %}">{% trans "Mark all as read" %}</a></p>
+      <p><a href="{% sph_url2 'sphboard-catchup' category_id=0 %}">{% trans "Mark all as read" %}</a></p>
   {% endif %}
 
   {% block below_thread_list %}
