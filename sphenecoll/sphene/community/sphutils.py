@@ -117,7 +117,7 @@ def generate_captcha():
     a attribute 'uid' which contains the id of the captcha.
     """
     if not usecaptcha: return None
-    numbers = (int(random() * 9) + 1, int(random() * 9) + 1)
+    numbers = (int(random() * 100) + 1, int(random() * 100) + 1)
     text = "%d+%d" % numbers
     answer = sum(numbers)
     req = CaptchaRequest.generate_request(text, answer, get_current_request().path)
