@@ -1,22 +1,17 @@
 # blog views
 
-#from sphene.sphblog.categorytypes import doinit
-
-#doinit()
-
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
-from django.db.models import Q
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
 
 from sphene.community.models import Tag, tag_get_models_by_tag
-from sphene.community.middleware import get_current_urlconf
-from sphene.community.sphutils import add_rss_feed
-from sphene.sphboard.models import Category, ThreadInformation, Post, get_tags_for_categories
+from sphene.community.sphutils import add_rss_feed, get_sph_setting, sph_reverse
 from sphene.sphblog.models import BlogPostExtension
-from sphene.community.sphutils import get_sph_setting, sph_reverse
+from sphene.sphboard.models import Category, Post, get_tags_for_categories
+from sphene.sphboard.views import ThreadListView
+
 
 def get_board_categories(group):
     """
@@ -195,11 +190,9 @@ def show_thread_redirect(request, group, slug, category_slug = None, year = None
         raise Http404
     return HttpResponsePermanentRedirect(blogpost.get_absolute_url())
 
-def show_thread(request, group, slug, category_slug = None, year = None, month = None, day = None):
-    try:
-        blogpost = BlogPostExtension.objects.get( slug__exact = slug )
-    except BlogPostExtension.DoesNotExist:
-        raise Http404
-    # FIXME migrate to ThreadList class based view.
-    return sphboard_show_thread( request, blogpost.post.id, group )
 
+class ShowThreadListView(ThreadListView):
+    # noinspection PyMethodOverriding
+    def get(self, request, group, slug, category_slug = None, year = None, month = None, day = None, **kwargs):
+        blog_post = get_object_or_404(BlogPostExtension, slug__exact=slug)
+        return super().get(request, group, blog_post.post_id)

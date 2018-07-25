@@ -6,7 +6,7 @@ from .views import postthread
 from .views import show_tag_posts
 from .views import show_thread_redirect
 from .views import blogindex_redirect
-from .views import show_thread
+from .views import ShowThreadListView
 
 
 urlpatterns = [
@@ -43,5 +43,5 @@ urlpatterns = [
     re_path(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.*)/$', show_thread_redirect),
     re_path(r'^(?P<category_id>\d+)/$', blogindex_redirect, name='sphblog_category_index'),
     re_path(r'^(?P<category_slug>[\w\-]+)/$', blogindex, name='sphblog_category_index_slug'),
-    re_path(r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', show_thread, name='sphblog-show-thread'),
+    re_path(r'^(?P<category_slug>[\w\-]+?)/(?P<slug>[\w\-]+)/$', ShowThreadListView.as_view(), name='sphblog-show-thread'),
 ]
