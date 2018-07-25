@@ -292,7 +292,7 @@ class SphURLNode(Node):
         kwargs = {k: v.resolve(context) for k, v in self.kwargs.items()}
         view_name = self.view_name.resolve(context)
         if view_name == '':
-            log.error('Error while resolving sph_url2 for %r / %s', self.view_name, self.view_name)
+            log.error('Error while resolving sph_url2 'for' %r / %s', self.view_name, self.view_name)
             return ''
 
         try:
@@ -368,7 +368,7 @@ def sph_url2(*args, **kwargs):
         node = defaulttags.url(*args, **kwargs)
         return SphURLNode(node.view_name, node.args, node.kwargs, node.asvar)
     except TemplateSyntaxError:
-        log.error('Error while resolving url for %r / %r', args, kwargs)
+        log.error('Error while resolving url for %r / %r', args, kwargs, [str(x) for x in args])
         return TextNode('')
 
 

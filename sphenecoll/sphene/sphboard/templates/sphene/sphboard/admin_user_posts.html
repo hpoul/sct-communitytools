@@ -15,7 +15,7 @@
 
 <h2>{% blocktrans with author.username as username %}Posts submitted by user:{% endblocktrans %} {% sphboard_displayUserName author %}</h2>
 
-<a onclick="return confirm('{% trans "Are you sure you want to delete ALL posts of this user?" %}')" href="{% sph_url2 sphboard_admin_posts_delete author.pk %}">{% trans "Delete all posts of this user" %}</a>
+<a onclick="return confirm('{% trans "Are you sure you want to delete ALL posts of this user?" %}')" href="{% sph_url2 'sphboard_admin_posts_delete' author.pk %}">{% trans "Delete all posts of this user" %}</a>
 
 <table>
   <tr>
@@ -31,7 +31,7 @@
       <td>{{ post.postdate|date:"Y-m-d H:i:s" }}</td>
       <td>
           <a href="{{ post.get_absolute_url }}">{% trans "View" %}</a>
-          <a onclick="return confirm('{% trans "Are you sure you want to delete this post?" %}')" href="{% sph_url2 sphboard_admin_post_delete author.pk post.pk %}">{% trans "Delete" %}</a>
+          <a onclick="return confirm('{% trans "Are you sure you want to delete this post?" %}')" href="{% sph_url2 'sphboard_admin_post_delete' author.pk post.pk %}">{% trans "Delete" %}</a>
       </td>
     </tr>
   {% endfor %}

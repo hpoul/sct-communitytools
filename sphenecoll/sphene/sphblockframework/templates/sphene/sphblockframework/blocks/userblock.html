@@ -11,7 +11,7 @@
   <p>
     {% trans "You are not logged in." %}<br/>
     <a href="{% sph_url 'accounts_login' %}{% if not sph.is_logout %}?next={{ request.path|urlencode }}{% endif %}">{% trans "Login" %}</a><br/>
-    <a href="{% sph_url 'sphene.community.views.register' %}">{% trans "Register" %}</a><br/>
+    <a href="{% sph_url 'sph_register' %}">{% trans "Register" %}</a><br/>
   </p>
 {% endif %}
 

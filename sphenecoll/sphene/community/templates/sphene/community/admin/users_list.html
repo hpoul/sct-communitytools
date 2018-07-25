@@ -59,13 +59,13 @@
       {% if is_sphboard %}
           {%  load sphboard_extras %}
           <td>
-              <a href="{% sph_url2 sphboard_admin_user_posts usr.pk %}">{% user_posts_count usr %}</a>
+              <a href="{% sph_url2 'sphboard_admin_user_posts' usr.pk %}">{% user_posts_count usr %}</a>
           </td>
       {% endif %}
       <td class="user-activity-status">{{ usr.is_active|yesno }}</td>
       <td class="user-activity-status">{{ usr.date_joined|date:"d-m-Y H:m:s" }}</td>
       <td>
-          <a class="user-activity-switch" href="{% sph_url2 sph_admin_user_switch_active usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a>
+          <a class="user-activity-switch" href="{% sph_url2 'sph_admin_user_switch_active' usr.pk %}">{% if usr.is_active %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}</a>
       </td>
     </tr>
   {% endfor %}
