@@ -1,10 +1,7 @@
-
 from django.template import TemplateDoesNotExist
-from django.template.context import RequestContext
 from django.template.loader import render_to_string
 
 from sphene.sphblockframework.blockregistry import Block
-
 
 
 class NavigationBlock(Block):
@@ -28,8 +25,8 @@ class UserBlock(Block):
         request = self.get_request()
         user = self.get_user()
         return render_to_string('sphene/sphblockframework/blocks/userblock.html',
-                                dictionary={ 'user': user, },
-                                context_instance=RequestContext(request),)
+                                { 'user': user, },
+                                request=request)
 
 
 class RenderTemplateBlock(Block):
@@ -41,9 +38,8 @@ class RenderTemplateBlock(Block):
     def render(self):
         request = self.get_request()
         try:
-            return render_to_string(self.block_position. \
-                                        block_configuration.config_value,
-                                    context_instance = RequestContext(request))
+            return render_to_string(self.block_position.block_configuration.config_value,
+                                    request=request)
         except TemplateDoesNotExist as e:
             return 'Template does not exist.'
 

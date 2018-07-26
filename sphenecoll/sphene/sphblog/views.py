@@ -3,8 +3,7 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template.context import RequestContext
+from django.shortcuts import get_object_or_404, render
 
 from sphene.community.models import Tag, tag_get_models_by_tag
 from sphene.community.sphutils import add_rss_feed, get_sph_setting, sph_reverse
@@ -116,9 +115,7 @@ def blogindex(request, group, category_id = None, category_slug = None, page = 1
                                       category_slug = category_slug,
                                       group = group)
     if not category_info:
-        return render_to_response('sphene/sphblog/nocategory.html',
-                                  {},
-                                  context_instance = RequestContext(request))
+        return render(request, 'sphene/sphblog/nocategory.html')
     context_variables = {}
     if year:
         context_variables['archive_year'] = year
@@ -159,8 +156,7 @@ def show_tag_posts(request, group, tag_name, page = 1):
         page = 1
 
     if not categories:
-        return render_to_response( 'sphene/sphblog/nocategory.html',{},
-                                   context_instance = RequestContext(request) )
+        return render(request, 'sphene/sphblog/nocategory.html')
 
     tag = get_object_or_404(Tag, group = group,
                             name__exact = tag_name )
@@ -168,13 +164,12 @@ def show_tag_posts(request, group, tag_name, page = 1):
     threads = tag_get_models_by_tag( threads, tag )
     paged_threads = get_paged_objects(threads, page)
 
-    return render_to_response( 'sphene/sphblog/blogindex.html',
-                               { 'threads': paged_threads,
-                                 'tag': tag,
-                                 'group': group,
-                                 'categories': categories,
-                                 },
-                               context_instance = RequestContext(request) )
+    return render(request, 'sphene/sphblog/blogindex.html',
+                  { 'threads': paged_threads,
+                    'tag': tag,
+                    'group': group,
+                    'categories': categories,
+                    })
 
 
 def postthread(request, group):
