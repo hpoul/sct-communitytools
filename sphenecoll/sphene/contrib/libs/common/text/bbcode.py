@@ -298,7 +298,7 @@ _BBTAG_REGEXP = re.compile(r'\[\[?\/?([A-Za-z\*]+)(:[a-f0-9]+)?(=[^\]]+)?\]?\]')
 # 'text' is a dummy entry for text nodes
 _INLINE_TAGS = (
     'b', 'i', 'color', 'member', 'email', 'url',
-    'br', 'text', 'img', 'softbr', 'emoticon', 'u'
+    'br', 'text', 'img', 'softbr', 'emoticon', 'u', 'h2', 'h3'
 )
 _BLOCK_LEVEL_TAGS = ('p', 'quote', 'list', 'pre', 'code', 'div')
 _FLOW_TAGS = _INLINE_TAGS + _BLOCK_LEVEL_TAGS
@@ -339,6 +339,14 @@ _TAGS = (
     # <i>
     HtmlEquivTag('i', _INLINE_TAGS, 'div',
                  html_equiv='i'),
+
+    # <h2>
+    HtmlEquivTag('h2', _INLINE_TAGS, 'div',
+                 html_equiv='h2'),
+
+    # <h2>
+    HtmlEquivTag('h3', _INLINE_TAGS, 'div',
+                 html_equiv='h2'),
 
     # <span>
     ColorTag('color', _INLINE_TAGS, 'div'),
