@@ -293,7 +293,7 @@ _COLORS = ('aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon'
            'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow')
 _COLOR_REGEXP = re.compile(r'#[0-9A-F]{6}')
 _MEMBER_REGEXP = re.compile(r'^[\'"]?(?P<username>[0-9A-Za-z_]{1,30})[\'"]?(?:;(?P<post_id>[0-9]+))?$')
-_BBTAG_REGEXP = re.compile(r'\[\[?\/?([A-Za-z\*]+)(:[a-f0-9]+)?(=[^\]]+)?\]?\]')
+_BBTAG_REGEXP = re.compile(r'\[\[?\/?([A-Za-z\*0-9]+)(:[a-f0-9]+)?(=[^\]]+)?\]?\]')
 
 # 'text' is a dummy entry for text nodes
 _INLINE_TAGS = (
@@ -344,9 +344,9 @@ _TAGS = (
     HtmlEquivTag('h2', _INLINE_TAGS, 'div',
                  html_equiv='h2'),
 
-    # <h2>
+    # <h3>
     HtmlEquivTag('h3', _INLINE_TAGS, 'div',
-                 html_equiv='h2'),
+                 html_equiv='h3'),
 
     # <span>
     ColorTag('color', _INLINE_TAGS, 'div'),
