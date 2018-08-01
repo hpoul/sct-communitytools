@@ -54,7 +54,7 @@
   {% endif %}
 
   {% for thread in threads.object_list %}
-    {% sphblog_showblogpost thread %}
+      <div class="sphblog_post">{% sphblog_showblogpost thread %}</div>
   {% endfor %}
 
   {# Pagination #}
