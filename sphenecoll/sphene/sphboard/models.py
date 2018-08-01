@@ -1,3 +1,5 @@
+import datetime
+import posixpath
 from datetime import timedelta
 import mimetypes
 
@@ -1296,11 +1298,16 @@ class Post(models.Model):
         verbose_name_plural = ugettext_lazy('Posts')
 
 
+def post_attachment_upload_to(instance, filename):
+    dirname = datetime.datetime.now().strftime(get_sph_setting('board_attachments_upload_to'))
+    return posixpath.join(dirname, filename)
+
+
 class PostAttachment(models.Model):
     post = models.ForeignKey(Post, related_name='attachments', on_delete=models.CASCADE)
     # This is only blank so the form does not throw errors when it was not entered !
     fileupload = models.FileField(ugettext_lazy(u'File'),
-                                  upload_to=get_sph_setting('board_attachments_upload_to'),
+                                  upload_to=post_attachment_upload_to,
                                   blank=True,
                                   max_length=200)
 
