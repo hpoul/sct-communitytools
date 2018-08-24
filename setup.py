@@ -17,7 +17,7 @@ CLASSIFIERS = [
     'Natural Language :: German',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2.5',
+    'Programming Language :: Python :: 3',
     'Topic :: Communications',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards',
