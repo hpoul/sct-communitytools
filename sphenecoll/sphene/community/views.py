@@ -261,7 +261,7 @@ def register_hash(request, email, emailHash, group=None):
             {'form': form}
         )
 
-    elif md5(settings.SECRET_KEY + email_address).hexdigest() == emailHash:
+    elif (settings.SECRET_KEY + email_address).encode('utf-8')).hexdigest() == emailHash:
         form = RegisterForm()
         form.fields['email_address'].initial = email_address
         form.fields['email_hash'].initial = emailHash
